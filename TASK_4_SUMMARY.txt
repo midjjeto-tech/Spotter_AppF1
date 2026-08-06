@@ -1,0 +1,109 @@
+TASK 4 COMPLETION SUMMARY
+=========================
+
+File: voice/tts.py
+Status: COMPLETE
+Date: 2026-06-20
+
+MIGRATION: Qwen3-TTS (GPU) -> MOSS-TTS-Nano (CPU/ONNX)
+
+=== KEY CHANGES ===
+
+1. IMPORTS
+   - Changed: from new_tts.qwen3_tts import Qwen3TTS
+   - To: from new_tts.moss_tts import MossTTS
+   - Removed: import wave (now using soundfile)
+
+2. CLASS VARIABLES
+   - self._qwen: Qwen3TTS -> self._moss: MossTTS
+   - Status message: "Загрузка Qwen3-TTS..." -> "Загрузка MOSS-TTS-Nano..."
+   - Default speaker: "default" -> "tv"
+
+3. PERSONA_SPEAKER MAPPING
+   Old (Qwen3 named speakers):
+      "tv": "Vivian"
+      "hype": "Vivian"
+      "calm": "Serena"
+      "toxic": "Ryan"
+   
+   New (MOSS uses generic values):
+      "tv": "tv"
+      "hype": "hype"
+      "calm": "calm"
+      "toxic": "toxic"
+
+4. AUDIO FORMAT (Critical Change)
+   Qwen3-TTS:  24 kHz, mono [N]
+   MOSS-TTS:   48 kHz, stereo [N, 2]
+   
+   Changes:
+   - samplerate: 24000 -> 48000 (self._moss.sample_rate)
+   - channels: 1 -> 2
+   - blocksize: 2400 -> 4800 (maintains 100ms @ 48kHz)
+   - stream.write(chunk.reshape(-1, 1)) -> stream.write(chunk)
+   - np.concatenate(chunks) -> np.concatenate(chunks, axis=0)
+
+5. FILE I/O (Stereo WAV Support)
+   Old (wave module - mono only):
+      import wave
+      with wave.open(tmp, "wb") as wf:
+          wf.setnchannels(1)
+          wf.writeframes(pcm.tobytes())
+      
+      with wave.open(path, "rb") as wf:
+          frames = wf.readframes(wf.getnframes())
+   
+   New (soundfile - stereo ready):
+      import soundfile as sf
+      sf.write(tmp, pcm, sample_rate, subtype="PCM_16")
+      data, sr = sf.read(path, dtype="float32")
+
+6. PROPERTY/METHOD UPDATES
+   - engine_name: "Qwen3-TTS" -> "MOSS-TTS-Nano"
+   - All self._qwen references -> self._moss
+   - Wait loop: 120 iterations -> 240 iterations (120s -> 240s, for ONNX load)
+   - Wait condition: "Qwen3-TTS:" -> "Загрузка"
+
+7. FALLBACK LOGIC (Unchanged)
+   - pyttsx3 fallback preserved
+   - TTSQueue integration unchanged
+   - Cache mechanism unchanged (compatible with stereo audio)
+
+=== VERIFICATION RESULTS ===
+
+Syntax Check:        PASS
+Import Resolution:   PASS
+MossTTS imported:    PASS
+No Qwen3TTS remnant: PASS
+Stereo config:       PASS
+Soundfile usage:     PASS
+No wave remnants:    PASS
+Persona mapping:     PASS
+Default speaker:     PASS
+Status messages:     PASS
+MOSS references:     PASS
+
+=== FILES MODIFIED ===
+- G:\Spotter App\voice\tts.py (complete rewrite for MOSS-TTS)
+
+=== DEPENDENCIES ===
+- new_tts.moss_tts.MossTTS (created in Task 3)
+- new_tts.queue_handler.TTSQueue (existing)
+- voice.cache.TTSCache (existing, compatible with stereo)
+- soundfile (required for stereo WAV I/O)
+- sounddevice (required for audio playback)
+
+=== BREAKING CHANGES FOR CALLERS ===
+None - public interface unchanged:
+  - Voice.say(text: str) -> bool
+  - Voice.test_say(text: str) -> bool
+  - Voice.is_available -> bool
+  - Voice.engine_name -> str
+  - Voice.set_persona(persona: str) -> None
+
+=== NOTES ===
+- MOSS outputs 48 kHz stereo, Qwen3 was 24 kHz mono
+- Blocksize adjusted for 100ms at new sample rate
+- soundfile handles stereo naturally, wave module does not
+- Cache compatibility maintained (reads/writes PCM data)
+- pyttsx3 fallback unchanged (mono, doesn't depend on sample rate)

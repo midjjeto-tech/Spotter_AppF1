@@ -1,0 +1,828 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (os)
+              8 STORE_NAME               0 (os)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('perf_counter_ns',))
+             14 IMPORT_NAME              1 (time)
+             16 IMPORT_FROM              2 (perf_counter_ns)
+             18 STORE_NAME               2 (perf_counter_ns)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('Any', 'Callable', 'Dict', 'Optional'))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (Any)
+             30 STORE_NAME               4 (Any)
+             32 IMPORT_FROM              5 (Callable)
+             34 STORE_NAME               5 (Callable)
+             36 IMPORT_FROM              6 (Dict)
+             38 STORE_NAME               6 (Dict)
+             40 IMPORT_FROM              7 (Optional)
+             42 STORE_NAME               7 (Optional)
+             44 POP_TOP
+
+ 29          46 LOAD_CONST               0 (0)
+             48 LOAD_CONST               4 (('QMetaObject', 'QMutex', 'QMutexLocker', 'QObject', 'Qt', 'QTimer', 'QtMsgType', 'QWaitCondition', 'Signal', 'Slot', 'qInstallMessageHandler'))
+             50 IMPORT_NAME              8 (PySide6.QtCore)
+             52 IMPORT_FROM              9 (QMetaObject)
+             54 STORE_NAME               9 (QMetaObject)
+             56 IMPORT_FROM             10 (QMutex)
+             58 STORE_NAME              10 (QMutex)
+             60 IMPORT_FROM             11 (QMutexLocker)
+             62 STORE_NAME              11 (QMutexLocker)
+             64 IMPORT_FROM             12 (QObject)
+             66 STORE_NAME              12 (QObject)
+             68 IMPORT_FROM             13 (Qt)
+             70 STORE_NAME              13 (Qt)
+             72 IMPORT_FROM             14 (QTimer)
+             74 STORE_NAME              14 (QTimer)
+             76 IMPORT_FROM             15 (QtMsgType)
+             78 STORE_NAME              15 (QtMsgType)
+             80 IMPORT_FROM             16 (QWaitCondition)
+             82 STORE_NAME              16 (QWaitCondition)
+             84 IMPORT_FROM             17 (Signal)
+             86 STORE_NAME              17 (Signal)
+             88 IMPORT_FROM             18 (Slot)
+             90 STORE_NAME              18 (Slot)
+             92 IMPORT_FROM             19 (qInstallMessageHandler)
+             94 STORE_NAME              19 (qInstallMessageHandler)
+             96 POP_TOP
+
+ 32          98 LOAD_CONST               0 (0)
+            100 LOAD_CONST               5 (('QApplication',))
+            102 IMPORT_NAME             20 (PySide6.QtWidgets)
+            104 IMPORT_FROM             21 (QApplication)
+            106 STORE_NAME              21 (QApplication)
+            108 POP_TOP
+
+ 34         110 LOAD_CONST               0 (0)
+            112 LOAD_CONST               6 (('HighFreqBase',))
+            114 IMPORT_NAME             22 (apps.hud.ui.infra.hf_types)
+            116 IMPORT_FROM             23 (HighFreqBase)
+            118 STORE_NAME              23 (HighFreqBase)
+            120 POP_TOP
+
+ 35         122 LOAD_CONST               0 (0)
+            124 LOAD_CONST               7 (('BaseOverlay',))
+            126 IMPORT_NAME             24 (apps.hud.ui.overlays)
+            128 IMPORT_FROM             25 (BaseOverlay)
+            130 STORE_NAME              25 (BaseOverlay)
+            132 POP_TOP
+
+ 36         134 LOAD_CONST               0 (0)
+            136 LOAD_CONST               8 (('PngLogger',))
+            138 IMPORT_NAME             26 (lib.logger)
+            140 IMPORT_FROM             27 (PngLogger)
+            142 STORE_NAME              27 (PngLogger)
+            144 POP_TOP
+
+ 40         146 PUSH_NULL
+            148 LOAD_BUILD_CLASS
+            150 LOAD_CONST               9 (<code object _HFTypeSignal at 0x0000020DAF2F17D0, file "apps\hud\ui\infra\window_mgr.py", line 40>)
+            152 MAKE_FUNCTION            0
+            154 LOAD_CONST              10 ('_HFTypeSignal')
+            156 LOAD_NAME               12 (QObject)
+            158 CALL                     3
+            166 STORE_NAME              28 (_HFTypeSignal)
+
+ 45         168 PUSH_NULL
+            170 LOAD_BUILD_CLASS
+            172 LOAD_CONST              11 (<code object WindowManager at 0x0000020DAEDE5990, file "apps\hud\ui\infra\window_mgr.py", line 45>)
+            174 MAKE_FUNCTION            0
+            176 LOAD_CONST              12 ('WindowManager')
+            178 LOAD_NAME               12 (QObject)
+            180 CALL                     3
+            188 STORE_NAME              29 (WindowManager)
+            190 RETURN_CONST             1 (None)
+
+Disassembly of <code object _HFTypeSignal at 0x0000020DAF2F17D0, file "apps\hud\ui\infra\window_mgr.py", line 40>:
+ 40           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('_HFTypeSignal')
+              8 STORE_NAME               2 (__qualname__)
+
+ 41          10 LOAD_CONST               1 ('Per-HF-type signal proxy. One instance per HF type; only subscribed overlays are connected.')
+             12 STORE_NAME               3 (__doc__)
+
+ 42          14 PUSH_NULL
+             16 LOAD_NAME                4 (Signal)
+             18 LOAD_NAME                5 (object)
+             20 CALL                     1
+             28 STORE_NAME               6 (signal)
+             30 RETURN_CONST             2 (None)
+
+Disassembly of <code object WindowManager at 0x0000020DAEDE5990, file "apps\hud\ui\infra\window_mgr.py", line 45>:
+              0 MAKE_CELL                0 (__class__)
+
+ 45           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('WindowManager')
+             10 STORE_NAME               2 (__qualname__)
+
+ 47          12 PUSH_NULL
+             14 LOAD_NAME                3 (Signal)
+             16 LOAD_NAME                4 (str)
+             18 LOAD_NAME                5 (bool)
+             20 LOAD_NAME                4 (str)
+             22 LOAD_NAME                6 (object)
+             24 CALL                     4
+             32 STORE_NAME               7 (generic_cmd_signal)
+
+ 48          34 PUSH_NULL
+             36 LOAD_NAME                3 (Signal)
+             38 LOAD_NAME                4 (str)
+             40 LOAD_NAME                4 (str)
+             42 LOAD_NAME                6 (object)
+             44 CALL                     3
+             52 STORE_NAME               8 (mgmt_request_signal)
+
+ 49          54 PUSH_NULL
+             56 LOAD_NAME                3 (Signal)
+             58 LOAD_NAME                4 (str)
+             60 LOAD_NAME                6 (object)
+             62 CALL                     2
+             70 STORE_NAME               9 (mgmt_response_signal)
+
+ 51          72 LOAD_CONST              33 ((None,))
+             74 LOAD_CONST               2 ('logger')
+             76 LOAD_NAME               10 (PngLogger)
+             78 LOAD_CONST               3 ('post_init_cb')
+             80 LOAD_NAME               11 (Optional)
+             82 LOAD_NAME               12 (Callable)
+             84 BUILD_LIST               0
+             86 LOAD_CONST               1 (None)
+             88 BUILD_TUPLE              2
+             90 BINARY_SUBSCR
+             94 BINARY_SUBSCR
+             98 BUILD_TUPLE              4
+            100 LOAD_CLOSURE             0 (__class__)
+            102 BUILD_TUPLE              1
+            104 LOAD_CONST               4 (<code object __init__ at 0x0000020DAEF3DF90, file "apps\hud\ui\infra\window_mgr.py", line 51>)
+            106 MAKE_FUNCTION           13 (defaults, annotations, closure)
+            108 STORE_NAME              13 (__init__)
+
+ 81         110 LOAD_CONST               5 (<code object run at 0x0000020DAF2D1830, file "apps\hud\ui\infra\window_mgr.py", line 81>)
+            112 MAKE_FUNCTION            0
+            114 STORE_NAME              14 (run)
+
+ 85         116 LOAD_CONST               6 (<code object stop at 0x0000020DAF2ADBB0, file "apps\hud\ui\infra\window_mgr.py", line 85>)
+            118 MAKE_FUNCTION            0
+            120 STORE_NAME              15 (stop)
+
+ 89         122 LOAD_CONST               7 ('mode')
+            124 LOAD_NAME               16 (QtMsgType)
+            126 LOAD_CONST               8 ('message')
+            128 LOAD_NAME                4 (str)
+            130 BUILD_TUPLE              4
+            132 LOAD_CONST               9 (<code object _qt_message_handler at 0x0000020DAEFD7E10, file "apps\hud\ui\infra\window_mgr.py", line 89>)
+            134 MAKE_FUNCTION            4 (annotations)
+            136 STORE_NAME              17 (_qt_message_handler)
+
+ 97         138 LOAD_CONST              10 ('overlay_id')
+            140 LOAD_NAME                4 (str)
+            142 LOAD_CONST              11 ('overlay')
+            144 LOAD_NAME               18 (BaseOverlay)
+            146 BUILD_TUPLE              4
+            148 LOAD_CONST              12 (<code object register_overlay at 0x0000020DB0C21750, file "apps\hud\ui\infra\window_mgr.py", line 97>)
+            150 MAKE_FUNCTION            4 (annotations)
+            152 STORE_NAME              19 (register_overlay)
+
+118         154 PUSH_NULL
+            156 LOAD_NAME               20 (Slot)
+            158 LOAD_NAME                4 (str)
+            160 LOAD_NAME                4 (str)
+            162 LOAD_NAME               21 (dict)
+            164 CALL                     3
+
+119         172 LOAD_CONST              13 ('recipient')
+            174 LOAD_NAME                4 (str)
+            176 LOAD_CONST              14 ('_request_type')
+            178 LOAD_NAME                4 (str)
+            180 LOAD_CONST              15 ('_request_data')
+            182 LOAD_NAME                4 (str)
+            184 BUILD_TUPLE              6
+            186 LOAD_CONST              16 (<code object _handle_request at 0x0000020DB1038440, file "apps\hud\ui\infra\window_mgr.py", line 118>)
+            188 MAKE_FUNCTION            4 (annotations)
+
+118         190 CALL                     0
+
+119         198 STORE_NAME              22 (_handle_request)
+
+127         200 PUSH_NULL
+            202 LOAD_NAME               20 (Slot)
+            204 LOAD_NAME                4 (str)
+            206 LOAD_NAME                6 (object)
+            208 CALL                     2
+
+128         216 LOAD_CONST              17 ('request_type')
+            218 LOAD_NAME                4 (str)
+            220 LOAD_CONST              18 ('response_data')
+            222 LOAD_NAME               23 (Any)
+            224 BUILD_TUPLE              4
+            226 LOAD_CONST              19 (<code object _store_response at 0x0000020DAF2021F0, file "apps\hud\ui\infra\window_mgr.py", line 127>)
+            228 MAKE_FUNCTION            4 (annotations)
+
+127         230 CALL                     0
+
+128         238 STORE_NAME              24 (_store_response)
+
+137         240 NOP
+
+136         242 LOAD_CONST              34 ((None, 5000))
+            244 LOAD_CONST              13 ('recipient')
+            246 LOAD_NAME                4 (str)
+            248 LOAD_CONST              17 ('request_type')
+            250 LOAD_NAME                4 (str)
+            252 LOAD_CONST              20 ('request_data')
+
+137         254 LOAD_NAME               25 (Dict)
+            256 LOAD_NAME                4 (str)
+            258 LOAD_NAME               23 (Any)
+            260 BUILD_TUPLE              2
+            262 BINARY_SUBSCR
+
+136         266 LOAD_CONST              21 ('timeout_ms')
+
+137         268 LOAD_NAME               26 (int)
+
+136         270 LOAD_CONST              22 ('return')
+
+137         272 LOAD_NAME               25 (Dict)
+            274 LOAD_NAME                4 (str)
+            276 LOAD_NAME               23 (Any)
+            278 BUILD_TUPLE              2
+            280 BINARY_SUBSCR
+
+136         284 BUILD_TUPLE             10
+            286 LOAD_CONST              23 (<code object request at 0x0000020DAEEB0120, file "apps\hud\ui\infra\window_mgr.py", line 136>)
+            288 MAKE_FUNCTION            5 (defaults, annotations)
+            290 STORE_NAME              27 (request)
+
+165         292 LOAD_CONST              35 ((False,))
+            294 LOAD_CONST              24 ('cmd')
+            296 LOAD_NAME                4 (str)
+            298 LOAD_CONST              25 ('data')
+            300 LOAD_NAME               25 (Dict)
+            302 LOAD_NAME                4 (str)
+            304 LOAD_NAME               23 (Any)
+            306 BUILD_TUPLE              2
+            308 BINARY_SUBSCR
+            312 LOAD_CONST              26 ('high_prio')
+            314 LOAD_NAME                5 (bool)
+            316 BUILD_TUPLE              6
+            318 LOAD_CONST              27 (<code object broadcast_data at 0x0000020DAF2D4B70, file "apps\hud\ui\infra\window_mgr.py", line 165>)
+            320 MAKE_FUNCTION            5 (defaults, annotations)
+            322 STORE_NAME              28 (broadcast_data)
+
+175         324 LOAD_CONST              35 ((False,))
+            326 LOAD_CONST              10 ('overlay_id')
+            328 LOAD_NAME                4 (str)
+            330 LOAD_CONST              28 ('event')
+            332 LOAD_NAME                4 (str)
+            334 LOAD_CONST              25 ('data')
+            336 LOAD_NAME               25 (Dict)
+            338 LOAD_NAME                4 (str)
+            340 LOAD_NAME               23 (Any)
+            342 BUILD_TUPLE              2
+            344 BINARY_SUBSCR
+            348 LOAD_CONST              26 ('high_prio')
+            350 LOAD_NAME                5 (bool)
+            352 BUILD_TUPLE              8
+            354 LOAD_CONST              29 (<code object unicast_data at 0x0000020DAF2C1F10, file "apps\hud\ui\infra\window_mgr.py", line 175>)
+            356 MAKE_FUNCTION            5 (defaults, annotations)
+            358 STORE_NAME              29 (unicast_data)
+
+187         360 LOAD_CONST              25 ('data')
+            362 LOAD_NAME               30 (HighFreqBase)
+            364 BUILD_TUPLE              2
+            366 LOAD_CONST              30 (<code object send_high_freq_data at 0x0000020DAF2B9A70, file "apps\hud\ui\infra\window_mgr.py", line 187>)
+            368 MAKE_FUNCTION            4 (annotations)
+            370 STORE_NAME              31 (send_high_freq_data)
+
+197         372 LOAD_CONST              31 ('payload')
+            374 LOAD_NAME               25 (Dict)
+            376 LOAD_NAME                4 (str)
+            378 LOAD_NAME               23 (Any)
+            380 BUILD_TUPLE              2
+            382 BINARY_SUBSCR
+            386 LOAD_CONST              22 ('return')
+            388 LOAD_NAME               25 (Dict)
+            390 LOAD_NAME                4 (str)
+            392 LOAD_NAME               23 (Any)
+            394 BUILD_TUPLE              2
+            396 BINARY_SUBSCR
+            400 BUILD_TUPLE              4
+            402 LOAD_CONST              32 (<code object _marshal_data at 0x0000020DAF2F1A70, file "apps\hud\ui\infra\window_mgr.py", line 197>)
+            404 MAKE_FUNCTION            4 (annotations)
+            406 STORE_NAME              32 (_marshal_data)
+            408 LOAD_CLOSURE             0 (__class__)
+            410 COPY                     1
+            412 STORE_NAME              33 (__classcell__)
+            414 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAEF3DF90, file "apps\hud\ui\infra\window_mgr.py", line 51>:
+              0 COPY_FREE_VARS           1
+
+ 51           2 RESUME                   0
+
+ 57           4 LOAD_GLOBAL              0 (os)
+             14 LOAD_ATTR                2 (environ)
+             34 LOAD_ATTR                5 (NULL|self + setdefault)
+             54 LOAD_CONST               1 ('QSG_RENDER_LOOP')
+             56 LOAD_CONST               2 ('threaded')
+             58 CALL                     2
+             66 POP_TOP
+
+ 58          68 LOAD_GLOBAL              7 (NULL + QApplication)
+             78 CALL                     0
+             86 LOAD_FAST                0 (self)
+             88 STORE_ATTR               4 (app)
+
+ 59          98 LOAD_GLOBAL             10 (super)
+            108 LOAD_DEREF               3 (__class__)
+            110 LOAD_FAST                0 (self)
+            112 LOAD_SUPER_ATTR         25 (NULL|self + __init__)
+            116 CALL                     0
+            124 POP_TOP
+
+ 60         126 LOAD_FAST                1 (logger)
+            128 LOAD_FAST                0 (self)
+            130 STORE_ATTR               7 (logger)
+
+ 61         140 LOAD_FAST                0 (self)
+            142 LOAD_ATTR               14 (logger)
+            162 LOAD_ATTR               17 (NULL|self + silent)
+            182 LOAD_CONST               3 ('QSG_RENDER_LOOP = %s')
+            184 LOAD_GLOBAL              0 (os)
+            194 LOAD_ATTR                2 (environ)
+            214 LOAD_ATTR               19 (NULL|self + get)
+            234 LOAD_CONST               1 ('QSG_RENDER_LOOP')
+            236 LOAD_CONST               4 ('(not set)')
+            238 CALL                     2
+            246 CALL                     2
+            254 POP_TOP
+
+ 62         256 BUILD_MAP                0
+            258 LOAD_FAST                0 (self)
+            260 STORE_ATTR              10 (overlays)
+
+ 63         270 BUILD_MAP                0
+            272 LOAD_FAST                0 (self)
+            274 STORE_ATTR              11 (_hf_signals)
+
+ 65         284 LOAD_GLOBAL             25 (NULL + qInstallMessageHandler)
+            294 LOAD_FAST                0 (self)
+            296 LOAD_ATTR               26 (_qt_message_handler)
+            316 CALL                     1
+            324 POP_TOP
+
+ 68         326 LOAD_GLOBAL             29 (NULL + QMutex)
+            336 CALL                     0
+            344 LOAD_FAST                0 (self)
+            346 STORE_ATTR              15 (_response_mutex)
+
+ 69         356 LOAD_GLOBAL             33 (NULL + QWaitCondition)
+            366 CALL                     0
+            374 LOAD_FAST                0 (self)
+            376 STORE_ATTR              17 (_response_condition)
+
+ 70         386 LOAD_CONST               5 (None)
+            388 LOAD_FAST                0 (self)
+            390 STORE_ATTR              18 (_response_data)
+
+ 71         400 LOAD_CONST               6 (False)
+            402 LOAD_FAST                0 (self)
+            404 STORE_ATTR              19 (_response_received)
+
+ 74         414 LOAD_FAST                0 (self)
+            416 LOAD_ATTR               40 (mgmt_request_signal)
+            436 LOAD_ATTR               43 (NULL|self + connect)
+            456 LOAD_FAST                0 (self)
+            458 LOAD_ATTR               44 (_handle_request)
+            478 CALL                     1
+            486 POP_TOP
+
+ 75         488 LOAD_FAST                0 (self)
+            490 LOAD_ATTR               46 (mgmt_response_signal)
+            510 LOAD_ATTR               43 (NULL|self + connect)
+            530 LOAD_FAST                0 (self)
+            532 LOAD_ATTR               48 (_store_response)
+            552 CALL                     1
+            560 POP_TOP
+
+ 77         562 LOAD_FAST                2 (post_init_cb)
+            564 POP_JUMP_IF_FALSE       23 (to 612)
+
+ 79         566 LOAD_GLOBAL             51 (NULL + QTimer)
+            576 LOAD_ATTR               52 (singleShot)
+            596 LOAD_CONST               7 (0)
+            598 LOAD_FAST                2 (post_init_cb)
+            600 CALL                     2
+            608 POP_TOP
+            610 RETURN_CONST             5 (None)
+
+ 77     >>  612 RETURN_CONST             5 (None)
+
+Disassembly of <code object run at 0x0000020DAF2D1830, file "apps\hud\ui\infra\window_mgr.py", line 81>:
+ 81           0 RESUME                   0
+
+ 83           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (app)
+             24 LOAD_ATTR                3 (NULL|self + exec)
+             44 CALL                     0
+             52 POP_TOP
+             54 RETURN_CONST             1 (None)
+
+Disassembly of <code object stop at 0x0000020DAF2ADBB0, file "apps\hud\ui\infra\window_mgr.py", line 85>:
+ 85           0 RESUME                   0
+
+ 87           2 LOAD_GLOBAL              1 (NULL + QMetaObject)
+             12 LOAD_ATTR                2 (invokeMethod)
+             32 LOAD_FAST                0 (self)
+             34 LOAD_ATTR                4 (app)
+             54 LOAD_CONST               1 ('quit')
+             56 LOAD_GLOBAL              6 (Qt)
+             66 LOAD_ATTR                8 (ConnectionType)
+             86 LOAD_ATTR               10 (QueuedConnection)
+            106 CALL                     3
+            114 POP_TOP
+            116 RETURN_CONST             2 (None)
+
+Disassembly of <code object _qt_message_handler at 0x0000020DAEFD7E10, file "apps\hud\ui\infra\window_mgr.py", line 89>:
+ 89           0 RESUME                   0
+
+ 90           2 LOAD_FAST                1 (mode)
+              4 LOAD_GLOBAL              0 (QtMsgType)
+             14 LOAD_ATTR                2 (QtCriticalMsg)
+             34 LOAD_GLOBAL              0 (QtMsgType)
+             44 LOAD_ATTR                4 (QtFatalMsg)
+             64 BUILD_TUPLE              2
+             66 CONTAINS_OP              0
+             68 POP_JUMP_IF_FALSE       29 (to 128)
+
+ 91          70 LOAD_FAST                0 (self)
+             72 LOAD_ATTR                6 (logger)
+             92 LOAD_ATTR                9 (NULL|self + error)
+            112 LOAD_CONST               1 ('[Qt] %s')
+            114 LOAD_FAST                3 (message)
+            116 CALL                     2
+            124 POP_TOP
+            126 RETURN_CONST             0 (None)
+
+ 92     >>  128 LOAD_FAST                1 (mode)
+            130 LOAD_GLOBAL              0 (QtMsgType)
+            140 LOAD_ATTR               10 (QtWarningMsg)
+            160 COMPARE_OP              40 (==)
+            164 POP_JUMP_IF_FALSE       29 (to 224)
+
+ 93         166 LOAD_FAST                0 (self)
+            168 LOAD_ATTR                6 (logger)
+            188 LOAD_ATTR               13 (NULL|self + warning)
+            208 LOAD_CONST               1 ('[Qt] %s')
+            210 LOAD_FAST                3 (message)
+            212 CALL                     2
+            220 POP_TOP
+            222 RETURN_CONST             0 (None)
+
+ 95     >>  224 LOAD_FAST                0 (self)
+            226 LOAD_ATTR                6 (logger)
+            246 LOAD_ATTR               15 (NULL|self + debug)
+            266 LOAD_CONST               1 ('[Qt] %s')
+            268 LOAD_FAST                3 (message)
+            270 CALL                     2
+            278 POP_TOP
+            280 RETURN_CONST             0 (None)
+
+Disassembly of <code object register_overlay at 0x0000020DB0C21750, file "apps\hud\ui\infra\window_mgr.py", line 97>:
+ 97           0 RESUME                   0
+
+ 99           2 LOAD_FAST                1 (overlay_id)
+              4 LOAD_FAST                0 (self)
+              6 LOAD_ATTR                0 (overlays)
+             26 CONTAINS_OP              1
+             28 POP_JUMP_IF_TRUE        11 (to 52)
+             30 LOAD_ASSERTION_ERROR
+             32 LOAD_CONST               1 ('Overlay ID ')
+             34 LOAD_FAST                1 (overlay_id)
+             36 FORMAT_VALUE             0
+             38 LOAD_CONST               2 (' is already registered')
+             40 BUILD_STRING             3
+             42 CALL                     0
+             50 RAISE_VARARGS            1
+
+100     >>   52 LOAD_FAST                0 (self)
+             54 LOAD_ATTR                2 (logger)
+             74 LOAD_ATTR                5 (NULL|self + debug)
+             94 LOAD_CONST               3 ('Registering overlay %s')
+             96 LOAD_FAST                1 (overlay_id)
+             98 CALL                     2
+            106 POP_TOP
+
+101         108 LOAD_FAST                2 (overlay)
+            110 LOAD_FAST                0 (self)
+            112 LOAD_ATTR                0 (overlays)
+            132 LOAD_FAST                1 (overlay_id)
+            134 STORE_SUBSCR
+
+104         138 LOAD_FAST                0 (self)
+            140 LOAD_ATTR                6 (generic_cmd_signal)
+            160 LOAD_ATTR                9 (NULL|self + connect)
+            180 LOAD_FAST                2 (overlay)
+            182 LOAD_ATTR               10 (_handle_cmd)
+            202 CALL                     1
+            210 POP_TOP
+
+105         212 LOAD_FAST                0 (self)
+            214 LOAD_ATTR               12 (mgmt_request_signal)
+            234 LOAD_ATTR                9 (NULL|self + connect)
+            254 LOAD_FAST                2 (overlay)
+            256 LOAD_ATTR               14 (_handle_request)
+            276 CALL                     1
+            284 POP_TOP
+
+108         286 LOAD_FAST                2 (overlay)
+            288 LOAD_ATTR               16 (response_signal)
+            308 LOAD_ATTR                9 (NULL|self + connect)
+            328 LOAD_FAST                0 (self)
+            330 LOAD_ATTR               18 (mgmt_response_signal)
+            350 LOAD_ATTR               20 (emit)
+            370 CALL                     1
+            378 POP_TOP
+
+111         380 LOAD_FAST                2 (overlay)
+            382 LOAD_ATTR               22 (_hf_subscriptions)
+            402 GET_ITER
+        >>  404 FOR_ITER               119 (to 646)
+            408 STORE_FAST               3 (hf_type)
+
+112         410 LOAD_FAST                3 (hf_type)
+            412 LOAD_FAST                0 (self)
+            414 LOAD_ATTR               24 (_hf_signals)
+            434 CONTAINS_OP              1
+            436 POP_JUMP_IF_FALSE       24 (to 486)
+
+113         438 LOAD_GLOBAL             27 (NULL + _HFTypeSignal)
+            448 LOAD_FAST                0 (self)
+            450 CALL                     1
+            458 LOAD_FAST                0 (self)
+            460 LOAD_ATTR               24 (_hf_signals)
+            480 LOAD_FAST                3 (hf_type)
+            482 STORE_SUBSCR
+
+114     >>  486 LOAD_FAST                0 (self)
+            488 LOAD_ATTR               24 (_hf_signals)
+            508 LOAD_FAST                3 (hf_type)
+            510 BINARY_SUBSCR
+            514 LOAD_ATTR               28 (signal)
+            534 LOAD_ATTR                9 (NULL|self + connect)
+            554 LOAD_FAST                2 (overlay)
+            556 LOAD_ATTR               30 (_handle_high_freq_data)
+            576 CALL                     1
+            584 POP_TOP
+
+115         586 LOAD_FAST                0 (self)
+            588 LOAD_ATTR                2 (logger)
+            608 LOAD_ATTR                5 (NULL|self + debug)
+            628 LOAD_CONST               4 ("Overlay %s subscribed to HF type '%s'")
+            630 LOAD_FAST                1 (overlay_id)
+            632 LOAD_FAST                3 (hf_type)
+            634 CALL                     3
+            642 POP_TOP
+            644 JUMP_BACKWARD          121 (to 404)
+
+111     >>  646 END_FOR
+            648 RETURN_CONST             5 (None)
+
+Disassembly of <code object _handle_request at 0x0000020DB1038440, file "apps\hud\ui\infra\window_mgr.py", line 118>:
+118           0 RESUME                   0
+
+121           2 LOAD_FAST                1 (recipient)
+              4 POP_JUMP_IF_FALSE        1 (to 8)
+
+122           6 RETURN_CONST             1 (None)
+
+121     >>    8 RETURN_CONST             1 (None)
+
+Disassembly of <code object _store_response at 0x0000020DAF2021F0, file "apps\hud\ui\infra\window_mgr.py", line 127>:
+127           0 RESUME                   0
+
+130           2 LOAD_GLOBAL              1 (NULL + QMutexLocker)
+             12 LOAD_FAST                0 (self)
+             14 LOAD_ATTR                2 (_response_mutex)
+             34 CALL                     1
+             42 BEFORE_WITH
+             44 POP_TOP
+
+131          46 LOAD_FAST                2 (response_data)
+             48 LOAD_FAST                0 (self)
+             50 STORE_ATTR               2 (_response_data)
+
+132          60 LOAD_CONST               1 (True)
+             62 LOAD_FAST                0 (self)
+             64 STORE_ATTR               3 (_response_received)
+
+133          74 LOAD_FAST                0 (self)
+             76 LOAD_ATTR                8 (logger)
+             96 LOAD_ATTR               11 (NULL|self + debug)
+            116 LOAD_CONST               2 ('Received response: %s. Reponse=%s')
+            118 LOAD_FAST                1 (request_type)
+            120 LOAD_FAST                2 (response_data)
+            122 CALL                     3
+            130 POP_TOP
+
+134         132 LOAD_FAST                0 (self)
+            134 LOAD_ATTR               12 (_response_condition)
+            154 LOAD_ATTR               15 (NULL|self + wakeAll)
+            174 CALL                     0
+            182 POP_TOP
+
+130         184 LOAD_CONST               3 (None)
+            186 LOAD_CONST               3 (None)
+            188 LOAD_CONST               3 (None)
+            190 CALL                     2
+            198 POP_TOP
+            200 RETURN_CONST             3 (None)
+        >>  202 PUSH_EXC_INFO
+            204 WITH_EXCEPT_START
+            206 POP_JUMP_IF_TRUE         1 (to 210)
+            208 RERAISE                  2
+        >>  210 POP_TOP
+            212 POP_EXCEPT
+            214 POP_TOP
+            216 POP_TOP
+            218 RETURN_CONST             3 (None)
+        >>  220 COPY                     3
+            222 POP_EXCEPT
+            224 RERAISE                  1
+ExceptionTable:
+  44 to 182 -> 202 [1] lasti
+  202 to 210 -> 220 [3] lasti
+
+Disassembly of <code object request at 0x0000020DAEEB0120, file "apps\hud\ui\infra\window_mgr.py", line 136>:
+136           0 RESUME                   0
+
+150           2 LOAD_GLOBAL              1 (NULL + QMutexLocker)
+             12 LOAD_FAST                0 (self)
+             14 LOAD_ATTR                2 (_response_mutex)
+             34 CALL                     1
+             42 BEFORE_WITH
+             44 POP_TOP
+
+152          46 LOAD_CONST               1 (None)
+             48 LOAD_FAST                0 (self)
+             50 STORE_ATTR               2 (_response_data)
+
+153          60 LOAD_CONST               2 (False)
+             62 LOAD_FAST                0 (self)
+             64 STORE_ATTR               3 (_response_received)
+
+156          74 LOAD_FAST                0 (self)
+             76 LOAD_ATTR                8 (mgmt_request_signal)
+             96 LOAD_ATTR               11 (NULL|self + emit)
+            116 LOAD_FAST                1 (recipient)
+            118 LOAD_FAST                2 (request_type)
+            120 LOAD_FAST                3 (request_data)
+            122 CALL                     3
+            130 POP_TOP
+
+159         132 LOAD_FAST                0 (self)
+            134 LOAD_ATTR               12 (_response_condition)
+            154 LOAD_ATTR               15 (NULL|self + wait)
+            174 LOAD_FAST                0 (self)
+            176 LOAD_ATTR                2 (_response_mutex)
+            196 LOAD_FAST                4 (timeout_ms)
+            198 CALL                     2
+            206 POP_JUMP_IF_FALSE       21 (to 250)
+
+160         208 LOAD_FAST                0 (self)
+            210 LOAD_ATTR                4 (_response_data)
+
+150         230 SWAP                     2
+            232 LOAD_CONST               1 (None)
+            234 LOAD_CONST               1 (None)
+            236 LOAD_CONST               1 (None)
+            238 CALL                     2
+            246 POP_TOP
+            248 RETURN_VALUE
+
+161     >>  250 LOAD_FAST                0 (self)
+            252 LOAD_ATTR               16 (logger)
+            272 LOAD_ATTR               19 (NULL|self + warning)
+            292 LOAD_CONST               3 ('Request timeout: %s to %s')
+            294 LOAD_FAST                2 (request_type)
+            296 LOAD_FAST                1 (recipient)
+            298 COPY                     1
+            300 POP_JUMP_IF_TRUE         2 (to 306)
+            302 POP_TOP
+            304 LOAD_CONST               4 ('manager')
+        >>  306 CALL                     3
+            314 POP_TOP
+
+162         316 NOP
+
+150         318 LOAD_CONST               1 (None)
+            320 LOAD_CONST               1 (None)
+            322 LOAD_CONST               1 (None)
+            324 CALL                     2
+            332 POP_TOP
+            334 RETURN_CONST             1 (None)
+        >>  336 PUSH_EXC_INFO
+            338 WITH_EXCEPT_START
+            340 POP_JUMP_IF_TRUE         1 (to 344)
+            342 RERAISE                  2
+        >>  344 POP_TOP
+            346 POP_EXCEPT
+            348 POP_TOP
+            350 POP_TOP
+            352 RETURN_CONST             1 (None)
+        >>  354 COPY                     3
+            356 POP_EXCEPT
+            358 RERAISE                  1
+ExceptionTable:
+  44 to 228 -> 336 [1] lasti
+  250 to 316 -> 336 [1] lasti
+  336 to 344 -> 354 [3] lasti
+
+Disassembly of <code object broadcast_data at 0x0000020DAF2D4B70, file "apps\hud\ui\infra\window_mgr.py", line 165>:
+165           0 RESUME                   0
+
+173           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (generic_cmd_signal)
+             24 LOAD_ATTR                3 (NULL|self + emit)
+             44 LOAD_CONST               1 ('')
+             46 LOAD_FAST                3 (high_prio)
+             48 LOAD_FAST                1 (cmd)
+             50 LOAD_FAST                0 (self)
+             52 LOAD_ATTR                5 (NULL|self + _marshal_data)
+             72 LOAD_FAST                2 (data)
+             74 CALL                     1
+             82 CALL                     4
+             90 POP_TOP
+             92 RETURN_CONST             2 (None)
+
+Disassembly of <code object unicast_data at 0x0000020DAF2C1F10, file "apps\hud\ui\infra\window_mgr.py", line 175>:
+175           0 RESUME                   0
+
+184           2 LOAD_FAST                1 (overlay_id)
+              4 POP_JUMP_IF_TRUE         2 (to 10)
+              6 LOAD_ASSERTION_ERROR
+              8 RAISE_VARARGS            1
+
+185     >>   10 LOAD_FAST                0 (self)
+             12 LOAD_ATTR                0 (generic_cmd_signal)
+             32 LOAD_ATTR                3 (NULL|self + emit)
+             52 LOAD_FAST                1 (overlay_id)
+             54 LOAD_FAST                4 (high_prio)
+             56 LOAD_FAST                2 (event)
+             58 LOAD_FAST                0 (self)
+             60 LOAD_ATTR                5 (NULL|self + _marshal_data)
+             80 LOAD_FAST                3 (data)
+             82 CALL                     1
+             90 CALL                     4
+             98 POP_TOP
+            100 RETURN_CONST             1 (None)
+
+Disassembly of <code object send_high_freq_data at 0x0000020DAF2B9A70, file "apps\hud\ui\infra\window_mgr.py", line 187>:
+187           0 RESUME                   0
+
+193           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_hf_signals)
+             24 LOAD_ATTR                3 (NULL|self + get)
+             44 LOAD_FAST                1 (data)
+             46 LOAD_ATTR                4 (__hf_type__)
+             66 CALL                     1
+             74 STORE_FAST               2 (proxy)
+
+194          76 LOAD_FAST                2 (proxy)
+             78 POP_JUMP_IF_FALSE       28 (to 136)
+
+195          80 LOAD_FAST                2 (proxy)
+             82 LOAD_ATTR                6 (signal)
+            102 LOAD_ATTR                9 (NULL|self + emit)
+            122 LOAD_FAST                1 (data)
+            124 CALL                     1
+            132 POP_TOP
+            134 RETURN_CONST             1 (None)
+
+194     >>  136 RETURN_CONST             1 (None)
+
+Disassembly of <code object _marshal_data at 0x0000020DAF2F1A70, file "apps\hud\ui\infra\window_mgr.py", line 197>:
+197           0 RESUME                   0
+
+201           2 LOAD_CONST               1 ('__timestamp__')
+              4 LOAD_GLOBAL              1 (NULL + perf_counter_ns)
+             14 CALL                     0
+
+200          22 BUILD_MAP                1
+
+203          24 LOAD_FAST                1 (payload)
+
+199          26 LOAD_CONST               2 (('__meta__', '__payload__'))
+             28 BUILD_CONST_KEY_MAP      2
+             30 RETURN_VALUE

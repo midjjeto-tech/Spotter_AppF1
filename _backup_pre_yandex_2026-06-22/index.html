@@ -1,0 +1,1892 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spotter App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   SPOTTER APP — PITWALL TERMINAL v3
+   F1 TV · Engineering Dashboard · Race Control
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  --bg:          #07090D;
+  --bg-sidebar:  #0A0D13;
+  --bg-panel:    #0D1118;
+  --bg-card:     #151B26;
+  --bg-elevated: #1C2333;
+  --bg-input:    #0B0E18;
+
+  --border:      rgba(255,255,255,0.057);
+  --border-m:    rgba(255,255,255,0.1);
+  --border-hi:   rgba(255,255,255,0.17);
+
+  --text:        #E8EDF5;
+  --text-sub:    #77829A;
+  --text-muted:  #3D4A60;
+
+  --accent:      #E4002B;
+  --accent-dim:  rgba(228,0,43,0.07);
+  --accent-mid:  rgba(228,0,43,0.16);
+  --accent-glow: rgba(228,0,43,0.28);
+
+  --green:       #22C55E;
+  --green-dim:   rgba(34,197,94,0.1);
+  --amber:       #F59E0B;
+  --amber-dim:   rgba(245,158,11,0.1);
+  --blue:        #3B82F6;
+  --blue-dim:    rgba(59,130,246,0.1);
+
+  --p-tv:        #B0B8C8;
+  --p-hype:      #FB923C;
+  --p-calm:      #38BDF8;
+  --p-toxic:     #C084FC;
+
+  --sidebar-w:   220px;
+  --header-h:    40px;
+  --footer-h:    24px;
+
+  --r-xs:        3px;
+  --r-sm:        6px;
+  --r:           8px;
+  --r-lg:        12px;
+
+  --font-ui:     'Titillium Web', sans-serif;
+  --font-mono:   'JetBrains Mono', monospace;
+
+  --shadow-card:  0 1px 3px rgba(0,0,0,.5);
+  --shadow-panel: 0 4px 16px rgba(0,0,0,.45);
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; overflow:hidden; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  display: grid;
+  grid-template-rows: var(--header-h) 1fr var(--footer-h);
+  grid-template-columns: var(--sidebar-w) 1fr;
+  grid-template-areas:
+    "header header"
+    "sidebar main"
+    "footer footer";
+}
+
+/* ── HEADER ────────────────────────────────────────────── */
+header {
+  grid-area: header;
+  background: var(--bg-sidebar);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px 0 14px; gap: 12px;
+  -webkit-app-region: drag; user-select: none;
+}
+.brand {
+  display: flex; align-items: center; gap: 8px;
+  -webkit-app-region: no-drag;
+}
+.brand-icon {
+  width: 22px; height: 22px; border-radius: 4px;
+  background: var(--accent); display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; box-shadow: 0 0 10px rgba(228,0,43,.35);
+}
+.brand-icon svg { width: 12px; height: 12px; fill: #fff; }
+.brand-name {
+  font-weight: 700; font-size: 13px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text);
+}
+.brand-name span { color: var(--accent); }
+.brand-ver {
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--text-muted); letter-spacing: 1px;
+  padding: 1px 5px; border: 1px solid var(--border);
+  border-radius: 2px; margin-left: 2px;
+}
+
+.hdr-indicators {
+  display: flex; align-items: center; gap: 14px;
+  -webkit-app-region: no-drag; flex: 1; justify-content: center;
+}
+.hdr-dot-group { display: flex; align-items: center; gap: 5px; }
+.hdr-dot-label {
+  font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-muted);
+}
+.light {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  transition: all .3s; flex-shrink: 0;
+}
+.light.red {
+  background: var(--accent);
+  box-shadow: 0 0 7px var(--accent-glow), 0 0 14px rgba(228,0,43,.12);
+  border-color: rgba(228,0,43,.5);
+  animation: dot-pulse 2s ease-in-out infinite;
+}
+.light.green {
+  background: var(--green);
+  box-shadow: 0 0 7px rgba(34,197,94,.4);
+  border-color: rgba(34,197,94,.3);
+}
+@keyframes dot-pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+.header-right { display: flex; align-items: center; gap: 10px; -webkit-app-region: no-drag; }
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 3px 10px; border-radius: 3px;
+  border: 1px solid var(--border); background: var(--bg-card);
+  font-family: var(--font-mono); font-size: 9px; font-weight: 500;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--text-muted); transition: all .3s;
+}
+.status-pill.connected { border-color: rgba(34,197,94,.3); background: rgba(34,197,94,.06); color: var(--green); }
+.status-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.status-pill:not(.connected) .status-dot { animation: blink 1.4s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.1} }
+
+/* ── SIDEBAR ────────────────────────────────────────────── */
+aside {
+  grid-area: sidebar;
+  background:
+    repeating-linear-gradient(45deg,
+      rgba(255,255,255,.01) 0, rgba(255,255,255,.01) 1px,
+      transparent 1px, transparent 9px),
+    var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+nav { padding: 8px; flex: 1; overflow-y: auto; }
+.nav-section-label {
+  font-size: 8px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--text-muted);
+  padding: 10px 10px 5px; display: block;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 10px; border-radius: var(--r-sm);
+  cursor: pointer; transition: background .12s, color .12s;
+  color: var(--text-sub); font-size: 12px; font-weight: 600;
+  margin-bottom: 1px; user-select: none; position: relative;
+  letter-spacing: .3px;
+}
+.nav-item:hover { background: rgba(255,255,255,.03); color: var(--text); }
+.nav-item.active {
+  background: rgba(228,0,43,.07); color: #fff;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.nav-icon {
+  width: 15px; height: 15px; display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0;
+  color: var(--text-muted); transition: color .12s;
+}
+.nav-icon svg { width: 14px; height: 14px; }
+.nav-item.active .nav-icon { color: var(--accent); }
+
+/* Sidebar sys metrics */
+.sys-bar {
+  border-top: 1px solid var(--border);
+  padding: 8px 12px; display: flex; flex-direction: column; gap: 5px;
+}
+.sys-bar-title {
+  font-size: 8px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px;
+}
+.sys-row { display: flex; align-items: center; justify-content: space-between; }
+.sys-label {
+  font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: 1px; color: var(--text-muted);
+}
+.sys-val {
+  font-family: var(--font-mono); font-size: 10px;
+  font-weight: 500; color: var(--text-sub);
+}
+.sys-val.ready { color: var(--green); font-weight: 700; letter-spacing: .5px; }
+
+/* ── MAIN ───────────────────────────────────────────────── */
+main { grid-area: main; overflow-y: auto; overflow-x: hidden; background: var(--bg); min-height: 0; }
+.page { display: none; padding: 14px; animation: fade-in .18s ease-out; }
+.page.active { display: block; }
+@keyframes fade-in { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+
+/* ── OVERVIEW GRID ──────────────────────────────────────── */
+.overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 290px;
+  grid-template-rows: auto auto 1fr;
+  gap: 10px;
+}
+
+/* Commentator / session card */
+.state-card {
+  grid-column: 1 / 2;
+  background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 13px 15px;
+  transition: background .3s;
+}
+.state-card.is-speaking {
+  background: linear-gradient(135deg, var(--bg-panel) 0%, rgba(228,0,43,.02) 100%);
+}
+.state-card-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+}
+.state-led {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 6px var(--accent-glow);
+  flex-shrink: 0;
+}
+.state-led.ok { background: var(--green); box-shadow: 0 0 6px rgba(34,197,94,.4); }
+.state-led.speaking { animation: pulse-led .75s ease-in-out infinite; }
+@keyframes pulse-led { 0%,100%{opacity:1} 50%{opacity:.18} }
+.state-main { font-size: 13px; font-weight: 700; flex: 1; }
+.state-sub { font-size: 11px; color: var(--text-sub); margin-bottom: 10px; }
+
+.state-metrics {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 1px; background: var(--border); border-radius: var(--r-sm);
+  overflow: hidden; border: 1px solid var(--border); margin-bottom: 10px;
+}
+.metric { background: var(--bg-card); padding: 8px 11px; }
+.metric-label {
+  font-size: 8px; font-weight: 700; letter-spacing: 1.8px;
+  text-transform: uppercase; color: var(--text-muted);
+}
+.metric-value {
+  font-size: 12px; font-weight: 700; margin-top: 3px;
+  font-family: var(--font-mono);
+}
+
+/* Now speaking bar */
+.now-speaking-bar {
+  padding: 8px 12px; border-radius: var(--r-sm);
+  border: 1px solid var(--border); background: var(--bg-card);
+  display: flex; align-items: center; gap: 10px;
+}
+.now-speaking-bar.persona-live {
+  border-left: 3px solid var(--live-pc, var(--accent));
+  padding-left: 9px;
+}
+.now-speaking-bar.persona-live .wave-icon span { background: var(--live-pc, var(--amber)); }
+.wave-icon { display: flex; gap: 3px; align-items: flex-end; height: 14px; flex-shrink: 0; }
+.wave-icon span {
+  display: block; width: 3px; border-radius: 2px; background: var(--amber);
+  height: 4px; opacity: .2; transition: height .12s, opacity .12s;
+}
+.wave-icon.active span { opacity: 1; animation: wave-bounce .9s ease-in-out infinite; }
+.wave-icon.active span:nth-child(2) { animation-delay: .1s; }
+.wave-icon.active span:nth-child(3) { animation-delay: .2s; }
+.wave-icon.active span:nth-child(4) { animation-delay: .3s; }
+.wave-icon.active span:nth-child(5) { animation-delay: .4s; }
+@keyframes wave-bounce { 0%,100%{height:4px} 50%{height:14px} }
+.now-text { font-size: 11px; font-style: italic; color: var(--text-sub); flex: 1; }
+.now-text.speaking { color: var(--text); font-style: normal; }
+
+/* Quick controls */
+.quick-card {
+  grid-column: 1 / 2;
+  background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 12px 15px;
+}
+.quick-title {
+  font-size: 8px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px;
+}
+.quick-title::before, .sec-title::before, .telem-title::before, .events-title::before {
+  content: '';
+  display: inline-block; width: 2px; height: 9px;
+  background: var(--accent); border-radius: 1px;
+  margin-right: 7px; vertical-align: middle; opacity: .7;
+}
+
+.toggle-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 0; border-bottom: 1px solid var(--border);
+}
+.toggle-row:last-of-type { border-bottom: none; }
+.toggle-icon {
+  width: 26px; height: 26px; border-radius: var(--r-sm);
+  background: var(--bg-card); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.toggle-icon svg { width: 12px; height: 12px; color: var(--text-sub); }
+.toggle-text { flex: 1; }
+.toggle-name { font-size: 12px; font-weight: 600; }
+.toggle-desc { font-size: 10px; color: var(--text-sub); margin-top: 1px; }
+
+.toggle { position: relative; width: 34px; height: 18px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; inset: 0; border-radius: 9px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  cursor: pointer; transition: background .18s, border-color .18s;
+}
+.slider::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--text-muted); transition: transform .18s, background .18s;
+}
+.toggle input:checked + .slider { background: var(--accent-mid); border-color: rgba(228,0,43,.3); }
+.toggle input:checked + .slider::after { transform: translateX(16px); background: var(--accent); }
+
+.select-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 0; border-bottom: 1px solid var(--border);
+}
+.select-row:last-child { border-bottom: none; }
+.ui-select {
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text); padding: 4px 8px; border-radius: var(--r-sm);
+  font-family: var(--font-ui); font-size: 11px; outline: none; cursor: pointer;
+  transition: border-color .15s;
+}
+.ui-select:focus { border-color: var(--border-m); }
+
+.quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+
+/* ── BUTTONS ────────────────────────────────────────────── */
+.btn {
+  padding: 7px 12px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text-sub); font-family: var(--font-ui);
+  font-size: 11px; font-weight: 600; cursor: pointer; transition: all .12s;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.btn:hover {
+  border-color: rgba(228,0,43,.3); color: var(--text);
+  background: var(--bg-elevated);
+  box-shadow: 0 0 12px rgba(228,0,43,.08);
+}
+.btn:active { transform: scale(.96); }
+.btn svg { width: 12px; height: 12px; }
+
+.btn-primary {
+  grid-column: 1 / -1;
+  background: var(--accent); border-color: transparent;
+  color: #fff; font-size: 12px; padding: 9px; border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(228,0,43,.22), inset 0 1px 0 rgba(255,255,255,.08);
+}
+.btn-primary:hover {
+  background: #c8001f; border-color: transparent;
+  box-shadow: 0 4px 18px rgba(228,0,43,.32), inset 0 1px 0 rgba(255,255,255,.08);
+}
+.btn-primary.stopping {
+  background: linear-gradient(135deg, #a80020 0%, #6b0015 100%);
+  border-color: rgba(228,0,43,.25);
+  animation: stop-breathe 2.6s ease-in-out infinite;
+}
+@keyframes stop-breathe {
+  0%,100% { box-shadow: 0 0 0 1px rgba(228,0,43,.1), 0 3px 10px rgba(0,0,0,.5); }
+  50%     { box-shadow: 0 0 0 1px rgba(228,0,43,.28), 0 3px 18px rgba(228,0,43,.16); }
+}
+.btn-link {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 10px; padding: 4px 0; cursor: pointer;
+  font-family: var(--font-ui); transition: color .15s;
+}
+.btn-link:hover { color: var(--text-sub); }
+
+/* ── TELEMETRY PANEL ────────────────────────────────────── */
+.telem-panel {
+  grid-column: 2 / 3; grid-row: 1 / 3;
+  background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 13px 15px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.telem-title {
+  font-size: 8px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text-muted);
+}
+.telem-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--border); border-radius: var(--r-sm);
+  overflow: hidden; border: 1px solid var(--border);
+}
+.telem-cell { background: var(--bg-card); padding: 10px 12px; }
+.telem-label {
+  font-size: 8px; font-weight: 700; letter-spacing: 1.8px;
+  text-transform: uppercase; color: var(--text-muted);
+}
+.telem-value {
+  font-size: 22px; font-weight: 700; font-family: var(--font-mono);
+  margin-top: 3px; transition: color .2s;
+}
+.telem-value.big { font-size: 28px; }
+
+/* Speed bar */
+.telem-bar {
+  height: 2px; border-radius: 1px;
+  background: rgba(255,255,255,.06);
+  margin-top: 7px; overflow: hidden;
+}
+.telem-bar-fill {
+  height: 100%; border-radius: 1px;
+  background: linear-gradient(90deg, rgba(228,0,43,.5), var(--accent));
+  transition: width .25s ease-out; width: 0%;
+}
+
+/* Speed/gear thresholds */
+.telem-value.spd-fast { color: var(--amber); }
+.telem-value.spd-max  { color: var(--accent); text-shadow: 0 0 8px rgba(228,0,43,.35); }
+.telem-value.gear-high { color: var(--green); }
+
+.fuel-row {
+  display: flex; align-items: center; gap: 10px;
+  padding-top: 4px;
+}
+.fuel-label {
+  font-size: 8px; font-weight: 700; letter-spacing: 1.8px;
+  text-transform: uppercase; color: var(--text-muted); white-space: nowrap;
+}
+
+/* ── EVENTS SIDEBAR PANEL ───────────────────────────────── */
+.events-panel {
+  grid-column: 2 / 3; grid-row: 3 / 4;
+  background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 12px 15px;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.events-title {
+  font-size: 8px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
+}
+.events-list { flex: 1; overflow-y: auto; }
+
+/* ── EVENT ITEMS ────────────────────────────────────────── */
+.event-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 11px;
+}
+.event-item:last-child { border-bottom: none; }
+.event-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.event-content { flex: 1; line-height: 1.4; }
+.event-driver {
+  font-size: 8px; font-weight: 700; letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--text-sub); margin-bottom: 2px;
+}
+.event-time { font-size: 9px; font-family: var(--font-mono); color: var(--text-muted); margin-top: 2px; }
+
+/* Empty states */
+.empty-events {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; height: 100%; min-height: 80px;
+  gap: 8px; text-align: center; padding: 12px;
+}
+.empty-events svg { width: 28px; height: 28px; opacity: .13; color: var(--text-sub); }
+.empty-events p { font-size: 11px; color: var(--text-muted); line-height: 1.5; max-width: 160px; }
+.empty-events p strong { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; }
+
+.empty-full {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; min-height: 200px;
+  gap: 12px; text-align: center; padding: 24px;
+}
+.empty-full-icon { width: 40px; height: 40px; opacity: .14; color: var(--text-sub); }
+.empty-full-title { font-size: 14px; font-weight: 700; color: var(--text-sub); }
+.empty-full-desc { font-size: 11px; color: var(--text-muted); line-height: 1.6; max-width: 240px; }
+.empty-steps { display: flex; flex-direction: column; gap: 7px; text-align: left; }
+.empty-step { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text-muted); }
+.empty-step-n {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 1px;
+  color: var(--accent); opacity: .6; min-width: 18px;
+}
+
+/* ── RACE PAGE ──────────────────────────────────────────── */
+.race-grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(300px, 1.3fr);
+  gap: 10px; padding: 0 0 16px;
+}
+.race-panel {
+  background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 13px 15px;
+}
+.race-list {
+  display: flex; flex-direction: column; gap: 3px;
+  max-height: calc(100vh - 200px); overflow-y: auto;
+}
+.race-entry {
+  display: grid; grid-template-columns: 28px 1fr 52px;
+  gap: 8px; align-items: center;
+  padding: 8px 10px; border-radius: var(--r-sm);
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-left: 3px solid var(--team-c, transparent);
+  transition: background .12s;
+}
+.race-entry:hover { background: var(--bg-elevated); }
+.race-entry:first-child { background: linear-gradient(90deg, rgba(228,0,43,.05) 0%, var(--bg-card) 40%); }
+.race-entry .position {
+  font-weight: 700; text-align: center; font-family: var(--font-mono);
+  font-size: 12px; color: var(--text-sub);
+}
+.race-entry:first-child .position { color: var(--accent); text-shadow: 0 0 8px rgba(228,0,43,.4); }
+.race-entry:nth-child(2) .position,
+.race-entry:nth-child(3) .position { color: #fff; }
+.race-entry .driver-name { font-size: 12px; font-weight: 600; color: var(--text); }
+.race-entry .driver-team { font-size: 9px; color: var(--text-sub); margin-top: 1px; }
+.race-entry .lap-count { text-align: right; font-family: var(--font-mono); font-size: 10px; color: var(--text-sub); }
+
+.track-card { display: flex; flex-direction: column; gap: 10px; height: 100%; }
+.track-title { font-size: 10px; font-weight: 600; color: var(--text-sub); }
+#race-leader { color: var(--text); font-weight: 700; }
+.track-visual {
+  position: relative;
+  background: radial-gradient(ellipse at 50% 35%, rgba(228,0,43,.035) 0%, transparent 60%), var(--bg-card);
+  border: 1px solid var(--border); border-radius: var(--r-lg);
+  min-height: 260px; overflow: hidden;
+}
+.track-path {
+  position: absolute; inset: 20px;
+  border: 2px solid rgba(255,255,255,.08);
+  border-radius: 42% 52% 40% 54% / 48% 40% 52% 42%;
+  box-shadow: inset 0 0 20px rgba(0,0,0,.3);
+}
+.track-path::before {
+  content: ''; position: absolute; inset: -5px;
+  border: 1px solid rgba(255,255,255,.035); border-radius: inherit;
+}
+.track-dot {
+  position: absolute; width: 11px; height: 11px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.7); background: var(--bg);
+  box-shadow: 0 0 5px rgba(0,0,0,.6); transition: transform .2s;
+}
+.track-dot:hover { transform: scale(1.4) translate(-10%,-10%); z-index: 5; }
+.track-label {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%,-50%);
+  width: 140px; text-align: center;
+  color: var(--text-muted); font-size: 10px; line-height: 1.5;
+}
+
+/* ── SETTINGS ────────────────────────────────────────────── */
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.settings-section {
+  background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 13px 15px;
+}
+.settings-section.full { grid-column: 1 / -1; }
+.sec-title {
+  font-size: 8px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px;
+}
+
+.field-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.field-row:last-child { border-bottom: none; padding-bottom: 0; }
+.field-label { font-size: 12px; font-weight: 600; }
+.field-sub { font-size: 10px; color: var(--text-sub); margin-top: 1px; }
+.field-ctrl { flex-shrink: 0; }
+
+.ui-input {
+  background: var(--bg-input); border: 1px solid var(--border);
+  color: var(--text); padding: 5px 9px; border-radius: var(--r-sm);
+  font-family: var(--font-mono); font-size: 11px; outline: none; width: 110px;
+  transition: border-color .15s;
+}
+.ui-input:focus { border-color: rgba(228,0,43,.4); box-shadow: 0 0 0 2px rgba(228,0,43,.07); }
+
+/* ── VOICE / PERSONA ─────────────────────────────────────── */
+.voice-layout { display: flex; flex-direction: column; gap: 10px; }
+.persona-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+
+.persona-card[data-persona="tv"]    { --pc: var(--p-tv); }
+.persona-card[data-persona="hype"]  { --pc: var(--p-hype); }
+.persona-card[data-persona="calm"]  { --pc: var(--p-calm); }
+.persona-card[data-persona="toxic"] { --pc: var(--p-toxic); }
+
+.persona-card {
+  padding: 12px 14px; border-radius: var(--r);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--pc, var(--border));
+  background: var(--bg-card); cursor: pointer;
+  transition: all .15s;
+}
+.persona-card:hover { background: var(--bg-elevated); }
+.persona-card.selected {
+  background: var(--bg-elevated);
+  border-top-color: rgba(255,255,255,.07);
+  border-right-color: rgba(255,255,255,.05);
+  border-bottom-color: rgba(255,255,255,.05);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.03), 0 4px 14px rgba(0,0,0,.4);
+}
+.persona-card .pname { font-size: 12px; font-weight: 700; margin-bottom: 5px; display: flex; align-items: center; }
+.persona-card.selected .pname { color: var(--pc, var(--text)); }
+.persona-card .pdesc { font-size: 10px; color: var(--text-sub); line-height: 1.45; }
+.picon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; margin-right: 6px;
+  opacity: .75; flex-shrink: 0; vertical-align: middle;
+}
+.picon svg { width: 14px; height: 14px; }
+.persona-card.selected .picon { opacity: 1; color: var(--pc); }
+
+.voice-engine-row {
+  background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 12px 15px;
+  display: flex; align-items: center; gap: 14px;
+}
+.voice-engine-info { flex: 1; }
+.voice-engine-name { font-size: 13px; font-weight: 700; font-family: var(--font-mono); color: var(--text); }
+.voice-engine-sub { font-size: 10px; color: var(--text-sub); margin-top: 2px; }
+
+/* ── VOICE SAMPLES ───────────────────────────────────────── */
+.voice-sample-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 10px 12px;
+}
+.voice-sample-card.vs-ok { border-color: rgba(34,197,94,.35); }
+.voice-sample-card.vs-ok .vs-dot { background: var(--green) !important; }
+.voice-sample-card.vs-ok .vs-status { color: var(--green) !important; }
+
+/* ── EVENTS PAGE ─────────────────────────────────────────── */
+.events-page-scroll { height: calc(100vh - 100px); overflow-y: auto; }
+.event-big {
+  display: grid; grid-template-columns: 68px 2px 1fr;
+  gap: 12px; align-items: start; padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.event-big-time { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); padding-top: 2px; }
+.event-big-bar { border-radius: 2px; align-self: stretch; min-height: 22px; }
+.event-big-text { font-size: 12px; line-height: 1.55; }
+.event-big-driver {
+  font-size: 8px; font-weight: 700; letter-spacing: 1.4px;
+  text-transform: uppercase; color: var(--text-sub); margin-bottom: 3px;
+}
+
+/* ── LOGS ────────────────────────────────────────────────── */
+.logs-toolbar { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+.log-filter {
+  padding: 3px 10px; border-radius: 3px; border: 1px solid var(--border);
+  background: transparent; color: var(--text-sub); font-family: var(--font-mono);
+  font-size: 9px; font-weight: 700; letter-spacing: 1px; cursor: pointer;
+  transition: all .12s; text-transform: uppercase;
+}
+.log-filter.active { background: var(--accent-dim); border-color: rgba(228,0,43,.25); color: var(--text); }
+.log-filter:hover:not(.active) { border-color: var(--border-m); color: var(--text); }
+.logs-toolbar .btn { margin-left: auto; }
+
+.log-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.log-table th {
+  text-align: left; padding: 6px 10px; font-size: 8px; font-weight: 700;
+  letter-spacing: 1.6px; text-transform: uppercase; color: var(--text-muted);
+  border-bottom: 1px solid var(--border); background: var(--bg-panel);
+  position: sticky; top: 0; z-index: 1;
+}
+.log-table td { padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,.02); vertical-align: middle; }
+.log-table tr:hover td { background: rgba(255,255,255,.015); }
+.log-badge {
+  display: inline-flex; padding: 2px 6px; border-radius: 2px;
+  font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+}
+.log-badge.info  { background: var(--blue-dim);   color: var(--blue); }
+.log-badge.warn  { background: var(--amber-dim);  color: var(--amber); }
+.log-badge.error { background: var(--accent-dim); color: var(--accent); }
+.log-badge.ok    { background: var(--green-dim);  color: var(--green); }
+.log-scroll { height: calc(100vh - 160px); overflow-y: auto; border-radius: var(--r); border: 1px solid var(--border); }
+
+/* ── PAGE HEADER ─────────────────────────────────────────── */
+.page-header { margin-bottom: 12px; }
+.page-header h2 { font-size: 15px; font-weight: 700; }
+.page-header p { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+
+/* ── HOTKEYS ─────────────────────────────────────────────── */
+.hotkey-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.hotkey-table th {
+  text-align: left; padding: 7px 12px; font-size: 8px; font-weight: 700;
+  letter-spacing: 1.6px; text-transform: uppercase; color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+.hotkey-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.hotkey-table tr:last-child td { border-bottom: none; }
+kbd {
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 2px 7px; border-radius: 3px;
+  background: var(--bg-elevated); border: 1px solid var(--border-m);
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600; color: var(--text);
+}
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+footer {
+  grid-area: footer;
+  background: var(--bg-sidebar); border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px;
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--text-muted); letter-spacing: .4px;
+}
+footer span { display: flex; align-items: center; gap: 5px; }
+footer b { color: var(--text-sub); font-weight: 500; }
+
+/* ── SCROLLBAR ───────────────────────────────────────────── */
+* { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.08) transparent; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.15); }
+::-webkit-scrollbar-corner { background: transparent; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <span class="brand-name">SPOTTER <span>APP</span></span>
+    <span class="brand-ver">v1.0.0</span>
+  </div>
+  <div class="hdr-indicators" id="lights">
+    <div class="hdr-dot-group">
+      <div class="light" id="l1"></div>
+      <span class="hdr-dot-label">UDP</span>
+    </div>
+    <div class="hdr-dot-group">
+      <div class="light" id="l2"></div>
+      <span class="hdr-dot-label">VOICE</span>
+    </div>
+    <div class="hdr-dot-group">
+      <div class="light" id="l3"></div>
+      <span class="hdr-dot-label">AI</span>
+    </div>
+    <div class="hdr-dot-group">
+      <div class="light" id="l4"></div>
+      <span class="hdr-dot-label">SES</span>
+    </div>
+    <div class="light" id="l5"></div>
+  </div>
+  <div class="header-right">
+    <div class="status-pill" id="status-pill">
+      <div class="status-dot"></div>
+      <span id="status-text">NO SIGNAL</span>
+    </div>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside>
+  <nav>
+    <span class="nav-section-label">NAVIGATION</span>
+    <div class="nav-item active" data-page="overview">
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+      Dashboard
+    </div>
+    <div class="nav-item" data-page="race">
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17h2l1-4h12l1 4h2"/><circle cx="5.5" cy="19.5" r="1.5"/><circle cx="18.5" cy="19.5" r="1.5"/><path d="M7 13V8a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v5"/></svg></div>
+      Race
+    </div>
+    <div class="nav-item" data-page="voice">
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+      Voice
+    </div>
+    <div class="nav-item" data-page="events">
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+      Events
+    </div>
+    <div class="nav-item" data-page="settings">
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>
+      Settings
+    </div>
+    <div class="nav-item" data-page="logs">
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+      Logs
+    </div>
+    <div class="nav-item" data-page="hotkeys">
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg></div>
+      Hotkeys
+    </div>
+    <div class="nav-item" data-page="archive">
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="10" width="5" height="12" rx="1"/><rect x="9.5" y="6" width="5" height="16" rx="1"/><rect x="17" y="13" width="5" height="9" rx="1"/><line x1="1" y1="22" x2="23" y2="22"/></svg></div>
+      Archive
+    </div>
+  </nav>
+
+  <div class="sys-bar">
+    <div class="sys-bar-title">SYSTEM</div>
+    <div class="sys-row">
+      <span class="sys-label">CPU</span>
+      <span class="sys-val" id="f-cpu">—</span>
+    </div>
+    <div class="sys-row">
+      <span class="sys-label">RAM</span>
+      <span class="sys-val" id="f-ram">—</span>
+    </div>
+    <div class="sys-row">
+      <span class="sys-label">GPU</span>
+      <span class="sys-val ready">READY</span>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main>
+
+  <!-- PAGE: OVERVIEW -->
+  <div class="page active" id="page-overview">
+    <div class="overview-grid">
+
+      <!-- Commentator state card -->
+      <div class="state-card">
+        <div class="state-card-header">
+          <div class="state-led" id="state-led"></div>
+          <div class="state-main" id="state-main">Ожидание подключения к игре</div>
+        </div>
+        <div class="state-sub" id="state-sub">Запустите F1 25 и включите UDP-телеметрию (порт 20777)</div>
+        <div class="state-metrics">
+          <div class="metric">
+            <div class="metric-label">Status</div>
+            <div class="metric-value" id="m-status" style="font-size:11px;color:var(--text-sub)">Ожидание</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Signal</div>
+            <div class="metric-value" id="m-signal" style="font-size:11px;color:var(--text-sub)">Нет</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Session</div>
+            <div class="metric-value" id="m-game" style="font-size:11px">F1 25</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Uptime</div>
+            <div class="metric-value" id="m-uptime" style="font-size:11px;color:var(--text-sub)">00:00:00</div>
+          </div>
+        </div>
+        <div class="now-speaking-bar">
+          <div class="wave-icon" id="wave">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="now-text" id="now-text">Жду событий гонки — запустите F1 25.</div>
+        </div>
+      </div>
+
+      <!-- Quick controls -->
+      <div class="quick-card">
+        <div class="quick-title">Controls</div>
+
+        <div class="toggle-row">
+          <div class="toggle-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <div class="toggle-text">
+            <div class="toggle-name">Commentary</div>
+            <div class="toggle-desc">AI-комментарий</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="tog-commentary" checked onchange="saveSetting('commentary_enabled', this.checked)"><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></div>
+          <div class="toggle-text">
+            <div class="toggle-name">Auto-voice</div>
+            <div class="toggle-desc">Автоозвучивание</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="tog-autovoice" checked onchange="saveSetting('autovoice_enabled', this.checked)"><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div class="toggle-text">
+            <div class="toggle-name">Critical</div>
+            <div class="toggle-desc">Штрафы, сходы, финиш</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="tog-critical" checked onchange="saveSetting('critical_events_enabled', this.checked)"><span class="slider"></span></label>
+        </div>
+
+        <div class="select-row">
+          <div class="toggle-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+          <div class="toggle-text">
+            <div class="toggle-name">Position</div>
+            <div class="toggle-desc" id="position-desc">События игрока + борьба рядом + критические</div>
+          </div>
+          <select class="ui-select" id="sel-position" onchange="saveSetting('commentator_position', this.value)">
+            <option value="auto">Auto</option>
+            <option value="player">Player</option>
+            <option value="leader">Leader</option>
+            <option value="all">All</option>
+          </select>
+        </div>
+
+        <div class="quick-actions">
+          <button class="btn" onclick="doConnect()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            Connect
+          </button>
+          <button class="btn" onclick="testVoice()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Test Radio
+          </button>
+          <button class="btn" onclick="clearLogs()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            Clear
+          </button>
+          <button class="btn btn-primary" id="btn-start" onclick="toggleCommentator()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            Start Commentator
+          </button>
+        </div>
+      </div>
+
+      <!-- Telemetry -->
+      <div class="telem-panel">
+        <div class="telem-title">Telemetry</div>
+        <div class="telem-grid">
+          <div class="telem-cell">
+            <div class="telem-label">Lap</div>
+            <div class="telem-value" id="t-lap">—</div>
+          </div>
+          <div class="telem-cell">
+            <div class="telem-label">Position</div>
+            <div class="telem-value" id="t-pos">—</div>
+          </div>
+          <div class="telem-cell">
+            <div class="telem-label">Speed</div>
+            <div class="telem-value" id="t-speed">—</div>
+            <div class="telem-bar"><div class="telem-bar-fill" id="t-speed-bar"></div></div>
+          </div>
+          <div class="telem-cell">
+            <div class="telem-label">Gear</div>
+            <div class="telem-value" id="t-gear">—</div>
+          </div>
+        </div>
+        <div class="fuel-row">
+          <span class="fuel-label">Fuel</span>
+          <div class="telem-value" id="t-fuel" style="font-size:18px">—</div>
+        </div>
+      </div>
+
+      <!-- Events sidebar -->
+      <div class="events-panel">
+        <div class="events-title">Live Events</div>
+        <div class="events-list" id="sidebar-events">
+          <div class="empty-events">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
+            <p><strong>No events</strong>Появятся в реальном времени</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PAGE: RACE -->
+  <div class="page" id="page-race">
+    <div class="page-header">
+      <h2>Race</h2>
+      <p>Live standings &amp; track visualization · <span id="race-last-update" style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted)"></span></p>
+    </div>
+    <div class="race-grid">
+      <div class="race-panel">
+        <div class="sec-title">Live Standings</div>
+        <div class="race-list" id="race-list"></div>
+      </div>
+      <div class="race-panel">
+        <div class="sec-title">Track Map</div>
+        <div class="track-card">
+          <div class="track-title">Leader: <span id="race-leader">—</span></div>
+          <div class="track-visual" id="track-visual"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: SETTINGS -->
+  <div class="page" id="page-settings">
+    <div class="page-header">
+      <h2>Settings</h2>
+      <p>Telemetry, LLM and commentator parameters</p>
+    </div>
+    <div class="settings-grid">
+
+      <div class="settings-section">
+        <div class="sec-title">Telemetry</div>
+        <div class="field-row">
+          <div><div class="field-label">UDP IP</div><div class="field-sub">Receive address</div></div>
+          <div class="field-ctrl"><input class="ui-input" value="127.0.0.1" readonly></div>
+        </div>
+        <div class="field-row">
+          <div><div class="field-label">UDP Port</div><div class="field-sub">F1 25 default</div></div>
+          <div class="field-ctrl"><input class="ui-input" value="20777" readonly></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="sec-title">LLM Engine</div>
+        <div class="field-row">
+          <div><div class="field-label">Model</div><div class="field-sub">Active model</div></div>
+          <div class="field-ctrl"><span id="s-llm" style="font-family:var(--font-mono);font-size:11px;color:var(--text-sub)">—</span></div>
+        </div>
+        <div class="field-row">
+          <div><div class="field-label">API Key</div><div class="field-sub">Anthropic</div></div>
+          <div class="field-ctrl"><input class="ui-input" type="password" placeholder="••••••••" readonly></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="sec-title">Commentator</div>
+        <div class="field-row">
+          <div><div class="field-label">Min Gap</div><div class="field-sub">Pause between phrases (s)</div></div>
+          <div class="field-ctrl"><input class="ui-input" id="s-gap" type="number" min="1" max="30" value="4" onchange="saveSetting('min_comment_gap', parseFloat(this.value))"></div>
+        </div>
+        <div class="field-row">
+          <div><div class="field-label">Event Feed</div><div class="field-sub">Max items in UI</div></div>
+          <div class="field-ctrl"><input class="ui-input" value="30" readonly></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="sec-title">Voice</div>
+        <div class="field-row">
+          <div><div class="field-label">TTS Engine</div><div class="field-sub">Active synthesizer</div></div>
+          <div class="field-ctrl"><span id="s-tts" style="font-family:var(--font-mono);font-size:11px;color:var(--text-sub)">—</span></div>
+        </div>
+        <div class="field-row">
+          <div><div class="field-label">Piper TTS</div><div class="field-sub">models/piper/ · 4 русских голоса (~60 MB каждый)</div></div>
+          <div class="field-ctrl"><input class="ui-input" value="ru_RU-*-medium.onnx" readonly></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PAGE: VOICE -->
+  <div class="page" id="page-voice">
+    <div class="page-header">
+      <h2>Voice &amp; Engineer Profile</h2>
+      <p>Select commentator character and configure voice engine</p>
+    </div>
+    <div class="voice-layout">
+
+      <div class="settings-section">
+        <div class="sec-title">Engineer Profile</div>
+        <div class="persona-grid" id="persona-grid">
+          <div class="persona-card selected" data-persona="tv" onclick="selectPersona(this)">
+            <div class="pname">
+              <span class="picon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="14" height="10" rx="1.5"/><path d="M5 14h6M8 12v2"/></svg></span>TV
+            </div>
+            <div class="pdesc">Энергичный телевизионный комментатор как Дэвид Крофт. Профессионально, но эмоционально.</div>
+          </div>
+          <div class="persona-card" data-persona="hype" onclick="selectPersona(this)">
+            <div class="pname">
+              <span class="picon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="9 1 3 9 8 9 7 15 13 7 8 7"/></svg></span>Hype
+            </div>
+            <div class="pdesc">Комментатор-фанат на стриме. Кричит от восторга, использует сленг и восклицания.</div>
+          </div>
+          <div class="persona-card" data-persona="calm" onclick="selectPersona(this)">
+            <div class="pname">
+              <span class="picon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/><circle cx="8" cy="8" r="2"/><line x1="8" y1="1" x2="8" y2="3.5"/><line x1="8" y1="12.5" x2="8" y2="15"/><line x1="1" y1="8" x2="3.5" y2="8"/><line x1="12.5" y1="8" x2="15" y2="8"/></svg></span>Calm
+            </div>
+            <div class="pdesc">Спокойный аналитик. Объясняет происходящее сдержанно, по делу, без лишних эмоций.</div>
+          </div>
+          <div class="persona-card" data-persona="toxic" onclick="selectPersona(this)">
+            <div class="pname">
+              <span class="picon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10c0-2.209 1.791-4 4-4s4 1.791 4 4v1H4v-1z"/><path d="M4 11v2h8v-2"/><line x1="6.5" y1="11" x2="6.5" y2="13"/><line x1="9.5" y1="11" x2="9.5" y2="13"/><circle cx="6" cy="9" r=".8" fill="currentColor" stroke="none"/><circle cx="10" cy="9" r=".8" fill="currentColor" stroke="none"/></svg></span>Toxic
+            </div>
+            <div class="pdesc">Токсичный напарник. Саркастично комментирует, подшучивает даже над неудачей.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="voice-engine-row">
+        <div class="voice-engine-info">
+          <div class="voice-engine-name" id="voice-engine">Piper (RU)</div>
+          <div class="voice-engine-sub">CPU · ONNX · нативный русский · 22 kHz</div>
+        </div>
+        <span id="voice-status" style="font-family:var(--font-mono);font-size:10px;font-weight:700;padding:3px 9px;border-radius:3px;border:1px solid var(--border);color:var(--text-sub);letter-spacing:1px;text-transform:uppercase">—</span>
+        <button class="btn" onclick="testVoice()" style="padding:8px 16px;border-radius:8px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          TEST RADIO
+        </button>
+      </div>
+
+      <div class="settings-section">
+        <div class="sec-title" style="display:flex;align-items:center;gap:8px;">
+          Russian Voices · Piper
+          <button class="btn" onclick="loadVoiceStatus()" style="padding:2px 8px;font-size:9px;border-radius:4px;letter-spacing:1px">REFRESH</button>
+        </div>
+        <div id="voice-samples-info" style="font-size:10px;color:var(--text-sub);margin-bottom:6px;">
+          Каждая персона озвучивается отдельным русским голосом из <code id="voices-dir-path" style="font-family:var(--font-mono);color:var(--text);">models/piper/</code>
+        </div>
+        <div id="voice-samples-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+          <div class="voice-sample-card" id="vscard-tv" data-persona="tv">
+            <div class="vs-name" style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;margin-bottom:4px;">
+              <span class="vs-dot" style="width:6px;height:6px;border-radius:50%;background:var(--text-muted);display:inline-block;"></span>TV
+            </div>
+            <div class="vs-file" style="font-family:var(--font-mono);font-size:9px;color:var(--text-sub);">—</div>
+            <div class="vs-status" style="font-size:9px;color:var(--text-muted);margin-top:2px;">…</div>
+          </div>
+          <div class="voice-sample-card" id="vscard-hype" data-persona="hype">
+            <div class="vs-name" style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;margin-bottom:4px;">
+              <span class="vs-dot" style="width:6px;height:6px;border-radius:50%;background:var(--text-muted);display:inline-block;"></span>Hype
+            </div>
+            <div class="vs-file" style="font-family:var(--font-mono);font-size:9px;color:var(--text-sub);">—</div>
+            <div class="vs-status" style="font-size:9px;color:var(--text-muted);margin-top:2px;">…</div>
+          </div>
+          <div class="voice-sample-card" id="vscard-calm" data-persona="calm">
+            <div class="vs-name" style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;margin-bottom:4px;">
+              <span class="vs-dot" style="width:6px;height:6px;border-radius:50%;background:var(--text-muted);display:inline-block;"></span>Calm
+            </div>
+            <div class="vs-file" style="font-family:var(--font-mono);font-size:9px;color:var(--text-sub);">—</div>
+            <div class="vs-status" style="font-size:9px;color:var(--text-muted);margin-top:2px;">…</div>
+          </div>
+          <div class="voice-sample-card" id="vscard-toxic" data-persona="toxic">
+            <div class="vs-name" style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;margin-bottom:4px;">
+              <span class="vs-dot" style="width:6px;height:6px;border-radius:50%;background:var(--text-muted);display:inline-block;"></span>Toxic
+            </div>
+            <div class="vs-file" style="font-family:var(--font-mono);font-size:9px;color:var(--text-sub);">—</div>
+            <div class="vs-status" style="font-size:9px;color:var(--text-muted);margin-top:2px;">…</div>
+          </div>
+        </div>
+        <div class="toggle-row" style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:10px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);">
+          <div>
+            <div class="toggle-name">Radio FX</div>
+            <div style="font-size:9px;color:var(--text-sub);margin-top:2px;">Эффект рации: полоса 300–3400 Гц + щелчки сквелча</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="tog-radiofx" checked onchange="saveSetting('radio_fx', this.checked)"><span class="slider"></span></label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PAGE: EVENTS -->
+  <div class="page" id="page-events">
+    <div class="page-header">
+      <h2>Race Radio Feed</h2>
+      <p>Полная лента событий текущей сессии</p>
+    </div>
+    <div class="events-page-scroll">
+      <div id="events-feed">
+        <div class="empty-full">
+          <svg class="empty-full-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <div class="empty-full-title">No Events</div>
+          <div class="empty-full-desc">События появятся автоматически, как только начнётся сессия в F1 25</div>
+          <div class="empty-steps">
+            <div class="empty-step"><span class="empty-step-n">01</span><span>Запустите F1 25</span></div>
+            <div class="empty-step"><span class="empty-step-n">02</span><span>Включите UDP-телеметрию · Порт 20777</span></div>
+            <div class="empty-step"><span class="empty-step-n">03</span><span>Выберите гонку или квалификацию</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: LOGS -->
+  <div class="page" id="page-logs">
+    <div class="logs-toolbar">
+      <button class="log-filter active" onclick="filterLogs('all', this)">ALL</button>
+      <button class="log-filter" onclick="filterLogs('info', this)">INFO</button>
+      <button class="log-filter" onclick="filterLogs('warn', this)">WARN</button>
+      <button class="log-filter" onclick="filterLogs('error', this)">ERR</button>
+      <button class="btn" onclick="clearLogs()" style="margin-left:auto">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        Clear
+      </button>
+    </div>
+    <div class="log-scroll">
+      <table class="log-table" id="log-table">
+        <thead><tr><th>Time</th><th>Type</th><th>Message</th></tr></thead>
+        <tbody id="log-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PAGE: HOTKEYS -->
+  <div class="page" id="page-hotkeys">
+    <div class="page-header">
+      <h2>Hotkeys</h2>
+      <p>Global shortcuts — работают когда F1 25 в фокусе</p>
+    </div>
+    <div class="settings-section">
+      <table class="hotkey-table">
+        <thead><tr><th>Action</th><th>Keys</th></tr></thead>
+        <tbody>
+          <tr><td>Toggle commentary</td><td><kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>C</kbd></td></tr>
+          <tr><td>Test voice</td><td><kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>T</kbd></td></tr>
+          <tr><td>Clear feed</td><td><kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>X</kbd></td></tr>
+          <tr><td>Next persona</td><td><kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>P</kbd></td></tr>
+          <tr><td>Show / hide window</td><td><kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>S</kbd></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PAGE: ARCHIVE -->
+  <div class="page" id="page-archive">
+    <div class="page-header"><h2>Archive</h2></div>
+
+    <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;margin-bottom:10px">
+      <div style="font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px">YOUR RACES</div>
+      <div style="font-size:10px;color:var(--text-sub);margin-bottom:10px">Select a saved session</div>
+      <div id="arc-session-list" style="display:flex;flex-direction:column;gap:3px"></div>
+    </div>
+
+    <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;margin-bottom:10px">
+      <div style="font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px">COMPARE WITH REAL GP</div>
+      <div style="font-size:8px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Year</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px">
+        <button class="arc-ybtn" data-year="2025" onclick="arcSetYear(2025)" style="padding:4px 11px;border-radius:4px;border:1px solid var(--accent);background:var(--accent);color:#fff;font-size:11px;font-family:var(--font-ui);cursor:pointer;font-weight:700">2025</button>
+        <button class="arc-ybtn" data-year="2026" onclick="arcSetYear(2026)" style="padding:4px 11px;border-radius:4px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-sub);font-size:11px;font-family:var(--font-ui);cursor:pointer">2026</button>
+      </div>
+      <div style="font-size:8px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Session Type</div>
+      <select id="arc-stype" style="width:100%;background:var(--bg-input);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:var(--r-sm);font-family:var(--font-ui);font-size:12px;margin-bottom:14px">
+        <option value="R">Race</option>
+        <option value="Q">Qualifying</option>
+      </select>
+      <button class="btn btn-primary" onclick="arcLoad()" style="width:100%;padding:10px;font-size:13px">Compare</button>
+      <div style="margin-top:8px;font-size:10px;color:var(--text-muted)">Data from official F1 stats, cached locally</div>
+      <div id="arc-status" style="margin-top:6px;font-size:11px;color:var(--text-sub)"></div>
+    </div>
+
+    <div id="arc-results" style="display:none">
+      <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;margin-bottom:10px">
+        <div style="font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">REAL GP</div>
+        <div id="arc-event" style="font-size:13px;font-weight:700;margin-bottom:7px"></div>
+        <table style="width:100%;font-size:11px;border-collapse:collapse">
+          <thead><tr style="color:var(--text-sub)">
+            <th style="text-align:left;padding:3px">P</th>
+            <th style="text-align:left;padding:3px">Driver</th>
+            <th style="text-align:left;padding:3px">Team</th>
+            <th style="text-align:right;padding:3px">Gap</th>
+          </tr></thead>
+          <tbody id="arc-f1-rows"></tbody>
+        </table>
+      </div>
+      <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;margin-bottom:10px">
+        <div style="font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">BEST LAP COMPARE</div>
+        <div id="arc-partial" style="display:none;font-size:11px;color:var(--text-sub);padding:5px;background:rgba(255,255,255,.04);border-radius:3px;margin-bottom:7px">
+          Неполные данные — секторное сравнение недоступно
+        </div>
+        <div id="arc-compare"></div>
+      </div>
+      <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px">
+        <div style="font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">COMMENTATOR CONTEXT</div>
+        <div id="arc-qwen" style="font-size:12px;font-style:italic;padding:7px;background:rgba(255,255,255,.04);border-radius:3px"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <span>SPOTTER <b>v1.0.0</b></span>
+  <span>PERSONA: <b id="f-persona">—</b></span>
+  <span>LLM: <b id="f-llm">—</b></span>
+  <span>TTS: <b id="f-tts">—</b></span>
+  <span><b id="f-conn">OFFLINE</b></span>
+</footer>
+
+<script>
+// ── NAVIGATION ─────────────────────────────────────────
+function navigate(page) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page === page));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + page));
+}
+
+document.querySelectorAll('.nav-item[data-page]').forEach(n => {
+  n.addEventListener('click', () => navigate(n.dataset.page));
+});
+
+// ── UPTIME ─────────────────────────────────────────────
+let startTime = Date.now();
+function uptimeStr() {
+  const s = Math.floor((Date.now() - startTime) / 1000);
+  const h = String(Math.floor(s / 3600)).padStart(2,'0');
+  const m = String(Math.floor((s % 3600) / 60)).padStart(2,'0');
+  const ss = String(s % 60).padStart(2,'0');
+  return `${h}:${m}:${ss}`;
+}
+
+// ── LOGS ───────────────────────────────────────────────
+let logs = [];
+let logFilter = 'all';
+
+function addLog(type, msg) {
+  logs.unshift({ time: new Date().toLocaleTimeString('ru-RU'), type, msg });
+  if (logs.length > 200) logs.pop();
+  renderLogs();
+}
+
+function renderLogs() {
+  const body = document.getElementById('log-body');
+  if (!body) return;
+  const filtered = logFilter === 'all' ? logs : logs.filter(l => l.type === logFilter);
+  body.innerHTML = filtered.map(l => `
+    <tr>
+      <td style="font-family:var(--font-mono);color:var(--text-muted)">${l.time}</td>
+      <td><span class="log-badge ${l.type}">${l.type}</span></td>
+      <td>${l.msg}</td>
+    </tr>`).join('');
+}
+
+function filterLogs(f, btn) {
+  logFilter = f;
+  document.querySelectorAll('.log-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLogs();
+}
+
+// ── SETTINGS ───────────────────────────────────────────
+const POSITION_HINTS = {
+  auto: 'События игрока + борьба рядом + критические',
+  player: 'Только события с участием вашего пилота',
+  leader: 'Только события лидера гонки (P1)',
+  all: 'Все релевантные события гонки',
+};
+
+async function saveSetting(key, value) {
+  try {
+    await fetch('/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ [key]: value }),
+    });
+    if (key === 'commentator_position') {
+      const el = document.getElementById('position-desc');
+      if (el) el.textContent = POSITION_HINTS[value] || '';
+    }
+    if (key === 'commentary_enabled') {
+      commentatorRunning = value;
+      updateCommentatorBtn();
+    }
+    addLog('info', `Настройка «${key}» → ${value}`);
+  } catch (e) {
+    addLog('error', `Ошибка сохранения: ${key}`);
+  }
+}
+
+async function testVoice() {
+  try {
+    addLog('info', 'Тест озвучки...');
+    const res = await fetch('/api/test_voice');
+    const data = await res.json();
+    if (data.ok) addLog('ok', 'Тестовая фраза отправлена в TTS');
+    else addLog('error', data.error || 'TTS не ответил');
+  } catch (e) {
+    addLog('error', 'Ошибка теста голоса');
+  }
+}
+
+async function loadVoiceStatus() {
+  try {
+    const res = await fetch('/api/voices');
+    if (!res.ok) return;
+    const data = await res.json();
+    const dirEl = document.getElementById('voices-dir-path');
+    if (dirEl) dirEl.textContent = data.voices_dir || 'models/piper/';
+    const voices = data.voices || {};
+    for (const [persona, info] of Object.entries(voices)) {
+      const card = document.getElementById('vscard-' + persona);
+      if (!card) continue;
+      const dot = card.querySelector('.vs-dot');
+      const fileEl = card.querySelector('.vs-file');
+      const statusEl = card.querySelector('.vs-status');
+      if (fileEl) fileEl.textContent = info.voice || '—';
+      if (info.found) {
+        card.classList.add('vs-ok');
+        if (statusEl) statusEl.textContent = info.size_mb + ' MB · ' + (info.speed || 'normal');
+      } else {
+        card.classList.remove('vs-ok');
+        if (dot) dot.style.background = 'var(--text-muted)';
+        if (statusEl) statusEl.textContent = 'модель не найдена';
+      }
+    }
+  } catch (e) { /* server not ready yet */ }
+}
+
+async function clearLogs() {
+  try {
+    await fetch('/api/clear_logs');
+    logs = [];
+    renderLogs();
+    addLog('info', 'Лента событий очищена');
+  } catch (e) {
+    addLog('error', 'Не удалось очистить ленту');
+  }
+}
+
+function doConnect() {
+  addLog('info', 'UDP-слушатель активен на 127.0.0.1:20777');
+  addLog('info', 'В F1 25: Настройки → Телеметрия → UDP → порт 20777');
+}
+
+let commentatorRunning = true;
+
+function updateCommentatorBtn() {
+  const btn = document.getElementById('btn-start');
+  if (!btn) return;
+  if (commentatorRunning) {
+    btn.classList.add('stopping');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><rect x="5" y="5" width="14" height="14" rx="2"/></svg> Stop Commentator';
+  } else {
+    btn.classList.remove('stopping');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="10 8 16 12 10 16 10 8"/></svg> Start Commentator';
+  }
+}
+
+function toggleCommentator() {
+  commentatorRunning = !commentatorRunning;
+  const tog = document.getElementById('tog-commentary');
+  if (tog) tog.checked = commentatorRunning;
+  saveSetting('commentary_enabled', commentatorRunning);
+  updateCommentatorBtn();
+}
+
+function selectPersona(card) {
+  document.querySelectorAll('.persona-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  const persona = card.dataset.persona;
+  saveSetting('persona', persona);
+}
+
+// ── UI HELPERS ─────────────────────────────────────────
+function renderFeed(feed, containerId, big = false) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  if (!feed || !feed.length) {
+    el.innerHTML = big
+      ? `<div class="empty-full">
+           <svg class="empty-full-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+           <div class="empty-full-title">No Events</div>
+           <div class="empty-full-desc">События появятся автоматически, как только начнётся сессия в F1 25</div>
+           <div class="empty-steps">
+             <div class="empty-step"><span class="empty-step-n">01</span><span>Запустите F1 25</span></div>
+             <div class="empty-step"><span class="empty-step-n">02</span><span>Включите UDP-телеметрию · Порт 20777</span></div>
+             <div class="empty-step"><span class="empty-step-n">03</span><span>Выберите гонку или квалификацию</span></div>
+           </div>
+         </div>`
+      : `<div class="empty-events">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
+           <p><strong>No events</strong>Появятся в реальном времени</p>
+         </div>`;
+    return;
+  }
+  if (big) {
+    el.innerHTML = feed.map(e => `
+      <div class="event-big">
+        <div class="event-big-time">${e.time}</div>
+        <div class="event-big-bar" style="background:${e.color}"></div>
+        <div>
+          ${e.driver ? `<div class="event-big-driver">${e.driver}${e.muted ? ' · без озвучки' : ''}</div>` : ''}
+          <div class="event-big-text">${e.phrase}</div>
+        </div>
+      </div>`).join('');
+  } else {
+    el.innerHTML = feed.slice(0, 8).map(e => `
+      <div class="event-item">
+        <div class="event-dot" style="background:${e.color}"></div>
+        <div class="event-content">
+          ${e.driver ? `<div class="event-driver">${e.driver}</div>` : ''}
+          <div>${e.phrase}</div>
+          <div class="event-time">${e.time}</div>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function renderRaceState(race) {
+  const list = document.getElementById('race-list');
+  const leader = document.getElementById('race-leader');
+  const track = document.getElementById('track-visual');
+  const lastUpdate = document.getElementById('race-last-update');
+
+  if (!list || !leader || !track) return;
+
+  if (lastUpdate) {
+    lastUpdate.textContent = race && race.last_update ? `· данные на ${race.last_update}` : '';
+  }
+
+  if (!race || !race.grid || !race.grid.length) {
+    list.innerHTML = `<div class="empty-full">
+      <svg class="empty-full-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 17h2l1-4h12l1 4h2"/><circle cx="5.5" cy="19.5" r="1.5"/><circle cx="18.5" cy="19.5" r="1.5"/><path d="M7 13V8a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v5"/></svg>
+      <div class="empty-full-title">Race not started</div>
+      <div class="empty-full-desc">Таблица позиций появится автоматически при получении данных телеметрии</div>
+      <div class="empty-steps">
+        <div class="empty-step"><span class="empty-step-n">01</span><span>Запустите F1 25</span></div>
+        <div class="empty-step"><span class="empty-step-n">02</span><span>Настройки → Телеметрия → UDP → порт 20777</span></div>
+        <div class="empty-step"><span class="empty-step-n">03</span><span>Начните гонку или квалификацию</span></div>
+      </div>
+    </div>`;
+    leader.textContent = '—';
+    track.innerHTML = '<div class="track-path"></div><div class="track-label">Awaiting telemetry...</div>';
+    return;
+  }
+
+  leader.textContent = race.leader || '—';
+
+  const rows = race.grid.slice(0, 22).map(entry => `
+    <div class="race-entry" style="--team-c:${entry.color || 'transparent'}">
+      <div class="position">${entry.position}</div>
+      <div>
+        <div class="driver-name">${entry.driver}</div>
+        <div class="driver-team">${entry.team || '—'}</div>
+      </div>
+      <div class="lap-count">L${entry.lap || '—'}</div>
+    </div>`).join('');
+  list.innerHTML = rows;
+
+  const dots = race.grid.slice(0, 10).map((entry, idx) => {
+    const angle = (idx / 10) * 360;
+    const rad = (angle * Math.PI) / 180;
+    const radius = 120;
+    const cx = 50 + Math.cos(rad) * radius;
+    const cy = 50 + Math.sin(rad) * radius;
+    return `
+      <div class="track-dot" style="left: calc(${cx}% - 8px); top: calc(${cy}% - 8px); background:${entry.color};" title="${entry.position}. ${entry.driver}"></div>`;
+  }).join('');
+
+  track.innerHTML = `<div class="track-path"></div><div class="track-label">Top ${Math.min(race.grid.length, 10)} cars</div>${dots}`;
+}
+
+function syncSettings(s) {
+  if (!s) return;
+  const map = {
+    'tog-commentary': s.commentary_enabled,
+    'tog-autovoice': s.autovoice_enabled,
+    'tog-critical': s.critical_events_enabled,
+    'tog-radiofx': s.radio_fx,
+  };
+  for (const [id, val] of Object.entries(map)) {
+    const el = document.getElementById(id);
+    if (el && typeof val === 'boolean') el.checked = val;
+  }
+  const sel = document.getElementById('sel-position');
+  if (sel && s.commentator_position) sel.value = s.commentator_position;
+  const gap = document.getElementById('s-gap');
+  if (gap && s.min_comment_gap) gap.value = s.min_comment_gap;
+  commentatorRunning = s.commentary_enabled !== false;
+  updateCommentatorBtn();
+  document.querySelectorAll('.persona-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.persona === s.persona);
+  });
+}
+
+// ── POLL ───────────────────────────────────────────────
+let lastFeedLen = 0;
+let lightsOn = 0;
+const loggedEvents = new Set();
+
+async function poll() {
+  try {
+    const res = await fetch('/api/state');
+    const s = await res.json();
+    const settings = s.settings || {};
+
+    syncSettings(settings);
+
+    // Header status
+    const pill = document.getElementById('status-pill');
+    const statusText = document.getElementById('status-text');
+    if (s.connected) {
+      pill.classList.add('connected');
+      statusText.textContent = 'SIGNAL OK';
+      if (lightsOn < 5) {
+        lightsOn++;
+        const l = document.getElementById('l' + lightsOn);
+        if (l) l.classList.add('red');
+      }
+    } else {
+      pill.classList.remove('connected');
+      statusText.textContent = 'NO SIGNAL';
+      lightsOn = 0;
+      for (let i = 1; i <= 5; i++) {
+        const l = document.getElementById('l' + i);
+        if (l) l.classList.remove('red', 'green');
+      }
+    }
+
+    // State card
+    const led = document.getElementById('state-led');
+    const stateMain = document.getElementById('state-main');
+    const stateSub = document.getElementById('state-sub');
+    const nowText = document.getElementById('now-text');
+    const wave = document.getElementById('wave');
+
+    const stateCard = document.querySelector('.state-card');
+    const nowBar = document.querySelector('.now-speaking-bar');
+    const PERSONA_COLORS = { tv: 'var(--p-tv)', hype: 'var(--p-hype)', calm: 'var(--p-calm)', toxic: 'var(--p-toxic)' };
+
+    if (s.speaking) {
+      led.className = 'state-led speaking';
+      stateMain.textContent = 'Комментатор говорит';
+      stateSub.textContent = s.now_speaking || '';
+      nowText.textContent = s.now_speaking || '...';
+      nowText.classList.add('speaking');
+      wave.classList.add('active');
+      if (stateCard) stateCard.classList.add('is-speaking');
+      if (nowBar) {
+        const pc = PERSONA_COLORS[settings.persona] || 'var(--accent)';
+        nowBar.classList.add('persona-live');
+        nowBar.style.setProperty('--live-pc', pc);
+      }
+    } else if (s.connected) {
+      led.className = 'state-led ok';
+      stateMain.textContent = commentatorRunning ? 'Комментатор активен' : 'Комментатор на паузе';
+      stateSub.textContent = 'Телеметрия F1 25 подключена';
+      nowText.textContent = 'Жду событий гонки...';
+      nowText.classList.remove('speaking');
+      wave.classList.remove('active');
+      if (stateCard) stateCard.classList.remove('is-speaking');
+      if (nowBar) nowBar.classList.remove('persona-live');
+    } else {
+      led.className = 'state-led';
+      stateMain.textContent = 'Ожидание подключения к игре';
+      stateSub.textContent = 'Запустите F1 25 и включите UDP-телеметрию (порт 20777)';
+      nowText.textContent = 'Жду событий гонки — запустите F1 25.';
+      nowText.classList.remove('speaking');
+      wave.classList.remove('active');
+      if (stateCard) stateCard.classList.remove('is-speaking');
+      if (nowBar) nowBar.classList.remove('persona-live');
+    }
+
+    document.getElementById('m-status').textContent = commentatorRunning ? 'Активен' : 'Пауза';
+    document.getElementById('m-signal').textContent = s.connected ? 'Есть' : 'Нет';
+    document.getElementById('m-signal').style.color = s.connected ? 'var(--green)' : 'var(--text-sub)';
+
+    // Telemetry panel
+    const t = s.telemetry || {};
+    document.getElementById('t-lap').textContent = t.lap || '— / —';
+    document.getElementById('t-pos').textContent = t.position || '— / —';
+    document.getElementById('t-fuel').textContent = t.fuel || '—';
+
+    const speedEl = document.getElementById('t-speed');
+    const speedBar = document.getElementById('t-speed-bar');
+    const speedNum = parseInt(t.speed) || 0;
+    if (speedEl) {
+      speedEl.textContent = t.speed || '—';
+      speedEl.className = 'telem-value' + (speedNum >= 330 ? ' spd-max' : speedNum >= 285 ? ' spd-fast' : '');
+    }
+    if (speedBar) speedBar.style.width = speedNum ? Math.min(100, speedNum / 3.5) + '%' : '0%';
+
+    const gearEl = document.getElementById('t-gear');
+    const gearNum = parseInt(t.gear) || 0;
+    if (gearEl) {
+      gearEl.textContent = t.gear || '—';
+      gearEl.className = 'telem-value' + (gearNum >= 7 ? ' gear-high' : '');
+    }
+
+    const cpuEl = document.getElementById('f-cpu');
+    if (cpuEl && s.cpu) {
+      const cpuNum = parseFloat(s.cpu);
+      cpuEl.style.color = cpuNum >= 90 ? 'var(--accent)' : cpuNum >= 70 ? 'var(--amber)' : '';
+    }
+
+    // Feed
+    renderFeed(s.feed, 'sidebar-events');
+    renderFeed(s.feed, 'events-feed', true);
+    renderRaceState(s.race);
+
+    if (s.feed && s.feed.length > lastFeedLen) {
+      const newest = s.feed[0];
+      const key = `${newest.time}|${newest.phrase}`;
+      if (newest && !loggedEvents.has(key)) {
+        loggedEvents.add(key);
+        addLog('info', `[${newest.event_code}] ${newest.phrase}`);
+      }
+    }
+    lastFeedLen = (s.feed || []).length;
+
+    // Footer
+    document.getElementById('f-llm').textContent = s.llm_engine || '—';
+    document.getElementById('f-tts').textContent = s.tts_engine || '—';
+    document.getElementById('f-persona').textContent = s.persona || '—';
+    document.getElementById('f-conn').textContent = s.connected ? 'ONLINE' : 'OFFLINE';
+    document.getElementById('f-conn').style.color = s.connected ? 'var(--green)' : 'var(--text-sub)';
+    document.getElementById('f-cpu').textContent = s.cpu || '—';
+    document.getElementById('f-ram').textContent = s.ram || '—';
+
+    // Settings page
+    const sLlm = document.getElementById('s-llm');
+    if (sLlm) sLlm.textContent = s.llm_engine || '—';
+    const sTts = document.getElementById('s-tts');
+    if (sTts) sTts.textContent = s.tts_engine || '—';
+    const voiceEngine = document.getElementById('voice-engine');
+    if (voiceEngine) voiceEngine.textContent = s.tts_engine || 'Piper (RU)';
+    const voiceStatus = document.getElementById('voice-status');
+    if (voiceStatus) {
+      voiceStatus.textContent = s.voice_status || '—';
+      voiceStatus.style.color = s.voice_available ? 'var(--green)' : 'var(--amber)';
+      voiceStatus.style.borderColor = s.voice_available ? 'rgba(34,197,94,.3)' : 'rgba(245,158,11,.3)';
+    }
+
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+// ── HOTKEYS ────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (!e.ctrlKey || !e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (k === 'c') { e.preventDefault(); toggleCommentator(); }
+  if (k === 't') { e.preventDefault(); testVoice(); }
+  if (k === 'x') { e.preventDefault(); clearLogs(); }
+  if (k === 'p') {
+    e.preventDefault();
+    const cards = [...document.querySelectorAll('.persona-card')];
+    const idx = cards.findIndex(c => c.classList.contains('selected'));
+    selectPersona(cards[(idx + 1) % cards.length]);
+  }
+});
+
+// ── ARCHIVE ────────────────────────────────────────────
+let _arcSelectedPath = null;
+let _arcSelectedYear = 2025;
+
+function arcSetYear(year) {
+  _arcSelectedYear = year;
+  document.querySelectorAll('.arc-ybtn').forEach(btn => {
+    const on = parseInt(btn.dataset.year) === year;
+    btn.style.background   = on ? 'var(--accent)'    : 'var(--bg-input)';
+    btn.style.borderColor  = on ? 'var(--accent)'    : 'var(--border)';
+    btn.style.color        = on ? '#fff'             : 'var(--text-sub)';
+    btn.style.fontWeight   = on ? '700'              : '400';
+  });
+}
+
+function arcFmtMs(ms) {
+  if (!ms) return '?';
+  const m = Math.floor(ms / 60000);
+  const s = ((ms % 60000) / 1000).toFixed(3).padStart(6, '0');
+  return `${m}:${s}`;
+}
+
+async function arcLoadSessions() {
+  try {
+    const r = await fetch('/api/sessions');
+    const sessions = await r.json();
+    const list = document.getElementById('arc-session-list');
+    if (!sessions.length) {
+      list.innerHTML = '<div style="font-size:11px;color:var(--text-muted);padding:10px 0;text-align:center">No recorded races — play a race in F1 25</div>';
+      return;
+    }
+    list.innerHTML = '';
+    sessions.forEach(s => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:var(--r-sm);cursor:pointer;border:1px solid transparent;transition:background .15s,border-color .15s';
+      const track = document.createElement('span');
+      track.style.cssText = 'font-size:12px;font-weight:600';
+      track.textContent = s.track_name || '—';
+      const badge = document.createElement('span');
+      badge.style.cssText = 'font-size:10px;color:var(--text-muted);margin-left:8px;font-weight:500;white-space:nowrap';
+      badge.textContent = s.game_year ? 'F1 ' + String(s.game_year).slice(-2) : '';
+      const date = document.createElement('span');
+      date.style.cssText = 'font-size:10px;color:var(--text-sub);flex:1;margin-left:12px';
+      date.textContent = s.timestamp || '';
+      const pos = document.createElement('span');
+      pos.style.cssText = 'font-size:11px;font-weight:700;color:var(--accent);min-width:28px;text-align:right';
+      pos.textContent = s.final_position ? 'P' + s.final_position : '';
+      row.appendChild(track);
+      row.appendChild(badge);
+      row.appendChild(date);
+      row.appendChild(pos);
+      row.addEventListener('click', () => {
+        list.querySelectorAll('div').forEach(el => { el.style.background = ''; el.style.borderColor = 'transparent'; });
+        row.style.background = 'rgba(228,0,43,.08)';
+        row.style.borderColor = 'rgba(228,0,43,.25)';
+        _arcSelectedPath = s.path;
+        if (s.game_year) arcSetYear(s.game_year);
+      });
+      list.appendChild(row);
+    });
+  } catch(e) { console.error(e); }
+}
+
+async function arcLoad() {
+  const path = _arcSelectedPath;
+  const year = _arcSelectedYear;
+  const stype = document.getElementById('arc-stype').value;
+  const status = document.getElementById('arc-status');
+  if (!path) { status.textContent = 'Select a race from the list above'; return; }
+  status.textContent = 'Fetching real GP data… (~30s on first request)';
+  try {
+    const r = await fetch('/api/load_f1', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({year: parseInt(year), stype, game_session_path: path})
+    });
+    if (!r.ok && r.status !== 400) {
+      status.textContent = 'Error: HTTP ' + r.status;
+      return;
+    }
+    const data = await r.json();
+    if (data.error) { status.textContent = 'Error: ' + data.error; return; }
+    status.textContent = 'Done ✓';
+    arcRender(data);
+  } catch(e) { status.textContent = 'Error: ' + e.message; }
+}
+
+function arcRender({f1_meta, compare}) {
+  document.getElementById('arc-results').style.display = 'block';
+  document.getElementById('arc-event').textContent = `${f1_meta.event||'?'} ${f1_meta.year||''}`;
+
+  const tbody = document.getElementById('arc-f1-rows');
+  tbody.innerHTML = '';
+  (f1_meta.results_top10||[]).forEach(r => {
+    const tr = document.createElement('tr');
+    const cells = [
+      [String(r.pos), `padding:3px;font-weight:${r.pos===1?700:400}`],
+      [r.driver, 'padding:3px'],
+      [r.team, 'padding:3px;color:var(--text-sub)'],
+      [r.gap_s!=null?'+'+r.gap_s+'s':'—', 'padding:3px;text-align:right'],
+    ];
+    cells.forEach(([text, style]) => {
+      const td = document.createElement('td');
+      td.style.cssText = style;
+      td.textContent = text;
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('arc-partial').style.display = compare.partial ? 'block' : 'none';
+
+  let html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+    <div><div style="font-size:9px;color:var(--text-sub);letter-spacing:1px">YOUR BEST</div>
+      <div style="font-size:20px;font-weight:700;font-family:monospace">${arcFmtMs(compare.player_best_lap_ms)}</div>
+      <div style="font-size:10px;color:var(--text-sub)">lap ${compare.player_best_lap_lap_number||'?'}</div></div>
+    <div><div style="font-size:9px;color:var(--text-sub);letter-spacing:1px">F1 FASTEST</div>
+      <div style="font-size:20px;font-weight:700;font-family:monospace;color:var(--accent)">${arcFmtMs(compare.f1_fastest_ms)}</div>
+      <div style="font-size:10px;color:var(--text-sub)">${compare.f1_best_lap_driver||'?'}</div></div>
+  </div>
+  <div style="font-size:12px;margin-bottom:8px">Gap: <strong>${compare.gap_ms!=null?(compare.gap_ms/1000).toFixed(3)+'s':'—'}</strong></div>`;
+  if (compare.sectors) {
+    ['s1','s2','s3'].forEach(s => {
+      const sec = compare.sectors[s];
+      const hot = sec.gap_ms > 500 ? 'color:var(--accent)' : '';
+      const sign = sec.gap_ms >= 0 ? '+' : '';
+      html += `<div style="display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-top:1px solid rgba(255,255,255,.05)">
+        <span>${s.toUpperCase()}</span>
+        <span style="font-family:monospace">${arcFmtMs(sec.player_ms)}</span>
+        <span style="color:var(--text-sub)">${arcFmtMs(sec.f1_ms)}</span>
+        <span style="${hot}">${sign}${(sec.gap_ms/1000).toFixed(3)}s</span></div>`;
+    });
+  }
+  document.getElementById('arc-compare').innerHTML = html;
+  document.getElementById('arc-qwen').textContent = compare.qwen_context || '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('[data-page="archive"]')
+    ?.addEventListener('click', arcLoadSessions);
+  document.querySelector('[data-page="voice"]')
+    ?.addEventListener('click', loadVoiceStatus);
+});
+
+// load voice file status once server is up (short delay)
+setTimeout(loadVoiceStatus, 2000);
+
+// ── INIT ───────────────────────────────────────────────
+addLog('info', 'System started');
+addLog('info', 'Initializing AI commentator...');
+addLog('info', 'Loading F1 25 configuration');
+addLog('warn', 'Awaiting telemetry connection...');
+addLog('info', 'System ready');
+
+setInterval(poll, 1000);
+setInterval(() => { document.getElementById('m-uptime').textContent = uptimeStr(); }, 1000);
+poll();
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "Mexico City",
+  "length_m": 4304,
+  "corners": [
+    {"id":1,  "fraction":0.029,"type":"medium", "direction":"right"},
+    {"id":2,  "fraction":0.059,"type":"medium", "direction":"left"},
+    {"id":3,  "fraction":0.085,"type":"medium", "direction":"right"},
+    {"id":4,  "fraction":0.130,"type":"slow",   "direction":"left"},
+    {"id":5,  "fraction":0.158,"type":"slow",   "direction":"right"},
+    {"id":6,  "name":"Esses 1",   "fraction":0.208,"type":"fast","direction":"left"},
+    {"id":7,  "name":"Esses 2",   "fraction":0.232,"type":"fast","direction":"right"},
+    {"id":8,  "name":"Esses 3",   "fraction":0.258,"type":"fast","direction":"left"},
+    {"id":11, "fraction":0.432,"type":"medium", "direction":"right"},
+    {"id":12, "fraction":0.465,"type":"medium", "direction":"left"},
+    {"id":14, "fraction":0.570,"type":"slow",   "direction":"left"},
+    {"id":15, "fraction":0.617,"type":"medium", "direction":"right"},
+    {"id":16, "name":"Foro Sol",  "fraction":0.679,"type":"fast","direction":"right"},
+    {"id":17, "name":"Peraltada", "fraction":0.753,"type":"fast","direction":"right"}
+  ]
+}

@@ -1,0 +1,179 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (('dataclass', 'field'))
+              6 IMPORT_NAME              0 (dataclasses)
+              8 IMPORT_FROM              1 (dataclass)
+             10 STORE_NAME               1 (dataclass)
+             12 IMPORT_FROM              2 (field)
+             14 STORE_NAME               2 (field)
+             16 POP_TOP
+
+ 26          18 LOAD_CONST               0 (0)
+             20 LOAD_CONST               2 (('perf_counter_ns',))
+             22 IMPORT_NAME              3 (time)
+             24 IMPORT_FROM              4 (perf_counter_ns)
+             26 STORE_NAME               4 (perf_counter_ns)
+             28 POP_TOP
+
+ 27          30 LOAD_CONST               0 (0)
+             32 LOAD_CONST               3 (('ClassVar',))
+             34 IMPORT_NAME              5 (typing)
+             36 IMPORT_FROM              6 (ClassVar)
+             38 STORE_NAME               6 (ClassVar)
+             40 POP_TOP
+
+ 31          42 PUSH_NULL
+             44 LOAD_NAME                1 (dataclass)
+             46 LOAD_CONST               4 (True)
+             48 LOAD_CONST               4 (True)
+             50 KW_NAMES                 5 (('slots', 'frozen'))
+             52 CALL                     2
+
+ 32          60 PUSH_NULL
+             62 LOAD_BUILD_CLASS
+             64 LOAD_CONST               6 (<code object HighFreqBase at 0x0000020DAF2F85B0, file "apps\hud\ui\infra\hf_types\base.py", line 31>)
+             66 MAKE_FUNCTION            0
+             68 LOAD_CONST               7 ('HighFreqBase')
+             70 CALL                     2
+
+ 31          78 CALL                     0
+
+ 32          86 STORE_NAME               7 (HighFreqBase)
+             88 RETURN_CONST             8 (None)
+
+Disassembly of <code object HighFreqBase at 0x0000020DAF2F85B0, file "apps\hud\ui\infra\hf_types\base.py", line 31>:
+              0 MAKE_CELL                0 (__class__)
+
+ 31           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('HighFreqBase')
+             10 STORE_NAME               2 (__qualname__)
+             12 SETUP_ANNOTATIONS
+
+ 33          14 PUSH_NULL
+             16 LOAD_NAME                3 (field)
+             18 LOAD_NAME                4 (perf_counter_ns)
+             20 LOAD_CONST               1 (False)
+             22 KW_NAMES                 2 (('default_factory', 'init'))
+             24 CALL                     2
+             32 STORE_NAME               5 (__timestamp__)
+             34 LOAD_NAME                6 (int)
+             36 LOAD_NAME                7 (__annotations__)
+             38 LOAD_CONST               3 ('__timestamp__')
+             40 STORE_SUBSCR
+
+ 34          44 PUSH_NULL
+             46 LOAD_NAME                3 (field)
+             48 LOAD_CONST               4 (0)
+             50 LOAD_CONST               1 (False)
+             52 KW_NAMES                 5 (('default', 'init'))
+             54 CALL                     2
+             62 STORE_NAME               8 (__seq__)
+             64 LOAD_NAME                6 (int)
+             66 LOAD_NAME                7 (__annotations__)
+             68 LOAD_CONST               6 ('__seq__')
+             70 STORE_SUBSCR
+
+ 35          74 LOAD_NAME                9 (ClassVar)
+             76 LOAD_NAME               10 (str)
+             78 BINARY_SUBSCR
+             82 LOAD_NAME                7 (__annotations__)
+             84 LOAD_CONST               7 ('__hf_type__')
+             86 STORE_SUBSCR
+
+ 36          90 LOAD_CONST               4 (0)
+             92 STORE_NAME              11 (__seq_counter__)
+             94 LOAD_NAME                9 (ClassVar)
+             96 LOAD_NAME                6 (int)
+             98 BINARY_SUBSCR
+            102 LOAD_NAME                7 (__annotations__)
+            104 LOAD_CONST               8 ('__seq_counter__')
+            106 STORE_SUBSCR
+
+ 38         110 LOAD_CLOSURE             0 (__class__)
+            112 BUILD_TUPLE              1
+            114 LOAD_CONST               9 (<code object __init_subclass__ at 0x0000020DAF19FBD0, file "apps\hud\ui\infra\hf_types\base.py", line 38>)
+            116 MAKE_FUNCTION            8 (closure)
+            118 STORE_NAME              12 (__init_subclass__)
+
+ 43         120 LOAD_CONST              10 (<code object __post_init__ at 0x0000020DAF2B9530, file "apps\hud\ui\infra\hf_types\base.py", line 43>)
+            122 MAKE_FUNCTION            0
+            124 STORE_NAME              13 (__post_init__)
+
+ 48         126 LOAD_NAME               14 (classmethod)
+
+ 49         128 LOAD_CONST              11 ('json_data')
+            130 LOAD_NAME               15 (dict)
+            132 LOAD_CONST              12 ('return')
+            134 LOAD_CONST               0 ('HighFreqBase')
+            136 BUILD_TUPLE              4
+            138 LOAD_CONST              13 (<code object from_json at 0x0000020DB1038D30, file "apps\hud\ui\infra\hf_types\base.py", line 48>)
+            140 MAKE_FUNCTION            4 (annotations)
+
+ 48         142 CALL                     0
+
+ 49         150 STORE_NAME              16 (from_json)
+            152 LOAD_CLOSURE             0 (__class__)
+            154 COPY                     1
+            156 STORE_NAME              17 (__classcell__)
+            158 RETURN_VALUE
+
+Disassembly of <code object __init_subclass__ at 0x0000020DAF19FBD0, file "apps\hud\ui\infra\hf_types\base.py", line 38>:
+              0 COPY_FREE_VARS           1
+
+ 38           2 RESUME                   0
+
+ 39           4 LOAD_GLOBAL              1 (NULL + super)
+             14 LOAD_GLOBAL              2 (HighFreqBase)
+             24 LOAD_FAST                0 (cls)
+             26 LOAD_SUPER_ATTR         10 (__init_subclass__)
+             30 LOAD_CONST               2 (())
+             32 BUILD_MAP                0
+             34 LOAD_FAST                1 (kwargs)
+             36 DICT_MERGE               1
+             38 CALL_FUNCTION_EX         1
+             40 POP_TOP
+
+ 40          42 LOAD_FAST                0 (cls)
+             44 LOAD_ATTR                6 (__name__)
+             64 LOAD_FAST                0 (cls)
+             66 STORE_ATTR               4 (__hf_type__)
+
+ 41          76 LOAD_CONST               1 (0)
+             78 LOAD_FAST                0 (cls)
+             80 STORE_ATTR               5 (__seq_counter__)
+             90 RETURN_CONST             0 (None)
+
+Disassembly of <code object __post_init__ at 0x0000020DAF2B9530, file "apps\hud\ui\infra\hf_types\base.py", line 43>:
+ 43           0 RESUME                   0
+
+ 44           2 LOAD_GLOBAL              1 (NULL + type)
+             12 LOAD_FAST                0 (self)
+             14 CALL                     1
+             22 STORE_FAST               1 (cls)
+
+ 45          24 LOAD_FAST                1 (cls)
+             26 COPY                     1
+             28 LOAD_ATTR                2 (__seq_counter__)
+             48 LOAD_CONST               1 (1)
+             50 BINARY_OP               13 (+=)
+             54 SWAP                     2
+             56 STORE_ATTR               1 (__seq_counter__)
+
+ 46          66 LOAD_GLOBAL              4 (object)
+             76 LOAD_ATTR                7 (NULL|self + __setattr__)
+             96 LOAD_FAST                0 (self)
+             98 LOAD_CONST               2 ('__seq__')
+            100 LOAD_FAST                1 (cls)
+            102 LOAD_ATTR                2 (__seq_counter__)
+            122 CALL                     3
+            130 POP_TOP
+            132 RETURN_CONST             0 (None)
+
+Disassembly of <code object from_json at 0x0000020DB1038D30, file "apps\hud\ui\infra\hf_types\base.py", line 48>:
+ 48           0 RESUME                   0
+
+ 50           2 LOAD_GLOBAL              0 (NotImplementedError)
+             12 RAISE_VARARGS            1

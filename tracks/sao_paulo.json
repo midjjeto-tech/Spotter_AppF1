@@ -1,0 +1,20 @@
+{
+  "name": "São Paulo",
+  "length_m": 4309,
+  "corners": [
+    {"id":1,  "name":"Curva 1",          "fraction":0.043,"type":"slow",   "direction":"right"},
+    {"id":2,  "fraction":0.074,"type":"medium", "direction":"left"},
+    {"id":3,  "fraction":0.107,"type":"medium", "direction":"right"},
+    {"id":4,  "name":"S da Senna 1",     "fraction":0.192,"type":"chicane","direction":"right"},
+    {"id":5,  "name":"S da Senna 2",     "fraction":0.220,"type":"chicane","direction":"left"},
+    {"id":6,  "name":"Descida do Lago",  "fraction":0.272,"type":"medium", "direction":"right"},
+    {"id":7,  "fraction":0.343,"type":"medium", "direction":"left"},
+    {"id":8,  "name":"Ferradura",        "fraction":0.434,"type":"hairpin","direction":"right"},
+    {"id":9,  "fraction":0.475,"type":"medium", "direction":"left"},
+    {"id":10, "fraction":0.532,"type":"medium", "direction":"right"},
+    {"id":11, "name":"Juncao",           "fraction":0.630,"type":"medium", "direction":"right"},
+    {"id":12, "fraction":0.665,"type":"medium", "direction":"left"},
+    {"id":14, "name":"Mergulho",         "fraction":0.797,"type":"fast",   "direction":"left"},
+    {"id":15, "name":"Subida dos Boxes", "fraction":0.863,"type":"slow",   "direction":"right"}
+  ]
+}

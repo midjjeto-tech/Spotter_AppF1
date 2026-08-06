@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "spotter-ui", "runtimeExecutable": "pnpm", "runtimeArgs": ["-C", "NewSpotterUI", "dev"], "port": 3000 }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "Baku",
+  "length_m": 6003,
+  "corners": [
+    {"id":1,  "fraction":0.025,"type":"medium", "direction":"right"},
+    {"id":2,  "fraction":0.054,"type":"medium", "direction":"left"},
+    {"id":3,  "fraction":0.111,"type":"slow",   "direction":"left"},
+    {"id":4,  "fraction":0.138,"type":"slow",   "direction":"right"},
+    {"id":5,  "fraction":0.162,"type":"slow",   "direction":"left"},
+    {"id":6,  "fraction":0.186,"type":"slow",   "direction":"right"},
+    {"id":7,  "fraction":0.208,"type":"slow",   "direction":"left"},
+    {"id":8,  "fraction":0.237,"type":"slow",   "direction":"right"},
+    {"id":10, "fraction":0.364,"type":"medium", "direction":"right"},
+    {"id":11, "fraction":0.397,"type":"medium", "direction":"left"},
+    {"id":15, "name":"Turn 15","fraction":0.565,"type":"hairpin","direction":"right"},
+    {"id":16, "fraction":0.604,"type":"medium", "direction":"left"},
+    {"id":20, "name":"Turn 20","fraction":0.914,"type":"slow",   "direction":"left"}
+  ]
+}

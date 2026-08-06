@@ -1,0 +1,572 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('TYPE_CHECKING', 'Any', 'Dict', 'List', 'Optional'))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (TYPE_CHECKING)
+             30 STORE_NAME               4 (TYPE_CHECKING)
+             32 IMPORT_FROM              5 (Any)
+             34 STORE_NAME               5 (Any)
+             36 IMPORT_FROM              6 (Dict)
+             38 STORE_NAME               6 (Dict)
+             40 IMPORT_FROM              7 (List)
+             42 STORE_NAME               7 (List)
+             44 IMPORT_FROM              8 (Optional)
+             46 STORE_NAME               8 (Optional)
+             48 POP_TOP
+
+ 29          50 LOAD_CONST               0 (0)
+             52 LOAD_CONST               4 (('MfdPageBase',))
+             54 IMPORT_NAME              9 (apps.hud.ui.overlays.mfd.pages.base_page)
+             56 IMPORT_FROM             10 (MfdPageBase)
+             58 STORE_NAME              10 (MfdPageBase)
+             60 POP_TOP
+
+ 30          62 LOAD_CONST               0 (0)
+             64 LOAD_CONST               5 (('MfdPageId',))
+             66 IMPORT_NAME             11 (lib.config)
+             68 IMPORT_FROM             12 (MfdPageId)
+             70 STORE_NAME              12 (MfdPageId)
+             72 POP_TOP
+
+ 32          74 LOAD_NAME                4 (TYPE_CHECKING)
+             76 POP_JUMP_IF_FALSE        6 (to 90)
+
+ 33          78 LOAD_CONST               0 (0)
+             80 LOAD_CONST               6 (('MfdOverlay',))
+             82 IMPORT_NAME             13 (apps.hud.ui.overlays.mfd.mfd)
+             84 IMPORT_FROM             14 (MfdOverlay)
+             86 STORE_NAME              14 (MfdOverlay)
+             88 POP_TOP
+
+ 37     >>   90 PUSH_NULL
+             92 LOAD_BUILD_CLASS
+             94 LOAD_CONST               7 (<code object TyreSetsPage at 0x0000020DAEEAFCC0, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 37>)
+             96 MAKE_FUNCTION            0
+             98 LOAD_CONST               8 ('TyreSetsPage')
+            100 LOAD_NAME               10 (MfdPageBase)
+            102 CALL                     3
+            110 STORE_NAME              15 (TyreSetsPage)
+            112 RETURN_CONST             1 (None)
+
+Disassembly of <code object TyreSetsPage at 0x0000020DAEEAFCC0, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 37>:
+              0 MAKE_CELL                0 (__class__)
+
+ 37           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('TyreSetsPage')
+             10 STORE_NAME               2 (__qualname__)
+             12 SETUP_ANNOTATIONS
+
+ 39          14 LOAD_NAME                3 (MfdPageId)
+             16 LOAD_ATTR                8 (TYRE_SETS)
+             36 STORE_NAME               5 (KEY)
+
+ 40          38 PUSH_NULL
+             40 LOAD_NAME                6 (Path)
+             42 LOAD_NAME                7 (__file__)
+             44 CALL                     1
+             52 LOAD_ATTR               16 (parent)
+             72 LOAD_CONST               1 ('tyre_sets_page.qml')
+             74 BINARY_OP               11 (/)
+             78 STORE_NAME               9 (QML_FILE)
+             80 LOAD_NAME                6 (Path)
+             82 LOAD_NAME               10 (__annotations__)
+             84 LOAD_CONST               2 ('QML_FILE')
+             86 STORE_SUBSCR
+
+ 42          90 BUILD_LIST               0
+             92 LOAD_CONST               3 (('Super Soft', 'Soft', 'Medium', 'Hard', 'Inters', 'Wet'))
+             94 LIST_EXTEND              1
+             96 STORE_NAME              11 (ALL_COMPOUNDS)
+
+ 43          98 BUILD_LIST               0
+            100 LOAD_CONST               4 (('Super Soft', 'Soft', 'Medium', 'Hard'))
+            102 LIST_EXTEND              1
+            104 STORE_NAME              12 (SLICK_COMPOUNDS)
+
+ 45         106 LOAD_CONST               5 ('overlay')
+            108 LOAD_CONST               6 ('MfdOverlay')
+            110 LOAD_CONST               7 ('logger')
+            112 LOAD_NAME               13 (logging)
+            114 LOAD_ATTR               28 (Logger)
+            134 BUILD_TUPLE              4
+            136 LOAD_CLOSURE             0 (__class__)
+            138 BUILD_TUPLE              1
+            140 LOAD_CONST               8 (<code object __init__ at 0x0000020DAF2DF440, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 45>)
+            142 MAKE_FUNCTION           12 (annotations, closure)
+            144 STORE_NAME              15 (__init__)
+
+ 49         146 LOAD_CONST               9 (<code object _init_event_handlers at 0x0000020DAF19FBD0, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 49>)
+            148 MAKE_FUNCTION            0
+            150 STORE_NAME              16 (_init_event_handlers)
+
+ 68         152 LOAD_CONST              10 ('tyre_set_data')
+            154 LOAD_NAME               17 (List)
+            156 LOAD_NAME               18 (Dict)
+            158 LOAD_NAME               19 (str)
+            160 LOAD_NAME               20 (Any)
+            162 BUILD_TUPLE              2
+            164 BINARY_SUBSCR
+            168 BINARY_SUBSCR
+            172 LOAD_CONST              11 ('return')
+            174 LOAD_NAME               17 (List)
+            176 LOAD_NAME               18 (Dict)
+            178 LOAD_NAME               19 (str)
+            180 LOAD_NAME               20 (Any)
+            182 BUILD_TUPLE              2
+            184 BINARY_SUBSCR
+            188 BINARY_SUBSCR
+            192 BUILD_TUPLE              4
+            194 LOAD_CONST              12 (<code object _prepare_best_sets at 0x0000020DAF09BAB0, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 68>)
+            196 MAKE_FUNCTION            4 (annotations)
+            198 STORE_NAME              21 (_prepare_best_sets)
+
+ 92         200 LOAD_CONST              10 ('tyre_set_data')
+            202 LOAD_NAME               17 (List)
+            204 LOAD_NAME               18 (Dict)
+            206 LOAD_NAME               19 (str)
+            208 LOAD_NAME               20 (Any)
+            210 BUILD_TUPLE              2
+            212 BINARY_SUBSCR
+            216 BINARY_SUBSCR
+            220 LOAD_CONST              11 ('return')
+            222 LOAD_NAME               17 (List)
+            224 LOAD_NAME               18 (Dict)
+            226 LOAD_NAME               19 (str)
+            228 LOAD_NAME               20 (Any)
+            230 BUILD_TUPLE              2
+            232 BINARY_SUBSCR
+            236 BINARY_SUBSCR
+            240 BUILD_TUPLE              4
+            242 LOAD_CONST              13 (<code object _prepare_compound_mappings at 0x0000020DAF2AD930, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 92>)
+            244 MAKE_FUNCTION            4 (annotations)
+            246 STORE_NAME              22 (_prepare_compound_mappings)
+
+113         248 LOAD_CONST              14 ('tyre_sets_data')
+
+114         250 LOAD_NAME               17 (List)
+            252 LOAD_NAME               18 (Dict)
+            254 LOAD_NAME               19 (str)
+            256 LOAD_NAME               20 (Any)
+            258 BUILD_TUPLE              2
+            260 BINARY_SUBSCR
+            264 BINARY_SUBSCR
+
+113         268 LOAD_CONST              15 ('compound')
+
+115         270 LOAD_NAME               19 (str)
+
+113         272 LOAD_CONST              11 ('return')
+
+116         274 LOAD_NAME               23 (Optional)
+            276 LOAD_NAME               18 (Dict)
+            278 LOAD_NAME               19 (str)
+            280 LOAD_NAME               20 (Any)
+            282 BUILD_TUPLE              2
+            284 BINARY_SUBSCR
+            288 BINARY_SUBSCR
+
+113         292 BUILD_TUPLE              6
+            294 LOAD_CONST              16 (<code object _find_best_avlb_set_of_comp at 0x0000020DAF2F8870, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 113>)
+            296 MAKE_FUNCTION            4 (annotations)
+            298 STORE_NAME              24 (_find_best_avlb_set_of_comp)
+
+134         300 LOAD_CONST              14 ('tyre_sets_data')
+
+135         302 LOAD_NAME               17 (List)
+            304 LOAD_NAME               18 (Dict)
+            306 LOAD_NAME               19 (str)
+            308 LOAD_NAME               20 (Any)
+            310 BUILD_TUPLE              2
+            312 BINARY_SUBSCR
+            316 BINARY_SUBSCR
+
+134         320 LOAD_CONST              17 ('visual_comp')
+
+136         322 LOAD_NAME               19 (str)
+
+134         324 LOAD_CONST              11 ('return')
+
+136         326 LOAD_NAME               23 (Optional)
+            328 LOAD_NAME               19 (str)
+            330 BINARY_SUBSCR
+
+134         334 BUILD_TUPLE              6
+            336 LOAD_CONST              18 (<code object _get_actual_comp_for_visual_comp at 0x0000020DAF2D4030, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 134>)
+            338 MAKE_FUNCTION            4 (annotations)
+            340 STORE_NAME              25 (_get_actual_comp_for_visual_comp)
+
+152         342 LOAD_CONST              19 (<code object _show_no_data at 0x0000020DAF2DF770, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 152>)
+            344 MAKE_FUNCTION            0
+            346 STORE_NAME              26 (_show_no_data)
+            348 LOAD_CLOSURE             0 (__class__)
+            350 COPY                     1
+            352 STORE_NAME              27 (__classcell__)
+            354 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF2DF440, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 45>:
+              0 COPY_FREE_VARS           1
+
+ 45           2 RESUME                   0
+
+ 46           4 LOAD_GLOBAL              0 (super)
+             14 LOAD_DEREF               3 (__class__)
+             16 LOAD_FAST                0 (self)
+             18 LOAD_SUPER_ATTR          5 (NULL|self + __init__)
+             22 LOAD_FAST                1 (overlay)
+             24 LOAD_FAST                2 (logger)
+             26 CALL                     2
+             34 POP_TOP
+
+ 47          36 LOAD_FAST                0 (self)
+             38 LOAD_ATTR                5 (NULL|self + _init_event_handlers)
+             58 CALL                     0
+             66 POP_TOP
+             68 RETURN_CONST             0 (None)
+
+Disassembly of <code object _init_event_handlers at 0x0000020DAF19FBD0, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 49>:
+              0 MAKE_CELL                0 (self)
+
+ 49           2 RESUME                   0
+
+ 50           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('stream_overlay_update')
+             28 CALL                     1
+
+ 51          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (Dict)
+             48 LOAD_GLOBAL              4 (str)
+             58 LOAD_GLOBAL              6 (Any)
+             68 BUILD_TUPLE              2
+             70 BINARY_SUBSCR
+             74 BUILD_TUPLE              2
+             76 LOAD_CLOSURE             0 (self)
+             78 BUILD_TUPLE              1
+             80 LOAD_CONST               3 (<code object _handle_stream_overlay_update at 0x0000020DAF220DC0, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 50>)
+             82 MAKE_FUNCTION           12 (annotations, closure)
+
+ 50          84 CALL                     0
+
+ 51          92 STORE_FAST               1 (_handle_stream_overlay_update)
+             94 RETURN_CONST             0 (None)
+
+Disassembly of <code object _handle_stream_overlay_update at 0x0000020DAF220DC0, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 50>:
+              0 COPY_FREE_VARS           1
+
+ 50           2 RESUME                   0
+
+ 52           4 LOAD_FAST                0 (data)
+              6 LOAD_ATTR                1 (NULL|self + get)
+             26 LOAD_CONST               1 ('tyre-sets')
+             28 CALL                     1
+             36 STORE_FAST               1 (tyre_sets_info)
+
+ 53          38 LOAD_FAST                1 (tyre_sets_info)
+             40 POP_JUMP_IF_TRUE        17 (to 76)
+
+ 54          42 LOAD_DEREF               5 (self)
+             44 LOAD_ATTR                3 (NULL|self + _show_no_data)
+             64 CALL                     0
+             72 POP_TOP
+
+ 55          74 RETURN_CONST             0 (None)
+
+ 57     >>   76 LOAD_FAST                1 (tyre_sets_info)
+             78 LOAD_ATTR                1 (NULL|self + get)
+             98 LOAD_CONST               2 ('tyre-set-data')
+            100 BUILD_LIST               0
+            102 CALL                     2
+            110 STORE_FAST               2 (tyre_set_data)
+
+ 58         112 LOAD_FAST                2 (tyre_set_data)
+            114 POP_JUMP_IF_TRUE        17 (to 150)
+
+ 59         116 LOAD_DEREF               5 (self)
+            118 LOAD_ATTR                3 (NULL|self + _show_no_data)
+            138 CALL                     0
+            146 POP_TOP
+
+ 60         148 RETURN_CONST             0 (None)
+
+ 62     >>  150 LOAD_DEREF               5 (self)
+            152 LOAD_ATTR                5 (NULL|self + _prepare_best_sets)
+            172 LOAD_FAST                2 (tyre_set_data)
+            174 CALL                     1
+            182 STORE_FAST               3 (best_sets)
+
+ 63         184 LOAD_DEREF               5 (self)
+            186 LOAD_ATTR                7 (NULL|self + _prepare_compound_mappings)
+            206 LOAD_FAST                2 (tyre_set_data)
+            208 CALL                     1
+            216 STORE_FAST               4 (compound_mappings)
+
+ 65         218 LOAD_DEREF               5 (self)
+            220 LOAD_ATTR                9 (NULL|self + set_page_property)
+            240 LOAD_CONST               3 ('bestSets')
+            242 LOAD_FAST                3 (best_sets)
+            244 CALL                     2
+            252 POP_TOP
+
+ 66         254 LOAD_DEREF               5 (self)
+            256 LOAD_ATTR                9 (NULL|self + set_page_property)
+            276 LOAD_CONST               4 ('compoundMappings')
+            278 LOAD_FAST                4 (compound_mappings)
+            280 CALL                     2
+            288 POP_TOP
+            290 RETURN_CONST             0 (None)
+
+Disassembly of <code object _prepare_best_sets at 0x0000020DAF09BAB0, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 68>:
+ 68           0 RESUME                   0
+
+ 77           2 BUILD_LIST               0
+              4 STORE_FAST               2 (best_sets)
+
+ 80           6 LOAD_FAST                0 (self)
+              8 LOAD_ATTR                0 (ALL_COMPOUNDS)
+             28 GET_ITER
+        >>   30 FOR_ITER                72 (to 178)
+             34 STORE_FAST               3 (compound)
+
+ 81          36 LOAD_FAST                0 (self)
+             38 LOAD_ATTR                3 (NULL|self + _find_best_avlb_set_of_comp)
+             58 LOAD_FAST                1 (tyre_set_data)
+             60 LOAD_FAST                3 (compound)
+             62 CALL                     2
+             70 STORE_FAST               4 (best_set)
+
+ 82          72 LOAD_FAST                4 (best_set)
+             74 POP_JUMP_IF_TRUE         1 (to 78)
+             76 JUMP_BACKWARD           24 (to 30)
+
+ 83     >>   78 LOAD_FAST                4 (best_set)
+             80 LOAD_ATTR                5 (NULL|self + get)
+            100 LOAD_CONST               1 ('lap-delta-time')
+            102 CALL                     1
+            110 STORE_FAST               5 (delta_ms)
+
+ 84         112 LOAD_FAST                2 (best_sets)
+            114 LOAD_ATTR                7 (NULL|self + append)
+
+ 85         134 LOAD_FAST                3 (compound)
+
+ 86         136 LOAD_FAST                5 (delta_ms)
+            138 POP_JUMP_IF_NONE         2 (to 144)
+            140 LOAD_FAST                5 (delta_ms)
+            142 JUMP_FORWARD             1 (to 146)
+        >>  144 LOAD_CONST               2 (None)
+
+ 87     >>  146 LOAD_FAST                5 (delta_ms)
+            148 POP_JUMP_IF_NONE         5 (to 160)
+            150 LOAD_FAST                5 (delta_ms)
+            152 LOAD_CONST               3 (1000.0)
+            154 BINARY_OP               11 (/)
+            158 JUMP_FORWARD             1 (to 162)
+        >>  160 LOAD_CONST               2 (None)
+
+ 84     >>  162 LOAD_CONST               4 (('compound', 'deltaMs', 'deltaS'))
+            164 BUILD_CONST_KEY_MAP      3
+            166 CALL                     1
+            174 POP_TOP
+            176 JUMP_BACKWARD           74 (to 30)
+
+ 80     >>  178 END_FOR
+
+ 90         180 LOAD_FAST                2 (best_sets)
+            182 RETURN_VALUE
+
+Disassembly of <code object _prepare_compound_mappings at 0x0000020DAF2AD930, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 92>:
+ 92           0 RESUME                   0
+
+101           2 BUILD_LIST               0
+              4 STORE_FAST               2 (mappings)
+
+103           6 LOAD_FAST                0 (self)
+              8 LOAD_ATTR                0 (SLICK_COMPOUNDS)
+             28 GET_ITER
+        >>   30 FOR_ITER                43 (to 120)
+             34 STORE_FAST               3 (visual_compound)
+
+104          36 LOAD_FAST                0 (self)
+             38 LOAD_ATTR                3 (NULL|self + _get_actual_comp_for_visual_comp)
+             58 LOAD_FAST                1 (tyre_set_data)
+             60 LOAD_FAST                3 (visual_compound)
+             62 CALL                     2
+             70 STORE_FAST               4 (actual_compound)
+
+105          72 LOAD_FAST                4 (actual_compound)
+             74 POP_JUMP_IF_TRUE         1 (to 78)
+             76 JUMP_BACKWARD           24 (to 30)
+
+106     >>   78 LOAD_FAST                2 (mappings)
+             80 LOAD_ATTR                5 (NULL|self + append)
+
+107         100 LOAD_FAST                3 (visual_compound)
+
+108         102 LOAD_FAST                4 (actual_compound)
+
+106         104 LOAD_CONST               1 (('visualCompound', 'actualCompound'))
+            106 BUILD_CONST_KEY_MAP      2
+            108 CALL                     1
+            116 POP_TOP
+            118 JUMP_BACKWARD           45 (to 30)
+
+103     >>  120 END_FOR
+
+111         122 LOAD_FAST                2 (mappings)
+            124 RETURN_VALUE
+
+Disassembly of <code object _find_best_avlb_set_of_comp at 0x0000020DAF2F8870, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 113>:
+113           0 RESUME                   0
+
+127           2 LOAD_FAST                1 (tyre_sets_data)
+              4 GET_ITER
+
+126           6 LOAD_FAST_AND_CLEAR      3 (tyre_set)
+              8 SWAP                     2
+             10 BUILD_LIST               0
+             12 SWAP                     2
+
+127     >>   14 FOR_ITER                42 (to 102)
+             18 STORE_FAST               3 (tyre_set)
+
+128          20 LOAD_FAST                3 (tyre_set)
+             22 LOAD_ATTR                1 (NULL|self + get)
+             42 LOAD_CONST               1 ('visual-tyre-compound')
+             44 CALL                     1
+             52 LOAD_FAST                2 (compound)
+             54 COMPARE_OP              40 (==)
+             58 POP_JUMP_IF_FALSE       20 (to 100)
+
+129          60 LOAD_FAST                3 (tyre_set)
+             62 LOAD_ATTR                1 (NULL|self + get)
+             82 LOAD_CONST               2 ('available')
+             84 LOAD_CONST               3 (False)
+             86 CALL                     2
+             94 POP_JUMP_IF_FALSE        2 (to 100)
+
+127          96 LOAD_FAST                3 (tyre_set)
+             98 LIST_APPEND              2
+        >>  100 JUMP_BACKWARD           44 (to 14)
+        >>  102 END_FOR
+
+126         104 STORE_FAST               4 (available_sets)
+            106 STORE_FAST               3 (tyre_set)
+
+132         108 LOAD_GLOBAL              3 (NULL + min)
+            118 LOAD_FAST                4 (available_sets)
+            120 LOAD_CONST               4 (<code object <lambda> at 0x0000020DAED7A5B0, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 132>)
+            122 MAKE_FUNCTION            0
+            124 LOAD_CONST               5 (None)
+            126 KW_NAMES                 6 (('key', 'default'))
+            128 CALL                     3
+            136 RETURN_VALUE
+        >>  138 SWAP                     2
+            140 POP_TOP
+
+126         142 SWAP                     2
+            144 STORE_FAST               3 (tyre_set)
+            146 RERAISE                  0
+ExceptionTable:
+  10 to 102 -> 138 [2]
+
+Disassembly of <code object <lambda> at 0x0000020DAED7A5B0, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 132>:
+132           0 RESUME                   0
+              2 LOAD_FAST                0 (s)
+              4 LOAD_ATTR                1 (NULL|self + get)
+             24 LOAD_CONST               1 ('wear')
+             26 LOAD_CONST               2 (100)
+             28 CALL                     2
+             36 RETURN_VALUE
+
+Disassembly of <code object _get_actual_comp_for_visual_comp at 0x0000020DAF2D4030, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 134>:
+              0 MAKE_CELL                2 (visual_comp)
+
+134           2 RESUME                   0
+
+146           4 LOAD_GLOBAL              1 (NULL + next)
+
+147          14 LOAD_CLOSURE             2 (visual_comp)
+             16 BUILD_TUPLE              1
+             18 LOAD_CONST               1 (<code object <genexpr> at 0x0000020DAF2DF330, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 147>)
+             20 MAKE_FUNCTION            8 (closure)
+             22 LOAD_FAST                1 (tyre_sets_data)
+             24 GET_ITER
+             26 CALL                     0
+
+148          34 LOAD_CONST               2 (None)
+
+146          36 CALL                     2
+             44 STORE_FAST               3 (tyre_set)
+
+150          46 LOAD_FAST                3 (tyre_set)
+             48 POP_JUMP_IF_FALSE       17 (to 84)
+             50 LOAD_FAST                3 (tyre_set)
+             52 LOAD_ATTR                3 (NULL|self + get)
+             72 LOAD_CONST               3 ('actual-tyre-compound')
+             74 CALL                     1
+             82 RETURN_VALUE
+        >>   84 LOAD_CONST               2 (None)
+             86 RETURN_VALUE
+
+Disassembly of <code object <genexpr> at 0x0000020DAF2DF330, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 147>:
+              0 COPY_FREE_VARS           1
+
+147           2 RETURN_GENERATOR
+              4 POP_TOP
+              6 RESUME                   0
+              8 LOAD_FAST                0 (.0)
+        >>   10 FOR_ITER                27 (to 68)
+             14 STORE_FAST               1 (ts)
+             16 LOAD_FAST                1 (ts)
+             18 LOAD_ATTR                1 (NULL|self + get)
+             38 LOAD_CONST               0 ('visual-tyre-compound')
+             40 CALL                     1
+             48 LOAD_DEREF               2 (visual_comp)
+             50 COMPARE_OP              40 (==)
+             54 POP_JUMP_IF_TRUE         1 (to 58)
+             56 JUMP_BACKWARD           24 (to 10)
+        >>   58 LOAD_FAST                1 (ts)
+             60 YIELD_VALUE              1
+             62 RESUME                   1
+             64 POP_TOP
+             66 JUMP_BACKWARD           29 (to 10)
+        >>   68 END_FOR
+             70 RETURN_CONST             1 (None)
+        >>   72 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+             74 RERAISE                  1
+ExceptionTable:
+  6 to 54 -> 72 [0] lasti
+  58 to 70 -> 72 [0] lasti
+
+Disassembly of <code object _show_no_data at 0x0000020DAF2DF770, file "apps\hud\ui\overlays\mfd\pages\tyre_sets\tyre_sets_page.py", line 152>:
+152           0 RESUME                   0
+
+154           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_page_property)
+             24 LOAD_CONST               1 ('bestSets')
+             26 BUILD_LIST               0
+             28 CALL                     2
+             36 POP_TOP
+
+155          38 LOAD_FAST                0 (self)
+             40 LOAD_ATTR                1 (NULL|self + set_page_property)
+             60 LOAD_CONST               2 ('compoundMappings')
+             62 BUILD_LIST               0
+             64 CALL                     2
+             72 POP_TOP
+             74 RETURN_CONST             3 (None)

@@ -1,0 +1,1291 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('TYPE_CHECKING', 'Any', 'Dict', 'List', 'Optional'))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (TYPE_CHECKING)
+             30 STORE_NAME               4 (TYPE_CHECKING)
+             32 IMPORT_FROM              5 (Any)
+             34 STORE_NAME               5 (Any)
+             36 IMPORT_FROM              6 (Dict)
+             38 STORE_NAME               6 (Dict)
+             40 IMPORT_FROM              7 (List)
+             42 STORE_NAME               7 (List)
+             44 IMPORT_FROM              8 (Optional)
+             46 STORE_NAME               8 (Optional)
+             48 POP_TOP
+
+ 29          50 LOAD_CONST               0 (0)
+             52 LOAD_CONST               4 (('get_ref_row', 'get_relevant_race_table_rows', 'is_race_type_session', 'is_tt_session'))
+             54 IMPORT_NAME              9 (apps.hud.common)
+             56 IMPORT_FROM             10 (get_ref_row)
+             58 STORE_NAME              10 (get_ref_row)
+             60 IMPORT_FROM             11 (get_relevant_race_table_rows)
+             62 STORE_NAME              11 (get_relevant_race_table_rows)
+             64 IMPORT_FROM             12 (is_race_type_session)
+             66 STORE_NAME              12 (is_race_type_session)
+             68 IMPORT_FROM             13 (is_tt_session)
+             70 STORE_NAME              13 (is_tt_session)
+             72 POP_TOP
+
+ 30          74 LOAD_CONST               0 (0)
+             76 LOAD_CONST               5 (('MfdPageBase',))
+             78 IMPORT_NAME             14 (apps.hud.ui.overlays.mfd.pages.base_page)
+             80 IMPORT_FROM             15 (MfdPageBase)
+             82 STORE_NAME              15 (MfdPageBase)
+             84 POP_TOP
+
+ 31          86 LOAD_CONST               0 (0)
+             88 LOAD_CONST               6 (('MfdPageId',))
+             90 IMPORT_NAME             16 (lib.config)
+             92 IMPORT_FROM             17 (MfdPageId)
+             94 STORE_NAME              17 (MfdPageId)
+             96 POP_TOP
+
+ 32          98 LOAD_CONST               0 (0)
+            100 LOAD_CONST               7 (('F1Utils',))
+            102 IMPORT_NAME             18 (lib.f1_types)
+            104 IMPORT_FROM             19 (F1Utils)
+            106 STORE_NAME              19 (F1Utils)
+            108 POP_TOP
+
+ 34         110 LOAD_NAME                4 (TYPE_CHECKING)
+            112 POP_JUMP_IF_FALSE        6 (to 126)
+
+ 35         114 LOAD_CONST               0 (0)
+            116 LOAD_CONST               8 (('MfdOverlay',))
+            118 IMPORT_NAME             20 (apps.hud.ui.overlays.mfd.mfd)
+            120 IMPORT_FROM             21 (MfdOverlay)
+            122 STORE_NAME              21 (MfdOverlay)
+            124 POP_TOP
+
+ 40     >>  126 PUSH_NULL
+            128 LOAD_BUILD_CLASS
+            130 LOAD_CONST               9 (<code object PaceCompPage at 0x0000020DB0C213F0, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 40>)
+            132 MAKE_FUNCTION            0
+            134 LOAD_CONST              10 ('PaceCompPage')
+            136 LOAD_NAME               15 (MfdPageBase)
+            138 CALL                     3
+            146 STORE_NAME              22 (PaceCompPage)
+            148 RETURN_CONST             1 (None)
+
+Disassembly of <code object PaceCompPage at 0x0000020DB0C213F0, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 40>:
+              0 MAKE_CELL                0 (__class__)
+
+ 40           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('PaceCompPage')
+             10 STORE_NAME               2 (__qualname__)
+             12 SETUP_ANNOTATIONS
+
+ 41          14 LOAD_CONST               1 ('Pace Comparison MFD Page.')
+             16 STORE_NAME               3 (__doc__)
+
+ 42          18 LOAD_NAME                4 (MfdPageId)
+             20 LOAD_ATTR               10 (PACE_COMP)
+             40 STORE_NAME               6 (KEY)
+
+ 43          42 PUSH_NULL
+             44 LOAD_NAME                7 (Path)
+             46 LOAD_NAME                8 (__file__)
+             48 CALL                     1
+             56 LOAD_ATTR               18 (parent)
+             76 LOAD_CONST               2 ('pace_comp_page.qml')
+             78 BINARY_OP               11 (/)
+             82 STORE_NAME              10 (QML_FILE)
+             84 LOAD_NAME                7 (Path)
+             86 LOAD_NAME               11 (__annotations__)
+             88 LOAD_CONST               3 ('QML_FILE')
+             90 STORE_SUBSCR
+
+ 45          94 LOAD_CONST               4 (2)
+             96 STORE_NAME              12 (NUM_ADJ_CARS)
+
+ 47          98 LOAD_CONST               5 ('overlay')
+            100 LOAD_CONST               6 ('MfdOverlay')
+            102 LOAD_CONST               7 ('logger')
+            104 LOAD_NAME               13 (logging)
+            106 LOAD_ATTR               28 (Logger)
+            126 BUILD_TUPLE              4
+            128 LOAD_CLOSURE             0 (__class__)
+            130 BUILD_TUPLE              1
+            132 LOAD_CONST               8 (<code object __init__ at 0x0000020DAF2DF660, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 47>)
+            134 MAKE_FUNCTION           12 (annotations, closure)
+            136 STORE_NAME              15 (__init__)
+
+ 53         138 LOAD_CONST               9 (<code object _init_event_handlers at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 53>)
+            140 MAKE_FUNCTION            0
+            142 STORE_NAME              16 (_init_event_handlers)
+
+ 79         144 LOAD_CONST              10 ('relevant_rows')
+
+ 80         146 LOAD_NAME               17 (List)
+            148 LOAD_NAME               18 (Dict)
+            150 LOAD_NAME               19 (str)
+            152 LOAD_NAME               20 (Any)
+            154 BUILD_TUPLE              2
+            156 BINARY_SUBSCR
+            160 BINARY_SUBSCR
+
+ 79         164 LOAD_CONST              11 ('ref_row')
+
+ 81         166 LOAD_NAME               18 (Dict)
+            168 LOAD_NAME               19 (str)
+            170 LOAD_NAME               20 (Any)
+            172 BUILD_TUPLE              2
+            174 BINARY_SUBSCR
+
+ 79         178 LOAD_CONST              12 ('use_best_lap')
+
+ 82         180 LOAD_NAME               21 (bool)
+
+ 79         182 LOAD_CONST              13 ('return')
+
+ 82         184 LOAD_CONST              14 (None)
+
+ 79         186 BUILD_TUPLE              8
+            188 LOAD_CONST              15 (<code object _update_table at 0x0000020DAEEAFCC0, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 79>)
+            190 MAKE_FUNCTION            4 (annotations)
+            192 STORE_NAME              22 (_update_table)
+
+ 97         194 LOAD_CONST              16 ('row_data')
+
+ 98         196 LOAD_NAME               18 (Dict)
+            198 LOAD_NAME               19 (str)
+            200 LOAD_NAME               20 (Any)
+            202 BUILD_TUPLE              2
+            204 BINARY_SUBSCR
+
+ 97         208 LOAD_CONST              17 ('ref_idx')
+
+ 99         210 LOAD_NAME               23 (int)
+
+ 97         212 LOAD_CONST              18 ('ref_s1_ms')
+
+100         214 LOAD_NAME               24 (Optional)
+            216 LOAD_NAME               23 (int)
+            218 BINARY_SUBSCR
+
+ 97         222 LOAD_CONST              19 ('ref_s2_ms')
+
+101         224 LOAD_NAME               24 (Optional)
+            226 LOAD_NAME               23 (int)
+            228 BINARY_SUBSCR
+
+ 97         232 LOAD_CONST              20 ('ref_s3_ms')
+
+102         234 LOAD_NAME               24 (Optional)
+            236 LOAD_NAME               23 (int)
+            238 BINARY_SUBSCR
+
+ 97         242 LOAD_CONST              21 ('ref_lap_ms')
+
+103         244 LOAD_NAME               24 (Optional)
+            246 LOAD_NAME               23 (int)
+            248 BINARY_SUBSCR
+
+ 97         252 LOAD_CONST              22 ('lap_key')
+
+104         254 LOAD_NAME               19 (str)
+
+ 97         256 LOAD_CONST              13 ('return')
+
+104         258 LOAD_NAME               18 (Dict)
+            260 LOAD_NAME               19 (str)
+            262 LOAD_NAME               20 (Any)
+            264 BUILD_TUPLE              2
+            266 BINARY_SUBSCR
+
+ 97         270 BUILD_TUPLE             16
+            272 LOAD_CONST              23 (<code object _build_row at 0x0000020DAEDF3940, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 97>)
+            274 MAKE_FUNCTION            4 (annotations)
+            276 STORE_NAME              25 (_build_row)
+
+130         278 LOAD_NAME               26 (staticmethod)
+
+131         280 LOAD_CONST              24 ('s1_ms')
+            282 LOAD_NAME               24 (Optional)
+            284 LOAD_NAME               23 (int)
+            286 BINARY_SUBSCR
+            290 LOAD_CONST              25 ('s2_ms')
+
+132         292 LOAD_NAME               24 (Optional)
+            294 LOAD_NAME               23 (int)
+            296 BINARY_SUBSCR
+
+131         300 LOAD_CONST              26 ('s3_ms')
+
+133         302 LOAD_NAME               24 (Optional)
+            304 LOAD_NAME               23 (int)
+            306 BINARY_SUBSCR
+
+131         310 LOAD_CONST              27 ('lap_ms')
+
+134         312 LOAD_NAME               24 (Optional)
+            314 LOAD_NAME               23 (int)
+            316 BINARY_SUBSCR
+
+131         320 BUILD_TUPLE              8
+            322 LOAD_CONST              28 (<code object _format_ref_times at 0x0000020DAF16B290, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 130>)
+            324 MAKE_FUNCTION            4 (annotations)
+
+130         326 CALL                     0
+
+131         334 STORE_NAME              27 (_format_ref_times)
+
+142         336 LOAD_NAME               26 (staticmethod)
+
+143         338 LOAD_CONST              29 ('last_lap')
+            340 LOAD_NAME               18 (Dict)
+            342 LOAD_NAME               19 (str)
+            344 LOAD_NAME               20 (Any)
+            346 BUILD_TUPLE              2
+            348 BINARY_SUBSCR
+            352 LOAD_CONST              18 ('ref_s1_ms')
+
+144         354 LOAD_NAME               24 (Optional)
+            356 LOAD_NAME               23 (int)
+            358 BINARY_SUBSCR
+
+143         362 LOAD_CONST              19 ('ref_s2_ms')
+
+145         364 LOAD_NAME               24 (Optional)
+            366 LOAD_NAME               23 (int)
+            368 BINARY_SUBSCR
+
+143         372 LOAD_CONST              20 ('ref_s3_ms')
+
+146         374 LOAD_NAME               24 (Optional)
+            376 LOAD_NAME               23 (int)
+            378 BINARY_SUBSCR
+
+143         382 LOAD_CONST              21 ('ref_lap_ms')
+
+147         384 LOAD_NAME               24 (Optional)
+            386 LOAD_NAME               23 (int)
+            388 BINARY_SUBSCR
+
+143         392 BUILD_TUPLE             10
+            394 LOAD_CONST              30 (<code object _format_delta_times at 0x0000020DB1250030, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 142>)
+            396 MAKE_FUNCTION            4 (annotations)
+
+142         398 CALL                     0
+
+143         406 STORE_NAME              28 (_format_delta_times)
+
+163         408 LOAD_CONST              31 ('data')
+            410 LOAD_NAME               18 (Dict)
+            412 LOAD_NAME               19 (str)
+            414 LOAD_NAME               20 (Any)
+            416 BUILD_TUPLE              2
+            418 BINARY_SUBSCR
+            422 LOAD_CONST              13 ('return')
+            424 LOAD_CONST              14 (None)
+            426 BUILD_TUPLE              4
+            428 LOAD_CONST              32 (<code object _update_table_tt at 0x0000020DB0C3F200, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 163>)
+            430 MAKE_FUNCTION            4 (annotations)
+            432 STORE_NAME              29 (_update_table_tt)
+
+185         434 LOAD_NAME               26 (staticmethod)
+
+186         436 LOAD_CONST              33 ('dataset')
+            438 LOAD_NAME               18 (Dict)
+            440 LOAD_NAME               19 (str)
+            442 LOAD_NAME               20 (Any)
+            444 BUILD_TUPLE              2
+            446 BINARY_SUBSCR
+            450 LOAD_CONST              13 ('return')
+            452 LOAD_NAME               18 (Dict)
+            454 LOAD_NAME               19 (str)
+            456 LOAD_NAME               24 (Optional)
+            458 LOAD_NAME               23 (int)
+            460 BINARY_SUBSCR
+            464 BUILD_TUPLE              2
+            466 BINARY_SUBSCR
+            470 BUILD_TUPLE              4
+            472 LOAD_CONST              34 (<code object _extract_tt_ms at 0x0000020DAF16B430, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 185>)
+            474 MAKE_FUNCTION            4 (annotations)
+
+185         476 CALL                     0
+
+186         484 STORE_NAME              30 (_extract_tt_ms)
+
+196         486 LOAD_NAME               26 (staticmethod)
+
+197         488 LOAD_CONST              35 ('row_ms')
+            490 LOAD_NAME               24 (Optional)
+            492 LOAD_NAME               23 (int)
+            494 BINARY_SUBSCR
+            498 LOAD_CONST              36 ('ref_ms')
+            500 LOAD_NAME               24 (Optional)
+            502 LOAD_NAME               23 (int)
+            504 BINARY_SUBSCR
+            508 LOAD_CONST              13 ('return')
+            510 LOAD_NAME               19 (str)
+            512 BUILD_TUPLE              6
+            514 LOAD_CONST              37 (<code object _tt_delta at 0x0000020DAF2DF770, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 196>)
+            516 MAKE_FUNCTION            4 (annotations)
+
+196         518 CALL                     0
+
+197         526 STORE_NAME              31 (_tt_delta)
+
+206         528 NOP
+
+202         530 LOAD_CONST              43 ((False,))
+            532 LOAD_CONST              38 ('label')
+
+203         534 LOAD_NAME               19 (str)
+
+202         536 LOAD_CONST              33 ('dataset')
+
+204         538 LOAD_NAME               18 (Dict)
+            540 LOAD_NAME               19 (str)
+            542 LOAD_NAME               20 (Any)
+            544 BUILD_TUPLE              2
+            546 BINARY_SUBSCR
+
+202         550 LOAD_CONST              36 ('ref_ms')
+
+205         552 LOAD_NAME               24 (Optional)
+            554 LOAD_NAME               18 (Dict)
+            556 LOAD_NAME               19 (str)
+            558 LOAD_NAME               24 (Optional)
+            560 LOAD_NAME               23 (int)
+            562 BINARY_SUBSCR
+            566 BUILD_TUPLE              2
+            568 BINARY_SUBSCR
+            572 BINARY_SUBSCR
+
+202         576 LOAD_CONST              29 ('last_lap')
+
+206         578 LOAD_NAME               21 (bool)
+
+202         580 LOAD_CONST              13 ('return')
+
+206         582 LOAD_NAME               18 (Dict)
+            584 LOAD_NAME               19 (str)
+            586 LOAD_NAME               20 (Any)
+            588 BUILD_TUPLE              2
+            590 BINARY_SUBSCR
+
+202         594 BUILD_TUPLE             10
+            596 LOAD_CONST              39 (<code object _build_tt_row at 0x0000020DAE782960, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 202>)
+            598 MAKE_FUNCTION            5 (defaults, annotations)
+            600 STORE_NAME              32 (_build_tt_row)
+
+252         602 LOAD_CONST              44 (('return', None))
+            604 LOAD_CONST              40 (<code object _show_empty_table at 0x0000020DAED7A5B0, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 252>)
+            606 MAKE_FUNCTION            4 (annotations)
+            608 STORE_NAME              33 (_show_empty_table)
+
+256         610 LOAD_CONST              41 ('rows')
+            612 LOAD_NAME               17 (List)
+            614 LOAD_NAME               18 (Dict)
+            616 LOAD_NAME               19 (str)
+            618 LOAD_NAME               20 (Any)
+            620 BUILD_TUPLE              2
+            622 BINARY_SUBSCR
+            626 BINARY_SUBSCR
+            630 LOAD_CONST              13 ('return')
+            632 LOAD_CONST              14 (None)
+            634 BUILD_TUPLE              4
+            636 LOAD_CONST              42 (<code object _set_rows at 0x0000020DAF2BF1E0, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 256>)
+            638 MAKE_FUNCTION            4 (annotations)
+            640 STORE_NAME              34 (_set_rows)
+            642 LOAD_CLOSURE             0 (__class__)
+            644 COPY                     1
+            646 STORE_NAME              35 (__classcell__)
+            648 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF2DF660, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 47>:
+              0 COPY_FREE_VARS           1
+
+ 47           2 RESUME                   0
+
+ 48           4 LOAD_GLOBAL              0 (super)
+             14 LOAD_DEREF               3 (__class__)
+             16 LOAD_FAST                0 (self)
+             18 LOAD_SUPER_ATTR          5 (NULL|self + __init__)
+             22 LOAD_FAST                1 (overlay)
+             24 LOAD_FAST                2 (logger)
+             26 CALL                     2
+             34 POP_TOP
+
+ 49          36 LOAD_FAST                0 (self)
+             38 LOAD_ATTR                5 (NULL|self + _init_event_handlers)
+             58 CALL                     0
+             66 POP_TOP
+             68 RETURN_CONST             0 (None)
+
+Disassembly of <code object _init_event_handlers at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 53>:
+              0 MAKE_CELL                0 (self)
+
+ 53           2 RESUME                   0
+
+ 54           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('race_table_update')
+             28 CALL                     1
+
+ 55          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (Dict)
+             48 LOAD_GLOBAL              4 (str)
+             58 LOAD_GLOBAL              6 (Any)
+             68 BUILD_TUPLE              2
+             70 BINARY_SUBSCR
+             74 LOAD_CONST               3 ('return')
+             76 LOAD_CONST               0 (None)
+             78 BUILD_TUPLE              4
+             80 LOAD_CLOSURE             0 (self)
+             82 BUILD_TUPLE              1
+             84 LOAD_CONST               4 (<code object _handle_race_table_update at 0x0000020DAEEB1930, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 54>)
+             86 MAKE_FUNCTION           12 (annotations, closure)
+
+ 54          88 CALL                     0
+
+ 55          96 STORE_FAST               1 (_handle_race_table_update)
+             98 RETURN_CONST             0 (None)
+
+Disassembly of <code object _handle_race_table_update at 0x0000020DAEEB1930, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 54>:
+              0 COPY_FREE_VARS           1
+
+ 54           2 RESUME                   0
+
+ 56           4 LOAD_FAST                0 (data)
+              6 LOAD_ATTR                1 (NULL|self + get)
+             26 LOAD_CONST               1 ('event-type')
+             28 LOAD_CONST               2 ('')
+             30 CALL                     2
+             38 STORE_FAST               1 (session_type)
+
+ 58          40 LOAD_GLOBAL              3 (NULL + is_tt_session)
+             50 LOAD_FAST                1 (session_type)
+             52 CALL                     1
+             60 POP_JUMP_IF_FALSE       18 (to 98)
+
+ 59          62 LOAD_DEREF               7 (self)
+             64 LOAD_ATTR                5 (NULL|self + _update_table_tt)
+             84 LOAD_FAST                0 (data)
+             86 CALL                     1
+             94 POP_TOP
+
+ 60          96 RETURN_CONST             0 (None)
+
+ 62     >>   98 LOAD_FAST                0 (data)
+            100 LOAD_ATTR                1 (NULL|self + get)
+            120 LOAD_CONST               3 ('table-entries')
+            122 CALL                     1
+            130 STORE_FAST               2 (table_entries)
+
+ 63         132 LOAD_FAST                2 (table_entries)
+            134 POP_JUMP_IF_TRUE        17 (to 170)
+
+ 64         136 LOAD_DEREF               7 (self)
+            138 LOAD_ATTR                7 (NULL|self + _show_empty_table)
+            158 CALL                     0
+            166 POP_TOP
+
+ 65         168 RETURN_CONST             0 (None)
+
+ 67     >>  170 LOAD_GLOBAL              9 (NULL + get_ref_row)
+            180 LOAD_FAST                0 (data)
+            182 CALL                     1
+            190 STORE_FAST               3 (ref_row)
+
+ 68         192 LOAD_FAST                3 (ref_row)
+            194 POP_JUMP_IF_TRUE        17 (to 230)
+
+ 69         196 LOAD_DEREF               7 (self)
+            198 LOAD_ATTR                7 (NULL|self + _show_empty_table)
+            218 CALL                     0
+            226 POP_TOP
+
+ 70         228 RETURN_CONST             0 (None)
+
+ 72     >>  230 LOAD_GLOBAL             11 (NULL + is_race_type_session)
+            240 LOAD_FAST                1 (session_type)
+            242 CALL                     1
+            250 UNARY_NOT
+            252 STORE_FAST               4 (use_best_lap)
+
+ 73         254 LOAD_FAST                3 (ref_row)
+            256 LOAD_CONST               4 ('driver-info')
+            258 BINARY_SUBSCR
+            262 LOAD_CONST               5 ('index')
+            264 BINARY_SUBSCR
+            268 STORE_FAST               5 (ref_idx)
+
+ 74         270 LOAD_GLOBAL             13 (NULL + get_relevant_race_table_rows)
+            280 LOAD_FAST                2 (table_entries)
+            282 LOAD_DEREF               7 (self)
+            284 LOAD_ATTR               14 (NUM_ADJ_CARS)
+            304 LOAD_FAST                5 (ref_idx)
+            306 CALL                     3
+            314 STORE_FAST               6 (relevant_rows)
+
+ 75         316 LOAD_DEREF               7 (self)
+            318 LOAD_ATTR               17 (NULL|self + _update_table)
+            338 LOAD_FAST                6 (relevant_rows)
+            340 LOAD_FAST                3 (ref_row)
+            342 LOAD_FAST                4 (use_best_lap)
+            344 CALL                     3
+            352 POP_TOP
+            354 RETURN_CONST             0 (None)
+
+Disassembly of <code object _update_table at 0x0000020DAEEAFCC0, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 79>:
+ 79           0 RESUME                   0
+
+ 83           2 LOAD_FAST                2 (ref_row)
+              4 LOAD_CONST               1 ('driver-info')
+              6 BINARY_SUBSCR
+             10 LOAD_CONST               2 ('index')
+             12 BINARY_SUBSCR
+             16 STORE_FAST               4 (ref_idx)
+
+ 84          18 LOAD_FAST                3 (use_best_lap)
+             20 POP_JUMP_IF_FALSE        2 (to 26)
+             22 LOAD_CONST               3 ('best-lap')
+             24 JUMP_FORWARD             1 (to 28)
+        >>   26 LOAD_CONST               4 ('last-lap')
+        >>   28 STORE_FAST               5 (lap_key)
+
+ 85          30 LOAD_FAST                2 (ref_row)
+             32 LOAD_ATTR                1 (NULL|self + get)
+             52 LOAD_CONST               5 ('lap-info')
+             54 BUILD_MAP                0
+             56 CALL                     2
+             64 LOAD_ATTR                1 (NULL|self + get)
+             84 LOAD_FAST                5 (lap_key)
+             86 BUILD_MAP                0
+             88 CALL                     2
+             96 STORE_FAST               6 (ref_times)
+
+ 86          98 LOAD_FAST                6 (ref_times)
+            100 LOAD_ATTR                1 (NULL|self + get)
+            120 LOAD_CONST               6 ('s1-time-ms')
+            122 CALL                     1
+            130 STORE_FAST               7 (ref_s1_ms)
+
+ 87         132 LOAD_FAST                6 (ref_times)
+            134 LOAD_ATTR                1 (NULL|self + get)
+            154 LOAD_CONST               7 ('s2-time-ms')
+            156 CALL                     1
+            164 STORE_FAST               8 (ref_s2_ms)
+
+ 88         166 LOAD_FAST                6 (ref_times)
+            168 LOAD_ATTR                1 (NULL|self + get)
+            188 LOAD_CONST               8 ('s3-time-ms')
+            190 CALL                     1
+            198 STORE_FAST               9 (ref_s3_ms)
+
+ 89         200 LOAD_FAST                6 (ref_times)
+            202 LOAD_ATTR                1 (NULL|self + get)
+            222 LOAD_CONST               9 ('lap-time-ms')
+            224 CALL                     1
+            232 STORE_FAST              10 (ref_lap_ms)
+
+ 93         234 LOAD_FAST                1 (relevant_rows)
+            236 GET_ITER
+
+ 91         238 LOAD_FAST_AND_CLEAR     11 (row)
+            240 SWAP                     2
+            242 BUILD_LIST               0
+            244 SWAP                     2
+
+ 93     >>  246 FOR_ITER                25 (to 300)
+            250 STORE_FAST              11 (row)
+
+ 92         252 LOAD_FAST                0 (self)
+            254 LOAD_ATTR                3 (NULL|self + _build_row)
+            274 LOAD_FAST               11 (row)
+            276 LOAD_FAST                4 (ref_idx)
+            278 LOAD_FAST                7 (ref_s1_ms)
+            280 LOAD_FAST                8 (ref_s2_ms)
+            282 LOAD_FAST                9 (ref_s3_ms)
+            284 LOAD_FAST               10 (ref_lap_ms)
+            286 LOAD_FAST                5 (lap_key)
+            288 CALL                     7
+            296 LIST_APPEND              2
+            298 JUMP_BACKWARD           27 (to 246)
+
+ 93     >>  300 END_FOR
+
+ 91         302 STORE_FAST              12 (rows_data)
+            304 STORE_FAST              11 (row)
+
+ 95         306 LOAD_FAST                0 (self)
+            308 LOAD_ATTR                5 (NULL|self + _set_rows)
+            328 LOAD_FAST               12 (rows_data)
+            330 CALL                     1
+            338 POP_TOP
+            340 RETURN_CONST             0 (None)
+        >>  342 SWAP                     2
+            344 POP_TOP
+
+ 91         346 SWAP                     2
+            348 STORE_FAST              11 (row)
+            350 RERAISE                  0
+ExceptionTable:
+  242 to 300 -> 342 [2]
+
+Disassembly of <code object _build_row at 0x0000020DAEDF3940, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 97>:
+ 97           0 RESUME                   0
+
+105           2 LOAD_FAST                1 (row_data)
+              4 LOAD_ATTR                1 (NULL|self + get)
+             24 LOAD_CONST               1 ('driver-info')
+             26 BUILD_MAP                0
+             28 CALL                     2
+             36 STORE_FAST               8 (driver_info)
+
+106          38 LOAD_FAST                1 (row_data)
+             40 LOAD_ATTR                1 (NULL|self + get)
+             60 LOAD_CONST               2 ('lap-info')
+             62 BUILD_MAP                0
+             64 CALL                     2
+             72 LOAD_ATTR                1 (NULL|self + get)
+             92 LOAD_FAST                7 (lap_key)
+             94 BUILD_MAP                0
+             96 CALL                     2
+            104 STORE_FAST               9 (lap_times)
+
+108         106 LOAD_FAST                8 (driver_info)
+            108 LOAD_ATTR                1 (NULL|self + get)
+            128 LOAD_CONST               3 ('index')
+            130 LOAD_CONST               4 (-1)
+            132 CALL                     2
+            140 LOAD_FAST                2 (ref_idx)
+            142 COMPARE_OP              40 (==)
+            146 STORE_FAST              10 (is_ref)
+
+110         148 LOAD_FAST               10 (is_ref)
+            150 POP_JUMP_IF_FALSE       26 (to 204)
+
+111         152 LOAD_FAST                0 (self)
+            154 LOAD_ATTR                3 (NULL|self + _format_ref_times)
+
+112         174 LOAD_FAST                3 (ref_s1_ms)
+            176 LOAD_FAST                4 (ref_s2_ms)
+            178 LOAD_FAST                5 (ref_s3_ms)
+            180 LOAD_FAST                6 (ref_lap_ms)
+
+111         182 CALL                     4
+            190 UNPACK_SEQUENCE          4
+            194 STORE_FAST              11 (s1_str)
+            196 STORE_FAST              12 (s2_str)
+            198 STORE_FAST              13 (s3_str)
+            200 STORE_FAST              14 (lap_str)
+            202 JUMP_FORWARD            26 (to 256)
+
+114     >>  204 LOAD_FAST                0 (self)
+            206 LOAD_ATTR                5 (NULL|self + _format_delta_times)
+
+115         226 LOAD_FAST                9 (lap_times)
+            228 LOAD_FAST                3 (ref_s1_ms)
+            230 LOAD_FAST                4 (ref_s2_ms)
+            232 LOAD_FAST                5 (ref_s3_ms)
+            234 LOAD_FAST                6 (ref_lap_ms)
+
+114         236 CALL                     5
+            244 UNPACK_SEQUENCE          4
+            248 STORE_FAST              11 (s1_str)
+            250 STORE_FAST              12 (s2_str)
+            252 STORE_FAST              13 (s3_str)
+            254 STORE_FAST              14 (lap_str)
+
+118     >>  256 LOAD_GLOBAL              7 (NULL + str)
+            266 LOAD_FAST                8 (driver_info)
+            268 LOAD_ATTR                1 (NULL|self + get)
+            288 LOAD_CONST               5 ('position')
+            290 LOAD_CONST               6 (0)
+            292 CALL                     2
+            300 CALL                     1
+
+119         308 LOAD_FAST                8 (driver_info)
+            310 LOAD_ATTR                1 (NULL|self + get)
+            330 LOAD_CONST               7 ('team')
+            332 LOAD_CONST               8 ('')
+            334 CALL                     2
+
+120         342 LOAD_FAST                8 (driver_info)
+            344 LOAD_ATTR                1 (NULL|self + get)
+            364 LOAD_CONST               9 ('name')
+            366 LOAD_CONST               8 ('')
+            368 CALL                     2
+
+121         376 LOAD_FAST               11 (s1_str)
+
+122         378 LOAD_FAST               12 (s2_str)
+
+123         380 LOAD_FAST               13 (s3_str)
+
+124         382 LOAD_FAST               14 (lap_str)
+
+125         384 LOAD_FAST               10 (is_ref)
+
+117         386 LOAD_CONST              10 (('position', 'team', 'name', 's1', 's2', 's3', 'lap', 'isRef'))
+            388 BUILD_CONST_KEY_MAP      8
+            390 RETURN_VALUE
+
+Disassembly of <code object _format_ref_times at 0x0000020DAF16B290, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 130>:
+130           0 RESUME                   0
+
+136           2 LOAD_FAST                0 (s1_ms)
+              4 POP_JUMP_IF_NONE        21 (to 48)
+              6 LOAD_GLOBAL              1 (NULL + F1Utils)
+             16 LOAD_ATTR                2 (millisecondsToSecondsMilliseconds)
+             36 LOAD_FAST                0 (s1_ms)
+             38 CALL                     1
+             46 JUMP_FORWARD             1 (to 50)
+        >>   48 LOAD_CONST               1 ('--:--')
+        >>   50 STORE_FAST               4 (s1)
+
+137          52 LOAD_FAST                1 (s2_ms)
+             54 POP_JUMP_IF_NONE        21 (to 98)
+             56 LOAD_GLOBAL              1 (NULL + F1Utils)
+             66 LOAD_ATTR                2 (millisecondsToSecondsMilliseconds)
+             86 LOAD_FAST                1 (s2_ms)
+             88 CALL                     1
+             96 JUMP_FORWARD             1 (to 100)
+        >>   98 LOAD_CONST               1 ('--:--')
+        >>  100 STORE_FAST               5 (s2)
+
+138         102 LOAD_FAST                2 (s3_ms)
+            104 POP_JUMP_IF_NONE        21 (to 148)
+            106 LOAD_GLOBAL              1 (NULL + F1Utils)
+            116 LOAD_ATTR                2 (millisecondsToSecondsMilliseconds)
+            136 LOAD_FAST                2 (s3_ms)
+            138 CALL                     1
+            146 JUMP_FORWARD             1 (to 150)
+        >>  148 LOAD_CONST               1 ('--:--')
+        >>  150 STORE_FAST               6 (s3)
+
+139         152 LOAD_FAST                3 (lap_ms)
+            154 POP_JUMP_IF_NONE        21 (to 198)
+            156 LOAD_GLOBAL              1 (NULL + F1Utils)
+            166 LOAD_ATTR                4 (millisecondsToMinutesSecondsMilliseconds)
+            186 LOAD_FAST                3 (lap_ms)
+            188 CALL                     1
+            196 JUMP_FORWARD             1 (to 200)
+        >>  198 LOAD_CONST               1 ('--:--')
+        >>  200 STORE_FAST               7 (lap)
+
+140         202 LOAD_FAST                4 (s1)
+            204 LOAD_FAST                5 (s2)
+            206 LOAD_FAST                6 (s3)
+            208 LOAD_FAST                7 (lap)
+            210 BUILD_TUPLE              4
+            212 RETURN_VALUE
+
+Disassembly of <code object _format_delta_times at 0x0000020DB1250030, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 142>:
+142           0 RESUME                   0
+
+149           2 LOAD_CONST               1 ('other_ms')
+              4 LOAD_GLOBAL              0 (Optional)
+             14 LOAD_GLOBAL              2 (int)
+             24 BINARY_SUBSCR
+             28 LOAD_CONST               2 ('ref_ms')
+             30 LOAD_GLOBAL              0 (Optional)
+             40 LOAD_GLOBAL              2 (int)
+             50 BINARY_SUBSCR
+             54 LOAD_CONST               3 ('return')
+             56 LOAD_GLOBAL              4 (str)
+             66 BUILD_TUPLE              6
+             68 LOAD_CONST               4 (<code object _delta at 0x0000020DAF2DF330, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 149>)
+             70 MAKE_FUNCTION            4 (annotations)
+             72 STORE_FAST               5 (_delta)
+
+155          74 PUSH_NULL
+             76 LOAD_FAST                5 (_delta)
+             78 LOAD_FAST                0 (last_lap)
+             80 LOAD_ATTR                7 (NULL|self + get)
+            100 LOAD_CONST               5 ('s1-time-ms')
+            102 CALL                     1
+            110 LOAD_FAST                1 (ref_s1_ms)
+            112 CALL                     2
+
+156         120 PUSH_NULL
+            122 LOAD_FAST                5 (_delta)
+            124 LOAD_FAST                0 (last_lap)
+            126 LOAD_ATTR                7 (NULL|self + get)
+            146 LOAD_CONST               6 ('s2-time-ms')
+            148 CALL                     1
+            156 LOAD_FAST                2 (ref_s2_ms)
+            158 CALL                     2
+
+157         166 PUSH_NULL
+            168 LOAD_FAST                5 (_delta)
+            170 LOAD_FAST                0 (last_lap)
+            172 LOAD_ATTR                7 (NULL|self + get)
+            192 LOAD_CONST               7 ('s3-time-ms')
+            194 CALL                     1
+            202 LOAD_FAST                3 (ref_s3_ms)
+            204 CALL                     2
+
+158         212 PUSH_NULL
+            214 LOAD_FAST                5 (_delta)
+            216 LOAD_FAST                0 (last_lap)
+            218 LOAD_ATTR                7 (NULL|self + get)
+            238 LOAD_CONST               8 ('lap-time-ms')
+            240 CALL                     1
+            248 LOAD_FAST                4 (ref_lap_ms)
+            250 CALL                     2
+
+154         258 BUILD_TUPLE              4
+            260 RETURN_VALUE
+
+Disassembly of <code object _delta at 0x0000020DAF2DF330, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 149>:
+149           0 RESUME                   0
+
+150           2 LOAD_FAST                0 (other_ms)
+              4 POP_JUMP_IF_NONE         2 (to 10)
+              6 LOAD_FAST                1 (ref_ms)
+              8 POP_JUMP_IF_NOT_NONE     1 (to 12)
+
+151     >>   10 RETURN_CONST             1 ('--:--')
+
+152     >>   12 LOAD_GLOBAL              1 (NULL + F1Utils)
+             22 LOAD_ATTR                2 (formatFloat)
+             42 LOAD_FAST                1 (ref_ms)
+             44 LOAD_FAST                0 (other_ms)
+             46 BINARY_OP               10 (-)
+             50 LOAD_CONST               2 (1000.0)
+             52 BINARY_OP               11 (/)
+             56 LOAD_CONST               3 (3)
+             58 LOAD_CONST               4 (True)
+             60 KW_NAMES                 5 (('precision', 'signed'))
+             62 CALL                     3
+             70 RETURN_VALUE
+
+Disassembly of <code object _update_table_tt at 0x0000020DB0C3F200, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 163>:
+163           0 RESUME                   0
+
+164           2 LOAD_FAST                1 (data)
+              4 LOAD_ATTR                1 (NULL|self + get)
+             24 LOAD_CONST               1 ('tt-data')
+             26 BUILD_MAP                0
+             28 CALL                     2
+             36 STORE_FAST               2 (tt_data_outer)
+
+165          38 LOAD_FAST                2 (tt_data_outer)
+             40 POP_JUMP_IF_FALSE       18 (to 78)
+             42 LOAD_FAST                2 (tt_data_outer)
+             44 LOAD_ATTR                1 (NULL|self + get)
+             64 LOAD_CONST               1 ('tt-data')
+             66 BUILD_MAP                0
+             68 CALL                     2
+             76 JUMP_FORWARD             1 (to 80)
+        >>   78 BUILD_MAP                0
+        >>   80 STORE_FAST               3 (tt_data_inner)
+
+166          82 LOAD_FAST                2 (tt_data_outer)
+             84 POP_JUMP_IF_FALSE        2 (to 90)
+             86 LOAD_FAST                3 (tt_data_inner)
+             88 POP_JUMP_IF_TRUE        17 (to 124)
+
+167     >>   90 LOAD_FAST                0 (self)
+             92 LOAD_ATTR                3 (NULL|self + _show_empty_table)
+            112 CALL                     0
+            120 POP_TOP
+
+168         122 RETURN_CONST             0 (None)
+
+170     >>  124 LOAD_FAST                3 (tt_data_inner)
+            126 LOAD_ATTR                1 (NULL|self + get)
+            146 LOAD_CONST               2 ('personal-best-data-set')
+            148 BUILD_MAP                0
+            150 CALL                     2
+            158 STORE_FAST               4 (pb_dataset)
+
+171         160 LOAD_FAST                3 (tt_data_inner)
+            162 LOAD_ATTR                1 (NULL|self + get)
+            182 LOAD_CONST               3 ('player-session-best-data-set')
+            184 BUILD_MAP                0
+            186 CALL                     2
+            194 STORE_FAST               5 (sb_dataset)
+
+172         196 LOAD_FAST                3 (tt_data_inner)
+            198 LOAD_ATTR                1 (NULL|self + get)
+            218 LOAD_CONST               4 ('rival-session-best-data-set')
+            220 BUILD_MAP                0
+            222 CALL                     2
+            230 STORE_FAST               6 (rv_dataset)
+
+173         232 LOAD_FAST                2 (tt_data_outer)
+            234 LOAD_ATTR                1 (NULL|self + get)
+            254 LOAD_CONST               5 ('last-lap-info')
+            256 BUILD_MAP                0
+            258 CALL                     2
+            266 STORE_FAST               7 (last_lap)
+
+175         268 LOAD_FAST                0 (self)
+            270 LOAD_ATTR                5 (NULL|self + _extract_tt_ms)
+            290 LOAD_FAST                4 (pb_dataset)
+            292 CALL                     1
+            300 STORE_FAST               8 (pb_ms)
+
+178         302 LOAD_FAST                0 (self)
+            304 LOAD_ATTR                7 (NULL|self + _build_tt_row)
+            324 LOAD_CONST               6 ('PB')
+            326 LOAD_FAST                4 (pb_dataset)
+            328 LOAD_CONST               0 (None)
+            330 KW_NAMES                 7 (('ref_ms',))
+            332 CALL                     3
+
+179         340 LOAD_FAST                0 (self)
+            342 LOAD_ATTR                7 (NULL|self + _build_tt_row)
+            362 LOAD_CONST               8 ('SB')
+            364 LOAD_FAST                5 (sb_dataset)
+            366 LOAD_FAST                8 (pb_ms)
+            368 KW_NAMES                 7 (('ref_ms',))
+            370 CALL                     3
+
+180         378 LOAD_FAST                0 (self)
+            380 LOAD_ATTR                7 (NULL|self + _build_tt_row)
+            400 LOAD_CONST               9 ('Rival')
+            402 LOAD_FAST                6 (rv_dataset)
+            404 LOAD_FAST                8 (pb_ms)
+            406 KW_NAMES                 7 (('ref_ms',))
+            408 CALL                     3
+
+181         416 LOAD_FAST                0 (self)
+            418 LOAD_ATTR                7 (NULL|self + _build_tt_row)
+            438 LOAD_CONST              10 ('Last')
+            440 LOAD_FAST                7 (last_lap)
+            442 LOAD_FAST                8 (pb_ms)
+            444 LOAD_CONST              11 (True)
+            446 KW_NAMES                12 (('ref_ms', 'last_lap'))
+            448 CALL                     4
+
+177         456 BUILD_LIST               4
+            458 STORE_FAST               9 (rows)
+
+183         460 LOAD_FAST                0 (self)
+            462 LOAD_ATTR                9 (NULL|self + _set_rows)
+            482 LOAD_FAST                9 (rows)
+            484 CALL                     1
+            492 POP_TOP
+            494 RETURN_CONST             0 (None)
+
+Disassembly of <code object _extract_tt_ms at 0x0000020DAF16B430, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 185>:
+185           0 RESUME                   0
+
+187           2 LOAD_FAST                0 (dataset)
+              4 POP_JUMP_IF_FALSE       17 (to 40)
+              6 LOAD_FAST                0 (dataset)
+              8 LOAD_ATTR                1 (NULL|self + get)
+             28 LOAD_CONST               1 ('is-valid')
+             30 CALL                     1
+             38 POP_JUMP_IF_TRUE         7 (to 54)
+
+188     >>   40 LOAD_CONST               0 (None)
+             42 LOAD_CONST               0 (None)
+             44 LOAD_CONST               0 (None)
+             46 LOAD_CONST               0 (None)
+             48 LOAD_CONST               2 (('lap', 's1', 's2', 's3'))
+             50 BUILD_CONST_KEY_MAP      4
+             52 RETURN_VALUE
+
+190     >>   54 LOAD_FAST                0 (dataset)
+             56 LOAD_ATTR                1 (NULL|self + get)
+             76 LOAD_CONST               3 ('lap-time-ms')
+             78 CALL                     1
+             86 COPY                     1
+             88 POP_JUMP_IF_TRUE         2 (to 94)
+             90 POP_TOP
+             92 LOAD_CONST               0 (None)
+
+191     >>   94 LOAD_FAST                0 (dataset)
+             96 LOAD_ATTR                1 (NULL|self + get)
+            116 LOAD_CONST               4 ('sector-1-time-ms')
+            118 CALL                     1
+            126 COPY                     1
+            128 POP_JUMP_IF_TRUE         2 (to 134)
+            130 POP_TOP
+            132 LOAD_CONST               0 (None)
+
+192     >>  134 LOAD_FAST                0 (dataset)
+            136 LOAD_ATTR                1 (NULL|self + get)
+            156 LOAD_CONST               5 ('sector-2-time-in-ms')
+            158 CALL                     1
+            166 COPY                     1
+            168 POP_JUMP_IF_TRUE         2 (to 174)
+            170 POP_TOP
+            172 LOAD_CONST               0 (None)
+
+193     >>  174 LOAD_FAST                0 (dataset)
+            176 LOAD_ATTR                1 (NULL|self + get)
+            196 LOAD_CONST               6 ('sector3-time-in-ms')
+            198 CALL                     1
+            206 COPY                     1
+            208 POP_JUMP_IF_TRUE         2 (to 214)
+            210 POP_TOP
+            212 LOAD_CONST               0 (None)
+
+189     >>  214 LOAD_CONST               2 (('lap', 's1', 's2', 's3'))
+            216 BUILD_CONST_KEY_MAP      4
+            218 RETURN_VALUE
+
+Disassembly of <code object _tt_delta at 0x0000020DAF2DF770, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 196>:
+196           0 RESUME                   0
+
+198           2 LOAD_FAST                0 (row_ms)
+              4 POP_JUMP_IF_NONE         2 (to 10)
+              6 LOAD_FAST                1 (ref_ms)
+              8 POP_JUMP_IF_NOT_NONE     1 (to 12)
+
+199     >>   10 RETURN_CONST             1 ('---')
+
+200     >>   12 LOAD_GLOBAL              1 (NULL + F1Utils)
+             22 LOAD_ATTR                2 (formatFloat)
+             42 LOAD_FAST                0 (row_ms)
+             44 LOAD_FAST                1 (ref_ms)
+             46 BINARY_OP               10 (-)
+             50 LOAD_CONST               2 (1000.0)
+             52 BINARY_OP               11 (/)
+             56 LOAD_CONST               3 (3)
+             58 LOAD_CONST               4 (True)
+             60 KW_NAMES                 5 (('precision', 'signed'))
+             62 CALL                     3
+             70 RETURN_VALUE
+
+Disassembly of <code object _build_tt_row at 0x0000020DAE782960, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 202>:
+202           0 RESUME                   0
+
+214           2 LOAD_FAST                4 (last_lap)
+              4 POP_JUMP_IF_FALSE       96 (to 198)
+
+215           6 LOAD_GLOBAL              1 (NULL + bool)
+             16 LOAD_FAST                2 (dataset)
+             18 CALL                     1
+             26 STORE_FAST               5 (valid)
+
+216          28 LOAD_FAST                5 (valid)
+             30 POP_JUMP_IF_FALSE       17 (to 66)
+             32 LOAD_FAST                2 (dataset)
+             34 LOAD_ATTR                3 (NULL|self + get)
+             54 LOAD_CONST               1 ('lap-time-ms')
+             56 CALL                     1
+             64 JUMP_FORWARD             1 (to 68)
+        >>   66 LOAD_CONST               2 (None)
+        >>   68 STORE_FAST               6 (lap_ms)
+
+217          70 LOAD_FAST                5 (valid)
+             72 POP_JUMP_IF_FALSE       17 (to 108)
+             74 LOAD_FAST                2 (dataset)
+             76 LOAD_ATTR                3 (NULL|self + get)
+             96 LOAD_CONST               3 ('s1-time-ms')
+             98 CALL                     1
+            106 JUMP_FORWARD             1 (to 110)
+        >>  108 LOAD_CONST               2 (None)
+        >>  110 STORE_FAST               7 (s1_ms)
+
+218         112 LOAD_FAST                5 (valid)
+            114 POP_JUMP_IF_FALSE       17 (to 150)
+            116 LOAD_FAST                2 (dataset)
+            118 LOAD_ATTR                3 (NULL|self + get)
+            138 LOAD_CONST               4 ('s2-time-ms')
+            140 CALL                     1
+            148 JUMP_FORWARD             1 (to 152)
+        >>  150 LOAD_CONST               2 (None)
+        >>  152 STORE_FAST               8 (s2_ms)
+
+219         154 LOAD_FAST                5 (valid)
+            156 POP_JUMP_IF_FALSE       17 (to 192)
+            158 LOAD_FAST                2 (dataset)
+            160 LOAD_ATTR                3 (NULL|self + get)
+            180 LOAD_CONST               5 ('s3-time-ms')
+            182 CALL                     1
+            190 JUMP_FORWARD             1 (to 194)
+        >>  192 LOAD_CONST               2 (None)
+        >>  194 STORE_FAST               9 (s3_ms)
+            196 JUMP_FORWARD           114 (to 426)
+
+221     >>  198 LOAD_GLOBAL              1 (NULL + bool)
+            208 LOAD_FAST                2 (dataset)
+            210 COPY                     1
+            212 POP_JUMP_IF_FALSE       17 (to 248)
+            214 POP_TOP
+            216 LOAD_FAST                2 (dataset)
+            218 LOAD_ATTR                3 (NULL|self + get)
+            238 LOAD_CONST               6 ('is-valid')
+            240 CALL                     1
+        >>  248 CALL                     1
+            256 STORE_FAST               5 (valid)
+
+222         258 LOAD_FAST                5 (valid)
+            260 POP_JUMP_IF_FALSE       17 (to 296)
+            262 LOAD_FAST                2 (dataset)
+            264 LOAD_ATTR                3 (NULL|self + get)
+            284 LOAD_CONST               1 ('lap-time-ms')
+            286 CALL                     1
+            294 JUMP_FORWARD             1 (to 298)
+        >>  296 LOAD_CONST               2 (None)
+        >>  298 STORE_FAST               6 (lap_ms)
+
+223         300 LOAD_FAST                5 (valid)
+            302 POP_JUMP_IF_FALSE       17 (to 338)
+            304 LOAD_FAST                2 (dataset)
+            306 LOAD_ATTR                3 (NULL|self + get)
+            326 LOAD_CONST               7 ('sector-1-time-ms')
+            328 CALL                     1
+            336 JUMP_FORWARD             1 (to 340)
+        >>  338 LOAD_CONST               2 (None)
+        >>  340 STORE_FAST               7 (s1_ms)
+
+224         342 LOAD_FAST                5 (valid)
+            344 POP_JUMP_IF_FALSE       17 (to 380)
+            346 LOAD_FAST                2 (dataset)
+            348 LOAD_ATTR                3 (NULL|self + get)
+            368 LOAD_CONST               8 ('sector-2-time-in-ms')
+            370 CALL                     1
+            378 JUMP_FORWARD             1 (to 382)
+        >>  380 LOAD_CONST               2 (None)
+        >>  382 STORE_FAST               8 (s2_ms)
+
+225         384 LOAD_FAST                5 (valid)
+            386 POP_JUMP_IF_FALSE       17 (to 422)
+            388 LOAD_FAST                2 (dataset)
+            390 LOAD_ATTR                3 (NULL|self + get)
+            410 LOAD_CONST               9 ('sector3-time-in-ms')
+            412 CALL                     1
+            420 JUMP_FORWARD             1 (to 424)
+        >>  422 LOAD_CONST               2 (None)
+        >>  424 STORE_FAST               9 (s3_ms)
+
+227     >>  426 LOAD_FAST                3 (ref_ms)
+            428 POP_JUMP_IF_NOT_NONE   101 (to 632)
+
+229         430 LOAD_FAST                7 (s1_ms)
+            432 POP_JUMP_IF_NONE        21 (to 476)
+            434 LOAD_GLOBAL              5 (NULL + F1Utils)
+            444 LOAD_ATTR                6 (millisecondsToSecondsMilliseconds)
+            464 LOAD_FAST                7 (s1_ms)
+            466 CALL                     1
+            474 JUMP_FORWARD             1 (to 478)
+        >>  476 LOAD_CONST              10 ('---')
+        >>  478 STORE_FAST              10 (s1_str)
+
+230         480 LOAD_FAST                8 (s2_ms)
+            482 POP_JUMP_IF_NONE        21 (to 526)
+            484 LOAD_GLOBAL              5 (NULL + F1Utils)
+            494 LOAD_ATTR                6 (millisecondsToSecondsMilliseconds)
+            514 LOAD_FAST                8 (s2_ms)
+            516 CALL                     1
+            524 JUMP_FORWARD             1 (to 528)
+        >>  526 LOAD_CONST              10 ('---')
+        >>  528 STORE_FAST              11 (s2_str)
+
+231         530 LOAD_FAST                9 (s3_ms)
+            532 POP_JUMP_IF_NONE        21 (to 576)
+            534 LOAD_GLOBAL              5 (NULL + F1Utils)
+            544 LOAD_ATTR                6 (millisecondsToSecondsMilliseconds)
+            564 LOAD_FAST                9 (s3_ms)
+            566 CALL                     1
+            574 JUMP_FORWARD             1 (to 578)
+        >>  576 LOAD_CONST              10 ('---')
+        >>  578 STORE_FAST              12 (s3_str)
+
+232         580 LOAD_FAST                6 (lap_ms)
+            582 POP_JUMP_IF_NONE        21 (to 626)
+            584 LOAD_GLOBAL              5 (NULL + F1Utils)
+            594 LOAD_ATTR                8 (millisecondsToMinutesSecondsMilliseconds)
+            614 LOAD_FAST                6 (lap_ms)
+            616 CALL                     1
+            624 JUMP_FORWARD             1 (to 628)
+        >>  626 LOAD_CONST              10 ('---')
+        >>  628 STORE_FAST              13 (lap_str)
+            630 JUMP_FORWARD            84 (to 800)
+
+234     >>  632 LOAD_FAST                0 (self)
+            634 LOAD_ATTR               11 (NULL|self + _tt_delta)
+            654 LOAD_FAST                7 (s1_ms)
+            656 LOAD_FAST                3 (ref_ms)
+            658 LOAD_CONST              11 ('s1')
+            660 BINARY_SUBSCR
+            664 CALL                     2
+            672 STORE_FAST              10 (s1_str)
+
+235         674 LOAD_FAST                0 (self)
+            676 LOAD_ATTR               11 (NULL|self + _tt_delta)
+            696 LOAD_FAST                8 (s2_ms)
+            698 LOAD_FAST                3 (ref_ms)
+            700 LOAD_CONST              12 ('s2')
+            702 BINARY_SUBSCR
+            706 CALL                     2
+            714 STORE_FAST              11 (s2_str)
+
+236         716 LOAD_FAST                0 (self)
+            718 LOAD_ATTR               11 (NULL|self + _tt_delta)
+            738 LOAD_FAST                9 (s3_ms)
+            740 LOAD_FAST                3 (ref_ms)
+            742 LOAD_CONST              13 ('s3')
+            744 BINARY_SUBSCR
+            748 CALL                     2
+            756 STORE_FAST              12 (s3_str)
+
+237         758 LOAD_FAST                0 (self)
+            760 LOAD_ATTR               11 (NULL|self + _tt_delta)
+            780 LOAD_FAST                6 (lap_ms)
+            782 LOAD_FAST                3 (ref_ms)
+            784 LOAD_CONST              14 ('lap')
+            786 BINARY_SUBSCR
+            790 CALL                     2
+            798 STORE_FAST              13 (lap_str)
+
+240     >>  800 LOAD_CONST              15 ('')
+
+241         802 LOAD_CONST              15 ('')
+
+242         804 LOAD_FAST                1 (label)
+
+243         806 LOAD_FAST               10 (s1_str)
+
+244         808 LOAD_FAST               11 (s2_str)
+
+245         810 LOAD_FAST               12 (s3_str)
+
+246         812 LOAD_FAST               13 (lap_str)
+
+247         814 LOAD_FAST                3 (ref_ms)
+            816 LOAD_CONST               2 (None)
+            818 IS_OP                    0
+
+239         820 LOAD_CONST              16 (('position', 'team', 'name', 's1', 's2', 's3', 'lap', 'isRef'))
+            822 BUILD_CONST_KEY_MAP      8
+            824 RETURN_VALUE
+
+Disassembly of <code object _show_empty_table at 0x0000020DAED7A5B0, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 252>:
+252           0 RESUME                   0
+
+254           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + _set_rows)
+             24 BUILD_LIST               0
+             26 CALL                     1
+             34 POP_TOP
+             36 RETURN_CONST             1 (None)
+
+Disassembly of <code object _set_rows at 0x0000020DAF2BF1E0, file "apps\hud\ui\overlays\mfd\pages\pace_comp\pace_comp.py", line 256>:
+256           0 RESUME                   0
+
+258           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_page_property)
+             24 LOAD_CONST               1 ('rows')
+             26 LOAD_FAST                1 (rows)
+             28 CALL                     2
+             36 POP_TOP
+             38 RETURN_CONST             2 (None)

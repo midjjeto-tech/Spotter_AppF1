@@ -1,0 +1,13 @@
+{
+  "name": "Monza",
+  "length_m": 5793,
+  "corners": [
+    {"id":1,"name":"Variante del Rettifilo","fraction":0.117,"type":"chicane","direction":"right"},
+    {"id":2,"name":"Curva Grande",          "fraction":0.205,"type":"fast",   "direction":"left"},
+    {"id":3,"name":"Variante della Roggia", "fraction":0.363,"type":"chicane","direction":"right"},
+    {"id":4,"name":"Lesmo 1",               "fraction":0.470,"type":"medium", "direction":"right"},
+    {"id":5,"name":"Lesmo 2",               "fraction":0.552,"type":"medium", "direction":"right"},
+    {"id":6,"name":"Variante Ascari",       "fraction":0.708,"type":"chicane","direction":"right"},
+    {"id":7,"name":"Curva Parabolica",      "fraction":0.877,"type":"medium", "direction":"right"}
+  ]
+}

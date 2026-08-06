@@ -1,0 +1,16 @@
+{
+  "name": "Spielberg",
+  "length_m": 4318,
+  "corners": [
+    {"id":1,  "fraction":0.038,"type":"slow",   "direction":"right"},
+    {"id":2,  "fraction":0.163,"type":"medium", "direction":"right"},
+    {"id":3,  "fraction":0.252,"type":"slow",   "direction":"left"},
+    {"id":4,  "fraction":0.303,"type":"medium", "direction":"left"},
+    {"id":5,  "fraction":0.417,"type":"fast",   "direction":"right"},
+    {"id":6,  "fraction":0.448,"type":"medium", "direction":"left"},
+    {"id":7,  "fraction":0.533,"type":"medium", "direction":"right"},
+    {"id":8,  "fraction":0.649,"type":"medium", "direction":"right"},
+    {"id":9,  "fraction":0.755,"type":"slow",   "direction":"left"},
+    {"id":10, "fraction":0.859,"type":"medium", "direction":"right"}
+  ]
+}

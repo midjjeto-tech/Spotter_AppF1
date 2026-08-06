@@ -1,0 +1,2174 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('Any', 'Dict', 'List', 'Optional'))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (Any)
+             30 STORE_NAME               4 (Any)
+             32 IMPORT_FROM              5 (Dict)
+             34 STORE_NAME               5 (Dict)
+             36 IMPORT_FROM              6 (List)
+             38 STORE_NAME               6 (List)
+             40 IMPORT_FROM              7 (Optional)
+             42 STORE_NAME               7 (Optional)
+             44 POP_TOP
+
+ 29          46 LOAD_CONST               0 (0)
+             48 LOAD_CONST               4 (('QTimer',))
+             50 IMPORT_NAME              8 (PySide6.QtCore)
+             52 IMPORT_FROM              9 (QTimer)
+             54 STORE_NAME               9 (QTimer)
+             56 POP_TOP
+
+ 31          58 LOAD_CONST               0 (0)
+             60 LOAD_CONST               5 (('get_ref_row', 'is_practice_session', 'is_tt_session', 'is_qualifying_session', 'is_race_type_session'))
+             62 IMPORT_NAME             10 (apps.hud.common)
+             64 IMPORT_FROM             11 (get_ref_row)
+             66 STORE_NAME              11 (get_ref_row)
+             68 IMPORT_FROM             12 (is_practice_session)
+             70 STORE_NAME              12 (is_practice_session)
+             72 IMPORT_FROM             13 (is_tt_session)
+             74 STORE_NAME              13 (is_tt_session)
+             76 IMPORT_FROM             14 (is_qualifying_session)
+             78 STORE_NAME              14 (is_qualifying_session)
+             80 IMPORT_FROM             15 (is_race_type_session)
+             82 STORE_NAME              15 (is_race_type_session)
+             84 POP_TOP
+
+ 33          86 LOAD_CONST               0 (0)
+             88 LOAD_CONST               6 (('BaseOverlayQML',))
+             90 IMPORT_NAME             16 (apps.hud.ui.overlays.base)
+             92 IMPORT_FROM             17 (BaseOverlayQML)
+             94 STORE_NAME              17 (BaseOverlayQML)
+             96 POP_TOP
+
+ 34          98 LOAD_CONST               0 (0)
+            100 LOAD_CONST               7 (('OverlayId', 'OverlayPosition'))
+            102 IMPORT_NAME             18 (lib.config)
+            104 IMPORT_FROM             19 (OverlayId)
+            106 STORE_NAME              19 (OverlayId)
+            108 IMPORT_FROM             20 (OverlayPosition)
+            110 STORE_NAME              20 (OverlayPosition)
+            112 POP_TOP
+
+ 35         114 LOAD_CONST               0 (0)
+            116 LOAD_CONST               8 (('F1Utils',))
+            118 IMPORT_NAME             21 (lib.f1_types)
+            120 IMPORT_FROM             22 (F1Utils)
+            122 STORE_NAME              22 (F1Utils)
+            124 POP_TOP
+
+ 39         126 PUSH_NULL
+            128 LOAD_BUILD_CLASS
+            130 LOAD_CONST               9 (<code object LapTimerOverlay at 0x0000020DAEB8E470, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 39>)
+            132 MAKE_FUNCTION            0
+            134 LOAD_CONST              10 ('LapTimerOverlay')
+            136 LOAD_NAME               17 (BaseOverlayQML)
+            138 CALL                     3
+            146 STORE_NAME              23 (LapTimerOverlay)
+            148 RETURN_CONST             1 (None)
+
+Disassembly of <code object LapTimerOverlay at 0x0000020DAEB8E470, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 39>:
+              0 MAKE_CELL                0 (__class__)
+
+ 39           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('LapTimerOverlay')
+             10 STORE_NAME               2 (__qualname__)
+             12 SETUP_ANNOTATIONS
+
+ 40          14 LOAD_CONST               1 ('QML-based overlay displaying lap timing information for racing sessions.')
+             16 STORE_NAME               3 (__doc__)
+
+ 42          18 LOAD_NAME                4 (OverlayId)
+             20 LOAD_ATTR               10 (LAP_TIMER)
+             40 STORE_NAME               6 (OVERLAY_ID)
+             42 LOAD_NAME                7 (str)
+             44 LOAD_NAME                8 (__annotations__)
+             46 LOAD_CONST               2 ('OVERLAY_ID')
+             48 STORE_SUBSCR
+
+ 43          52 PUSH_NULL
+             54 LOAD_NAME                9 (Path)
+             56 LOAD_NAME               10 (__file__)
+             58 CALL                     1
+             66 LOAD_ATTR               22 (parent)
+             86 LOAD_CONST               3 ('lap_timer_overlay.qml')
+             88 BINARY_OP               11 (/)
+             92 STORE_NAME              12 (QML_FILE)
+             94 LOAD_NAME                9 (Path)
+             96 LOAD_NAME                8 (__annotations__)
+             98 LOAD_CONST               4 ('QML_FILE')
+            100 STORE_SUBSCR
+
+ 46         104 LOAD_CONST               5 ('--:--.---')
+            106 STORE_NAME              13 (DEFAULT_TIME)
+
+ 47         108 LOAD_CONST               6 ('---')
+            110 STORE_NAME              14 (DEFAULT_DELTA)
+
+ 48         112 LOAD_NAME               15 (F1Utils)
+            114 LOAD_ATTR               32 (SECTOR_STATUS_NA)
+            134 BUILD_LIST               1
+            136 LOAD_CONST               7 (3)
+            138 BINARY_OP                5 (*)
+            142 STORE_NAME              17 (DEFAULT_SECTOR_STATUS)
+
+ 50         144 LOAD_CONST               8 ('config')
+
+ 51         146 LOAD_NAME               18 (OverlayPosition)
+
+ 50         148 LOAD_CONST               9 ('logger')
+
+ 52         150 LOAD_NAME               19 (logging)
+            152 LOAD_ATTR               40 (Logger)
+
+ 50         172 LOAD_CONST              10 ('locked')
+
+ 53         174 LOAD_NAME               21 (bool)
+
+ 50         176 LOAD_CONST              11 ('opacity')
+
+ 54         178 LOAD_NAME               22 (int)
+
+ 50         180 LOAD_CONST              12 ('scale_factor')
+
+ 55         182 LOAD_NAME               23 (float)
+
+ 50         184 LOAD_CONST              13 ('windowed_overlay')
+
+ 56         186 LOAD_NAME               21 (bool)
+
+ 50         188 LOAD_CONST              14 ('min_overlay_style')
+
+ 57         190 LOAD_NAME               21 (bool)
+
+ 50         192 BUILD_TUPLE             14
+            194 LOAD_CLOSURE             0 (__class__)
+            196 BUILD_TUPLE              1
+            198 LOAD_CONST              15 (<code object __init__ at 0x0000020DAEEDBC10, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 50>)
+            200 MAKE_FUNCTION           12 (annotations, closure)
+            202 STORE_NAME              24 (__init__)
+
+ 94         204 LOAD_CONST              16 (<code object _init_event_handlers at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 94>)
+            206 MAKE_FUNCTION            0
+            208 STORE_NAME              25 (_init_event_handlers)
+
+140         210 LOAD_CONST              17 ('curr_lap')
+
+142         212 LOAD_NAME               26 (Dict)
+            214 LOAD_NAME                7 (str)
+            216 LOAD_NAME               27 (Any)
+            218 BUILD_TUPLE              2
+            220 BINARY_SUBSCR
+
+140         224 LOAD_CONST              18 ('last_lap')
+
+143         226 LOAD_NAME               26 (Dict)
+            228 LOAD_NAME                7 (str)
+            230 LOAD_NAME               27 (Any)
+            232 BUILD_TUPLE              2
+            234 BINARY_SUBSCR
+
+140         238 LOAD_CONST              19 ('session_type')
+
+144         240 LOAD_NAME                7 (str)
+
+140         242 LOAD_CONST              20 ('sc_status')
+
+145         244 LOAD_NAME                7 (str)
+
+140         246 LOAD_CONST              21 ('lap_changed')
+
+146         248 LOAD_NAME               21 (bool)
+
+140         250 LOAD_CONST              22 ('return')
+
+147         252 LOAD_CONST              23 (None)
+
+140         254 BUILD_TUPLE             12
+            256 LOAD_CONST              24 (<code object _handle_minimal_update at 0x0000020DB0C27050, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 140>)
+            258 MAKE_FUNCTION            4 (annotations)
+            260 STORE_NAME              28 (_handle_minimal_update)
+
+165         262 LOAD_CONST              17 ('curr_lap')
+
+167         264 LOAD_NAME               26 (Dict)
+            266 LOAD_NAME                7 (str)
+            268 LOAD_NAME               27 (Any)
+            270 BUILD_TUPLE              2
+            272 BINARY_SUBSCR
+
+165         276 LOAD_CONST              18 ('last_lap')
+
+168         278 LOAD_NAME               26 (Dict)
+            280 LOAD_NAME                7 (str)
+            282 LOAD_NAME               27 (Any)
+            284 BUILD_TUPLE              2
+            286 BINARY_SUBSCR
+
+165         290 LOAD_CONST              25 ('best_lap')
+
+169         292 LOAD_NAME               26 (Dict)
+            294 LOAD_NAME                7 (str)
+            296 LOAD_NAME               27 (Any)
+            298 BUILD_TUPLE              2
+            300 BINARY_SUBSCR
+
+165         304 LOAD_CONST              19 ('session_type')
+
+170         306 LOAD_NAME                7 (str)
+
+165         308 LOAD_CONST              20 ('sc_status')
+
+171         310 LOAD_NAME                7 (str)
+
+165         312 LOAD_CONST              26 ('table_entries')
+
+172         314 LOAD_NAME               29 (List)
+            316 LOAD_NAME               26 (Dict)
+            318 LOAD_NAME                7 (str)
+            320 LOAD_NAME               27 (Any)
+            322 BUILD_TUPLE              2
+            324 BINARY_SUBSCR
+            328 BINARY_SUBSCR
+
+165         332 LOAD_CONST              27 ('ref_driver_index')
+
+173         334 LOAD_NAME               22 (int)
+
+165         336 LOAD_CONST              22 ('return')
+
+174         338 LOAD_CONST              23 (None)
+
+165         340 BUILD_TUPLE             16
+            342 LOAD_CONST              28 (<code object _handle_full_update at 0x0000020DAEEDC090, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 165>)
+            344 MAKE_FUNCTION            4 (annotations)
+            346 STORE_NAME              30 (_handle_full_update)
+
+188         348 LOAD_CONST              17 ('curr_lap')
+            350 LOAD_NAME               26 (Dict)
+            352 LOAD_NAME                7 (str)
+            354 LOAD_NAME               27 (Any)
+            356 BUILD_TUPLE              2
+            358 BINARY_SUBSCR
+            362 LOAD_CONST              19 ('session_type')
+            364 LOAD_NAME                7 (str)
+            366 LOAD_CONST              20 ('sc_status')
+            368 LOAD_NAME                7 (str)
+            370 LOAD_CONST              22 ('return')
+            372 LOAD_CONST              23 (None)
+            374 BUILD_TUPLE              8
+            376 LOAD_CONST              29 (<code object _handle_current_lap_display at 0x0000020DAF225C30, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 188>)
+            378 MAKE_FUNCTION            4 (annotations)
+            380 STORE_NAME              31 (_handle_current_lap_display)
+
+208         382 LOAD_CONST              17 ('curr_lap')
+
+210         384 LOAD_NAME               26 (Dict)
+            386 LOAD_NAME                7 (str)
+            388 LOAD_NAME               27 (Any)
+            390 BUILD_TUPLE              2
+            392 BINARY_SUBSCR
+
+208         396 LOAD_CONST              25 ('best_lap')
+
+211         398 LOAD_NAME               26 (Dict)
+            400 LOAD_NAME                7 (str)
+            402 LOAD_NAME               27 (Any)
+            404 BUILD_TUPLE              2
+            406 BINARY_SUBSCR
+
+208         410 LOAD_CONST              19 ('session_type')
+
+212         412 LOAD_NAME                7 (str)
+
+208         414 LOAD_CONST              20 ('sc_status')
+
+213         416 LOAD_NAME                7 (str)
+
+208         418 LOAD_CONST              26 ('table_entries')
+
+214         420 LOAD_NAME               29 (List)
+            422 LOAD_NAME               26 (Dict)
+            424 LOAD_NAME                7 (str)
+            426 LOAD_NAME               27 (Any)
+            428 BUILD_TUPLE              2
+            430 BINARY_SUBSCR
+            434 BINARY_SUBSCR
+
+208         438 LOAD_CONST              27 ('ref_driver_index')
+
+215         440 LOAD_NAME               22 (int)
+
+208         442 LOAD_CONST              22 ('return')
+
+216         444 LOAD_CONST              23 (None)
+
+208         446 BUILD_TUPLE             14
+            448 LOAD_CONST              30 (<code object _handle_delta_and_estimated at 0x0000020DAF18BB20, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 208>)
+            450 MAKE_FUNCTION            4 (annotations)
+            452 STORE_NAME              32 (_handle_delta_and_estimated)
+
+230         454 LOAD_CONST              17 ('curr_lap')
+            456 LOAD_NAME               26 (Dict)
+            458 LOAD_NAME                7 (str)
+            460 LOAD_NAME               27 (Any)
+            462 BUILD_TUPLE              2
+            464 BINARY_SUBSCR
+            468 LOAD_CONST              31 ('is_sc')
+            470 LOAD_NAME               21 (bool)
+            472 LOAD_CONST              22 ('return')
+            474 LOAD_NAME               33 (Optional)
+            476 LOAD_NAME               22 (int)
+            478 BINARY_SUBSCR
+            482 BUILD_TUPLE              6
+            484 LOAD_CONST              32 (<code object _calculate_and_update_delta at 0x0000020DAF18BC90, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 230>)
+            486 MAKE_FUNCTION            4 (annotations)
+            488 STORE_NAME              34 (_calculate_and_update_delta)
+
+246         490 LOAD_CONST              33 ('best_ms')
+
+248         492 LOAD_NAME               22 (int)
+
+246         494 LOAD_CONST              34 ('delta_ms')
+
+249         496 LOAD_NAME               33 (Optional)
+            498 LOAD_NAME               22 (int)
+            500 BINARY_SUBSCR
+
+246         504 LOAD_CONST              19 ('session_type')
+
+250         506 LOAD_NAME                7 (str)
+
+246         508 LOAD_CONST              26 ('table_entries')
+
+251         510 LOAD_NAME               29 (List)
+            512 LOAD_NAME               26 (Dict)
+            514 LOAD_NAME                7 (str)
+            516 LOAD_NAME               27 (Any)
+            518 BUILD_TUPLE              2
+            520 BINARY_SUBSCR
+            524 BINARY_SUBSCR
+
+246         528 LOAD_CONST              27 ('ref_driver_index')
+
+252         530 LOAD_NAME               22 (int)
+
+246         532 LOAD_CONST              22 ('return')
+
+253         534 LOAD_NAME                7 (str)
+
+246         536 BUILD_TUPLE             12
+            538 LOAD_CONST              35 (<code object _calculate_estimated_time at 0x0000020DAF220BD0, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 246>)
+            540 MAKE_FUNCTION            4 (annotations)
+            542 STORE_NAME              35 (_calculate_estimated_time)
+
+275         544 LOAD_CONST              19 ('session_type')
+            546 LOAD_NAME                7 (str)
+            548 LOAD_CONST              26 ('table_entries')
+            550 LOAD_NAME               29 (List)
+            552 LOAD_NAME               26 (Dict)
+            554 LOAD_NAME                7 (str)
+            556 LOAD_NAME               27 (Any)
+            558 BUILD_TUPLE              2
+            560 BINARY_SUBSCR
+            564 BINARY_SUBSCR
+            568 LOAD_CONST              22 ('return')
+            570 LOAD_NAME               21 (bool)
+            572 BUILD_TUPLE              6
+            574 LOAD_CONST              36 (<code object _should_predict_position at 0x0000020DAEC3DE30, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 275>)
+            576 MAKE_FUNCTION            4 (annotations)
+            578 STORE_NAME              36 (_should_predict_position)
+
+279         580 LOAD_CONST              34 ('delta_ms')
+
+281         582 LOAD_NAME               22 (int)
+
+279         584 LOAD_CONST              26 ('table_entries')
+
+282         586 LOAD_NAME               29 (List)
+            588 LOAD_NAME               26 (Dict)
+            590 LOAD_NAME                7 (str)
+            592 LOAD_NAME               27 (Any)
+            594 BUILD_TUPLE              2
+            596 BINARY_SUBSCR
+            600 BINARY_SUBSCR
+
+279         604 LOAD_CONST              37 ('estimated_ms')
+
+283         606 LOAD_NAME               22 (int)
+
+279         608 LOAD_CONST              27 ('ref_driver_index')
+
+284         610 LOAD_NAME               22 (int)
+
+279         612 LOAD_CONST              22 ('return')
+
+285         614 LOAD_NAME               33 (Optional)
+            616 LOAD_NAME               22 (int)
+            618 BINARY_SUBSCR
+
+279         622 BUILD_TUPLE             10
+            624 LOAD_CONST              38 (<code object _get_predicted_position at 0x0000020DAF2C23D0, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 279>)
+            626 MAKE_FUNCTION            4 (annotations)
+            628 STORE_NAME              37 (_get_predicted_position)
+
+296         630 LOAD_CONST              26 ('table_entries')
+
+297         632 LOAD_NAME               29 (List)
+            634 LOAD_NAME               26 (Dict)
+            636 LOAD_NAME                7 (str)
+            638 LOAD_NAME               27 (Any)
+            640 BUILD_TUPLE              2
+            642 BINARY_SUBSCR
+            646 BINARY_SUBSCR
+
+296         650 LOAD_CONST              39 ('driver_index')
+
+297         652 LOAD_NAME               22 (int)
+
+296         654 LOAD_CONST              22 ('return')
+
+298         656 LOAD_NAME               33 (Optional)
+            658 LOAD_NAME               26 (Dict)
+            660 LOAD_NAME                7 (str)
+            662 LOAD_NAME               27 (Any)
+            664 BUILD_TUPLE              2
+            666 BINARY_SUBSCR
+            670 BINARY_SUBSCR
+
+296         674 BUILD_TUPLE              6
+            676 LOAD_CONST              40 (<code object _find_driver_by_index at 0x0000020DAECADC50, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 296>)
+            678 MAKE_FUNCTION            4 (annotations)
+            680 STORE_NAME              38 (_find_driver_by_index)
+
+302         682 LOAD_CONST              26 ('table_entries')
+
+304         684 LOAD_NAME               29 (List)
+            686 LOAD_NAME               26 (Dict)
+            688 LOAD_NAME                7 (str)
+            690 LOAD_NAME               27 (Any)
+            692 BUILD_TUPLE              2
+            694 BINARY_SUBSCR
+            698 BINARY_SUBSCR
+
+302         702 LOAD_CONST              37 ('estimated_ms')
+
+305         704 LOAD_NAME               22 (int)
+
+302         706 LOAD_CONST              27 ('ref_driver_index')
+
+306         708 LOAD_NAME               22 (int)
+
+302         710 LOAD_CONST              22 ('return')
+
+307         712 LOAD_NAME               33 (Optional)
+            714 LOAD_NAME               22 (int)
+            716 BINARY_SUBSCR
+
+302         720 BUILD_TUPLE              8
+            722 LOAD_CONST              41 (<code object _predict_quali_position at 0x0000020DAEB70A00, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 302>)
+            724 MAKE_FUNCTION            4 (annotations)
+            726 STORE_NAME              39 (_predict_quali_position)
+
+362         728 LOAD_CONST              42 ('session_uid')
+            730 LOAD_NAME                7 (str)
+            732 BUILD_TUPLE              2
+            734 LOAD_CONST              43 (<code object _handle_new_session at 0x0000020DAF2AD570, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 362>)
+            736 MAKE_FUNCTION            4 (annotations)
+            738 STORE_NAME              40 (_handle_new_session)
+
+372         740 LOAD_CONST              44 (<code object clear at 0x0000020DB0C1AAC0, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 372>)
+            742 MAKE_FUNCTION            0
+            744 STORE_NAME              41 (clear)
+
+390         746 LOAD_CONST              45 ('last_lap_ms')
+            748 LOAD_NAME               33 (Optional)
+            750 LOAD_NAME               22 (int)
+            752 BINARY_SUBSCR
+            756 BUILD_TUPLE              2
+            758 LOAD_CONST              46 (<code object _update_last_lap at 0x0000020DAF2C2170, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 390>)
+            760 MAKE_FUNCTION            4 (annotations)
+            762 STORE_NAME              42 (_update_last_lap)
+
+402         764 LOAD_CONST              47 ('best_lap_ms')
+            766 LOAD_NAME               33 (Optional)
+            768 LOAD_NAME               22 (int)
+            770 BINARY_SUBSCR
+            774 BUILD_TUPLE              2
+            776 LOAD_CONST              48 (<code object _update_best_lap at 0x0000020DAF2C22A0, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 402>)
+            778 MAKE_FUNCTION            4 (annotations)
+            780 STORE_NAME              43 (_update_best_lap)
+
+414         782 LOAD_CONST              49 ('curr_lap_ms')
+            784 LOAD_NAME               33 (Optional)
+            786 LOAD_NAME               22 (int)
+            788 BINARY_SUBSCR
+            792 BUILD_TUPLE              2
+            794 LOAD_CONST              50 (<code object _update_curr_lap at 0x0000020DAF2C2500, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 414>)
+            796 MAKE_FUNCTION            4 (annotations)
+            798 STORE_NAME              44 (_update_curr_lap)
+
+426         800 LOAD_CONST              51 ('time_str')
+            802 LOAD_NAME                7 (str)
+            804 BUILD_TUPLE              2
+            806 LOAD_CONST              52 (<code object _update_curr_lap_str at 0x0000020DAF2DF440, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 426>)
+            808 MAKE_FUNCTION            4 (annotations)
+            810 STORE_NAME              45 (_update_curr_lap_str)
+
+432         812 LOAD_CONST              34 ('delta_ms')
+            814 LOAD_NAME               22 (int)
+            816 LOAD_CONST              31 ('is_sc')
+            818 LOAD_NAME               21 (bool)
+            820 BUILD_TUPLE              4
+            822 LOAD_CONST              53 (<code object _update_delta_ms at 0x0000020DAF2D1D30, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 432>)
+            824 MAKE_FUNCTION            4 (annotations)
+            826 STORE_NAME              46 (_update_delta_ms)
+
+442         828 LOAD_CONST              54 ('delta_sec')
+            830 LOAD_NAME               23 (float)
+            832 LOAD_CONST              31 ('is_sc')
+            834 LOAD_NAME               21 (bool)
+            836 BUILD_TUPLE              4
+            838 LOAD_CONST              55 (<code object _update_delta_sec at 0x0000020DAF2F8870, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 442>)
+            840 MAKE_FUNCTION            4 (annotations)
+            842 STORE_NAME              47 (_update_delta_sec)
+
+459         844 LOAD_CONST              56 ('est')
+            846 LOAD_NAME                7 (str)
+            848 BUILD_TUPLE              2
+            850 LOAD_CONST              57 (<code object _update_estimated at 0x0000020DAED7A5B0, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 459>)
+            852 MAKE_FUNCTION            4 (annotations)
+            854 STORE_NAME              48 (_update_estimated)
+
+467         856 LOAD_CONST              58 (<code object _clear_delta at 0x0000020DAF2D4B70, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 467>)
+            858 MAKE_FUNCTION            0
+            860 STORE_NAME              49 (_clear_delta)
+
+472         862 LOAD_CONST              59 ('property_name')
+            864 LOAD_NAME                7 (str)
+            866 LOAD_CONST              60 ('status_list')
+            868 LOAD_NAME               29 (List)
+            870 LOAD_NAME               22 (int)
+            872 BINARY_SUBSCR
+            876 BUILD_TUPLE              4
+            878 LOAD_CONST              61 (<code object _update_sector_status at 0x0000020DAF2DF660, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 472>)
+            880 MAKE_FUNCTION            4 (annotations)
+            882 STORE_NAME              50 (_update_sector_status)
+
+482         884 LOAD_CONST              62 (<code object _timer_clear_cb at 0x0000020DAF2B9E60, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 482>)
+            886 MAKE_FUNCTION            0
+            888 STORE_NAME              51 (_timer_clear_cb)
+
+493         890 LOAD_CONST              63 ('status')
+            892 LOAD_NAME                7 (str)
+            894 LOAD_CONST              22 ('return')
+            896 LOAD_NAME               21 (bool)
+            898 BUILD_TUPLE              4
+            900 LOAD_CONST              64 (<code object _is_safety_car at 0x0000020DB1039480, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 493>)
+            902 MAKE_FUNCTION            4 (annotations)
+            904 STORE_NAME              52 (_is_safety_car)
+
+497         906 LOAD_CONST              20 ('sc_status')
+            908 LOAD_NAME                7 (str)
+            910 LOAD_CONST              22 ('return')
+            912 LOAD_CONST              23 (None)
+            914 BUILD_TUPLE              4
+            916 LOAD_CONST              65 (<code object _update_safety_car_status at 0x0000020DAF16B430, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 497>)
+            918 MAKE_FUNCTION            4 (annotations)
+            920 STORE_NAME              53 (_update_safety_car_status)
+
+510         922 LOAD_CONST              66 ('data')
+            924 LOAD_NAME               26 (Dict)
+            926 LOAD_NAME                7 (str)
+            928 LOAD_NAME               27 (Any)
+            930 BUILD_TUPLE              2
+            932 BINARY_SUBSCR
+            936 LOAD_CONST              22 ('return')
+            938 LOAD_CONST              23 (None)
+            940 BUILD_TUPLE              4
+            942 LOAD_CONST              67 (<code object _handle_tt_update at 0x0000020DAEEA6860, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 510>)
+            944 MAKE_FUNCTION            4 (annotations)
+            946 STORE_NAME              54 (_handle_tt_update)
+            948 LOAD_CLOSURE             0 (__class__)
+            950 COPY                     1
+            952 STORE_NAME              55 (__classcell__)
+            954 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAEEDBC10, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 50>:
+              0 COPY_FREE_VARS           1
+
+ 50           2 RESUME                   0
+
+ 71           4 LOAD_CONST               1 (None)
+              6 LOAD_FAST                0 (self)
+              8 STORE_ATTR               0 (curr_session_uid)
+
+ 72          18 LOAD_CONST               1 (None)
+             20 LOAD_FAST                0 (self)
+             22 STORE_ATTR               1 (last_lap_num)
+
+ 73          32 LOAD_CONST               2 (False)
+             34 LOAD_FAST                0 (self)
+             36 STORE_ATTR               2 (show_last_lap_sector_bar)
+
+ 74          46 LOAD_FAST                7 (min_overlay_style)
+             48 LOAD_FAST                0 (self)
+             50 STORE_ATTR               3 (min_overlay_style)
+
+ 77          60 LOAD_GLOBAL              9 (NULL + QTimer)
+             70 CALL                     0
+             78 LOAD_FAST                0 (self)
+             80 STORE_ATTR               5 (last_sector_display_timer)
+
+ 78          90 LOAD_FAST                0 (self)
+             92 LOAD_ATTR               10 (last_sector_display_timer)
+            112 LOAD_ATTR               13 (NULL|self + setSingleShot)
+            132 LOAD_CONST               3 (True)
+            134 CALL                     1
+            142 POP_TOP
+
+ 79         144 LOAD_FAST                0 (self)
+            146 LOAD_ATTR               10 (last_sector_display_timer)
+            166 LOAD_ATTR               14 (timeout)
+            186 LOAD_ATTR               17 (NULL|self + connect)
+            206 LOAD_FAST                0 (self)
+            208 LOAD_ATTR               18 (_timer_clear_cb)
+            228 CALL                     1
+            236 POP_TOP
+
+ 81         238 LOAD_GLOBAL             20 (super)
+            248 LOAD_DEREF               8 (__class__)
+            250 LOAD_FAST                0 (self)
+            252 LOAD_SUPER_ATTR         45 (NULL|self + __init__)
+
+ 82         256 LOAD_FAST                1 (config)
+
+ 83         258 LOAD_FAST                2 (logger)
+
+ 84         260 LOAD_FAST                3 (locked)
+
+ 85         262 LOAD_FAST                4 (opacity)
+
+ 86         264 LOAD_FAST                5 (scale_factor)
+
+ 87         266 LOAD_FAST                6 (windowed_overlay)
+
+ 88         268 LOAD_CONST               1 (None)
+
+ 81         270 KW_NAMES                 4 (('refresh_interval_ms',))
+            272 CALL                     7
+            280 POP_TOP
+
+ 91         282 LOAD_FAST                0 (self)
+            284 LOAD_ATTR               25 (NULL|self + set_qml_property)
+            304 LOAD_CONST               5 ('minOverlayStyle')
+            306 LOAD_FAST                0 (self)
+            308 LOAD_ATTR                6 (min_overlay_style)
+            328 CALL                     2
+            336 POP_TOP
+
+ 92         338 LOAD_FAST                0 (self)
+            340 LOAD_ATTR               27 (NULL|self + _init_event_handlers)
+            360 CALL                     0
+            368 POP_TOP
+            370 RETURN_CONST             1 (None)
+
+Disassembly of <code object _init_event_handlers at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 94>:
+              0 MAKE_CELL                0 (self)
+
+ 94           2 RESUME                   0
+
+ 96           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('race_table_update')
+             28 CALL                     1
+
+ 97          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (Dict)
+             48 LOAD_GLOBAL              4 (str)
+             58 LOAD_GLOBAL              6 (Any)
+             68 BUILD_TUPLE              2
+             70 BINARY_SUBSCR
+             74 LOAD_CONST               3 ('return')
+             76 LOAD_CONST               4 (None)
+             78 BUILD_TUPLE              4
+             80 LOAD_CLOSURE             0 (self)
+             82 BUILD_TUPLE              1
+             84 LOAD_CONST               5 (<code object handle_race_update at 0x0000020DAEE3CB40, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 96>)
+             86 MAKE_FUNCTION           12 (annotations, closure)
+
+ 96          88 CALL                     0
+
+ 97          96 STORE_FAST               1 (handle_race_update)
+             98 RETURN_CONST             4 (None)
+
+Disassembly of <code object handle_race_update at 0x0000020DAEE3CB40, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 96>:
+              0 COPY_FREE_VARS           1
+
+ 96           2 RESUME                   0
+
+ 99           4 LOAD_FAST                0 (data)
+              6 LOAD_CONST               1 ('event-type')
+              8 BINARY_SUBSCR
+             12 STORE_FAST               1 (session_type)
+
+100          14 LOAD_FAST                1 (session_type)
+             16 LOAD_CONST               2 ('None')
+             18 COMPARE_OP              40 (==)
+             22 POP_JUMP_IF_FALSE        1 (to 26)
+
+101          24 RETURN_CONST             3 (None)
+
+103     >>   26 LOAD_GLOBAL              1 (NULL + is_tt_session)
+             36 LOAD_FAST                1 (session_type)
+             38 CALL                     1
+             46 POP_JUMP_IF_FALSE       18 (to 84)
+
+104          48 LOAD_DEREF              12 (self)
+             50 LOAD_ATTR                3 (NULL|self + _handle_tt_update)
+             70 LOAD_FAST                0 (data)
+             72 CALL                     1
+             80 POP_TOP
+
+105          82 RETURN_CONST             3 (None)
+
+107     >>   84 LOAD_GLOBAL              5 (NULL + get_ref_row)
+             94 LOAD_FAST                0 (data)
+             96 CALL                     1
+            104 STORE_FAST               2 (ref_row)
+
+108         106 LOAD_FAST                2 (ref_row)
+            108 POP_JUMP_IF_TRUE         1 (to 112)
+
+109         110 RETURN_CONST             3 (None)
+
+112     >>  112 LOAD_FAST                0 (data)
+            114 LOAD_CONST               4 ('session-uid')
+            116 BINARY_SUBSCR
+            120 STORE_FAST               3 (incoming_session_uid)
+
+113         122 LOAD_FAST                3 (incoming_session_uid)
+            124 POP_JUMP_IF_NOT_NONE     2 (to 130)
+            126 LOAD_ASSERTION_ERROR
+            128 RAISE_VARARGS            1
+
+114     >>  130 LOAD_DEREF              12 (self)
+            132 LOAD_ATTR                6 (curr_session_uid)
+            152 LOAD_FAST                3 (incoming_session_uid)
+            154 COMPARE_OP              55 (!=)
+            158 POP_JUMP_IF_FALSE       17 (to 194)
+
+115         160 LOAD_DEREF              12 (self)
+            162 LOAD_ATTR                9 (NULL|self + _handle_new_session)
+            182 LOAD_FAST                3 (incoming_session_uid)
+            184 CALL                     1
+            192 POP_TOP
+
+117     >>  194 LOAD_FAST                2 (ref_row)
+            196 LOAD_CONST               5 ('lap-info')
+            198 BINARY_SUBSCR
+            202 STORE_FAST               4 (lap_info)
+
+118         204 LOAD_FAST                4 (lap_info)
+            206 LOAD_CONST               6 ('last-lap')
+            208 BINARY_SUBSCR
+            212 STORE_FAST               5 (last_lap)
+
+119         214 LOAD_FAST                4 (lap_info)
+            216 LOAD_CONST               7 ('curr-lap')
+            218 BINARY_SUBSCR
+            222 STORE_FAST               6 (curr_lap)
+
+120         224 LOAD_FAST                0 (data)
+            226 LOAD_CONST               8 ('safety-car-status')
+            228 BINARY_SUBSCR
+            232 STORE_FAST               7 (sc_status)
+
+123         234 LOAD_GLOBAL             11 (NULL + bool)
+            244 LOAD_DEREF              12 (self)
+            246 LOAD_ATTR               12 (last_lap_num)
+            266 COPY                     1
+            268 POP_JUMP_IF_FALSE       18 (to 306)
+            270 POP_TOP
+            272 LOAD_DEREF              12 (self)
+            274 LOAD_ATTR               12 (last_lap_num)
+            294 LOAD_FAST                4 (lap_info)
+            296 LOAD_CONST               9 ('current-lap')
+            298 BINARY_SUBSCR
+            302 COMPARE_OP              55 (!=)
+        >>  306 CALL                     1
+            314 STORE_FAST               8 (lap_changed)
+
+124         316 LOAD_FAST                8 (lap_changed)
+            318 POP_JUMP_IF_FALSE       87 (to 494)
+
+125         320 LOAD_DEREF              12 (self)
+            322 LOAD_ATTR               14 (logger)
+            342 LOAD_ATTR               17 (NULL|self + debug)
+            362 LOAD_CONST              10 ('%s | Lap number changed from %s to %s')
+
+126         364 LOAD_DEREF              12 (self)
+            366 LOAD_ATTR               18 (OVERLAY_ID)
+            386 LOAD_DEREF              12 (self)
+            388 LOAD_ATTR               12 (last_lap_num)
+            408 LOAD_FAST                4 (lap_info)
+            410 LOAD_CONST               9 ('current-lap')
+            412 BINARY_SUBSCR
+
+125         416 CALL                     4
+            424 POP_TOP
+
+127         426 LOAD_CONST              11 (True)
+            428 LOAD_DEREF              12 (self)
+            430 STORE_ATTR              10 (show_last_lap_sector_bar)
+
+128         440 LOAD_DEREF              12 (self)
+            442 LOAD_ATTR               22 (last_sector_display_timer)
+            462 LOAD_ATTR               25 (NULL|self + start)
+            482 LOAD_CONST              12 (5000)
+            484 CALL                     1
+            492 POP_TOP
+
+130     >>  494 LOAD_FAST                4 (lap_info)
+            496 LOAD_CONST               9 ('current-lap')
+            498 BINARY_SUBSCR
+            502 LOAD_DEREF              12 (self)
+            504 STORE_ATTR               6 (last_lap_num)
+
+132         514 LOAD_DEREF              12 (self)
+            516 LOAD_ATTR               26 (min_overlay_style)
+            536 POP_JUMP_IF_FALSE       22 (to 582)
+
+133         538 LOAD_DEREF              12 (self)
+            540 LOAD_ATTR               29 (NULL|self + _handle_minimal_update)
+            560 LOAD_FAST                6 (curr_lap)
+            562 LOAD_FAST                5 (last_lap)
+            564 LOAD_FAST                1 (session_type)
+            566 LOAD_FAST                7 (sc_status)
+            568 LOAD_FAST                8 (lap_changed)
+            570 CALL                     5
+            578 POP_TOP
+            580 RETURN_CONST             3 (None)
+
+135     >>  582 LOAD_FAST                4 (lap_info)
+            584 LOAD_CONST              13 ('best-lap')
+            586 BINARY_SUBSCR
+            590 STORE_FAST               9 (best_lap)
+
+136         592 LOAD_FAST                2 (ref_row)
+            594 LOAD_CONST              14 ('driver-info')
+            596 BINARY_SUBSCR
+            600 LOAD_CONST              15 ('index')
+            602 BINARY_SUBSCR
+            606 STORE_FAST              10 (ref_index)
+
+137         608 LOAD_FAST                0 (data)
+            610 LOAD_CONST              16 ('table-entries')
+            612 BINARY_SUBSCR
+            616 STORE_FAST              11 (table_entries)
+
+138         618 LOAD_DEREF              12 (self)
+            620 LOAD_ATTR               31 (NULL|self + _handle_full_update)
+            640 LOAD_FAST                6 (curr_lap)
+            642 LOAD_FAST                5 (last_lap)
+            644 LOAD_FAST                9 (best_lap)
+            646 LOAD_FAST                1 (session_type)
+            648 LOAD_FAST                7 (sc_status)
+            650 LOAD_FAST               11 (table_entries)
+            652 LOAD_FAST               10 (ref_index)
+            654 CALL                     7
+            662 POP_TOP
+            664 RETURN_CONST             3 (None)
+
+Disassembly of <code object _handle_minimal_update at 0x0000020DB0C27050, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 140>:
+140           0 RESUME                   0
+
+149           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (show_last_lap_sector_bar)
+             24 POP_JUMP_IF_FALSE        5 (to 36)
+             26 LOAD_FAST                2 (last_lap)
+             28 LOAD_CONST               1 ('sector-status')
+             30 BINARY_SUBSCR
+             34 JUMP_FORWARD             4 (to 44)
+        >>   36 LOAD_FAST                1 (curr_lap)
+             38 LOAD_CONST               1 ('sector-status')
+             40 BINARY_SUBSCR
+        >>   44 STORE_FAST               6 (sectors)
+
+150          46 LOAD_FAST                0 (self)
+             48 LOAD_ATTR                3 (NULL|self + _update_sector_status)
+             68 LOAD_CONST               2 ('currentSectorStatus')
+             70 LOAD_FAST                6 (sectors)
+             72 CALL                     2
+             80 POP_TOP
+
+152          82 LOAD_FAST                5 (lap_changed)
+             84 POP_JUMP_IF_FALSE       78 (to 242)
+
+155          86 LOAD_FAST                2 (last_lap)
+             88 LOAD_CONST               3 ('lap-time-ms')
+             90 BINARY_SUBSCR
+             94 POP_JUMP_IF_FALSE       24 (to 144)
+
+154          96 LOAD_GLOBAL              5 (NULL + F1Utils)
+            106 LOAD_ATTR                6 (millisecondsToMinutesSecondsMilliseconds)
+            126 LOAD_FAST                2 (last_lap)
+            128 LOAD_CONST               3 ('lap-time-ms')
+            130 BINARY_SUBSCR
+            134 CALL                     1
+            142 JUMP_FORWARD            11 (to 166)
+
+155     >>  144 LOAD_FAST                0 (self)
+            146 LOAD_ATTR                8 (DEFAULT_TIME)
+
+153     >>  166 STORE_FAST               7 (time_str)
+
+157         168 LOAD_FAST                0 (self)
+            170 LOAD_ATTR               11 (NULL|self + set_qml_property)
+            190 LOAD_CONST               4 ('currentTime')
+            192 LOAD_FAST                7 (time_str)
+            194 CALL                     2
+            202 POP_TOP
+
+158         204 LOAD_FAST                0 (self)
+            206 LOAD_ATTR               11 (NULL|self + set_qml_property)
+            226 LOAD_CONST               5 ('currentColor')
+            228 LOAD_CONST               6 ('#FFFFFF')
+            230 CALL                     2
+            238 POP_TOP
+            240 JUMP_FORWARD            31 (to 304)
+
+159     >>  242 LOAD_FAST                0 (self)
+            244 LOAD_ATTR                0 (show_last_lap_sector_bar)
+            264 POP_JUMP_IF_TRUE        19 (to 304)
+
+160         266 LOAD_FAST                0 (self)
+            268 LOAD_ATTR               13 (NULL|self + _handle_current_lap_display)
+            288 LOAD_FAST                1 (curr_lap)
+            290 LOAD_FAST                3 (session_type)
+            292 LOAD_FAST                4 (sc_status)
+            294 CALL                     3
+            302 POP_TOP
+
+162     >>  304 LOAD_FAST                0 (self)
+            306 LOAD_ATTR               15 (NULL|self + _calculate_and_update_delta)
+            326 LOAD_FAST                1 (curr_lap)
+            328 LOAD_FAST                0 (self)
+            330 LOAD_ATTR               17 (NULL|self + _is_safety_car)
+            350 LOAD_FAST                4 (sc_status)
+            352 CALL                     1
+            360 CALL                     2
+            368 POP_TOP
+
+163         370 LOAD_FAST                0 (self)
+            372 LOAD_ATTR               19 (NULL|self + _update_safety_car_status)
+            392 LOAD_FAST                4 (sc_status)
+            394 CALL                     1
+            402 POP_TOP
+            404 RETURN_CONST             7 (None)
+
+Disassembly of <code object _handle_full_update at 0x0000020DAEEDC090, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 165>:
+165           0 RESUME                   0
+
+176           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + _update_last_lap)
+             24 LOAD_FAST                2 (last_lap)
+             26 LOAD_CONST               1 ('lap-time-ms')
+             28 BINARY_SUBSCR
+             32 CALL                     1
+             40 POP_TOP
+
+177          42 LOAD_FAST                0 (self)
+             44 LOAD_ATTR                3 (NULL|self + _update_best_lap)
+             64 LOAD_FAST                3 (best_lap)
+             66 LOAD_CONST               1 ('lap-time-ms')
+             68 BINARY_SUBSCR
+             72 CALL                     1
+             80 POP_TOP
+
+178          82 LOAD_FAST                0 (self)
+             84 LOAD_ATTR                5 (NULL|self + _update_sector_status)
+            104 LOAD_CONST               2 ('lastSectorStatus')
+            106 LOAD_FAST                2 (last_lap)
+            108 LOAD_CONST               3 ('sector-status')
+            110 BINARY_SUBSCR
+            114 CALL                     2
+            122 POP_TOP
+
+179         124 LOAD_FAST                0 (self)
+            126 LOAD_ATTR                5 (NULL|self + _update_sector_status)
+            146 LOAD_CONST               4 ('bestSectorStatus')
+            148 LOAD_FAST                3 (best_lap)
+            150 LOAD_CONST               3 ('sector-status')
+            152 BINARY_SUBSCR
+            156 CALL                     2
+            164 POP_TOP
+
+181         166 LOAD_FAST                0 (self)
+            168 LOAD_ATTR                6 (show_last_lap_sector_bar)
+            188 POP_JUMP_IF_FALSE        5 (to 200)
+            190 LOAD_FAST                2 (last_lap)
+            192 LOAD_CONST               3 ('sector-status')
+            194 BINARY_SUBSCR
+            198 JUMP_FORWARD             4 (to 208)
+        >>  200 LOAD_FAST                1 (curr_lap)
+            202 LOAD_CONST               3 ('sector-status')
+            204 BINARY_SUBSCR
+        >>  208 STORE_FAST               8 (sectors)
+
+182         210 LOAD_FAST                0 (self)
+            212 LOAD_ATTR                5 (NULL|self + _update_sector_status)
+            232 LOAD_CONST               5 ('currentSectorStatus')
+            234 LOAD_FAST                8 (sectors)
+            236 CALL                     2
+            244 POP_TOP
+
+184         246 LOAD_FAST                0 (self)
+            248 LOAD_ATTR                9 (NULL|self + _handle_current_lap_display)
+            268 LOAD_FAST                1 (curr_lap)
+            270 LOAD_FAST                4 (session_type)
+            272 LOAD_FAST                5 (sc_status)
+            274 CALL                     3
+            282 POP_TOP
+
+185         284 LOAD_FAST                0 (self)
+            286 LOAD_ATTR               11 (NULL|self + _handle_delta_and_estimated)
+            306 LOAD_FAST                1 (curr_lap)
+            308 LOAD_FAST                3 (best_lap)
+            310 LOAD_FAST                4 (session_type)
+            312 LOAD_FAST                5 (sc_status)
+            314 LOAD_FAST                6 (table_entries)
+            316 LOAD_FAST                7 (ref_driver_index)
+            318 CALL                     6
+            326 POP_TOP
+
+186         328 LOAD_FAST                0 (self)
+            330 LOAD_ATTR               13 (NULL|self + _update_safety_car_status)
+            350 LOAD_FAST                5 (sc_status)
+            352 CALL                     1
+            360 POP_TOP
+            362 RETURN_CONST             6 (None)
+
+Disassembly of <code object _handle_current_lap_display at 0x0000020DAF225C30, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 188>:
+188           0 RESUME                   0
+
+193           2 LOAD_FAST                1 (curr_lap)
+              4 LOAD_CONST               1 ('driver-status')
+              6 BINARY_SUBSCR
+             10 STORE_FAST               4 (driver_status)
+
+194          12 LOAD_GLOBAL              1 (NULL + is_race_type_session)
+             22 LOAD_FAST                2 (session_type)
+             24 CALL                     1
+             32 POP_JUMP_IF_FALSE       63 (to 160)
+
+196          34 LOAD_FAST                0 (self)
+             36 LOAD_ATTR                3 (NULL|self + _is_safety_car)
+             56 LOAD_FAST                3 (sc_status)
+             58 CALL                     1
+             66 POP_JUMP_IF_FALSE       25 (to 118)
+
+197          68 LOAD_FAST                0 (self)
+             70 LOAD_ATTR                5 (NULL|self + _update_curr_lap_str)
+             90 LOAD_FAST                3 (sc_status)
+             92 LOAD_CONST               2 ('VIRTUAL_SAFETY_CAR')
+             94 COMPARE_OP              40 (==)
+             98 POP_JUMP_IF_FALSE        2 (to 104)
+            100 LOAD_CONST               3 ('VSC')
+            102 JUMP_FORWARD             1 (to 106)
+        >>  104 LOAD_CONST               4 ('SC')
+        >>  106 CALL                     1
+            114 POP_TOP
+            116 RETURN_CONST             7 (None)
+
+199     >>  118 LOAD_FAST                0 (self)
+            120 LOAD_ATTR                7 (NULL|self + _update_curr_lap)
+            140 LOAD_FAST                1 (curr_lap)
+            142 LOAD_CONST               5 ('lap-time-ms')
+            144 BINARY_SUBSCR
+            148 CALL                     1
+            156 POP_TOP
+            158 RETURN_CONST             7 (None)
+
+201     >>  160 LOAD_FAST                4 (driver_status)
+            162 LOAD_CONST               6 (frozenset({'FLYING_LAP', 'ON_TRACK'}))
+            164 CONTAINS_OP              0
+            166 POP_JUMP_IF_FALSE       21 (to 210)
+
+203         168 LOAD_FAST                0 (self)
+            170 LOAD_ATTR                7 (NULL|self + _update_curr_lap)
+            190 LOAD_FAST                1 (curr_lap)
+            192 LOAD_CONST               5 ('lap-time-ms')
+            194 BINARY_SUBSCR
+            198 CALL                     1
+            206 POP_TOP
+            208 RETURN_CONST             7 (None)
+
+206     >>  210 LOAD_FAST                0 (self)
+            212 LOAD_ATTR                5 (NULL|self + _update_curr_lap_str)
+            232 LOAD_FAST                4 (driver_status)
+            234 CALL                     1
+            242 POP_TOP
+            244 RETURN_CONST             7 (None)
+
+Disassembly of <code object _handle_delta_and_estimated at 0x0000020DAF18BB20, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 208>:
+208           0 RESUME                   0
+
+218           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + _is_safety_car)
+             24 LOAD_FAST                4 (sc_status)
+             26 CALL                     1
+             34 STORE_FAST               7 (is_sc)
+
+219          36 LOAD_FAST                2 (best_lap)
+             38 LOAD_CONST               1 ('lap-time-ms')
+             40 BINARY_SUBSCR
+             44 COPY                     1
+             46 POP_JUMP_IF_TRUE         2 (to 52)
+             48 POP_TOP
+             50 LOAD_CONST               2 (0)
+        >>   52 STORE_FAST               8 (best_ms)
+
+222          54 LOAD_FAST                0 (self)
+             56 LOAD_ATTR                3 (NULL|self + _calculate_and_update_delta)
+             76 LOAD_FAST                1 (curr_lap)
+             78 LOAD_FAST                7 (is_sc)
+             80 CALL                     2
+             88 STORE_FAST               9 (delta_ms)
+
+225          90 LOAD_FAST                0 (self)
+             92 LOAD_ATTR                5 (NULL|self + _calculate_estimated_time)
+
+226         112 LOAD_FAST                8 (best_ms)
+            114 LOAD_FAST                9 (delta_ms)
+            116 LOAD_FAST                3 (session_type)
+            118 LOAD_FAST                5 (table_entries)
+            120 LOAD_FAST                6 (ref_driver_index)
+
+225         122 CALL                     5
+            130 STORE_FAST              10 (est_str)
+
+228         132 LOAD_FAST                0 (self)
+            134 LOAD_ATTR                7 (NULL|self + _update_estimated)
+            154 LOAD_FAST               10 (est_str)
+            156 CALL                     1
+            164 POP_TOP
+            166 RETURN_CONST             3 (None)
+
+Disassembly of <code object _calculate_and_update_delta at 0x0000020DAF18BC90, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 230>:
+230           0 RESUME                   0
+
+232           2 LOAD_FAST                2 (is_sc)
+              4 POP_JUMP_IF_FALSE       40 (to 86)
+
+233           6 LOAD_FAST                1 (curr_lap)
+              8 LOAD_CONST               1 ('delta-sc-sec')
+             10 BINARY_SUBSCR
+             14 STORE_FAST               3 (delta_sc)
+
+234          16 LOAD_FAST                3 (delta_sc)
+             18 POP_JUMP_IF_NONE        61 (to 142)
+
+235          20 LOAD_FAST                0 (self)
+             22 LOAD_ATTR                1 (NULL|self + _update_delta_sec)
+             42 LOAD_FAST                3 (delta_sc)
+             44 LOAD_CONST               3 (True)
+             46 KW_NAMES                 4 (('is_sc',))
+             48 CALL                     2
+             56 POP_TOP
+
+236          58 LOAD_GLOBAL              3 (NULL + int)
+             68 LOAD_FAST                3 (delta_sc)
+             70 LOAD_CONST               5 (1000)
+             72 BINARY_OP                5 (*)
+             76 CALL                     1
+             84 RETURN_VALUE
+
+238     >>   86 LOAD_FAST                1 (curr_lap)
+             88 LOAD_CONST               6 ('delta-ms')
+             90 BINARY_SUBSCR
+             94 STORE_FAST               4 (delta_ms)
+
+239          96 LOAD_FAST                4 (delta_ms)
+             98 POP_JUMP_IF_NONE        21 (to 142)
+
+240         100 LOAD_FAST                0 (self)
+            102 LOAD_ATTR                5 (NULL|self + _update_delta_ms)
+            122 LOAD_FAST                4 (delta_ms)
+            124 LOAD_CONST               7 (False)
+            126 KW_NAMES                 4 (('is_sc',))
+            128 CALL                     2
+            136 POP_TOP
+
+241         138 LOAD_FAST                4 (delta_ms)
+            140 RETURN_VALUE
+
+243     >>  142 LOAD_FAST                0 (self)
+            144 LOAD_ATTR                7 (NULL|self + _clear_delta)
+            164 CALL                     0
+            172 POP_TOP
+
+244         174 RETURN_CONST             2 (None)
+
+Disassembly of <code object _calculate_estimated_time at 0x0000020DAF220BD0, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 246>:
+246           0 RESUME                   0
+
+255           2 LOAD_FAST                1 (best_ms)
+              4 POP_JUMP_IF_FALSE        2 (to 10)
+              6 LOAD_FAST                2 (delta_ms)
+              8 POP_JUMP_IF_NOT_NONE    12 (to 34)
+
+256     >>   10 LOAD_FAST                0 (self)
+             12 LOAD_ATTR                0 (DEFAULT_TIME)
+             32 RETURN_VALUE
+
+258     >>   34 LOAD_FAST                1 (best_ms)
+             36 LOAD_FAST                2 (delta_ms)
+             38 BINARY_OP                0 (+)
+             42 STORE_FAST               6 (estimated_ms)
+
+259          44 LOAD_FAST                6 (estimated_ms)
+             46 LOAD_CONST               1 (0)
+             48 COMPARE_OP              26 (<=)
+             52 POP_JUMP_IF_FALSE       52 (to 158)
+
+260          54 LOAD_FAST                0 (self)
+             56 LOAD_ATTR                2 (logger)
+             76 LOAD_ATTR                5 (NULL|self + debug)
+             96 LOAD_CONST               2 ('%s | Negative estimated lap time. %d + %d')
+             98 LOAD_FAST                0 (self)
+            100 LOAD_ATTR                6 (OVERLAY_ID)
+            120 LOAD_FAST                1 (best_ms)
+            122 LOAD_FAST                2 (delta_ms)
+            124 CALL                     4
+            132 POP_TOP
+
+261         134 LOAD_FAST                0 (self)
+            136 LOAD_ATTR                0 (DEFAULT_TIME)
+            156 RETURN_VALUE
+
+263     >>  158 LOAD_GLOBAL              9 (NULL + F1Utils)
+            168 LOAD_ATTR               10 (millisecondsToMinutesSecondsMilliseconds)
+            188 LOAD_FAST                6 (estimated_ms)
+            190 CALL                     1
+            198 STORE_FAST               7 (est_str)
+
+266         200 LOAD_FAST                0 (self)
+            202 LOAD_ATTR               13 (NULL|self + _should_predict_position)
+            222 LOAD_FAST                3 (session_type)
+            224 LOAD_FAST                4 (table_entries)
+            226 CALL                     2
+            234 POP_JUMP_IF_FALSE       31 (to 298)
+
+267         236 LOAD_FAST                0 (self)
+            238 LOAD_ATTR               15 (NULL|self + _get_predicted_position)
+
+268         258 LOAD_FAST                2 (delta_ms)
+            260 LOAD_FAST                4 (table_entries)
+            262 LOAD_FAST                6 (estimated_ms)
+            264 LOAD_FAST                5 (ref_driver_index)
+
+267         266 CALL                     4
+            274 STORE_FAST               8 (predicted_pos)
+
+270         276 LOAD_FAST                8 (predicted_pos)
+            278 POP_JUMP_IF_FALSE        9 (to 298)
+
+271         280 LOAD_FAST                7 (est_str)
+            282 LOAD_CONST               3 (' | (P')
+            284 LOAD_FAST                8 (predicted_pos)
+            286 FORMAT_VALUE             0
+            288 LOAD_CONST               4 (')')
+            290 BUILD_STRING             3
+            292 BINARY_OP               13 (+=)
+            296 STORE_FAST               7 (est_str)
+
+273     >>  298 LOAD_FAST                7 (est_str)
+            300 RETURN_VALUE
+
+Disassembly of <code object _should_predict_position at 0x0000020DAEC3DE30, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 275>:
+275           0 RESUME                   0
+
+277           2 LOAD_GLOBAL              1 (NULL + is_practice_session)
+             12 LOAD_FAST                1 (session_type)
+             14 CALL                     1
+             22 COPY                     1
+             24 POP_JUMP_IF_TRUE        11 (to 48)
+             26 POP_TOP
+             28 LOAD_GLOBAL              3 (NULL + is_qualifying_session)
+             38 LOAD_FAST                1 (session_type)
+             40 CALL                     1
+        >>   48 COPY                     1
+             50 POP_JUMP_IF_FALSE        2 (to 56)
+             52 POP_TOP
+             54 LOAD_FAST                2 (table_entries)
+        >>   56 RETURN_VALUE
+
+Disassembly of <code object _get_predicted_position at 0x0000020DAF2C23D0, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 279>:
+279           0 RESUME                   0
+
+287           2 LOAD_FAST                1 (delta_ms)
+              4 LOAD_CONST               1 (0)
+              6 COMPARE_OP              26 (<=)
+             10 POP_JUMP_IF_FALSE       19 (to 50)
+
+289          12 LOAD_FAST                0 (self)
+             14 LOAD_ATTR                1 (NULL|self + _predict_quali_position)
+             34 LOAD_FAST                2 (table_entries)
+             36 LOAD_FAST                3 (estimated_ms)
+             38 LOAD_FAST                4 (ref_driver_index)
+             40 CALL                     3
+             48 RETURN_VALUE
+
+292     >>   50 LOAD_FAST                0 (self)
+             52 LOAD_ATTR                3 (NULL|self + _find_driver_by_index)
+             72 LOAD_FAST                2 (table_entries)
+             74 LOAD_FAST                4 (ref_driver_index)
+             76 CALL                     2
+             84 COPY                     1
+             86 STORE_FAST               5 (ref_driver)
+             88 POP_JUMP_IF_FALSE        8 (to 106)
+
+293          90 LOAD_FAST                5 (ref_driver)
+             92 LOAD_CONST               2 ('driver-info')
+             94 BINARY_SUBSCR
+             98 LOAD_CONST               3 ('position')
+            100 BINARY_SUBSCR
+            104 RETURN_VALUE
+
+294     >>  106 RETURN_CONST             4 (None)
+
+Disassembly of <code object _find_driver_by_index at 0x0000020DAECADC50, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 296>:
+              0 MAKE_CELL                2 (driver_index)
+
+296           2 RESUME                   0
+
+300           4 LOAD_GLOBAL              1 (NULL + next)
+             14 LOAD_CLOSURE             2 (driver_index)
+             16 BUILD_TUPLE              1
+             18 LOAD_CONST               1 (<code object <genexpr> at 0x0000020DAF2D1C30, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 300>)
+             20 MAKE_FUNCTION            8 (closure)
+             22 LOAD_FAST                1 (table_entries)
+             24 GET_ITER
+             26 CALL                     0
+             34 LOAD_CONST               2 (None)
+             36 CALL                     2
+             44 RETURN_VALUE
+
+Disassembly of <code object <genexpr> at 0x0000020DAF2D1C30, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 300>:
+              0 COPY_FREE_VARS           1
+
+300           2 RETURN_GENERATOR
+              4 POP_TOP
+              6 RESUME                   0
+              8 LOAD_FAST                0 (.0)
+        >>   10 FOR_ITER                18 (to 50)
+             14 STORE_FAST               1 (x)
+             16 LOAD_FAST                1 (x)
+             18 LOAD_CONST               0 ('driver-info')
+             20 BINARY_SUBSCR
+             24 LOAD_CONST               1 ('index')
+             26 BINARY_SUBSCR
+             30 LOAD_DEREF               2 (driver_index)
+             32 COMPARE_OP              40 (==)
+             36 POP_JUMP_IF_TRUE         1 (to 40)
+             38 JUMP_BACKWARD           15 (to 10)
+        >>   40 LOAD_FAST                1 (x)
+             42 YIELD_VALUE              1
+             44 RESUME                   1
+             46 POP_TOP
+             48 JUMP_BACKWARD           20 (to 10)
+        >>   50 END_FOR
+             52 RETURN_CONST             2 (None)
+        >>   54 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+             56 RERAISE                  1
+ExceptionTable:
+  6 to 36 -> 54 [0] lasti
+  40 to 52 -> 54 [0] lasti
+
+Disassembly of <code object _predict_quali_position at 0x0000020DAEB70A00, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 302>:
+302           0 RESUME                   0
+
+313           2 LOAD_FAST                1 (table_entries)
+              4 POP_JUMP_IF_FALSE        2 (to 10)
+              6 LOAD_FAST                2 (estimated_ms)
+              8 POP_JUMP_IF_NOT_NONE     1 (to 12)
+
+314     >>   10 RETURN_CONST             1 (None)
+
+316     >>   12 BUILD_LIST               0
+             14 STORE_FAST               4 (ranked)
+
+317          16 LOAD_CONST               2 (False)
+             18 STORE_FAST               5 (has_other_laps)
+
+319          20 LOAD_FAST                1 (table_entries)
+             22 GET_ITER
+        >>   24 FOR_ITER               163 (to 354)
+             28 STORE_FAST               6 (entry)
+
+320          30 LOAD_FAST                6 (entry)
+             32 LOAD_CONST               3 ('driver-info')
+             34 BINARY_SUBSCR
+             38 LOAD_CONST               4 ('index')
+             40 BINARY_SUBSCR
+             44 STORE_FAST               7 (driver_index)
+
+321          46 LOAD_FAST                6 (entry)
+             48 LOAD_CONST               5 ('lap-info')
+             50 BINARY_SUBSCR
+             54 LOAD_CONST               6 ('best-lap')
+             56 BINARY_SUBSCR
+             60 LOAD_CONST               7 ('lap-time-ms')
+             62 BINARY_SUBSCR
+             66 STORE_FAST               8 (best_ms)
+
+323          68 LOAD_FAST                7 (driver_index)
+             70 LOAD_FAST                3 (ref_driver_index)
+             72 COMPARE_OP              40 (==)
+             76 POP_JUMP_IF_FALSE       21 (to 120)
+
+325          78 LOAD_FAST                4 (ranked)
+             80 LOAD_ATTR                1 (NULL|self + append)
+            100 LOAD_FAST                2 (estimated_ms)
+            102 LOAD_CONST               8 (True)
+            104 LOAD_FAST                7 (driver_index)
+            106 BUILD_TUPLE              3
+            108 CALL                     1
+            116 POP_TOP
+            118 JUMP_BACKWARD           48 (to 24)
+
+326     >>  120 LOAD_FAST                8 (best_ms)
+            122 POP_JUMP_IF_TRUE         1 (to 126)
+            124 JUMP_BACKWARD           51 (to 24)
+
+328     >>  126 LOAD_FAST                8 (best_ms)
+            128 STORE_FAST               9 (driver_lap_ms)
+
+331         130 LOAD_FAST                6 (entry)
+            132 LOAD_CONST               5 ('lap-info')
+            134 BINARY_SUBSCR
+            138 LOAD_CONST               9 ('curr-lap')
+            140 BINARY_SUBSCR
+            144 STORE_FAST              10 (curr_lap)
+
+332         146 LOAD_FAST               10 (curr_lap)
+            148 POP_JUMP_IF_FALSE       76 (to 302)
+
+333         150 LOAD_FAST               10 (curr_lap)
+            152 LOAD_ATTR                3 (NULL|self + get)
+            172 LOAD_CONST              10 ('driver-status')
+            174 CALL                     1
+            182 LOAD_CONST              11 (frozenset({'FLYING_LAP', 'ON_TRACK'}))
+            184 CONTAINS_OP              0
+            186 STORE_FAST              11 (on_flying_lap)
+
+334         188 LOAD_FAST               10 (curr_lap)
+            190 LOAD_ATTR                3 (NULL|self + get)
+            210 LOAD_CONST              12 ('is-valid')
+            212 CALL                     1
+            220 STORE_FAST              12 (lap_is_valid)
+
+335         222 LOAD_FAST               10 (curr_lap)
+            224 LOAD_ATTR                3 (NULL|self + get)
+            244 LOAD_CONST              13 ('delta-ms')
+            246 CALL                     1
+            254 STORE_FAST              13 (delta_ms)
+
+336         256 LOAD_FAST               11 (on_flying_lap)
+            258 POP_JUMP_IF_FALSE       21 (to 302)
+            260 LOAD_FAST               12 (lap_is_valid)
+            262 POP_JUMP_IF_FALSE       19 (to 302)
+            264 LOAD_FAST               13 (delta_ms)
+            266 POP_JUMP_IF_NONE        17 (to 302)
+
+338         268 LOAD_FAST                8 (best_ms)
+            270 LOAD_FAST               13 (delta_ms)
+            272 BINARY_OP                0 (+)
+            276 STORE_FAST              14 (estimated)
+
+340         278 LOAD_GLOBAL              5 (NULL + min)
+            288 LOAD_FAST               14 (estimated)
+            290 LOAD_FAST                8 (best_ms)
+            292 CALL                     2
+            300 STORE_FAST               9 (driver_lap_ms)
+
+343     >>  302 LOAD_FAST                9 (driver_lap_ms)
+            304 POP_JUMP_IF_TRUE         1 (to 308)
+            306 JUMP_BACKWARD          142 (to 24)
+
+344     >>  308 LOAD_CONST               8 (True)
+            310 STORE_FAST               5 (has_other_laps)
+
+345         312 LOAD_FAST                4 (ranked)
+            314 LOAD_ATTR                1 (NULL|self + append)
+            334 LOAD_FAST                9 (driver_lap_ms)
+            336 LOAD_CONST               2 (False)
+            338 LOAD_FAST                7 (driver_index)
+            340 BUILD_TUPLE              3
+            342 CALL                     1
+            350 POP_TOP
+            352 JUMP_BACKWARD          165 (to 24)
+
+319     >>  354 END_FOR
+
+348         356 LOAD_FAST                5 (has_other_laps)
+            358 POP_JUMP_IF_TRUE         1 (to 362)
+
+349         360 RETURN_CONST            14 (1)
+
+354     >>  362 LOAD_FAST                4 (ranked)
+            364 LOAD_ATTR                7 (NULL|self + sort)
+            384 LOAD_CONST              15 (<code object <lambda> at 0x0000020DAF2F1C30, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 354>)
+            386 MAKE_FUNCTION            0
+            388 KW_NAMES                16 (('key',))
+            390 CALL                     1
+            398 POP_TOP
+
+356         400 LOAD_GLOBAL              9 (NULL + enumerate)
+            410 LOAD_FAST                4 (ranked)
+            412 LOAD_CONST              14 (1)
+            414 KW_NAMES                17 (('start',))
+            416 CALL                     2
+            424 GET_ITER
+        >>  426 FOR_ITER                18 (to 466)
+            430 UNPACK_SEQUENCE          2
+            434 STORE_FAST              15 (i)
+            436 UNPACK_SEQUENCE          3
+            440 STORE_FAST              16 (_)
+            442 STORE_FAST              16 (_)
+            444 STORE_FAST               7 (driver_index)
+
+357         446 LOAD_FAST                7 (driver_index)
+            448 LOAD_FAST                3 (ref_driver_index)
+            450 COMPARE_OP              40 (==)
+            454 POP_JUMP_IF_TRUE         1 (to 458)
+            456 JUMP_BACKWARD           16 (to 426)
+
+358     >>  458 LOAD_FAST               15 (i)
+            460 SWAP                     2
+            462 POP_TOP
+            464 RETURN_VALUE
+
+356     >>  466 END_FOR
+
+360         468 RETURN_CONST             1 (None)
+
+Disassembly of <code object <lambda> at 0x0000020DAF2F1C30, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 354>:
+354           0 RESUME                   0
+              2 LOAD_FAST                0 (x)
+              4 LOAD_CONST               1 (0)
+              6 BINARY_SUBSCR
+             10 LOAD_FAST                0 (x)
+             12 LOAD_CONST               2 (1)
+             14 BINARY_SUBSCR
+             18 BUILD_TUPLE              2
+             20 RETURN_VALUE
+
+Disassembly of <code object _handle_new_session at 0x0000020DAF2AD570, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 362>:
+362           0 RESUME                   0
+
+368           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + clear)
+             24 CALL                     0
+             32 POP_TOP
+
+369          34 LOAD_FAST                1 (session_uid)
+             36 LOAD_FAST                0 (self)
+             38 STORE_ATTR               1 (curr_session_uid)
+
+370          48 LOAD_FAST                0 (self)
+             50 LOAD_ATTR                4 (logger)
+             70 LOAD_ATTR                7 (NULL|self + info)
+             90 LOAD_CONST               1 ('%s New session detected: %s')
+             92 LOAD_FAST                0 (self)
+             94 LOAD_ATTR                8 (OVERLAY_ID)
+            114 LOAD_FAST                1 (session_uid)
+            116 CALL                     3
+            124 POP_TOP
+            126 RETURN_CONST             2 (None)
+
+Disassembly of <code object clear at 0x0000020DB0C1AAC0, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 372>:
+372           0 RESUME                   0
+
+374           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             24 LOAD_CONST               1 ('currentTime')
+             26 LOAD_FAST                0 (self)
+             28 LOAD_ATTR                2 (DEFAULT_TIME)
+             48 CALL                     2
+             56 POP_TOP
+
+375          58 LOAD_FAST                0 (self)
+             60 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             80 LOAD_CONST               2 ('currentColor')
+             82 LOAD_CONST               3 ('#00FFFF')
+             84 CALL                     2
+             92 POP_TOP
+
+376          94 LOAD_FAST                0 (self)
+             96 LOAD_ATTR                1 (NULL|self + set_qml_property)
+            116 LOAD_CONST               4 ('lastTime')
+            118 LOAD_FAST                0 (self)
+            120 LOAD_ATTR                2 (DEFAULT_TIME)
+            140 CALL                     2
+            148 POP_TOP
+
+377         150 LOAD_FAST                0 (self)
+            152 LOAD_ATTR                1 (NULL|self + set_qml_property)
+            172 LOAD_CONST               5 ('bestTime')
+            174 LOAD_FAST                0 (self)
+            176 LOAD_ATTR                2 (DEFAULT_TIME)
+            196 CALL                     2
+            204 POP_TOP
+
+378         206 LOAD_FAST                0 (self)
+            208 LOAD_ATTR                1 (NULL|self + set_qml_property)
+            228 LOAD_CONST               6 ('deltaTime')
+            230 LOAD_FAST                0 (self)
+            232 LOAD_ATTR                4 (DEFAULT_DELTA)
+            252 CALL                     2
+            260 POP_TOP
+
+379         262 LOAD_FAST                0 (self)
+            264 LOAD_ATTR                1 (NULL|self + set_qml_property)
+            284 LOAD_CONST               7 ('deltaColor')
+            286 LOAD_CONST               8 ('#FFFFFF')
+            288 CALL                     2
+            296 POP_TOP
+
+380         298 LOAD_FAST                0 (self)
+            300 LOAD_ATTR                1 (NULL|self + set_qml_property)
+            320 LOAD_CONST               9 ('estimatedTime')
+            322 LOAD_FAST                0 (self)
+            324 LOAD_ATTR                2 (DEFAULT_TIME)
+            344 CALL                     2
+            352 POP_TOP
+
+381         354 LOAD_FAST                0 (self)
+            356 LOAD_ATTR                1 (NULL|self + set_qml_property)
+            376 LOAD_CONST              10 ('currentSectorStatus')
+            378 LOAD_FAST                0 (self)
+            380 LOAD_ATTR                6 (DEFAULT_SECTOR_STATUS)
+            400 CALL                     2
+            408 POP_TOP
+
+382         410 LOAD_FAST                0 (self)
+            412 LOAD_ATTR                1 (NULL|self + set_qml_property)
+            432 LOAD_CONST              11 ('lastSectorStatus')
+            434 LOAD_FAST                0 (self)
+            436 LOAD_ATTR                6 (DEFAULT_SECTOR_STATUS)
+            456 CALL                     2
+            464 POP_TOP
+
+383         466 LOAD_FAST                0 (self)
+            468 LOAD_ATTR                1 (NULL|self + set_qml_property)
+            488 LOAD_CONST              12 ('bestSectorStatus')
+            490 LOAD_FAST                0 (self)
+            492 LOAD_ATTR                6 (DEFAULT_SECTOR_STATUS)
+            512 CALL                     2
+            520 POP_TOP
+
+384         522 LOAD_FAST                0 (self)
+            524 LOAD_ATTR                1 (NULL|self + set_qml_property)
+            544 LOAD_CONST              13 ('isSafetyCar')
+            546 LOAD_CONST              14 (False)
+            548 CALL                     2
+            556 POP_TOP
+
+385         558 LOAD_FAST                0 (self)
+            560 LOAD_ATTR                1 (NULL|self + set_qml_property)
+            580 LOAD_CONST              15 ('safetyCarText')
+            582 LOAD_CONST              16 ('')
+            584 CALL                     2
+            592 POP_TOP
+
+387         594 LOAD_CONST              17 (None)
+            596 LOAD_FAST                0 (self)
+            598 STORE_ATTR               4 (curr_session_uid)
+
+388         608 LOAD_CONST              14 (False)
+            610 LOAD_FAST                0 (self)
+            612 STORE_ATTR               5 (show_last_lap_sector_bar)
+            622 RETURN_CONST            17 (None)
+
+Disassembly of <code object _update_last_lap at 0x0000020DAF2C2170, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 390>:
+390           0 RESUME                   0
+
+398           2 LOAD_FAST                1 (last_lap_ms)
+              4 POP_JUMP_IF_FALSE       21 (to 48)
+
+397           6 LOAD_GLOBAL              1 (NULL + F1Utils)
+             16 LOAD_ATTR                2 (millisecondsToMinutesSecondsMilliseconds)
+             36 LOAD_FAST                1 (last_lap_ms)
+             38 CALL                     1
+             46 JUMP_FORWARD            11 (to 70)
+
+398     >>   48 LOAD_FAST                0 (self)
+             50 LOAD_ATTR                4 (DEFAULT_TIME)
+
+396     >>   70 STORE_FAST               2 (time_str)
+
+400          72 LOAD_FAST                0 (self)
+             74 LOAD_ATTR                7 (NULL|self + set_qml_property)
+             94 LOAD_CONST               1 ('lastTime')
+             96 LOAD_FAST                2 (time_str)
+             98 CALL                     2
+            106 POP_TOP
+            108 RETURN_CONST             2 (None)
+
+Disassembly of <code object _update_best_lap at 0x0000020DAF2C22A0, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 402>:
+402           0 RESUME                   0
+
+410           2 LOAD_FAST                1 (best_lap_ms)
+              4 POP_JUMP_IF_FALSE       21 (to 48)
+
+409           6 LOAD_GLOBAL              1 (NULL + F1Utils)
+             16 LOAD_ATTR                2 (millisecondsToMinutesSecondsMilliseconds)
+             36 LOAD_FAST                1 (best_lap_ms)
+             38 CALL                     1
+             46 JUMP_FORWARD            11 (to 70)
+
+410     >>   48 LOAD_FAST                0 (self)
+             50 LOAD_ATTR                4 (DEFAULT_TIME)
+
+408     >>   70 STORE_FAST               2 (time_str)
+
+412          72 LOAD_FAST                0 (self)
+             74 LOAD_ATTR                7 (NULL|self + set_qml_property)
+             94 LOAD_CONST               1 ('bestTime')
+             96 LOAD_FAST                2 (time_str)
+             98 CALL                     2
+            106 POP_TOP
+            108 RETURN_CONST             2 (None)
+
+Disassembly of <code object _update_curr_lap at 0x0000020DAF2C2500, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 414>:
+414           0 RESUME                   0
+
+422           2 LOAD_FAST                1 (curr_lap_ms)
+              4 POP_JUMP_IF_FALSE       21 (to 48)
+
+421           6 LOAD_GLOBAL              1 (NULL + F1Utils)
+             16 LOAD_ATTR                2 (millisecondsToMinutesSecondsMilliseconds)
+             36 LOAD_FAST                1 (curr_lap_ms)
+             38 CALL                     1
+             46 JUMP_FORWARD            11 (to 70)
+
+422     >>   48 LOAD_FAST                0 (self)
+             50 LOAD_ATTR                4 (DEFAULT_TIME)
+
+420     >>   70 STORE_FAST               2 (time_str)
+
+424          72 LOAD_FAST                0 (self)
+             74 LOAD_ATTR                7 (NULL|self + _update_curr_lap_str)
+             94 LOAD_FAST                2 (time_str)
+             96 CALL                     1
+            104 POP_TOP
+            106 RETURN_CONST             1 (None)
+
+Disassembly of <code object _update_curr_lap_str at 0x0000020DAF2DF440, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 426>:
+426           0 RESUME                   0
+
+429           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             24 LOAD_CONST               1 ('currentTime')
+             26 LOAD_FAST                1 (time_str)
+             28 CALL                     2
+             36 POP_TOP
+
+430          38 LOAD_FAST                0 (self)
+             40 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             60 LOAD_CONST               2 ('currentColor')
+             62 LOAD_CONST               3 ('#00FFFF')
+             64 CALL                     2
+             72 POP_TOP
+             74 RETURN_CONST             4 (None)
+
+Disassembly of <code object _update_delta_ms at 0x0000020DAF2D1D30, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 432>:
+432           0 RESUME                   0
+
+439           2 LOAD_FAST                1 (delta_ms)
+              4 LOAD_CONST               1 (1000)
+              6 BINARY_OP               11 (/)
+             10 STORE_FAST               3 (delta_s)
+
+440          12 LOAD_FAST                0 (self)
+             14 LOAD_ATTR                1 (NULL|self + _update_delta_sec)
+             34 LOAD_FAST                3 (delta_s)
+             36 LOAD_FAST                2 (is_sc)
+             38 CALL                     2
+             46 POP_TOP
+             48 RETURN_CONST             2 (None)
+
+Disassembly of <code object _update_delta_sec at 0x0000020DAF2F8870, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 442>:
+442           0 RESUME                   0
+
+449           2 LOAD_GLOBAL              1 (NULL + F1Utils)
+             12 LOAD_ATTR                2 (formatFloat)
+             32 LOAD_FAST                1 (delta_sec)
+             34 LOAD_CONST               1 (3)
+             36 LOAD_CONST               2 (True)
+             38 KW_NAMES                 3 (('precision', 'signed'))
+             40 CALL                     3
+             48 STORE_FAST               3 (text)
+
+453          50 LOAD_FAST                1 (delta_sec)
+             52 LOAD_CONST               4 (0)
+             54 COMPARE_OP               2 (<)
+             58 LOAD_FAST                2 (is_sc)
+             60 COMPARE_OP              55 (!=)
+             64 STORE_FAST               4 (is_good)
+
+454          66 LOAD_FAST                4 (is_good)
+             68 POP_JUMP_IF_FALSE        2 (to 74)
+             70 LOAD_CONST               5 ('#00FF00')
+             72 JUMP_FORWARD             1 (to 76)
+        >>   74 LOAD_CONST               6 ('#FF5555')
+        >>   76 STORE_FAST               5 (color)
+
+456          78 LOAD_FAST                0 (self)
+             80 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            100 LOAD_CONST               7 ('deltaTime')
+            102 LOAD_FAST                3 (text)
+            104 CALL                     2
+            112 POP_TOP
+
+457         114 LOAD_FAST                0 (self)
+            116 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            136 LOAD_CONST               8 ('deltaColor')
+            138 LOAD_FAST                5 (color)
+            140 CALL                     2
+            148 POP_TOP
+            150 RETURN_CONST             9 (None)
+
+Disassembly of <code object _update_estimated at 0x0000020DAED7A5B0, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 459>:
+459           0 RESUME                   0
+
+465           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             24 LOAD_CONST               1 ('estimatedTime')
+             26 LOAD_FAST                1 (est)
+             28 CALL                     2
+             36 POP_TOP
+             38 RETURN_CONST             2 (None)
+
+Disassembly of <code object _clear_delta at 0x0000020DAF2D4B70, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 467>:
+467           0 RESUME                   0
+
+469           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             24 LOAD_CONST               1 ('deltaTime')
+             26 LOAD_FAST                0 (self)
+             28 LOAD_ATTR                2 (DEFAULT_DELTA)
+             48 CALL                     2
+             56 POP_TOP
+
+470          58 LOAD_FAST                0 (self)
+             60 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             80 LOAD_CONST               2 ('deltaColor')
+             82 LOAD_CONST               3 ('#FFFFFF')
+             84 CALL                     2
+             92 POP_TOP
+             94 RETURN_CONST             4 (None)
+
+Disassembly of <code object _update_sector_status at 0x0000020DAF2DF660, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 472>:
+472           0 RESUME                   0
+
+479           2 LOAD_GLOBAL              1 (NULL + len)
+             12 LOAD_FAST                2 (status_list)
+             14 CALL                     1
+             22 LOAD_CONST               1 (3)
+             24 COMPARE_OP              40 (==)
+             28 POP_JUMP_IF_FALSE       19 (to 68)
+
+480          30 LOAD_FAST                0 (self)
+             32 LOAD_ATTR                3 (NULL|self + set_qml_property)
+             52 LOAD_FAST                1 (property_name)
+             54 LOAD_FAST                2 (status_list)
+             56 CALL                     2
+             64 POP_TOP
+             66 RETURN_CONST             2 (None)
+
+479     >>   68 RETURN_CONST             2 (None)
+
+Disassembly of <code object _timer_clear_cb at 0x0000020DAF2B9E60, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 482>:
+482           0 RESUME                   0
+
+484           2 LOAD_CONST               1 (False)
+              4 LOAD_FAST                0 (self)
+              6 STORE_ATTR               0 (show_last_lap_sector_bar)
+
+486          16 LOAD_FAST                0 (self)
+             18 LOAD_ATTR                3 (NULL|self + set_qml_property)
+             38 LOAD_CONST               2 ('currentSectorStatus')
+             40 LOAD_FAST                0 (self)
+             42 LOAD_ATTR                4 (DEFAULT_SECTOR_STATUS)
+             62 CALL                     2
+             70 POP_TOP
+
+490          72 LOAD_FAST                0 (self)
+             74 LOAD_ATTR                6 (min_overlay_style)
+             94 POP_JUMP_IF_FALSE       19 (to 134)
+
+491          96 LOAD_FAST                0 (self)
+             98 LOAD_ATTR                9 (NULL|self + invalidate_qml_cache)
+            118 LOAD_CONST               3 ('currentTime')
+            120 LOAD_CONST               4 ('currentColor')
+            122 CALL                     2
+            130 POP_TOP
+            132 RETURN_CONST             5 (None)
+
+490     >>  134 RETURN_CONST             5 (None)
+
+Disassembly of <code object _is_safety_car at 0x0000020DB1039480, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 493>:
+493           0 RESUME                   0
+
+495           2 LOAD_FAST                1 (status)
+              4 LOAD_CONST               1 (frozenset({'FULL_SAFETY_CAR', 'VIRTUAL_SAFETY_CAR'}))
+              6 CONTAINS_OP              0
+              8 RETURN_VALUE
+
+Disassembly of <code object _update_safety_car_status at 0x0000020DAF16B430, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 497>:
+497           0 RESUME                   0
+
+499           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + _is_safety_car)
+             24 LOAD_FAST                1 (sc_status)
+             26 CALL                     1
+             34 STORE_FAST               2 (is_sc)
+
+500          36 LOAD_FAST                0 (self)
+             38 LOAD_ATTR                3 (NULL|self + set_qml_property)
+             58 LOAD_CONST               1 ('isSafetyCar')
+             60 LOAD_FAST                2 (is_sc)
+             62 CALL                     2
+             70 POP_TOP
+
+501          72 LOAD_FAST                2 (is_sc)
+             74 POP_JUMP_IF_FALSE       50 (to 176)
+
+502          76 LOAD_FAST                0 (self)
+             78 LOAD_ATTR                4 (min_overlay_style)
+             98 POP_JUMP_IF_FALSE       10 (to 120)
+
+503         100 LOAD_FAST                1 (sc_status)
+            102 LOAD_CONST               2 ('VIRTUAL_SAFETY_CAR')
+            104 COMPARE_OP              40 (==)
+            108 POP_JUMP_IF_FALSE        2 (to 114)
+            110 LOAD_CONST               3 ('VSC')
+            112 JUMP_FORWARD             1 (to 116)
+        >>  114 LOAD_CONST               4 ('SC')
+        >>  116 STORE_FAST               3 (text)
+            118 JUMP_FORWARD             9 (to 138)
+
+505     >>  120 LOAD_FAST                1 (sc_status)
+            122 LOAD_CONST               2 ('VIRTUAL_SAFETY_CAR')
+            124 COMPARE_OP              40 (==)
+            128 POP_JUMP_IF_FALSE        2 (to 134)
+            130 LOAD_CONST               5 ('VIRTUAL SAFETY CAR')
+            132 JUMP_FORWARD             1 (to 136)
+        >>  134 LOAD_CONST               6 ('SAFETY CAR')
+        >>  136 STORE_FAST               3 (text)
+
+506     >>  138 LOAD_FAST                0 (self)
+            140 LOAD_ATTR                3 (NULL|self + set_qml_property)
+            160 LOAD_CONST               7 ('safetyCarText')
+            162 LOAD_FAST                3 (text)
+            164 CALL                     2
+            172 POP_TOP
+            174 RETURN_CONST             9 (None)
+
+508     >>  176 LOAD_FAST                0 (self)
+            178 LOAD_ATTR                3 (NULL|self + set_qml_property)
+            198 LOAD_CONST               7 ('safetyCarText')
+            200 LOAD_CONST               8 ('')
+            202 CALL                     2
+            210 POP_TOP
+            212 RETURN_CONST             9 (None)
+
+Disassembly of <code object _handle_tt_update at 0x0000020DAEEA6860, file "apps\hud\ui\overlays\lap_timer\lap_timer_overlay.py", line 510>:
+510           0 RESUME                   0
+
+513           2 LOAD_FAST                1 (data)
+              4 LOAD_ATTR                1 (NULL|self + get)
+             24 LOAD_CONST               1 ('tt-data')
+             26 BUILD_MAP                0
+             28 CALL                     2
+             36 STORE_FAST               2 (tt_data_outer)
+
+514          38 LOAD_FAST                2 (tt_data_outer)
+             40 LOAD_ATTR                1 (NULL|self + get)
+             60 LOAD_CONST               1 ('tt-data')
+             62 CALL                     1
+             70 STORE_FAST               3 (tt_data_inner)
+
+515          72 LOAD_FAST                2 (tt_data_outer)
+             74 POP_JUMP_IF_FALSE        2 (to 80)
+             76 LOAD_FAST                3 (tt_data_inner)
+             78 POP_JUMP_IF_TRUE        17 (to 114)
+
+516     >>   80 LOAD_FAST                0 (self)
+             82 LOAD_ATTR                3 (NULL|self + clear)
+            102 CALL                     0
+            110 POP_TOP
+
+517         112 RETURN_CONST             2 (None)
+
+519     >>  114 LOAD_FAST                2 (tt_data_outer)
+            116 LOAD_ATTR                1 (NULL|self + get)
+            136 LOAD_CONST               3 ('last-lap-info')
+            138 BUILD_MAP                0
+            140 CALL                     2
+            148 STORE_FAST               4 (last_lap)
+
+522         150 LOAD_FAST                2 (tt_data_outer)
+            152 LOAD_ATTR                1 (NULL|self + get)
+            172 LOAD_CONST               4 ('current-lap-info')
+            174 CALL                     1
+            182 COPY                     1
+            184 POP_JUMP_IF_TRUE         2 (to 190)
+            186 POP_TOP
+            188 BUILD_MAP                0
+        >>  190 STORE_FAST               5 (curr_lap_info)
+
+523         192 LOAD_FAST                5 (curr_lap_info)
+            194 LOAD_ATTR                1 (NULL|self + get)
+            214 LOAD_CONST               5 ('lap-time-ms')
+            216 CALL                     1
+            224 STORE_FAST               6 (curr_lap_ms)
+
+524         226 LOAD_FAST                5 (curr_lap_info)
+            228 LOAD_ATTR                1 (NULL|self + get)
+            248 LOAD_CONST               6 ('sector-status')
+            250 LOAD_FAST                0 (self)
+            252 LOAD_ATTR                4 (DEFAULT_SECTOR_STATUS)
+            272 CALL                     2
+            280 STORE_FAST               7 (curr_sector_status)
+
+527         282 LOAD_FAST                2 (tt_data_outer)
+            284 LOAD_ATTR                1 (NULL|self + get)
+            304 LOAD_CONST               7 ('best-lap-info')
+            306 CALL                     1
+            314 COPY                     1
+            316 POP_JUMP_IF_TRUE         2 (to 322)
+            318 POP_TOP
+            320 BUILD_MAP                0
+        >>  322 STORE_FAST               8 (best_lap_info)
+
+528         324 LOAD_FAST                8 (best_lap_info)
+            326 LOAD_ATTR                1 (NULL|self + get)
+            346 LOAD_CONST               5 ('lap-time-ms')
+            348 CALL                     1
+            356 STORE_FAST               9 (best_lap_ms)
+
+529         358 LOAD_FAST                8 (best_lap_info)
+            360 LOAD_ATTR                1 (NULL|self + get)
+            380 LOAD_CONST               6 ('sector-status')
+            382 LOAD_FAST                0 (self)
+            384 LOAD_ATTR                4 (DEFAULT_SECTOR_STATUS)
+            404 CALL                     2
+            412 STORE_FAST              10 (best_sector_status)
+
+532         414 LOAD_FAST                4 (last_lap)
+            416 POP_JUMP_IF_FALSE       17 (to 452)
+            418 LOAD_FAST                4 (last_lap)
+            420 LOAD_ATTR                1 (NULL|self + get)
+            440 LOAD_CONST               5 ('lap-time-ms')
+            442 CALL                     1
+            450 JUMP_FORWARD             1 (to 454)
+        >>  452 LOAD_CONST               2 (None)
+        >>  454 STORE_FAST              11 (last_lap_ms)
+
+533         456 LOAD_FAST                4 (last_lap)
+            458 POP_JUMP_IF_FALSE       28 (to 516)
+            460 LOAD_FAST                4 (last_lap)
+            462 LOAD_ATTR                1 (NULL|self + get)
+            482 LOAD_CONST               6 ('sector-status')
+            484 LOAD_FAST                0 (self)
+            486 LOAD_ATTR                4 (DEFAULT_SECTOR_STATUS)
+            506 CALL                     2
+            514 JUMP_FORWARD            11 (to 538)
+        >>  516 LOAD_FAST                0 (self)
+            518 LOAD_ATTR                4 (DEFAULT_SECTOR_STATUS)
+        >>  538 STORE_FAST              12 (last_sector_status)
+
+536         540 LOAD_FAST                0 (self)
+            542 LOAD_ATTR                7 (NULL|self + _update_curr_lap)
+            562 LOAD_FAST                6 (curr_lap_ms)
+            564 CALL                     1
+            572 POP_TOP
+
+537         574 LOAD_FAST                0 (self)
+            576 LOAD_ATTR                9 (NULL|self + _update_sector_status)
+            596 LOAD_CONST               8 ('currentSectorStatus')
+            598 LOAD_FAST                7 (curr_sector_status)
+            600 CALL                     2
+            608 POP_TOP
+
+540         610 LOAD_FAST                0 (self)
+            612 LOAD_ATTR               11 (NULL|self + _update_best_lap)
+            632 LOAD_FAST                9 (best_lap_ms)
+            634 CALL                     1
+            642 POP_TOP
+
+541         644 LOAD_FAST                0 (self)
+            646 LOAD_ATTR               13 (NULL|self + _update_last_lap)
+            666 LOAD_FAST               11 (last_lap_ms)
+            668 CALL                     1
+            676 POP_TOP
+
+542         678 LOAD_FAST                0 (self)
+            680 LOAD_ATTR                9 (NULL|self + _update_sector_status)
+            700 LOAD_CONST               9 ('bestSectorStatus')
+            702 LOAD_FAST               10 (best_sector_status)
+            704 CALL                     2
+            712 POP_TOP
+
+543         714 LOAD_FAST                0 (self)
+            716 LOAD_ATTR                9 (NULL|self + _update_sector_status)
+            736 LOAD_CONST              10 ('lastSectorStatus')
+            738 LOAD_FAST               12 (last_sector_status)
+            740 CALL                     2
+            748 POP_TOP
+
+546         750 LOAD_FAST                0 (self)
+            752 LOAD_ATTR               15 (NULL|self + _clear_delta)
+            772 CALL                     0
+            780 POP_TOP
+
+547         782 LOAD_FAST                0 (self)
+            784 LOAD_ATTR               17 (NULL|self + _update_estimated)
+            804 LOAD_FAST                0 (self)
+            806 LOAD_ATTR               18 (DEFAULT_TIME)
+            826 CALL                     1
+            834 POP_TOP
+
+548         836 LOAD_FAST                0 (self)
+            838 LOAD_ATTR               21 (NULL|self + set_qml_property)
+            858 LOAD_CONST              11 ('isSafetyCar')
+            860 LOAD_CONST              12 (False)
+            862 CALL                     2
+            870 POP_TOP
+
+549         872 LOAD_FAST                0 (self)
+            874 LOAD_ATTR               21 (NULL|self + set_qml_property)
+            894 LOAD_CONST              13 ('safetyCarText')
+            896 LOAD_CONST              14 ('')
+            898 CALL                     2
+            906 POP_TOP
+            908 RETURN_CONST             2 (None)

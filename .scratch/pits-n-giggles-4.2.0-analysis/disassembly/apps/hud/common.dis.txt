@@ -1,0 +1,879 @@
+  0           0 RESUME                   0
+
+ 25           2 SETUP_ANNOTATIONS
+              4 LOAD_CONST               0 (0)
+              6 LOAD_CONST               1 (('defaultdict',))
+              8 IMPORT_NAME              0 (collections)
+             10 IMPORT_FROM              1 (defaultdict)
+             12 STORE_NAME               1 (defaultdict)
+             14 POP_TOP
+
+ 26          16 LOAD_CONST               0 (0)
+             18 LOAD_CONST               2 (('Any', 'Dict', 'List', 'Optional', 'Tuple', 'Union'))
+             20 IMPORT_NAME              2 (typing)
+             22 IMPORT_FROM              3 (Any)
+             24 STORE_NAME               3 (Any)
+             26 IMPORT_FROM              4 (Dict)
+             28 STORE_NAME               4 (Dict)
+             30 IMPORT_FROM              5 (List)
+             32 STORE_NAME               5 (List)
+             34 IMPORT_FROM              6 (Optional)
+             36 STORE_NAME               6 (Optional)
+             38 IMPORT_FROM              7 (Tuple)
+             40 STORE_NAME               7 (Tuple)
+             42 IMPORT_FROM              8 (Union)
+             44 STORE_NAME               8 (Union)
+             46 POP_TOP
+
+ 31          48 LOAD_NAME                8 (Union)
+             50 LOAD_NAME                9 (dict)
+             52 LOAD_NAME               10 (list)
+             54 LOAD_NAME               11 (str)
+             56 LOAD_NAME               12 (int)
+             58 LOAD_NAME               13 (float)
+             60 LOAD_NAME               14 (bool)
+             62 LOAD_CONST               3 (None)
+             64 BUILD_TUPLE              7
+             66 BINARY_SUBSCR
+             70 STORE_NAME              15 (JSONType)
+
+ 35          72 LOAD_CONST               4 ('#444444')
+             74 STORE_NAME              16 (ERS_MODE_COLOR_DEFAULT)
+
+ 36          76 PUSH_NULL
+             78 LOAD_NAME                1 (defaultdict)
+             80 LOAD_CONST               5 (<code object <lambda> at 0x0000020DAF2949F0, file "apps\hud\common.py", line 36>)
+             82 MAKE_FUNCTION            0
+
+ 37          84 LOAD_CONST               6 ('#e6d800')
+
+ 38          86 LOAD_CONST               7 ('#00e676')
+
+ 39          88 LOAD_CONST               8 ('#ff1744')
+
+ 36          90 LOAD_CONST               9 (('Medium', 'Hotlap', 'Overtake'))
+             92 BUILD_CONST_KEY_MAP      3
+             94 CALL                     2
+            102 STORE_NAME              17 (ERS_MODE_COLORS)
+            104 LOAD_NAME                1 (defaultdict)
+            106 LOAD_NAME               18 (__annotations__)
+            108 LOAD_CONST              10 ('ERS_MODE_COLORS')
+            110 STORE_SUBSCR
+
+ 42         114 LOAD_CONST              32 ((False, False))
+            116 LOAD_CONST              11 ('ers_mode')
+            118 LOAD_NAME               11 (str)
+            120 LOAD_CONST              12 ('is_f126')
+            122 LOAD_NAME               14 (bool)
+            124 LOAD_CONST              13 ('overtake_active')
+            126 LOAD_NAME               14 (bool)
+            128 LOAD_CONST              14 ('return')
+            130 LOAD_NAME               11 (str)
+            132 BUILD_TUPLE              8
+            134 LOAD_CONST              15 (<code object get_ers_mode_color at 0x0000020DAECADC50, file "apps\hud\common.py", line 42>)
+            136 MAKE_FUNCTION            5 (defaults, annotations)
+            138 STORE_NAME              19 (get_ers_mode_color)
+
+ 54         140 LOAD_CONST              16 ('session_type')
+            142 LOAD_NAME               11 (str)
+            144 LOAD_CONST              14 ('return')
+            146 LOAD_NAME               14 (bool)
+            148 BUILD_TUPLE              4
+            150 LOAD_CONST              17 (<code object is_race_type_session at 0x0000020DB1038440, file "apps\hud\common.py", line 54>)
+            152 MAKE_FUNCTION            4 (annotations)
+            154 STORE_NAME              20 (is_race_type_session)
+
+ 58         156 LOAD_CONST              16 ('session_type')
+            158 LOAD_NAME               11 (str)
+            160 LOAD_CONST              14 ('return')
+            162 LOAD_NAME               14 (bool)
+            164 BUILD_TUPLE              4
+            166 LOAD_CONST              18 (<code object is_tt_session at 0x0000020DB10382A0, file "apps\hud\common.py", line 58>)
+            168 MAKE_FUNCTION            4 (annotations)
+            170 STORE_NAME              21 (is_tt_session)
+
+ 62         172 LOAD_CONST              16 ('session_type')
+            174 LOAD_NAME               11 (str)
+            176 LOAD_CONST              14 ('return')
+            178 LOAD_NAME               14 (bool)
+            180 BUILD_TUPLE              4
+            182 LOAD_CONST              19 (<code object is_practice_session at 0x0000020DB1038850, file "apps\hud\common.py", line 62>)
+            184 MAKE_FUNCTION            4 (annotations)
+            186 STORE_NAME              22 (is_practice_session)
+
+ 66         188 LOAD_CONST              16 ('session_type')
+            190 LOAD_NAME               11 (str)
+            192 LOAD_CONST              14 ('return')
+            194 LOAD_NAME               14 (bool)
+            196 BUILD_TUPLE              4
+            198 LOAD_CONST              20 (<code object is_qualifying_session at 0x0000020DAEC3DE30, file "apps\hud\common.py", line 66>)
+            200 MAKE_FUNCTION            4 (annotations)
+            202 STORE_NAME              23 (is_qualifying_session)
+
+ 75         204 LOAD_CONST              21 ('data')
+            206 LOAD_NAME                4 (Dict)
+            208 LOAD_NAME               11 (str)
+            210 LOAD_NAME                3 (Any)
+            212 BUILD_TUPLE              2
+            214 BINARY_SUBSCR
+            218 LOAD_CONST              14 ('return')
+            220 LOAD_NAME                6 (Optional)
+            222 LOAD_NAME               12 (int)
+            224 BINARY_SUBSCR
+            228 BUILD_TUPLE              4
+            230 LOAD_CONST              22 (<code object get_ref_row_index at 0x0000020DAEFD7E10, file "apps\hud\common.py", line 75>)
+            232 MAKE_FUNCTION            4 (annotations)
+            234 STORE_NAME              24 (get_ref_row_index)
+
+113         236 LOAD_CONST              21 ('data')
+            238 LOAD_NAME                4 (Dict)
+            240 LOAD_NAME               11 (str)
+            242 LOAD_NAME                3 (Any)
+            244 BUILD_TUPLE              2
+            246 BINARY_SUBSCR
+            250 LOAD_CONST              14 ('return')
+            252 LOAD_NAME                6 (Optional)
+            254 LOAD_NAME                4 (Dict)
+            256 LOAD_NAME               11 (str)
+            258 LOAD_NAME                3 (Any)
+            260 BUILD_TUPLE              2
+            262 BINARY_SUBSCR
+            266 BINARY_SUBSCR
+            270 BUILD_TUPLE              4
+            272 LOAD_CONST              23 (<code object get_ref_row at 0x0000020DAF2DF330, file "apps\hud\common.py", line 113>)
+            274 MAKE_FUNCTION            4 (annotations)
+            276 STORE_NAME              25 (get_ref_row)
+
+133         278 NOP
+
+130         280 LOAD_CONST              33 ((None,))
+            282 LOAD_CONST              24 ('sorted_table_entries')
+
+131         284 LOAD_NAME                4 (Dict)
+            286 LOAD_NAME               11 (str)
+            288 LOAD_NAME                3 (Any)
+            290 BUILD_TUPLE              2
+            292 BINARY_SUBSCR
+
+130         296 LOAD_CONST              25 ('num_adjacent_cars')
+
+132         298 LOAD_NAME               12 (int)
+
+130         300 LOAD_CONST              26 ('ref_index')
+
+133         302 LOAD_NAME                6 (Optional)
+            304 LOAD_NAME               12 (int)
+            306 BINARY_SUBSCR
+
+130         310 LOAD_CONST              14 ('return')
+
+134         312 LOAD_NAME                5 (List)
+            314 LOAD_NAME                4 (Dict)
+            316 LOAD_NAME               11 (str)
+            318 LOAD_NAME                3 (Any)
+            320 BUILD_TUPLE              2
+            322 BINARY_SUBSCR
+            326 BINARY_SUBSCR
+
+130         330 BUILD_TUPLE              8
+            332 LOAD_CONST              27 (<code object get_relevant_race_table_rows at 0x0000020DAF09BAB0, file "apps\hud\common.py", line 130>)
+            334 MAKE_FUNCTION            5 (defaults, annotations)
+            336 STORE_NAME              26 (get_relevant_race_table_rows)
+
+158         338 LOAD_CONST              28 ('position')
+            340 LOAD_NAME               12 (int)
+            342 LOAD_CONST              29 ('total_cars')
+            344 LOAD_NAME               12 (int)
+            346 LOAD_CONST              25 ('num_adjacent_cars')
+            348 LOAD_NAME               12 (int)
+            350 LOAD_CONST              14 ('return')
+            352 LOAD_NAME                6 (Optional)
+            354 LOAD_NAME                7 (Tuple)
+            356 LOAD_NAME               12 (int)
+            358 LOAD_NAME               12 (int)
+            360 BUILD_TUPLE              2
+            362 BINARY_SUBSCR
+            366 BINARY_SUBSCR
+            370 BUILD_TUPLE              8
+            372 LOAD_CONST              30 (<code object get_adjacent_positions at 0x0000020DAF18BB20, file "apps\hud\common.py", line 158>)
+            374 MAKE_FUNCTION            4 (annotations)
+            376 STORE_NAME              27 (get_adjacent_positions)
+
+195         378 LOAD_CONST              34 (('return', None))
+            380 LOAD_CONST              31 (<code object insert_relative_deltas_race at 0x0000020DAEEDC090, file "apps\hud\common.py", line 195>)
+            382 MAKE_FUNCTION            4 (annotations)
+            384 STORE_NAME              28 (insert_relative_deltas_race)
+            386 RETURN_CONST             3 (None)
+
+Disassembly of <code object <lambda> at 0x0000020DAF2949F0, file "apps\hud\common.py", line 36>:
+ 36           0 RESUME                   0
+              2 LOAD_GLOBAL              0 (ERS_MODE_COLOR_DEFAULT)
+             12 RETURN_VALUE
+
+Disassembly of <code object get_ers_mode_color at 0x0000020DAECADC50, file "apps\hud\common.py", line 42>:
+ 42           0 RESUME                   0
+
+ 44           2 LOAD_FAST                1 (is_f126)
+              4 POP_JUMP_IF_FALSE       11 (to 28)
+              6 LOAD_FAST                0 (ers_mode)
+              8 LOAD_CONST               1 ('Overtake')
+             10 COMPARE_OP              40 (==)
+             14 POP_JUMP_IF_FALSE        6 (to 28)
+
+ 45          16 LOAD_FAST                2 (overtake_active)
+             18 POP_JUMP_IF_FALSE        2 (to 24)
+             20 LOAD_CONST               2 ('#41bff3')
+             22 RETURN_VALUE
+        >>   24 LOAD_CONST               3 ('#ff1744')
+             26 RETURN_VALUE
+
+ 46     >>   28 LOAD_GLOBAL              0 (ERS_MODE_COLORS)
+             38 LOAD_FAST                0 (ers_mode)
+             40 BINARY_SUBSCR
+             44 RETURN_VALUE
+
+Disassembly of <code object is_race_type_session at 0x0000020DB1038440, file "apps\hud\common.py", line 54>:
+ 54           0 RESUME                   0
+
+ 56           2 LOAD_CONST               1 ('Race')
+              4 LOAD_FAST                0 (session_type)
+              6 CONTAINS_OP              0
+              8 RETURN_VALUE
+
+Disassembly of <code object is_tt_session at 0x0000020DB10382A0, file "apps\hud\common.py", line 58>:
+ 58           0 RESUME                   0
+
+ 60           2 LOAD_FAST                0 (session_type)
+              4 LOAD_CONST               1 ('Time Trial')
+              6 COMPARE_OP              40 (==)
+             10 RETURN_VALUE
+
+Disassembly of <code object is_practice_session at 0x0000020DB1038850, file "apps\hud\common.py", line 62>:
+ 62           0 RESUME                   0
+
+ 64           2 LOAD_FAST                0 (session_type)
+              4 LOAD_CONST               1 ('Practice')
+              6 COMPARE_OP              40 (==)
+             10 RETURN_VALUE
+
+Disassembly of <code object is_qualifying_session at 0x0000020DAEC3DE30, file "apps\hud\common.py", line 66>:
+              0 MAKE_CELL                0 (session_type)
+
+ 66           2 RESUME                   0
+
+ 68           4 LOAD_CONST               1 ('Qualifying')
+              6 LOAD_CONST               2 ('Shootout')
+              8 BUILD_SET                2
+             10 STORE_FAST               1 (substrings)
+
+ 69          12 LOAD_GLOBAL              1 (NULL + any)
+             22 LOAD_CLOSURE             0 (session_type)
+             24 BUILD_TUPLE              1
+             26 LOAD_CONST               3 (<code object <genexpr> at 0x0000020DAED7A5B0, file "apps\hud\common.py", line 69>)
+             28 MAKE_FUNCTION            8 (closure)
+             30 LOAD_FAST                1 (substrings)
+             32 GET_ITER
+             34 CALL                     0
+             42 CALL                     1
+             50 RETURN_VALUE
+
+Disassembly of <code object <genexpr> at 0x0000020DAED7A5B0, file "apps\hud\common.py", line 69>:
+              0 COPY_FREE_VARS           1
+
+ 69           2 RETURN_GENERATOR
+              4 POP_TOP
+              6 RESUME                   0
+              8 LOAD_FAST                0 (.0)
+        >>   10 FOR_ITER                 8 (to 30)
+             14 STORE_FAST               1 (sub)
+             16 LOAD_FAST                1 (sub)
+             18 LOAD_DEREF               2 (session_type)
+             20 CONTAINS_OP              0
+             22 YIELD_VALUE              1
+             24 RESUME                   1
+             26 POP_TOP
+             28 JUMP_BACKWARD           10 (to 10)
+        >>   30 END_FOR
+             32 RETURN_CONST             0 (None)
+        >>   34 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+             36 RERAISE                  1
+ExceptionTable:
+  6 to 32 -> 34 [0] lasti
+
+Disassembly of <code object get_ref_row_index at 0x0000020DAEFD7E10, file "apps\hud\common.py", line 75>:
+              0 MAKE_CELL                3 (spectator_index)
+
+ 75           2 RESUME                   0
+
+ 84           4 LOAD_FAST                0 (data)
+              6 POP_JUMP_IF_FALSE        9 (to 26)
+              8 LOAD_CONST               1 ('table-entries')
+             10 LOAD_FAST                0 (data)
+             12 CONTAINS_OP              1
+             14 POP_JUMP_IF_TRUE         5 (to 26)
+             16 LOAD_FAST                0 (data)
+             18 LOAD_CONST               1 ('table-entries')
+             20 BINARY_SUBSCR
+             24 POP_JUMP_IF_TRUE         1 (to 28)
+
+ 85     >>   26 RETURN_CONST             2 (None)
+
+ 87     >>   28 LOAD_FAST                0 (data)
+             30 LOAD_ATTR                1 (NULL|self + get)
+             50 LOAD_CONST               3 ('ref-row-index')
+             52 CALL                     1
+             60 STORE_FAST               1 (pre_computed_idx)
+
+ 88          62 LOAD_FAST                1 (pre_computed_idx)
+             64 POP_JUMP_IF_NONE         2 (to 70)
+
+ 89          66 LOAD_FAST                1 (pre_computed_idx)
+             68 RETURN_VALUE
+
+ 91     >>   70 LOAD_FAST                0 (data)
+             72 LOAD_ATTR                1 (NULL|self + get)
+             92 LOAD_CONST               4 ('is-spectating')
+             94 LOAD_CONST               5 (False)
+             96 CALL                     2
+            104 STORE_FAST               2 (is_spectating)
+
+ 92         106 LOAD_FAST                0 (data)
+            108 LOAD_ATTR                1 (NULL|self + get)
+            128 LOAD_CONST               6 ('spectator-car-index')
+            130 CALL                     1
+            138 STORE_DEREF              3 (spectator_index)
+
+ 94         140 LOAD_FAST                2 (is_spectating)
+            142 POP_JUMP_IF_FALSE       35 (to 214)
+            144 LOAD_DEREF               3 (spectator_index)
+            146 POP_JUMP_IF_NONE        33 (to 214)
+
+ 95         148 LOAD_GLOBAL              3 (NULL + next)
+
+ 96         158 LOAD_CLOSURE             3 (spectator_index)
+            160 BUILD_TUPLE              1
+            162 LOAD_CONST               7 (<code object <genexpr> at 0x0000020DAF19B5A0, file "apps\hud\common.py", line 96>)
+            164 MAKE_FUNCTION            8 (closure)
+
+ 98         166 LOAD_GLOBAL              5 (NULL + enumerate)
+            176 LOAD_FAST                0 (data)
+            178 LOAD_CONST               1 ('table-entries')
+            180 BINARY_SUBSCR
+            184 CALL                     1
+            192 GET_ITER
+
+ 96         194 CALL                     0
+
+101         202 LOAD_CONST               2 (None)
+
+ 95         204 CALL                     2
+            212 RETURN_VALUE
+
+104     >>  214 LOAD_GLOBAL              3 (NULL + next)
+
+105         224 LOAD_CONST               8 (<code object <genexpr> at 0x0000020DAF2C1F10, file "apps\hud\common.py", line 105>)
+            226 MAKE_FUNCTION            0
+
+107         228 LOAD_GLOBAL              5 (NULL + enumerate)
+            238 LOAD_FAST                0 (data)
+            240 LOAD_CONST               1 ('table-entries')
+            242 BINARY_SUBSCR
+            246 CALL                     1
+            254 GET_ITER
+
+105         256 CALL                     0
+
+110         264 LOAD_CONST               2 (None)
+
+104         266 CALL                     2
+            274 RETURN_VALUE
+
+Disassembly of <code object <genexpr> at 0x0000020DAF19B5A0, file "apps\hud\common.py", line 96>:
+              0 COPY_FREE_VARS           1
+
+ 96           2 RETURN_GENERATOR
+              4 POP_TOP
+              6 RESUME                   0
+              8 LOAD_FAST                0 (.0)
+
+ 98     >>   10 FOR_ITER                45 (to 104)
+             14 UNPACK_SEQUENCE          2
+             18 STORE_FAST               1 (index)
+             20 STORE_FAST               2 (row)
+
+ 99          22 LOAD_FAST                2 (row)
+             24 LOAD_ATTR                1 (NULL|self + get)
+             44 LOAD_CONST               0 ('driver-info')
+             46 BUILD_MAP                0
+             48 CALL                     2
+             56 LOAD_ATTR                1 (NULL|self + get)
+             76 LOAD_CONST               1 ('index')
+             78 CALL                     1
+             86 LOAD_DEREF               3 (spectator_index)
+             88 COMPARE_OP              40 (==)
+             92 POP_JUMP_IF_FALSE        4 (to 102)
+
+ 97          94 LOAD_FAST                1 (index)
+             96 YIELD_VALUE              1
+             98 RESUME                   1
+            100 POP_TOP
+        >>  102 JUMP_BACKWARD           47 (to 10)
+
+ 98     >>  104 END_FOR
+            106 RETURN_CONST             2 (None)
+        >>  108 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+            110 RERAISE                  1
+ExceptionTable:
+  6 to 106 -> 108 [0] lasti
+
+Disassembly of <code object <genexpr> at 0x0000020DAF2C1F10, file "apps\hud\common.py", line 105>:
+105           0 RETURN_GENERATOR
+              2 POP_TOP
+              4 RESUME                   0
+              6 LOAD_FAST                0 (.0)
+
+107     >>    8 FOR_ITER                44 (to 100)
+             12 UNPACK_SEQUENCE          2
+             16 STORE_FAST               1 (index)
+             18 STORE_FAST               2 (row)
+
+108          20 LOAD_FAST                2 (row)
+             22 LOAD_ATTR                1 (NULL|self + get)
+             42 LOAD_CONST               0 ('driver-info')
+             44 BUILD_MAP                0
+             46 CALL                     2
+             54 LOAD_ATTR                1 (NULL|self + get)
+             74 LOAD_CONST               1 ('is-player')
+             76 CALL                     1
+             84 LOAD_CONST               2 (True)
+             86 IS_OP                    0
+             88 POP_JUMP_IF_FALSE        4 (to 98)
+
+106          90 LOAD_FAST                1 (index)
+             92 YIELD_VALUE              1
+             94 RESUME                   1
+             96 POP_TOP
+        >>   98 JUMP_BACKWARD           46 (to 8)
+
+107     >>  100 END_FOR
+            102 RETURN_CONST             3 (None)
+        >>  104 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+            106 RERAISE                  1
+ExceptionTable:
+  4 to 102 -> 104 [0] lasti
+
+Disassembly of <code object get_ref_row at 0x0000020DAF2DF330, file "apps\hud\common.py", line 113>:
+113           0 RESUME                   0
+
+123           2 LOAD_FAST                0 (data)
+              4 LOAD_ATTR                1 (NULL|self + get)
+             24 LOAD_CONST               1 ('table-entries')
+             26 CALL                     1
+             34 STORE_FAST               1 (table_entries)
+
+124          36 LOAD_GLOBAL              3 (NULL + get_ref_row_index)
+             46 LOAD_FAST                0 (data)
+             48 CALL                     1
+             56 STORE_FAST               2 (ref_index)
+
+125          58 LOAD_FAST                2 (ref_index)
+             60 POP_JUMP_IF_NOT_NONE     1 (to 64)
+
+126          62 RETURN_CONST             2 (None)
+
+128     >>   64 LOAD_FAST                1 (table_entries)
+             66 LOAD_FAST                2 (ref_index)
+             68 BINARY_SUBSCR
+             72 RETURN_VALUE
+
+Disassembly of <code object get_relevant_race_table_rows at 0x0000020DAF09BAB0, file "apps\hud\common.py", line 130>:
+              0 MAKE_CELL                2 (ref_index)
+
+130           2 RESUME                   0
+
+136           4 LOAD_DEREF               2 (ref_index)
+              6 POP_JUMP_IF_NOT_NONE    12 (to 32)
+
+137           8 LOAD_GLOBAL              1 (NULL + get_ref_row)
+             18 LOAD_FAST                0 (sorted_table_entries)
+             20 CALL                     1
+             28 STORE_FAST               3 (ref_row)
+             30 JUMP_FORWARD            21 (to 74)
+
+139     >>   32 LOAD_GLOBAL              3 (NULL + next)
+
+140          42 LOAD_CLOSURE             2 (ref_index)
+             44 BUILD_TUPLE              1
+             46 LOAD_CONST               1 (<code object <genexpr> at 0x0000020DAF2D1530, file "apps\hud\common.py", line 140>)
+             48 MAKE_FUNCTION            8 (closure)
+             50 LOAD_FAST                0 (sorted_table_entries)
+             52 GET_ITER
+             54 CALL                     0
+
+141          62 LOAD_CONST               0 (None)
+
+139          64 CALL                     2
+             72 STORE_FAST               3 (ref_row)
+
+143     >>   74 LOAD_FAST                3 (ref_row)
+             76 POP_JUMP_IF_TRUE         2 (to 82)
+
+144          78 BUILD_LIST               0
+             80 RETURN_VALUE
+
+146     >>   82 LOAD_FAST                3 (ref_row)
+             84 LOAD_CONST               2 ('driver-info')
+             86 BINARY_SUBSCR
+             90 LOAD_CONST               3 ('position')
+             92 BINARY_SUBSCR
+             96 STORE_FAST               4 (ref_position)
+
+147          98 LOAD_GLOBAL              5 (NULL + len)
+            108 LOAD_FAST                0 (sorted_table_entries)
+            110 CALL                     1
+            118 STORE_FAST               5 (total_cars)
+
+148         120 LOAD_GLOBAL              7 (NULL + get_adjacent_positions)
+            130 LOAD_FAST                4 (ref_position)
+            132 LOAD_FAST                5 (total_cars)
+            134 LOAD_FAST                1 (num_adjacent_cars)
+            136 CALL                     3
+            144 UNPACK_SEQUENCE          2
+            148 STORE_FAST               6 (lower_bound)
+            150 STORE_FAST               7 (upper_bound)
+
+150         152 LOAD_FAST                6 (lower_bound)
+            154 POP_JUMP_IF_NOT_NONE     2 (to 160)
+
+151         156 BUILD_LIST               0
+            158 RETURN_VALUE
+
+153     >>  160 LOAD_FAST                6 (lower_bound)
+            162 LOAD_CONST               4 (1)
+            164 BINARY_OP               10 (-)
+            168 STORE_FAST               8 (lower_index)
+
+154         170 LOAD_FAST                0 (sorted_table_entries)
+            172 LOAD_FAST                8 (lower_index)
+            174 LOAD_FAST                7 (upper_bound)
+            176 BINARY_SLICE
+            178 STORE_FAST               9 (result)
+
+156         180 LOAD_FAST                9 (result)
+            182 RETURN_VALUE
+
+Disassembly of <code object <genexpr> at 0x0000020DAF2D1530, file "apps\hud\common.py", line 140>:
+              0 COPY_FREE_VARS           1
+
+140           2 RETURN_GENERATOR
+              4 POP_TOP
+              6 RESUME                   0
+              8 LOAD_FAST                0 (.0)
+        >>   10 FOR_ITER                18 (to 50)
+             14 STORE_FAST               1 (row)
+             16 LOAD_FAST                1 (row)
+             18 LOAD_CONST               0 ('driver-info')
+             20 BINARY_SUBSCR
+             24 LOAD_CONST               1 ('index')
+             26 BINARY_SUBSCR
+             30 LOAD_DEREF               2 (ref_index)
+             32 COMPARE_OP              40 (==)
+             36 POP_JUMP_IF_TRUE         1 (to 40)
+             38 JUMP_BACKWARD           15 (to 10)
+        >>   40 LOAD_FAST                1 (row)
+             42 YIELD_VALUE              1
+             44 RESUME                   1
+             46 POP_TOP
+             48 JUMP_BACKWARD           20 (to 10)
+        >>   50 END_FOR
+             52 RETURN_CONST             2 (None)
+        >>   54 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+             56 RERAISE                  1
+ExceptionTable:
+  6 to 36 -> 54 [0] lasti
+  40 to 52 -> 54 [0] lasti
+
+Disassembly of <code object get_adjacent_positions at 0x0000020DAF18BB20, file "apps\hud\common.py", line 158>:
+158           0 RESUME                   0
+
+170           2 LOAD_CONST               1 (1)
+              4 LOAD_FAST                0 (position)
+              6 SWAP                     2
+              8 COPY                     2
+             10 COMPARE_OP              26 (<=)
+             14 POP_JUMP_IF_FALSE        5 (to 26)
+             16 LOAD_FAST                1 (total_cars)
+             18 COMPARE_OP              26 (<=)
+             22 POP_JUMP_IF_TRUE         3 (to 30)
+
+171          24 RETURN_CONST             2 ((None, None))
+
+170     >>   26 POP_TOP
+
+171          28 RETURN_CONST             2 ((None, None))
+
+173     >>   30 LOAD_CONST               1 (1)
+             32 STORE_FAST               3 (min_valid_lower_bound)
+
+174          34 LOAD_FAST                1 (total_cars)
+             36 STORE_FAST               4 (max_valid_upper_bound)
+
+179          38 LOAD_FAST                0 (position)
+             40 LOAD_FAST                2 (num_adjacent_cars)
+             42 BINARY_OP               10 (-)
+             46 STORE_FAST               5 (lower_bound)
+
+180          48 LOAD_FAST                0 (position)
+             50 LOAD_FAST                2 (num_adjacent_cars)
+             52 BINARY_OP                0 (+)
+             56 STORE_FAST               6 (upper_bound)
+
+183          58 LOAD_FAST                5 (lower_bound)
+             60 LOAD_FAST                3 (min_valid_lower_bound)
+             62 COMPARE_OP               2 (<)
+             66 POP_JUMP_IF_FALSE       22 (to 112)
+
+184          68 LOAD_FAST                3 (min_valid_lower_bound)
+             70 LOAD_FAST                5 (lower_bound)
+             72 BINARY_OP               10 (-)
+             76 STORE_FAST               7 (shift)
+
+185          78 LOAD_FAST                3 (min_valid_lower_bound)
+             80 STORE_FAST               5 (lower_bound)
+
+186          82 LOAD_GLOBAL              1 (NULL + min)
+             92 LOAD_FAST                6 (upper_bound)
+             94 LOAD_FAST                7 (shift)
+             96 BINARY_OP                0 (+)
+            100 LOAD_FAST                4 (max_valid_upper_bound)
+            102 CALL                     2
+            110 STORE_FAST               6 (upper_bound)
+
+188     >>  112 LOAD_FAST                6 (upper_bound)
+            114 LOAD_FAST                4 (max_valid_upper_bound)
+            116 COMPARE_OP              68 (>)
+            120 POP_JUMP_IF_FALSE       22 (to 166)
+
+189         122 LOAD_FAST                6 (upper_bound)
+            124 LOAD_FAST                4 (max_valid_upper_bound)
+            126 BINARY_OP               10 (-)
+            130 STORE_FAST               7 (shift)
+
+190         132 LOAD_FAST                4 (max_valid_upper_bound)
+            134 STORE_FAST               6 (upper_bound)
+
+191         136 LOAD_GLOBAL              3 (NULL + max)
+            146 LOAD_FAST                5 (lower_bound)
+            148 LOAD_FAST                7 (shift)
+            150 BINARY_OP               10 (-)
+            154 LOAD_FAST                3 (min_valid_lower_bound)
+            156 CALL                     2
+            164 STORE_FAST               5 (lower_bound)
+
+193     >>  166 LOAD_FAST                5 (lower_bound)
+            168 LOAD_FAST                6 (upper_bound)
+            170 BUILD_TUPLE              2
+            172 RETURN_VALUE
+
+Disassembly of <code object insert_relative_deltas_race at 0x0000020DAEEDC090, file "apps\hud\common.py", line 195>:
+              0 MAKE_CELL                0 (relevant_rows)
+
+195           2 RESUME                   0
+
+196           4 LOAD_FAST                1 (ref_index)
+              6 POP_JUMP_IF_NOT_NONE     1 (to 10)
+
+197           8 RETURN_CONST             0 (None)
+
+201     >>   10 LOAD_GLOBAL              1 (NULL + enumerate)
+             20 LOAD_DEREF               0 (relevant_rows)
+             22 CALL                     1
+             30 GET_ITER
+
+200          32 LOAD_FAST_AND_CLEAR      2 (i)
+             34 LOAD_FAST_AND_CLEAR      3 (row)
+             36 SWAP                     3
+             38 BUILD_MAP                0
+             40 SWAP                     2
+
+201     >>   42 FOR_ITER                14 (to 74)
+             46 UNPACK_SEQUENCE          2
+             50 STORE_FAST               2 (i)
+             52 STORE_FAST               3 (row)
+             54 LOAD_FAST                3 (row)
+             56 LOAD_CONST               1 ('driver-info')
+             58 BINARY_SUBSCR
+             62 LOAD_CONST               2 ('index')
+             64 BINARY_SUBSCR
+             68 LOAD_FAST                2 (i)
+             70 MAP_ADD                  2
+             72 JUMP_BACKWARD           16 (to 42)
+        >>   74 END_FOR
+
+200          76 STORE_FAST               4 (index_to_pos)
+             78 STORE_FAST               2 (i)
+             80 STORE_FAST               3 (row)
+
+204          82 LOAD_FAST                4 (index_to_pos)
+             84 LOAD_ATTR                3 (NULL|self + get)
+            104 LOAD_FAST                1 (ref_index)
+            106 CALL                     1
+            114 STORE_FAST               5 (ref_pos)
+
+205         116 LOAD_FAST                5 (ref_pos)
+            118 POP_JUMP_IF_NOT_NONE     1 (to 122)
+
+206         120 RETURN_CONST             0 (None)
+
+210     >>  122 LOAD_GLOBAL              1 (NULL + enumerate)
+            132 LOAD_DEREF               0 (relevant_rows)
+            134 CALL                     1
+            142 GET_ITER
+        >>  144 FOR_ITER               102 (to 352)
+            148 UNPACK_SEQUENCE          2
+            152 STORE_FAST               2 (i)
+            154 STORE_FAST               3 (row)
+
+211         156 LOAD_FAST                2 (i)
+            158 LOAD_FAST                5 (ref_pos)
+            160 COMPARE_OP              40 (==)
+            164 POP_JUMP_IF_FALSE        9 (to 184)
+
+212         166 LOAD_CONST               3 (0)
+            168 LOAD_FAST                3 (row)
+            170 LOAD_CONST               4 ('delta-info')
+            172 BINARY_SUBSCR
+            176 LOAD_CONST               5 ('relative-delta')
+            178 STORE_SUBSCR
+
+213         182 JUMP_BACKWARD           20 (to 144)
+
+215     >>  184 LOAD_FAST                2 (i)
+            186 LOAD_FAST                5 (ref_pos)
+            188 COMPARE_OP               2 (<)
+            192 POP_JUMP_IF_FALSE       40 (to 274)
+
+217         194 LOAD_GLOBAL              5 (NULL + sum)
+            204 LOAD_CLOSURE             0 (relevant_rows)
+            206 BUILD_TUPLE              1
+            208 LOAD_CONST               6 (<code object <genexpr> at 0x0000020DAF2D1630, file "apps\hud\common.py", line 217>)
+            210 MAKE_FUNCTION            8 (closure)
+
+219         212 LOAD_GLOBAL              7 (NULL + range)
+            222 LOAD_FAST                2 (i)
+            224 LOAD_FAST                5 (ref_pos)
+            226 CALL                     2
+            234 GET_ITER
+
+217         236 CALL                     0
+            244 CALL                     1
+            252 STORE_FAST               6 (total_delta)
+
+221         254 LOAD_FAST                6 (total_delta)
+            256 UNARY_NEGATIVE
+            258 LOAD_FAST                3 (row)
+            260 LOAD_CONST               4 ('delta-info')
+            262 BINARY_SUBSCR
+            266 LOAD_CONST               5 ('relative-delta')
+            268 STORE_SUBSCR
+            272 JUMP_BACKWARD           65 (to 144)
+
+223     >>  274 LOAD_GLOBAL              5 (NULL + sum)
+            284 LOAD_CLOSURE             0 (relevant_rows)
+            286 BUILD_TUPLE              1
+            288 LOAD_CONST               7 (<code object <genexpr> at 0x0000020DAF2D1730, file "apps\hud\common.py", line 223>)
+            290 MAKE_FUNCTION            8 (closure)
+
+225         292 LOAD_GLOBAL              7 (NULL + range)
+            302 LOAD_FAST                5 (ref_pos)
+            304 LOAD_FAST                2 (i)
+            306 CALL                     2
+            314 GET_ITER
+
+223         316 CALL                     0
+            324 CALL                     1
+            332 STORE_FAST               6 (total_delta)
+
+227         334 LOAD_FAST                6 (total_delta)
+            336 LOAD_FAST                3 (row)
+            338 LOAD_CONST               4 ('delta-info')
+            340 BINARY_SUBSCR
+            344 LOAD_CONST               5 ('relative-delta')
+            346 STORE_SUBSCR
+            350 JUMP_BACKWARD          104 (to 144)
+
+210     >>  352 END_FOR
+            354 RETURN_CONST             0 (None)
+        >>  356 SWAP                     2
+            358 POP_TOP
+
+200         360 SWAP                     3
+            362 STORE_FAST               3 (row)
+            364 STORE_FAST               2 (i)
+            366 RERAISE                  0
+ExceptionTable:
+  38 to 74 -> 356 [3]
+
+Disassembly of <code object <genexpr> at 0x0000020DAF2D1630, file "apps\hud\common.py", line 217>:
+              0 COPY_FREE_VARS           1
+
+217           2 RETURN_GENERATOR
+              4 POP_TOP
+              6 RESUME                   0
+              8 LOAD_FAST                0 (.0)
+
+219     >>   10 FOR_ITER                18 (to 50)
+             14 STORE_FAST               1 (j)
+
+218          16 LOAD_DEREF               2 (relevant_rows)
+             18 LOAD_FAST                1 (j)
+             20 LOAD_CONST               0 (1)
+             22 BINARY_OP                0 (+)
+             26 BINARY_SUBSCR
+             30 LOAD_CONST               1 ('delta-info')
+             32 BINARY_SUBSCR
+             36 LOAD_CONST               2 ('delta-to-car-in-front')
+             38 BINARY_SUBSCR
+             42 YIELD_VALUE              1
+             44 RESUME                   1
+             46 POP_TOP
+             48 JUMP_BACKWARD           20 (to 10)
+
+219     >>   50 END_FOR
+             52 RETURN_CONST             3 (None)
+        >>   54 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+             56 RERAISE                  1
+ExceptionTable:
+  6 to 52 -> 54 [0] lasti
+
+Disassembly of <code object <genexpr> at 0x0000020DAF2D1730, file "apps\hud\common.py", line 223>:
+              0 COPY_FREE_VARS           1
+
+223           2 RETURN_GENERATOR
+              4 POP_TOP
+              6 RESUME                   0
+              8 LOAD_FAST                0 (.0)
+
+225     >>   10 FOR_ITER                18 (to 50)
+             14 STORE_FAST               1 (j)
+
+224          16 LOAD_DEREF               2 (relevant_rows)
+             18 LOAD_FAST                1 (j)
+             20 LOAD_CONST               0 (1)
+             22 BINARY_OP                0 (+)
+             26 BINARY_SUBSCR
+             30 LOAD_CONST               1 ('delta-info')
+             32 BINARY_SUBSCR
+             36 LOAD_CONST               2 ('delta-to-car-in-front')
+             38 BINARY_SUBSCR
+             42 YIELD_VALUE              1
+             44 RESUME                   1
+             46 POP_TOP
+             48 JUMP_BACKWARD           20 (to 10)
+
+225     >>   50 END_FOR
+             52 RETURN_CONST             3 (None)
+        >>   54 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+             56 RERAISE                  1
+ExceptionTable:
+  6 to 52 -> 54 [0] lasti

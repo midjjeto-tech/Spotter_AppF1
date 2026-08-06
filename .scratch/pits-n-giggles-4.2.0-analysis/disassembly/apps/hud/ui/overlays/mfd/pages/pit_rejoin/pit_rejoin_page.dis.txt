@@ -1,0 +1,1010 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('Any', 'Dict', 'List', 'TYPE_CHECKING'))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (Any)
+             30 STORE_NAME               4 (Any)
+             32 IMPORT_FROM              5 (Dict)
+             34 STORE_NAME               5 (Dict)
+             36 IMPORT_FROM              6 (List)
+             38 STORE_NAME               6 (List)
+             40 IMPORT_FROM              7 (TYPE_CHECKING)
+             42 STORE_NAME               7 (TYPE_CHECKING)
+             44 POP_TOP
+
+ 29          46 LOAD_CONST               0 (0)
+             48 LOAD_CONST               4 (('QQuickItem',))
+             50 IMPORT_NAME              8 (PySide6.QtQuick)
+             52 IMPORT_FROM              9 (QQuickItem)
+             54 STORE_NAME               9 (QQuickItem)
+             56 POP_TOP
+
+ 31          58 LOAD_CONST               0 (0)
+             60 LOAD_CONST               5 (('get_ref_row', 'get_relevant_race_table_rows', 'insert_relative_deltas_race', 'is_race_type_session'))
+             62 IMPORT_NAME             10 (apps.hud.common)
+             64 IMPORT_FROM             11 (get_ref_row)
+             66 STORE_NAME              11 (get_ref_row)
+             68 IMPORT_FROM             12 (get_relevant_race_table_rows)
+             70 STORE_NAME              12 (get_relevant_race_table_rows)
+             72 IMPORT_FROM             13 (insert_relative_deltas_race)
+             74 STORE_NAME              13 (insert_relative_deltas_race)
+             76 IMPORT_FROM             14 (is_race_type_session)
+             78 STORE_NAME              14 (is_race_type_session)
+             80 POP_TOP
+
+ 33          82 LOAD_CONST               0 (0)
+             84 LOAD_CONST               6 (('MfdPageBase',))
+             86 IMPORT_NAME             15 (apps.hud.ui.overlays.mfd.pages.base_page)
+             88 IMPORT_FROM             16 (MfdPageBase)
+             90 STORE_NAME              16 (MfdPageBase)
+             92 POP_TOP
+
+ 34          94 LOAD_CONST               0 (0)
+             96 LOAD_CONST               7 (('MfdPageId',))
+             98 IMPORT_NAME             17 (lib.config)
+            100 IMPORT_FROM             18 (MfdPageId)
+            102 STORE_NAME              18 (MfdPageId)
+            104 POP_TOP
+
+ 35         106 LOAD_CONST               0 (0)
+            108 LOAD_CONST               8 (('F1Utils',))
+            110 IMPORT_NAME             19 (lib.f1_types)
+            112 IMPORT_FROM             20 (F1Utils)
+            114 STORE_NAME              20 (F1Utils)
+            116 POP_TOP
+
+ 37         118 LOAD_NAME                7 (TYPE_CHECKING)
+            120 POP_JUMP_IF_FALSE        6 (to 134)
+
+ 38         122 LOAD_CONST               0 (0)
+            124 LOAD_CONST               9 (('MfdOverlay',))
+            126 IMPORT_NAME             21 (apps.hud.ui.overlays.mfd.mfd)
+            128 IMPORT_FROM             22 (MfdOverlay)
+            130 STORE_NAME              22 (MfdOverlay)
+            132 POP_TOP
+
+ 43     >>  134 PUSH_NULL
+            136 LOAD_BUILD_CLASS
+            138 LOAD_CONST              10 (<code object PitRejoinPredictionPage at 0x0000020DAEE16800, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 43>)
+            140 MAKE_FUNCTION            0
+            142 LOAD_CONST              11 ('PitRejoinPredictionPage')
+            144 LOAD_NAME               16 (MfdPageBase)
+            146 CALL                     3
+            154 STORE_NAME              23 (PitRejoinPredictionPage)
+            156 RETURN_CONST             1 (None)
+
+Disassembly of <code object PitRejoinPredictionPage at 0x0000020DAEE16800, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 43>:
+              0 MAKE_CELL                0 (__class__)
+
+ 43           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('PitRejoinPredictionPage')
+             10 STORE_NAME               2 (__qualname__)
+             12 SETUP_ANNOTATIONS
+
+ 44          14 LOAD_CONST               1 ('Pit rejoin position prediction page.')
+             16 STORE_NAME               3 (__doc__)
+
+ 45          18 LOAD_NAME                4 (MfdPageId)
+             20 LOAD_ATTR               10 (PIT_REJOIN)
+             40 STORE_NAME               6 (KEY)
+
+ 46          42 PUSH_NULL
+             44 LOAD_NAME                7 (Path)
+             46 LOAD_NAME                8 (__file__)
+             48 CALL                     1
+             56 LOAD_ATTR               18 (parent)
+             76 LOAD_CONST               2 ('pit_rejoin_page.qml')
+             78 BINARY_OP               11 (/)
+             82 STORE_NAME              10 (QML_FILE)
+             84 LOAD_NAME                7 (Path)
+             86 LOAD_NAME               11 (__annotations__)
+             88 LOAD_CONST               3 ('QML_FILE')
+             90 STORE_SUBSCR
+
+ 48          94 LOAD_CONST               4 ('overlay')
+             96 LOAD_CONST               5 ('MfdOverlay')
+             98 LOAD_CONST               6 ('logger')
+            100 LOAD_NAME               12 (logging)
+            102 LOAD_ATTR               26 (Logger)
+            122 BUILD_TUPLE              4
+            124 LOAD_CLOSURE             0 (__class__)
+            126 BUILD_TUPLE              1
+            128 LOAD_CONST               7 (<code object __init__ at 0x0000020DAF2B9E60, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 48>)
+            130 MAKE_FUNCTION           12 (annotations, closure)
+            132 STORE_NAME              14 (__init__)
+
+ 55         134 LOAD_CONST               8 (<code object _init_event_handlers at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 55>)
+            136 MAKE_FUNCTION            0
+            138 STORE_NAME              15 (_init_event_handlers)
+
+106         140 LOAD_CONST               9 ('row')
+            142 LOAD_NAME               16 (Dict)
+            144 LOAD_NAME               17 (str)
+            146 LOAD_NAME               18 (Any)
+            148 BUILD_TUPLE              2
+            150 BINARY_SUBSCR
+            154 LOAD_CONST              10 ('pit_time_loss_ms')
+            156 LOAD_NAME               19 (float)
+            158 LOAD_CONST              11 ('return')
+            160 LOAD_NAME               19 (float)
+            162 BUILD_TUPLE              6
+            164 LOAD_CONST              12 (<code object _get_rival_effective_delta at 0x0000020DAF18BE00, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 106>)
+            166 MAKE_FUNCTION            4 (annotations)
+            168 STORE_NAME              20 (_get_rival_effective_delta)
+
+138         170 NOP
+
+133         172 LOAD_CONST              25 ((0.0,))
+            174 LOAD_CONST              13 ('table_entries')
+
+135         176 LOAD_NAME               21 (List)
+            178 LOAD_NAME               16 (Dict)
+            180 LOAD_NAME               17 (str)
+            182 LOAD_NAME               18 (Any)
+            184 BUILD_TUPLE              2
+            186 BINARY_SUBSCR
+            190 BINARY_SUBSCR
+
+133         194 LOAD_CONST              14 ('pit_time_loss')
+
+136         196 LOAD_NAME               19 (float)
+
+133         198 LOAD_CONST              15 ('ref_row')
+
+137         200 LOAD_NAME               16 (Dict)
+            202 LOAD_NAME               17 (str)
+            204 LOAD_NAME               18 (Any)
+            206 BUILD_TUPLE              2
+            208 BINARY_SUBSCR
+
+133         212 LOAD_CONST              16 ('time_already_in_pit_ms')
+
+138         214 LOAD_NAME               19 (float)
+
+133         216 LOAD_CONST              11 ('return')
+
+139         218 LOAD_NAME               21 (List)
+            220 LOAD_NAME               16 (Dict)
+            222 LOAD_NAME               17 (str)
+            224 LOAD_NAME               18 (Any)
+            226 BUILD_TUPLE              2
+            228 BINARY_SUBSCR
+            232 BINARY_SUBSCR
+
+133         236 BUILD_TUPLE             10
+            238 LOAD_CONST              17 (<code object _add_pit_time_loss at 0x0000020DB0C17C80, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 133>)
+            240 MAKE_FUNCTION            5 (defaults, annotations)
+            242 STORE_NAME              22 (_add_pit_time_loss)
+
+246         244 LOAD_CONST              18 ('page_item')
+            246 LOAD_NAME               23 (QQuickItem)
+            248 BUILD_TUPLE              2
+            250 LOAD_CONST              19 (<code object _show_empty_table at 0x0000020DAED7A5B0, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 246>)
+            252 MAKE_FUNCTION            4 (annotations)
+            254 STORE_NAME              24 (_show_empty_table)
+
+250         256 LOAD_CONST              20 ('pit_time_loss_str')
+
+251         258 LOAD_NAME               17 (str)
+
+250         260 LOAD_CONST              21 ('relevant_rows')
+
+252         262 LOAD_NAME               21 (List)
+            264 LOAD_NAME               16 (Dict)
+            266 LOAD_NAME               17 (str)
+            268 LOAD_NAME               18 (Any)
+            270 BUILD_TUPLE              2
+            272 BINARY_SUBSCR
+            276 BINARY_SUBSCR
+
+250         280 LOAD_CONST              22 ('ref_index')
+
+253         282 LOAD_NAME               25 (int)
+
+250         284 LOAD_CONST              18 ('page_item')
+
+254         286 LOAD_NAME               23 (QQuickItem)
+
+250         288 BUILD_TUPLE              8
+            290 LOAD_CONST              23 (<code object _update_table at 0x0000020DAEE3D590, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 250>)
+            292 MAKE_FUNCTION            4 (annotations)
+            294 STORE_NAME              26 (_update_table)
+
+313         296 LOAD_CONST               9 ('row')
+            298 LOAD_NAME               16 (Dict)
+            300 LOAD_NAME               17 (str)
+            302 LOAD_NAME               18 (Any)
+            304 BUILD_TUPLE              2
+            306 BINARY_SUBSCR
+            310 LOAD_CONST              11 ('return')
+            312 LOAD_NAME               27 (bool)
+            314 BUILD_TUPLE              4
+            316 LOAD_CONST              24 (<code object _is_active_car at 0x0000020DAF2DF330, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 313>)
+            318 MAKE_FUNCTION            4 (annotations)
+            320 STORE_NAME              28 (_is_active_car)
+            322 LOAD_CLOSURE             0 (__class__)
+            324 COPY                     1
+            326 STORE_NAME              29 (__classcell__)
+            328 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF2B9E60, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 48>:
+              0 COPY_FREE_VARS           1
+
+ 48           2 RESUME                   0
+
+ 49           4 LOAD_GLOBAL              0 (super)
+             14 LOAD_DEREF               3 (__class__)
+             16 LOAD_FAST                0 (self)
+             18 LOAD_SUPER_ATTR          5 (NULL|self + __init__)
+             22 LOAD_FAST                1 (overlay)
+             24 LOAD_FAST                2 (logger)
+             26 CALL                     2
+             34 POP_TOP
+
+ 50          36 LOAD_FAST                0 (self)
+             38 LOAD_ATTR                5 (NULL|self + _init_event_handlers)
+             58 CALL                     0
+             66 POP_TOP
+
+ 52          68 LOAD_CONST               1 (2)
+             70 LOAD_FAST                0 (self)
+             72 STORE_ATTR               3 (num_adjacent_cars)
+
+ 53          82 LOAD_FAST                0 (self)
+             84 LOAD_ATTR                6 (num_adjacent_cars)
+            104 LOAD_CONST               1 (2)
+            106 BINARY_OP                5 (*)
+            110 LOAD_CONST               2 (1)
+            112 BINARY_OP                0 (+)
+            116 LOAD_FAST                0 (self)
+            118 STORE_ATTR               4 (total_rows)
+            128 RETURN_CONST             0 (None)
+
+Disassembly of <code object _init_event_handlers at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 55>:
+              0 MAKE_CELL                0 (self)
+
+ 55           2 RESUME                   0
+
+ 56           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('race_table_update')
+             28 CALL                     1
+
+ 57          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (Dict)
+             48 LOAD_GLOBAL              4 (str)
+             58 LOAD_GLOBAL              6 (Any)
+             68 BUILD_TUPLE              2
+             70 BINARY_SUBSCR
+             74 LOAD_CONST               3 ('return')
+             76 LOAD_CONST               0 (None)
+             78 BUILD_TUPLE              4
+             80 LOAD_CLOSURE             0 (self)
+             82 BUILD_TUPLE              1
+             84 LOAD_CONST               4 (<code object _handle_race_table_update at 0x0000020DB0CBCCF0, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 56>)
+             86 MAKE_FUNCTION           12 (annotations, closure)
+
+ 56          88 CALL                     0
+
+ 57          96 STORE_FAST               1 (_handle_race_table_update)
+             98 RETURN_CONST             0 (None)
+
+Disassembly of <code object _handle_race_table_update at 0x0000020DB0CBCCF0, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 56>:
+              0 COPY_FREE_VARS           1
+
+ 56           2 RESUME                   0
+
+ 63           4 LOAD_DEREF              13 (self)
+              6 LOAD_ATTR                0 (_page_item)
+             26 STORE_FAST               1 (page_item)
+
+ 64          28 LOAD_FAST                0 (data)
+             30 LOAD_CONST               1 ('event-type')
+             32 BINARY_SUBSCR
+             36 STORE_FAST               2 (session_type)
+
+ 65          38 LOAD_GLOBAL              3 (NULL + is_race_type_session)
+             48 LOAD_FAST                2 (session_type)
+             50 CALL                     1
+             58 POP_JUMP_IF_TRUE        18 (to 96)
+
+ 66          60 LOAD_DEREF              13 (self)
+             62 LOAD_ATTR                5 (NULL|self + _show_empty_table)
+             82 LOAD_FAST                1 (page_item)
+             84 CALL                     1
+             92 POP_TOP
+
+ 67          94 RETURN_CONST             2 (None)
+
+ 69     >>   96 LOAD_FAST                0 (data)
+             98 LOAD_CONST               3 ('table-entries')
+            100 BINARY_SUBSCR
+            104 STORE_FAST               3 (table_entries)
+
+ 70         106 LOAD_FAST                3 (table_entries)
+            108 POP_JUMP_IF_TRUE        18 (to 146)
+
+ 71         110 LOAD_DEREF              13 (self)
+            112 LOAD_ATTR                5 (NULL|self + _show_empty_table)
+            132 LOAD_FAST                1 (page_item)
+            134 CALL                     1
+            142 POP_TOP
+
+ 72         144 RETURN_CONST             2 (None)
+
+ 74     >>  146 LOAD_GLOBAL              7 (NULL + get_ref_row)
+            156 LOAD_FAST                0 (data)
+            158 CALL                     1
+            166 STORE_FAST               4 (ref_row)
+
+ 75         168 LOAD_FAST                4 (ref_row)
+            170 POP_JUMP_IF_TRUE        18 (to 208)
+
+ 76         172 LOAD_DEREF              13 (self)
+            174 LOAD_ATTR                5 (NULL|self + _show_empty_table)
+            194 LOAD_FAST                1 (page_item)
+            196 CALL                     1
+            204 POP_TOP
+
+ 77         206 RETURN_CONST             2 (None)
+
+ 78     >>  208 LOAD_FAST                4 (ref_row)
+            210 LOAD_CONST               4 ('driver-info')
+            212 BINARY_SUBSCR
+            216 LOAD_CONST               5 ('index')
+            218 BINARY_SUBSCR
+            222 STORE_FAST               5 (ref_index)
+
+ 80         224 LOAD_FAST                0 (data)
+            226 LOAD_ATTR                9 (NULL|self + get)
+            246 LOAD_CONST               6 ('pit-time-loss')
+            248 CALL                     1
+            256 STORE_FAST               6 (pit_time_loss)
+
+ 81         258 LOAD_FAST                6 (pit_time_loss)
+            260 POP_JUMP_IF_TRUE        18 (to 298)
+
+ 82         262 LOAD_DEREF              13 (self)
+            264 LOAD_ATTR                5 (NULL|self + _show_empty_table)
+            284 LOAD_FAST                1 (page_item)
+            286 CALL                     1
+            294 POP_TOP
+
+ 83         296 RETURN_CONST             2 (None)
+
+ 88     >>  298 LOAD_FAST                4 (ref_row)
+            300 LOAD_ATTR                9 (NULL|self + get)
+            320 LOAD_CONST               7 ('pit-info')
+            322 BUILD_MAP                0
+            324 CALL                     2
+            332 STORE_FAST               7 (ref_pit_info)
+
+ 89         334 LOAD_FAST                7 (ref_pit_info)
+            336 LOAD_ATTR                9 (NULL|self + get)
+            356 LOAD_CONST               8 ('pit-lane-timer-active')
+            358 LOAD_CONST               9 (False)
+            360 CALL                     2
+            368 STORE_FAST               8 (pit_lane_timer_active)
+
+ 91         370 LOAD_FAST                8 (pit_lane_timer_active)
+            372 POP_JUMP_IF_FALSE       18 (to 410)
+            374 LOAD_FAST                7 (ref_pit_info)
+            376 LOAD_ATTR                9 (NULL|self + get)
+            396 LOAD_CONST              10 ('pit-lane-timer-ms')
+            398 LOAD_CONST              11 (0)
+            400 CALL                     2
+            408 JUMP_FORWARD             1 (to 412)
+        >>  410 LOAD_CONST              11 (0)
+
+ 90     >>  412 STORE_FAST               9 (time_already_in_pit_ms)
+
+ 95         414 LOAD_CONST              12 ('Pit Time Loss: ')
+            416 LOAD_FAST                6 (pit_time_loss)
+            418 LOAD_CONST              13 ('.1f')
+            420 FORMAT_VALUE             4 (with format)
+            422 LOAD_CONST              14 ('s')
+            424 BUILD_STRING             3
+            426 STORE_FAST              10 (pit_time_loss_str)
+
+ 97         428 LOAD_DEREF              13 (self)
+            430 LOAD_ATTR               11 (NULL|self + _add_pit_time_loss)
+
+ 98         450 LOAD_FAST                3 (table_entries)
+            452 LOAD_FAST                6 (pit_time_loss)
+            454 LOAD_FAST                4 (ref_row)
+            456 LOAD_FAST                9 (time_already_in_pit_ms)
+
+ 97         458 CALL                     4
+            466 STORE_FAST              11 (updated_entries)
+
+100         468 LOAD_GLOBAL             13 (NULL + get_relevant_race_table_rows)
+            478 LOAD_FAST               11 (updated_entries)
+            480 LOAD_DEREF              13 (self)
+            482 LOAD_ATTR               14 (num_adjacent_cars)
+            502 LOAD_FAST                5 (ref_index)
+            504 CALL                     3
+            512 STORE_FAST              12 (relevant_rows)
+
+101         514 LOAD_GLOBAL             17 (NULL + insert_relative_deltas_race)
+            524 LOAD_FAST               12 (relevant_rows)
+            526 LOAD_FAST                5 (ref_index)
+            528 CALL                     2
+            536 POP_TOP
+
+104         538 LOAD_DEREF              13 (self)
+            540 LOAD_ATTR               19 (NULL|self + _update_table)
+            560 LOAD_FAST               10 (pit_time_loss_str)
+            562 LOAD_FAST               12 (relevant_rows)
+            564 LOAD_FAST                5 (ref_index)
+            566 LOAD_FAST                1 (page_item)
+            568 CALL                     4
+            576 POP_TOP
+            578 RETURN_CONST             2 (None)
+
+Disassembly of <code object _get_rival_effective_delta at 0x0000020DAF18BE00, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 106>:
+106           0 RESUME                   0
+
+123           2 LOAD_FAST                1 (row)
+              4 LOAD_ATTR                1 (NULL|self + get)
+             24 LOAD_CONST               1 ('pit-info')
+             26 BUILD_MAP                0
+             28 CALL                     2
+             36 STORE_FAST               3 (pit_info)
+
+124          38 LOAD_FAST                1 (row)
+             40 LOAD_CONST               2 ('delta-info')
+             42 BINARY_SUBSCR
+             46 LOAD_CONST               3 ('delta-to-leader')
+             48 BINARY_SUBSCR
+             52 STORE_FAST               4 (raw_delta)
+
+126          54 LOAD_FAST                3 (pit_info)
+             56 LOAD_ATTR                1 (NULL|self + get)
+             76 LOAD_CONST               4 ('pit-lane-timer-active')
+             78 LOAD_CONST               5 (False)
+             80 CALL                     2
+             88 POP_JUMP_IF_TRUE         2 (to 94)
+
+127          90 LOAD_FAST                4 (raw_delta)
+             92 RETURN_VALUE
+
+129     >>   94 LOAD_FAST                3 (pit_info)
+             96 LOAD_ATTR                1 (NULL|self + get)
+            116 LOAD_CONST               6 ('pit-lane-timer-ms')
+            118 LOAD_CONST               7 (0)
+            120 CALL                     2
+            128 STORE_FAST               5 (time_spent_ms)
+
+130         130 LOAD_GLOBAL              3 (NULL + max)
+            140 LOAD_FAST                2 (pit_time_loss_ms)
+            142 LOAD_FAST                5 (time_spent_ms)
+            144 BINARY_OP               10 (-)
+            148 LOAD_CONST               8 (0.0)
+            150 CALL                     2
+            158 STORE_FAST               6 (remaining_ms)
+
+131         160 LOAD_FAST                4 (raw_delta)
+            162 LOAD_FAST                6 (remaining_ms)
+            164 BINARY_OP                0 (+)
+            168 RETURN_VALUE
+
+Disassembly of <code object _add_pit_time_loss at 0x0000020DB0C17C80, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 133>:
+133           0 RESUME                   0
+
+166           2 LOAD_FAST                3 (ref_row)
+              4 POP_JUMP_IF_NOT_NONE     2 (to 10)
+              6 LOAD_ASSERTION_ERROR
+              8 RAISE_VARARGS            1
+
+167     >>   10 LOAD_FAST                2 (pit_time_loss)
+             12 POP_JUMP_IF_NOT_NONE     2 (to 18)
+             14 LOAD_ASSERTION_ERROR
+             16 RAISE_VARARGS            1
+
+170     >>   18 LOAD_FAST                2 (pit_time_loss)
+             20 LOAD_CONST               2 (1000.0)
+             22 BINARY_OP                5 (*)
+             26 STORE_FAST               5 (pit_time_loss_ms)
+
+174          28 LOAD_GLOBAL              1 (NULL + max)
+             38 LOAD_FAST                5 (pit_time_loss_ms)
+             40 LOAD_FAST                4 (time_already_in_pit_ms)
+             42 BINARY_OP               10 (-)
+             46 LOAD_CONST               3 (0.0)
+             48 CALL                     2
+             56 STORE_FAST               6 (remaining_pit_loss_ms)
+
+177          58 LOAD_FAST                3 (ref_row)
+             60 LOAD_CONST               4 ('delta-info')
+             62 BINARY_SUBSCR
+             66 LOAD_CONST               5 ('delta-to-leader')
+             68 BINARY_SUBSCR
+             72 STORE_FAST               7 (ref_delta)
+
+178          74 LOAD_FAST                7 (ref_delta)
+             76 LOAD_FAST                6 (remaining_pit_loss_ms)
+             78 BINARY_OP                0 (+)
+             82 STORE_FAST               8 (projected_gap)
+
+181          84 LOAD_CONST               1 (None)
+             86 STORE_FAST               9 (rejoin_index)
+
+182          88 LOAD_CONST               1 (None)
+             90 STORE_FAST              10 (last_active_index)
+
+184          92 LOAD_GLOBAL              3 (NULL + enumerate)
+            102 LOAD_FAST                1 (table_entries)
+            104 CALL                     1
+            112 GET_ITER
+        >>  114 FOR_ITER                69 (to 256)
+            118 UNPACK_SEQUENCE          2
+            122 STORE_FAST              11 (i)
+            124 STORE_FAST              12 (row)
+
+185         126 LOAD_FAST                0 (self)
+            128 LOAD_ATTR                5 (NULL|self + _is_active_car)
+            148 LOAD_FAST               12 (row)
+            150 CALL                     1
+            158 POP_JUMP_IF_FALSE        4 (to 168)
+            160 LOAD_FAST               12 (row)
+            162 LOAD_FAST                3 (ref_row)
+            164 IS_OP                    0
+            166 POP_JUMP_IF_FALSE        1 (to 170)
+
+186     >>  168 JUMP_BACKWARD           28 (to 114)
+
+188     >>  170 LOAD_FAST               11 (i)
+            172 STORE_FAST              10 (last_active_index)
+
+190         174 LOAD_FAST                0 (self)
+            176 LOAD_ATTR                7 (NULL|self + _get_rival_effective_delta)
+            196 LOAD_FAST               12 (row)
+            198 LOAD_FAST                5 (pit_time_loss_ms)
+            200 CALL                     2
+            208 STORE_FAST              13 (rival_effective_delta)
+
+191         210 LOAD_FAST                8 (projected_gap)
+            212 LOAD_FAST               13 (rival_effective_delta)
+            214 COMPARE_OP               2 (<)
+            218 POP_JUMP_IF_TRUE         1 (to 222)
+            220 JUMP_BACKWARD           54 (to 114)
+
+192     >>  222 LOAD_GLOBAL              1 (NULL + max)
+            232 LOAD_FAST               11 (i)
+            234 LOAD_CONST               6 (1)
+            236 BINARY_OP               10 (-)
+            240 LOAD_CONST               7 (0)
+            242 CALL                     2
+            250 STORE_FAST               9 (rejoin_index)
+
+193         252 POP_TOP
+            254 JUMP_FORWARD             1 (to 258)
+
+184     >>  256 END_FOR
+
+195     >>  258 LOAD_FAST                9 (rejoin_index)
+            260 POP_JUMP_IF_NOT_NONE     6 (to 274)
+
+197         262 LOAD_FAST               10 (last_active_index)
+            264 POP_JUMP_IF_NONE         2 (to 270)
+            266 LOAD_FAST               10 (last_active_index)
+            268 JUMP_FORWARD             1 (to 272)
+        >>  270 LOAD_CONST               7 (0)
+        >>  272 STORE_FAST               9 (rejoin_index)
+
+200     >>  274 LOAD_FAST                8 (projected_gap)
+            276 LOAD_FAST                3 (ref_row)
+            278 LOAD_CONST               4 ('delta-info')
+            280 BINARY_SUBSCR
+            284 LOAD_CONST               5 ('delta-to-leader')
+            286 STORE_SUBSCR
+
+203         290 LOAD_CONST               1 (None)
+            292 STORE_FAST              14 (front_driver)
+
+204         294 LOAD_GLOBAL              9 (NULL + range)
+            304 LOAD_FAST                9 (rejoin_index)
+            306 LOAD_CONST               8 (-1)
+            308 LOAD_CONST               8 (-1)
+            310 CALL                     3
+            318 GET_ITER
+        >>  320 FOR_ITER                33 (to 390)
+            324 STORE_FAST              11 (i)
+
+205         326 LOAD_FAST                1 (table_entries)
+            328 LOAD_FAST               11 (i)
+            330 BINARY_SUBSCR
+            334 STORE_FAST              15 (candidate)
+
+206         336 LOAD_FAST               15 (candidate)
+            338 LOAD_FAST                3 (ref_row)
+            340 IS_OP                    1
+            342 POP_JUMP_IF_TRUE         1 (to 346)
+            344 JUMP_BACKWARD           13 (to 320)
+        >>  346 LOAD_FAST                0 (self)
+            348 LOAD_ATTR                5 (NULL|self + _is_active_car)
+            368 LOAD_FAST               15 (candidate)
+            370 CALL                     1
+            378 POP_JUMP_IF_TRUE         1 (to 382)
+            380 JUMP_BACKWARD           31 (to 320)
+
+207     >>  382 LOAD_FAST               15 (candidate)
+            384 STORE_FAST              14 (front_driver)
+
+208         386 POP_TOP
+            388 JUMP_FORWARD             1 (to 392)
+
+204     >>  390 END_FOR
+
+210     >>  392 LOAD_FAST               14 (front_driver)
+            394 POP_JUMP_IF_FALSE       18 (to 432)
+
+212         396 LOAD_FAST                8 (projected_gap)
+            398 LOAD_FAST               14 (front_driver)
+            400 LOAD_CONST               4 ('delta-info')
+            402 BINARY_SUBSCR
+            406 LOAD_CONST               5 ('delta-to-leader')
+            408 BINARY_SUBSCR
+            412 BINARY_OP               10 (-)
+
+211         416 LOAD_FAST                3 (ref_row)
+            418 LOAD_CONST               4 ('delta-info')
+            420 BINARY_SUBSCR
+            424 LOAD_CONST               9 ('delta-to-car-in-front')
+            426 STORE_SUBSCR
+            430 JUMP_FORWARD             8 (to 448)
+
+216     >>  432 LOAD_CONST               7 (0)
+            434 LOAD_FAST                3 (ref_row)
+            436 LOAD_CONST               4 ('delta-info')
+            438 BINARY_SUBSCR
+            442 LOAD_CONST               9 ('delta-to-car-in-front')
+            444 STORE_SUBSCR
+
+219     >>  448 LOAD_FAST                1 (table_entries)
+            450 GET_ITER
+            452 LOAD_FAST_AND_CLEAR     16 (r)
+            454 SWAP                     2
+            456 BUILD_LIST               0
+            458 SWAP                     2
+        >>  460 FOR_ITER                 9 (to 482)
+            464 STORE_FAST              16 (r)
+            466 LOAD_FAST               16 (r)
+            468 LOAD_FAST                3 (ref_row)
+            470 IS_OP                    1
+            472 POP_JUMP_IF_TRUE         1 (to 476)
+            474 JUMP_BACKWARD            8 (to 460)
+        >>  476 LOAD_FAST               16 (r)
+            478 LIST_APPEND              2
+            480 JUMP_BACKWARD           11 (to 460)
+        >>  482 END_FOR
+            484 STORE_FAST               1 (table_entries)
+            486 STORE_FAST              16 (r)
+
+222         488 LOAD_FAST                1 (table_entries)
+            490 LOAD_ATTR               11 (NULL|self + insert)
+            510 LOAD_FAST                9 (rejoin_index)
+            512 LOAD_CONST               6 (1)
+            514 BINARY_OP                0 (+)
+            518 LOAD_FAST                3 (ref_row)
+            520 CALL                     2
+            528 POP_TOP
+
+225         530 LOAD_GLOBAL              3 (NULL + enumerate)
+            540 LOAD_FAST                1 (table_entries)
+            542 LOAD_CONST               6 (1)
+            544 KW_NAMES                10 (('start',))
+            546 CALL                     2
+            554 GET_ITER
+        >>  556 FOR_ITER                13 (to 586)
+            560 UNPACK_SEQUENCE          2
+            564 STORE_FAST              17 (pos)
+            566 STORE_FAST              12 (row)
+
+226         568 LOAD_FAST               17 (pos)
+            570 LOAD_FAST               12 (row)
+            572 LOAD_CONST              11 ('driver-info')
+            574 BINARY_SUBSCR
+            578 LOAD_CONST              12 ('position')
+            580 STORE_SUBSCR
+            584 JUMP_BACKWARD           15 (to 556)
+
+225     >>  586 END_FOR
+
+229         588 LOAD_CONST               1 (None)
+            590 STORE_FAST              18 (last_active_row)
+
+230         592 LOAD_FAST                1 (table_entries)
+            594 GET_ITER
+        >>  596 FOR_ITER                56 (to 712)
+            600 STORE_FAST              12 (row)
+
+231         602 LOAD_FAST                0 (self)
+            604 LOAD_ATTR                5 (NULL|self + _is_active_car)
+            624 LOAD_FAST               12 (row)
+            626 CALL                     1
+            634 POP_JUMP_IF_TRUE         1 (to 638)
+
+232         636 JUMP_BACKWARD           21 (to 596)
+
+234     >>  638 LOAD_FAST               18 (last_active_row)
+            640 POP_JUMP_IF_NOT_NONE     9 (to 660)
+
+235         642 LOAD_CONST               7 (0)
+            644 LOAD_FAST               12 (row)
+            646 LOAD_CONST               4 ('delta-info')
+            648 BINARY_SUBSCR
+            652 LOAD_CONST               9 ('delta-to-car-in-front')
+            654 STORE_SUBSCR
+            658 JUMP_FORWARD            23 (to 706)
+
+238     >>  660 LOAD_FAST               12 (row)
+            662 LOAD_CONST               4 ('delta-info')
+            664 BINARY_SUBSCR
+            668 LOAD_CONST               5 ('delta-to-leader')
+            670 BINARY_SUBSCR
+
+239         674 LOAD_FAST               18 (last_active_row)
+            676 LOAD_CONST               4 ('delta-info')
+            678 BINARY_SUBSCR
+            682 LOAD_CONST               5 ('delta-to-leader')
+            684 BINARY_SUBSCR
+
+238         688 BINARY_OP               10 (-)
+
+237         692 LOAD_FAST               12 (row)
+            694 LOAD_CONST               4 ('delta-info')
+            696 BINARY_SUBSCR
+            700 LOAD_CONST               9 ('delta-to-car-in-front')
+            702 STORE_SUBSCR
+
+242     >>  706 LOAD_FAST               12 (row)
+            708 STORE_FAST              18 (last_active_row)
+            710 JUMP_BACKWARD           58 (to 596)
+
+230     >>  712 END_FOR
+
+244         714 LOAD_FAST                1 (table_entries)
+            716 RETURN_VALUE
+        >>  718 SWAP                     2
+            720 POP_TOP
+
+219         722 SWAP                     2
+            724 STORE_FAST              16 (r)
+            726 RERAISE                  0
+ExceptionTable:
+  456 to 472 -> 718 [2]
+  476 to 482 -> 718 [2]
+
+Disassembly of <code object _show_empty_table at 0x0000020DAED7A5B0, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 246>:
+246           0 RESUME                   0
+
+248           2 LOAD_FAST                1 (page_item)
+              4 LOAD_ATTR                1 (NULL|self + showEmptyTable)
+             24 CALL                     0
+             32 POP_TOP
+             34 RETURN_CONST             1 (None)
+
+Disassembly of <code object _update_table at 0x0000020DAEE3D590, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 250>:
+250           0 RESUME                   0
+
+265           2 BUILD_LIST               0
+              4 STORE_FAST               5 (rows_data)
+
+266           6 LOAD_FAST                2 (relevant_rows)
+              8 GET_ITER
+        >>   10 EXTENDED_ARG             1
+             12 FOR_ITER               305 (to 626)
+             16 STORE_FAST               6 (row_data)
+
+267          18 LOAD_FAST                6 (row_data)
+             20 LOAD_ATTR                1 (NULL|self + get)
+             40 LOAD_CONST               1 ('driver-info')
+             42 BUILD_MAP                0
+             44 CALL                     2
+             52 STORE_FAST               7 (driver_info)
+
+268          54 LOAD_FAST                6 (row_data)
+             56 LOAD_ATTR                1 (NULL|self + get)
+             76 LOAD_CONST               2 ('delta-info')
+             78 BUILD_MAP                0
+             80 CALL                     2
+             88 STORE_FAST               8 (delta_info)
+
+269          90 LOAD_FAST                6 (row_data)
+             92 LOAD_ATTR                1 (NULL|self + get)
+            112 LOAD_CONST               3 ('tyre-info')
+            114 BUILD_MAP                0
+            116 CALL                     2
+            124 STORE_FAST               9 (tyre_info)
+
+271         126 LOAD_FAST                7 (driver_info)
+            128 LOAD_ATTR                1 (NULL|self + get)
+            148 LOAD_CONST               4 ('position')
+            150 LOAD_CONST               5 (0)
+            152 CALL                     2
+            160 STORE_FAST              10 (position)
+
+272         162 LOAD_FAST                7 (driver_info)
+            164 LOAD_ATTR                1 (NULL|self + get)
+            184 LOAD_CONST               6 ('team')
+            186 LOAD_CONST               7 ('')
+            188 CALL                     2
+            196 STORE_FAST              11 (team)
+
+273         198 LOAD_FAST                7 (driver_info)
+            200 LOAD_ATTR                1 (NULL|self + get)
+            220 LOAD_CONST               8 ('name')
+            222 LOAD_CONST               7 ('')
+            224 CALL                     2
+            232 STORE_FAST              12 (name)
+
+274         234 LOAD_FAST                8 (delta_info)
+            236 LOAD_ATTR                1 (NULL|self + get)
+            256 LOAD_CONST               9 ('relative-delta')
+            258 LOAD_CONST              10 (0.0)
+            260 CALL                     2
+            268 STORE_FAST              13 (delta_value)
+
+275         270 LOAD_FAST                7 (driver_info)
+            272 LOAD_ATTR                1 (NULL|self + get)
+            292 LOAD_CONST              11 ('index')
+            294 LOAD_CONST              12 (-1)
+            296 CALL                     2
+            304 STORE_FAST              14 (driver_idx)
+
+276         306 LOAD_FAST               14 (driver_idx)
+            308 LOAD_FAST                3 (ref_index)
+            310 COMPARE_OP              40 (==)
+            314 STORE_FAST              15 (is_ref)
+
+279         316 LOAD_FAST                7 (driver_info)
+            318 LOAD_ATTR                1 (NULL|self + get)
+            338 LOAD_CONST              13 ('dnf-status')
+            340 LOAD_CONST               7 ('')
+            342 CALL                     2
+            350 STORE_FAST              16 (dnf_status)
+
+280         352 LOAD_FAST               16 (dnf_status)
+            354 LOAD_CONST              14 (frozenset({'DSQ', 'DNF'}))
+            356 CONTAINS_OP              0
+            358 POP_JUMP_IF_FALSE        5 (to 370)
+
+281         360 LOAD_FAST               16 (dnf_status)
+            362 STORE_FAST              17 (delta_str)
+
+282         364 LOAD_CONST              15 ('white')
+            366 STORE_FAST              18 (delta_color)
+            368 JUMP_FORWARD            52 (to 474)
+
+283     >>  370 LOAD_FAST               15 (is_ref)
+            372 POP_JUMP_IF_FALSE        5 (to 384)
+
+284         374 LOAD_CONST              16 ('---')
+            376 STORE_FAST              17 (delta_str)
+
+285         378 LOAD_CONST              15 ('white')
+            380 STORE_FAST              18 (delta_color)
+            382 JUMP_FORWARD            45 (to 474)
+
+287     >>  384 LOAD_GLOBAL              3 (NULL + F1Utils)
+            394 LOAD_ATTR                4 (formatFloat)
+            414 LOAD_FAST               13 (delta_value)
+            416 LOAD_CONST              17 (1000)
+            418 BINARY_OP               11 (/)
+            422 LOAD_CONST              18 (3)
+            424 LOAD_CONST              19 (True)
+            426 KW_NAMES                20 (('precision', 'signed'))
+            428 CALL                     3
+            436 STORE_FAST              17 (delta_str)
+
+289         438 LOAD_FAST               13 (delta_value)
+            440 LOAD_CONST               5 (0)
+            442 COMPARE_OP               2 (<)
+            446 POP_JUMP_IF_FALSE        3 (to 454)
+
+290         448 LOAD_CONST              21 ('#00FF00')
+            450 STORE_FAST              18 (delta_color)
+            452 JUMP_FORWARD            10 (to 474)
+
+291     >>  454 LOAD_FAST               13 (delta_value)
+            456 LOAD_CONST               5 (0)
+            458 COMPARE_OP              68 (>)
+            462 POP_JUMP_IF_FALSE        3 (to 470)
+
+292         464 LOAD_CONST              22 ('#FF0000')
+            466 STORE_FAST              18 (delta_color)
+            468 JUMP_FORWARD             2 (to 474)
+
+294     >>  470 LOAD_CONST              15 ('white')
+            472 STORE_FAST              18 (delta_color)
+
+296     >>  474 LOAD_FAST                9 (tyre_info)
+            476 LOAD_ATTR                1 (NULL|self + get)
+            496 LOAD_CONST              23 ('visual-tyre-compound')
+            498 LOAD_CONST               7 ('')
+            500 CALL                     2
+            508 STORE_FAST              19 (compound)
+
+297         510 LOAD_FAST                9 (tyre_info)
+            512 LOAD_ATTR                1 (NULL|self + get)
+            532 LOAD_CONST              24 ('tyre-age')
+            534 LOAD_CONST               5 (0)
+            536 CALL                     2
+            544 STORE_FAST              20 (tyre_age)
+
+299         546 LOAD_FAST                5 (rows_data)
+            548 LOAD_ATTR                7 (NULL|self + append)
+
+300         568 LOAD_GLOBAL              9 (NULL + str)
+            578 LOAD_FAST               10 (position)
+            580 CALL                     1
+
+301         588 LOAD_FAST               11 (team)
+
+302         590 LOAD_FAST               12 (name)
+
+303         592 LOAD_FAST               17 (delta_str)
+
+304         594 LOAD_FAST               18 (delta_color)
+
+305         596 LOAD_FAST               15 (is_ref)
+
+306         598 LOAD_FAST               19 (compound)
+
+307         600 LOAD_FAST               20 (tyre_age)
+            602 FORMAT_VALUE             0
+            604 LOAD_CONST              25 ('L')
+            606 BUILD_STRING             2
+
+299         608 LOAD_CONST              26 (('position', 'team', 'name', 'delta', 'deltaColor', 'isRef', 'compound', 'tyreAge'))
+            610 BUILD_CONST_KEY_MAP      8
+            612 CALL                     1
+            620 POP_TOP
+            622 EXTENDED_ARG             1
+            624 JUMP_BACKWARD          308 (to 10)
+
+266     >>  626 END_FOR
+
+311         628 LOAD_FAST                4 (page_item)
+            630 LOAD_ATTR               11 (NULL|self + updateData)
+            650 LOAD_FAST                1 (pit_time_loss_str)
+            652 LOAD_FAST                5 (rows_data)
+            654 LOAD_FAST                3 (ref_index)
+            656 CALL                     3
+            664 POP_TOP
+            666 RETURN_CONST            27 (None)
+
+Disassembly of <code object _is_active_car at 0x0000020DAF2DF330, file "apps\hud\ui\overlays\mfd\pages\pit_rejoin\pit_rejoin_page.py", line 313>:
+313           0 RESUME                   0
+
+315           2 LOAD_FAST                1 (row)
+              4 LOAD_ATTR                1 (NULL|self + get)
+             24 LOAD_CONST               1 ('driver-info')
+             26 BUILD_MAP                0
+             28 CALL                     2
+             36 LOAD_ATTR                1 (NULL|self + get)
+             56 LOAD_CONST               2 ('dnf-status')
+             58 LOAD_CONST               3 ('')
+             60 CALL                     2
+             68 STORE_FAST               2 (status)
+
+316          70 LOAD_FAST                2 (status)
+             72 LOAD_CONST               4 (('DNF', 'DSQ'))
+             74 CONTAINS_OP              1
+             76 RETURN_VALUE

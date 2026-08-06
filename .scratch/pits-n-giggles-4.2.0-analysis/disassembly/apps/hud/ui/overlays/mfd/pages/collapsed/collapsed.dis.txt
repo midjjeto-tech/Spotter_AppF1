@@ -1,0 +1,92 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (('Path',))
+              6 IMPORT_NAME              0 (pathlib)
+              8 IMPORT_FROM              1 (Path)
+             10 STORE_NAME               1 (Path)
+             12 POP_TOP
+
+ 27          14 LOAD_CONST               0 (0)
+             16 LOAD_CONST               2 (('MfdPageBase',))
+             18 IMPORT_NAME              2 (apps.hud.ui.overlays.mfd.pages.base_page)
+             20 IMPORT_FROM              3 (MfdPageBase)
+             22 STORE_NAME               3 (MfdPageBase)
+             24 POP_TOP
+
+ 28          26 LOAD_CONST               0 (0)
+             28 LOAD_CONST               3 (('MfdPageId',))
+             30 IMPORT_NAME              4 (lib.config)
+             32 IMPORT_FROM              5 (MfdPageId)
+             34 STORE_NAME               5 (MfdPageId)
+             36 POP_TOP
+
+ 32          38 PUSH_NULL
+             40 LOAD_BUILD_CLASS
+             42 LOAD_CONST               4 (<code object CollapsedPage at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\mfd\pages\collapsed\collapsed.py", line 32>)
+             44 MAKE_FUNCTION            0
+             46 LOAD_CONST               5 ('CollapsedPage')
+             48 LOAD_NAME                3 (MfdPageBase)
+             50 CALL                     3
+             58 STORE_NAME               6 (CollapsedPage)
+             60 RETURN_CONST             6 (None)
+
+Disassembly of <code object CollapsedPage at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\mfd\pages\collapsed\collapsed.py", line 32>:
+              0 MAKE_CELL                0 (__class__)
+
+ 32           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('CollapsedPage')
+             10 STORE_NAME               2 (__qualname__)
+             12 SETUP_ANNOTATIONS
+
+ 33          14 LOAD_NAME                3 (MfdPageId)
+             16 LOAD_ATTR                8 (COLLAPSED)
+             36 STORE_NAME               5 (KEY)
+
+ 34          38 PUSH_NULL
+             40 LOAD_NAME                6 (Path)
+             42 LOAD_NAME                7 (__file__)
+             44 CALL                     1
+             52 LOAD_ATTR               16 (parent)
+             72 LOAD_CONST               1 ('collapsed_page.qml')
+             74 BINARY_OP               11 (/)
+             78 STORE_NAME               9 (QML_FILE)
+             80 LOAD_NAME                6 (Path)
+             82 LOAD_NAME               10 (__annotations__)
+             84 LOAD_CONST               2 ('QML_FILE')
+             86 STORE_SUBSCR
+
+ 36          90 LOAD_CLOSURE             0 (__class__)
+             92 BUILD_TUPLE              1
+             94 LOAD_CONST               3 (<code object __init__ at 0x0000020DAF19FBD0, file "apps\hud\ui\overlays\mfd\pages\collapsed\collapsed.py", line 36>)
+             96 MAKE_FUNCTION            8 (closure)
+             98 STORE_NAME              11 (__init__)
+            100 LOAD_CLOSURE             0 (__class__)
+            102 COPY                     1
+            104 STORE_NAME              12 (__classcell__)
+            106 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF19FBD0, file "apps\hud\ui\overlays\mfd\pages\collapsed\collapsed.py", line 36>:
+              0 COPY_FREE_VARS           1
+
+ 36           2 RESUME                   0
+
+ 37           4 LOAD_GLOBAL              0 (super)
+             14 LOAD_DEREF               3 (__class__)
+             16 LOAD_FAST                0 (self)
+             18 LOAD_SUPER_ATTR          5 (NULL|self + __init__)
+             22 LOAD_FAST                1 (root)
+             24 LOAD_FAST                2 (logger)
+             26 CALL                     2
+             34 POP_TOP
+
+ 40          36 LOAD_FAST                0 (self)
+             38 LOAD_ATTR                4 (overlay)
+             58 LOAD_ATTR                7 (NULL|self + set_qml_property)
+             78 LOAD_CONST               1 ('collapsedTitle')
+             80 LOAD_CONST               2 ("Pits n' Giggles MFD")
+             82 CALL                     2
+             90 POP_TOP
+             92 RETURN_CONST             0 (None)

@@ -1,0 +1,19 @@
+{
+  "name": "Miami",
+  "length_m": 5412,
+  "corners": [
+    {"id":1,  "fraction":0.032,"type":"slow",   "direction":"right"},
+    {"id":2,  "fraction":0.062,"type":"medium", "direction":"left"},
+    {"id":3,  "fraction":0.090,"type":"medium", "direction":"right"},
+    {"id":5,  "fraction":0.142,"type":"fast",   "direction":"left"},
+    {"id":6,  "fraction":0.169,"type":"chicane","direction":"right"},
+    {"id":7,  "fraction":0.189,"type":"chicane","direction":"left"},
+    {"id":11, "fraction":0.373,"type":"medium", "direction":"left"},
+    {"id":12, "fraction":0.401,"type":"medium", "direction":"right"},
+    {"id":14, "fraction":0.485,"type":"hairpin","direction":"left"},
+    {"id":15, "fraction":0.518,"type":"medium", "direction":"right"},
+    {"id":17, "fraction":0.622,"type":"chicane","direction":"left"},
+    {"id":18, "fraction":0.645,"type":"chicane","direction":"right"},
+    {"id":19, "fraction":0.735,"type":"slow",   "direction":"left"}
+  ]
+}

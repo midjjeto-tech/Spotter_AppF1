@@ -1,0 +1,632 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('Optional', 'final'))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (Optional)
+             30 STORE_NAME               4 (Optional)
+             32 IMPORT_FROM              5 (final)
+             34 STORE_NAME               5 (final)
+             36 POP_TOP
+
+ 29          38 LOAD_CONST               0 (0)
+             40 LOAD_CONST               4 (('get_ref_row',))
+             42 IMPORT_NAME              6 (apps.hud.common)
+             44 IMPORT_FROM              7 (get_ref_row)
+             46 STORE_NAME               7 (get_ref_row)
+             48 POP_TOP
+
+ 30          50 LOAD_CONST               0 (0)
+             52 LOAD_CONST               5 (('HudOverlayData',))
+             54 IMPORT_NAME              8 (apps.hud.ui.infra.hf_types)
+             56 IMPORT_FROM              9 (HudOverlayData)
+             58 STORE_NAME               9 (HudOverlayData)
+             60 POP_TOP
+
+ 31          62 LOAD_CONST               0 (0)
+             64 LOAD_CONST               6 (('BaseOverlayQML',))
+             66 IMPORT_NAME             10 (apps.hud.ui.overlays.base)
+             68 IMPORT_FROM             11 (BaseOverlayQML)
+             70 STORE_NAME              11 (BaseOverlayQML)
+             72 POP_TOP
+
+ 32          74 LOAD_CONST               0 (0)
+             76 LOAD_CONST               7 (('OverlayId', 'OverlayPosition'))
+             78 IMPORT_NAME             12 (lib.config)
+             80 IMPORT_FROM             13 (OverlayId)
+             82 STORE_NAME              13 (OverlayId)
+             84 IMPORT_FROM             14 (OverlayPosition)
+             86 STORE_NAME              14 (OverlayPosition)
+             88 POP_TOP
+
+ 33          90 LOAD_CONST               0 (0)
+             92 LOAD_CONST               8 (('F1Utils',))
+             94 IMPORT_NAME             15 (lib.f1_types)
+             96 IMPORT_FROM             16 (F1Utils)
+             98 STORE_NAME              16 (F1Utils)
+            100 POP_TOP
+
+ 34         102 LOAD_CONST               0 (0)
+            104 LOAD_CONST               9 (('TrackSegmentsDatabase',))
+            106 IMPORT_NAME             17 (lib.track_segment_info.database)
+            108 IMPORT_FROM             18 (TrackSegmentsDatabase)
+            110 STORE_NAME              18 (TrackSegmentsDatabase)
+            112 POP_TOP
+
+ 38         114 PUSH_NULL
+            116 LOAD_BUILD_CLASS
+            118 LOAD_CONST              10 (<code object CircuitInfoOverlay at 0x0000020DAEFD7E10, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 38>)
+            120 MAKE_FUNCTION            0
+            122 LOAD_CONST              11 ('CircuitInfoOverlay')
+            124 LOAD_NAME               11 (BaseOverlayQML)
+            126 CALL                     3
+            134 STORE_NAME              19 (CircuitInfoOverlay)
+            136 RETURN_CONST             1 (None)
+
+Disassembly of <code object CircuitInfoOverlay at 0x0000020DAEFD7E10, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 38>:
+              0 MAKE_CELL                0 (__class__)
+
+ 38           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('CircuitInfoOverlay')
+             10 STORE_NAME               2 (__qualname__)
+
+ 39          12 LOAD_CONST               1 ('\n    Extremely minimal QML overlay template.\n\n    - Loads QML\n    - Shows window\n    ')
+             14 STORE_NAME               3 (__doc__)
+
+ 47          16 PUSH_NULL
+             18 LOAD_NAME                4 (Path)
+             20 LOAD_NAME                5 (__file__)
+             22 CALL                     1
+             30 LOAD_ATTR               12 (parent)
+             50 LOAD_CONST               2 ('circuit_info.qml')
+             52 BINARY_OP               11 (/)
+             56 STORE_NAME               7 (QML_FILE)
+
+ 48          58 LOAD_NAME                8 (OverlayId)
+             60 LOAD_ATTR               18 (CIRCUIT_INFO)
+             80 STORE_NAME              10 (OVERLAY_ID)
+
+ 50          82 LOAD_CONST               3 ('#28a745')
+             84 STORE_NAME              11 (GREEN_SECTOR_COLOUR)
+
+ 51          86 LOAD_CONST               4 ('#ffc107')
+             88 STORE_NAME              12 (YELLOW_SECTOR_COLOUR)
+
+ 52          90 LOAD_CONST               5 ('#dc3545')
+             92 STORE_NAME              13 (RED_SECTOR_COLOUR)
+
+ 53          94 LOAD_CONST               6 ('#9b30ff')
+             96 STORE_NAME              14 (PURPLE_SECTOR_COLOUR)
+
+ 54          98 LOAD_CONST               7 ('#888888')
+            100 STORE_NAME              15 (NA_SECTOR_COLOUR)
+
+ 65         102 NOP
+
+ 56         104 LOAD_CONST              30 ((None,))
+            106 LOAD_CONST               9 ('config')
+
+ 58         108 LOAD_NAME               16 (OverlayPosition)
+
+ 56         110 LOAD_CONST              10 ('logger')
+
+ 59         112 LOAD_NAME               17 (logging)
+            114 LOAD_ATTR               36 (Logger)
+
+ 56         134 LOAD_CONST              11 ('locked')
+
+ 60         136 LOAD_NAME               19 (bool)
+
+ 56         138 LOAD_CONST              12 ('opacity')
+
+ 61         140 LOAD_NAME               20 (int)
+
+ 56         142 LOAD_CONST              13 ('scale_factor')
+
+ 62         144 LOAD_NAME               21 (float)
+
+ 56         146 LOAD_CONST              14 ('windowed_overlay')
+
+ 63         148 LOAD_NAME               19 (bool)
+
+ 56         150 LOAD_CONST              15 ('circuit_info_length')
+
+ 64         152 LOAD_NAME               20 (int)
+
+ 56         154 LOAD_CONST              16 ('refresh_interval_ms')
+
+ 65         156 LOAD_NAME               22 (Optional)
+            158 LOAD_NAME               20 (int)
+            160 BINARY_SUBSCR
+
+ 56         164 LOAD_CONST              17 ('return')
+
+ 66         166 LOAD_CONST               8 (None)
+
+ 56         168 BUILD_TUPLE             18
+            170 LOAD_CLOSURE             0 (__class__)
+            172 BUILD_TUPLE              1
+            174 LOAD_CONST              18 (<code object __init__ at 0x0000020DAF202550, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 56>)
+            176 MAKE_FUNCTION           13 (defaults, annotations, closure)
+            178 STORE_NAME              23 (__init__)
+
+ 85         180 LOAD_NAME               24 (final)
+
+ 86         182 LOAD_CONST              19 (<code object post_setup at 0x0000020DAEC3DE30, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 85>)
+            184 MAKE_FUNCTION            0
+
+ 85         186 CALL                     0
+
+ 86         194 STORE_NAME              25 (post_setup)
+
+ 90         196 LOAD_CONST              20 (<code object _register_handlers at 0x0000020DAF2B9A70, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 90>)
+            198 MAKE_FUNCTION            0
+            200 STORE_NAME              26 (_register_handlers)
+
+124         202 LOAD_CONST              21 ('length')
+            204 LOAD_NAME               20 (int)
+            206 BUILD_TUPLE              2
+            208 LOAD_CONST              22 (<code object _set_bar_width_property at 0x0000020DAED7A5B0, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 124>)
+            210 MAKE_FUNCTION            4 (annotations)
+            212 STORE_NAME              27 (_set_bar_width_property)
+
+127         214 LOAD_CONST              23 ('sector')
+            216 LOAD_NAME               20 (int)
+            218 LOAD_CONST              24 ('color')
+            220 LOAD_NAME               28 (str)
+            222 LOAD_CONST              17 ('return')
+            224 LOAD_CONST               8 (None)
+            226 BUILD_TUPLE              6
+            228 LOAD_CONST              25 (<code object set_completed_sector_color at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 127>)
+            230 MAKE_FUNCTION            4 (annotations)
+            232 STORE_NAME              29 (set_completed_sector_color)
+
+134         234 LOAD_CONST              26 ('s1_color')
+            236 LOAD_NAME               28 (str)
+            238 LOAD_CONST              27 ('s2_color')
+            240 LOAD_NAME               28 (str)
+            242 LOAD_CONST              17 ('return')
+            244 LOAD_CONST               8 (None)
+            246 BUILD_TUPLE              6
+            248 LOAD_CONST              28 (<code object set_completed_sector_colors at 0x0000020DAF2DF330, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 134>)
+            250 MAKE_FUNCTION            4 (annotations)
+            252 STORE_NAME              30 (set_completed_sector_colors)
+
+140         254 LOAD_NAME               24 (final)
+
+141         256 LOAD_CONST              29 (<code object render_frame at 0x0000020DAEF40570, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 140>)
+            258 MAKE_FUNCTION            0
+
+140         260 CALL                     0
+
+141         268 STORE_NAME              31 (render_frame)
+            270 LOAD_CLOSURE             0 (__class__)
+            272 COPY                     1
+            274 STORE_NAME              32 (__classcell__)
+            276 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF202550, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 56>:
+              0 COPY_FREE_VARS           1
+
+ 56           2 RESUME                   0
+
+ 68           4 LOAD_FAST                7 (circuit_info_length)
+              6 LOAD_FAST                0 (self)
+              8 STORE_ATTR               0 (circuit_info_length)
+
+ 69          18 LOAD_GLOBAL              2 (super)
+             28 LOAD_DEREF               9 (__class__)
+             30 LOAD_FAST                0 (self)
+             32 LOAD_SUPER_ATTR          9 (NULL|self + __init__)
+
+ 70          36 LOAD_FAST                1 (config)
+
+ 71          38 LOAD_FAST                2 (logger)
+
+ 72          40 LOAD_FAST                3 (locked)
+
+ 73          42 LOAD_FAST                4 (opacity)
+
+ 74          44 LOAD_FAST                5 (scale_factor)
+
+ 75          46 LOAD_FAST                6 (windowed_overlay)
+
+ 76          48 LOAD_FAST                8 (refresh_interval_ms)
+
+ 69          50 KW_NAMES                 1 (('config', 'logger', 'locked', 'opacity', 'scale_factor', 'windowed_overlay', 'refresh_interval_ms'))
+             52 CALL                     7
+             60 POP_TOP
+
+ 79          62 LOAD_GLOBAL              7 (NULL + TrackSegmentsDatabase)
+             72 LOAD_GLOBAL              9 (NULL + Path)
+             82 LOAD_GLOBAL             10 (__file__)
+             92 CALL                     1
+            100 LOAD_ATTR               12 (parents)
+            120 LOAD_CONST               2 (5)
+            122 BINARY_SUBSCR
+            126 LOAD_CONST               3 ('assets/track-segments')
+            128 BINARY_OP               11 (/)
+            132 CALL                     1
+            140 LOAD_FAST                0 (self)
+            142 STORE_ATTR               7 (tracks_db)
+
+ 82         152 LOAD_FAST                0 (self)
+            154 LOAD_ATTR               17 (NULL|self + subscribe_hf)
+            174 LOAD_GLOBAL             18 (HudOverlayData)
+            184 CALL                     1
+            192 POP_TOP
+
+ 83         194 LOAD_FAST                0 (self)
+            196 LOAD_ATTR               21 (NULL|self + _register_handlers)
+            216 CALL                     0
+            224 POP_TOP
+            226 RETURN_CONST             0 (None)
+
+Disassembly of <code object post_setup at 0x0000020DAEC3DE30, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 85>:
+ 85           0 RESUME                   0
+
+ 88           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + _set_bar_width_property)
+             24 LOAD_FAST                0 (self)
+             26 LOAD_ATTR                2 (circuit_info_length)
+             46 CALL                     1
+             54 POP_TOP
+             56 RETURN_CONST             1 (None)
+
+Disassembly of <code object _register_handlers at 0x0000020DAF2B9A70, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 90>:
+              0 MAKE_CELL                0 (self)
+
+ 90           2 RESUME                   0
+
+ 91           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('set_circuit_info_length')
+             28 CALL                     1
+
+ 92          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (dict)
+             48 BUILD_TUPLE              2
+             50 LOAD_CLOSURE             0 (self)
+             52 BUILD_TUPLE              1
+             54 LOAD_CONST               3 (<code object _handle_set_circuit_info_length at 0x0000020DAF2F8B30, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 91>)
+             56 MAKE_FUNCTION           12 (annotations, closure)
+
+ 91          58 CALL                     0
+
+ 92          66 STORE_FAST               1 (_handle_set_circuit_info_length)
+
+ 97          68 LOAD_DEREF               0 (self)
+             70 LOAD_ATTR                1 (NULL|self + on_event)
+             90 LOAD_CONST               4 ('race_table_update')
+             92 CALL                     1
+
+ 98         100 LOAD_CONST               2 ('data')
+            102 LOAD_GLOBAL              2 (dict)
+            112 BUILD_TUPLE              2
+            114 LOAD_CLOSURE             0 (self)
+            116 BUILD_TUPLE              1
+            118 LOAD_CONST               5 (<code object _handle_race_table_update at 0x0000020DB0C3F780, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 97>)
+            120 MAKE_FUNCTION           12 (annotations, closure)
+
+ 97         122 CALL                     0
+
+ 98         130 STORE_FAST               2 (_handle_race_table_update)
+            132 RETURN_CONST             0 (None)
+
+Disassembly of <code object _handle_set_circuit_info_length at 0x0000020DAF2F8B30, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 91>:
+              0 COPY_FREE_VARS           1
+
+ 91           2 RESUME                   0
+
+ 93           4 LOAD_DEREF               1 (self)
+              6 LOAD_ATTR                0 (logger)
+             26 LOAD_ATTR                3 (NULL|self + debug)
+             46 LOAD_CONST               1 ('%s | Received "set_circuit_info_length" event. Length: %s')
+             48 LOAD_DEREF               1 (self)
+             50 LOAD_ATTR                4 (OVERLAY_ID)
+             70 LOAD_FAST                0 (data)
+             72 CALL                     3
+             80 POP_TOP
+
+ 94          82 LOAD_FAST                0 (data)
+             84 LOAD_CONST               2 ('length')
+             86 BINARY_SUBSCR
+             90 LOAD_DEREF               1 (self)
+             92 STORE_ATTR               3 (circuit_info_length)
+
+ 95         102 LOAD_DEREF               1 (self)
+            104 LOAD_ATTR                9 (NULL|self + _set_bar_width_property)
+            124 LOAD_DEREF               1 (self)
+            126 LOAD_ATTR                6 (circuit_info_length)
+            146 CALL                     1
+            154 POP_TOP
+            156 RETURN_CONST             0 (None)
+
+Disassembly of <code object _handle_race_table_update at 0x0000020DB0C3F780, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 97>:
+              0 COPY_FREE_VARS           1
+
+ 97           2 RESUME                   0
+
+ 99           4 LOAD_FAST                0 (data)
+              6 LOAD_CONST               1 ('event-type')
+              8 BINARY_SUBSCR
+             12 STORE_FAST               1 (session_type)
+
+100          14 LOAD_FAST                1 (session_type)
+             16 LOAD_CONST               2 ('None')
+             18 COMPARE_OP              40 (==)
+             22 POP_JUMP_IF_FALSE        1 (to 26)
+
+101          24 RETURN_CONST             0 (None)
+
+103     >>   26 LOAD_GLOBAL              1 (NULL + get_ref_row)
+             36 LOAD_FAST                0 (data)
+             38 CALL                     1
+             46 STORE_FAST               2 (ref_row)
+
+104          48 LOAD_FAST                2 (ref_row)
+             50 POP_JUMP_IF_TRUE         1 (to 54)
+
+105          52 RETURN_CONST             0 (None)
+
+107     >>   54 LOAD_FAST                2 (ref_row)
+             56 LOAD_CONST               3 ('lap-info')
+             58 BINARY_SUBSCR
+             62 STORE_FAST               3 (lap_info)
+
+108          64 LOAD_FAST                3 (lap_info)
+             66 LOAD_CONST               4 ('curr-lap')
+             68 BINARY_SUBSCR
+             72 STORE_FAST               4 (curr_lap)
+
+110          74 LOAD_FAST                4 (curr_lap)
+             76 LOAD_CONST               5 ('sector-status')
+             78 BINARY_SUBSCR
+             82 STORE_FAST               5 (sectors)
+
+112          84 LOAD_GLOBAL              3 (NULL + enumerate)
+             94 LOAD_FAST                5 (sectors)
+             96 LOAD_CONST               0 (None)
+             98 LOAD_CONST               6 (-1)
+            100 BINARY_SLICE
+            102 CALL                     1
+            110 GET_ITER
+        >>  112 FOR_ITER               186 (to 488)
+            116 UNPACK_SEQUENCE          2
+            120 STORE_FAST               6 (i)
+            122 STORE_FAST               7 (sector)
+
+113         124 LOAD_FAST                6 (i)
+            126 LOAD_CONST               7 (1)
+            128 BINARY_OP                0 (+)
+            132 STORE_FAST               8 (sector_num)
+
+115         134 LOAD_GLOBAL              4 (F1Utils)
+            144 LOAD_ATTR                6 (SECTOR_STATUS_NA)
+            164 LOAD_DEREF              10 (self)
+            166 LOAD_ATTR                8 (NA_SECTOR_COLOUR)
+
+116         186 LOAD_GLOBAL              4 (F1Utils)
+            196 LOAD_ATTR               10 (SECTOR_STATUS_YELLOW)
+            216 LOAD_DEREF              10 (self)
+            218 LOAD_ATTR               12 (YELLOW_SECTOR_COLOUR)
+
+117         238 LOAD_GLOBAL              4 (F1Utils)
+            248 LOAD_ATTR               14 (SECTOR_STATUS_GREEN)
+            268 LOAD_DEREF              10 (self)
+            270 LOAD_ATTR               16 (GREEN_SECTOR_COLOUR)
+
+118         290 LOAD_GLOBAL              4 (F1Utils)
+            300 LOAD_ATTR               18 (SECTOR_STATUS_INVALID)
+            320 LOAD_DEREF              10 (self)
+            322 LOAD_ATTR               20 (RED_SECTOR_COLOUR)
+
+119         342 LOAD_GLOBAL              4 (F1Utils)
+            352 LOAD_ATTR               22 (SECTOR_STATUS_PURPLE)
+            372 LOAD_DEREF              10 (self)
+            374 LOAD_ATTR               24 (PURPLE_SECTOR_COLOUR)
+
+114         394 BUILD_MAP                5
+
+120         396 LOAD_ATTR               27 (NULL|self + get)
+            416 LOAD_FAST                7 (sector)
+            418 LOAD_DEREF              10 (self)
+            420 LOAD_ATTR                8 (NA_SECTOR_COLOUR)
+            440 CALL                     2
+
+114         448 STORE_FAST               9 (sector_colour)
+
+122         450 LOAD_DEREF              10 (self)
+            452 LOAD_ATTR               29 (NULL|self + set_completed_sector_color)
+            472 LOAD_FAST                8 (sector_num)
+            474 LOAD_FAST                9 (sector_colour)
+            476 CALL                     2
+            484 POP_TOP
+            486 JUMP_BACKWARD          188 (to 112)
+
+112     >>  488 END_FOR
+            490 RETURN_CONST             0 (None)
+
+Disassembly of <code object _set_bar_width_property at 0x0000020DAED7A5B0, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 124>:
+124           0 RESUME                   0
+
+125           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             24 LOAD_CONST               1 ('barWidth')
+             26 LOAD_FAST                1 (length)
+             28 CALL                     2
+             36 POP_TOP
+             38 RETURN_CONST             0 (None)
+
+Disassembly of <code object set_completed_sector_color at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 127>:
+127           0 RESUME                   0
+
+129           2 LOAD_FAST                1 (sector)
+              4 LOAD_CONST               1 (1)
+              6 COMPARE_OP              40 (==)
+             10 POP_JUMP_IF_FALSE       19 (to 50)
+
+130          12 LOAD_FAST                0 (self)
+             14 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             34 LOAD_CONST               2 ('completedSector1Color')
+             36 LOAD_FAST                2 (color)
+             38 CALL                     2
+             46 POP_TOP
+             48 RETURN_CONST             5 (None)
+
+131     >>   50 LOAD_FAST                1 (sector)
+             52 LOAD_CONST               3 (2)
+             54 COMPARE_OP              40 (==)
+             58 POP_JUMP_IF_FALSE       19 (to 98)
+
+132          60 LOAD_FAST                0 (self)
+             62 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             82 LOAD_CONST               4 ('completedSector2Color')
+             84 LOAD_FAST                2 (color)
+             86 CALL                     2
+             94 POP_TOP
+             96 RETURN_CONST             5 (None)
+
+131     >>   98 RETURN_CONST             5 (None)
+
+Disassembly of <code object set_completed_sector_colors at 0x0000020DAF2DF330, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 134>:
+134           0 RESUME                   0
+
+136           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             24 LOAD_CONST               1 ('completedSector1Color')
+             26 LOAD_FAST                1 (s1_color)
+             28 CALL                     2
+             36 POP_TOP
+
+137          38 LOAD_FAST                0 (self)
+             40 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             60 LOAD_CONST               2 ('completedSector2Color')
+             62 LOAD_FAST                2 (s2_color)
+             64 CALL                     2
+             72 POP_TOP
+             74 RETURN_CONST             3 (None)
+
+Disassembly of <code object render_frame at 0x0000020DAEF40570, file "apps\hud\ui\overlays\circuit_info\circuit_info.py", line 140>:
+140           0 RESUME                   0
+
+146           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + get_latest_hf_data)
+             24 LOAD_GLOBAL              2 (HudOverlayData)
+             34 CALL                     1
+             42 STORE_FAST               1 (data)
+
+147          44 LOAD_FAST                1 (data)
+             46 POP_JUMP_IF_TRUE         1 (to 50)
+
+148          48 RETURN_CONST             1 (None)
+
+150     >>   50 LOAD_FAST                0 (self)
+             52 LOAD_ATTR                4 (tracks_db)
+             72 LOAD_ATTR                7 (NULL|self + get_segment_info)
+             92 LOAD_FAST                1 (data)
+             94 LOAD_ATTR                8 (circuit_num)
+            114 LOAD_FAST                1 (data)
+            116 LOAD_ATTR               10 (circuit_pos_m)
+            136 CALL                     2
+            144 STORE_FAST               2 (segment_info)
+
+151         146 LOAD_FAST                0 (self)
+            148 LOAD_ATTR                4 (tracks_db)
+            168 LOAD_ATTR               13 (NULL|self + get_sectors)
+            188 LOAD_FAST                1 (data)
+            190 LOAD_ATTR                8 (circuit_num)
+            210 CALL                     1
+            218 STORE_FAST               3 (sectors)
+
+153         220 LOAD_FAST                0 (self)
+            222 LOAD_ATTR               15 (NULL|self + set_qml_property)
+            242 LOAD_CONST               2 ('circuitPosM')
+            244 LOAD_FAST                1 (data)
+            246 LOAD_ATTR               10 (circuit_pos_m)
+            266 CALL                     2
+            274 POP_TOP
+
+154         276 LOAD_FAST                0 (self)
+            278 LOAD_ATTR               15 (NULL|self + set_qml_property)
+            298 LOAD_CONST               3 ('circuitLength')
+            300 LOAD_FAST                1 (data)
+            302 LOAD_ATTR               16 (circuit_length)
+            322 COPY                     1
+            324 POP_JUMP_IF_TRUE        12 (to 350)
+            326 POP_TOP
+            328 LOAD_FAST                0 (self)
+            330 LOAD_ATTR               18 (circuit_info_length)
+        >>  350 CALL                     2
+            358 POP_TOP
+
+155         360 LOAD_FAST                0 (self)
+            362 LOAD_ATTR               15 (NULL|self + set_qml_property)
+
+156         382 LOAD_CONST               4 ('sectorsInfo')
+
+157         384 LOAD_FAST                3 (sectors)
+            386 POP_JUMP_IF_FALSE       25 (to 438)
+            388 LOAD_FAST                3 (sectors)
+            390 LOAD_ATTR               20 (s1)
+            410 LOAD_FAST                3 (sectors)
+            412 LOAD_ATTR               22 (s2)
+            432 LOAD_CONST               5 (('s1', 's2'))
+            434 BUILD_CONST_KEY_MAP      2
+            436 JUMP_FORWARD             1 (to 440)
+        >>  438 LOAD_CONST               1 (None)
+
+155     >>  440 CALL                     2
+            448 POP_TOP
+
+160         450 LOAD_FAST                2 (segment_info)
+            452 POP_JUMP_IF_FALSE       48 (to 550)
+
+161         454 LOAD_FAST                2 (segment_info)
+            456 LOAD_ATTR               25 (NULL|self + render)
+            476 CALL                     0
+            484 STORE_FAST               4 (rendered)
+
+162         486 LOAD_FAST                0 (self)
+            488 LOAD_ATTR               15 (NULL|self + set_qml_property)
+            508 LOAD_CONST               6 ('segmentInfo')
+
+163         510 LOAD_FAST                4 (rendered)
+            512 LOAD_CONST               7 ('type')
+            514 BINARY_SUBSCR
+
+164         518 LOAD_FAST                4 (rendered)
+            520 LOAD_CONST               8 ('name')
+            522 BINARY_SUBSCR
+
+165         526 LOAD_FAST                4 (rendered)
+            528 LOAD_CONST               9 ('turns')
+            530 BINARY_SUBSCR
+
+162         534 LOAD_CONST              10 (('type', 'above', 'below'))
+            536 BUILD_CONST_KEY_MAP      3
+            538 CALL                     2
+            546 POP_TOP
+            548 RETURN_CONST             1 (None)
+
+168     >>  550 LOAD_FAST                0 (self)
+            552 LOAD_ATTR               15 (NULL|self + set_qml_property)
+            572 LOAD_CONST               6 ('segmentInfo')
+            574 LOAD_CONST               1 (None)
+            576 CALL                     2
+            584 POP_TOP
+            586 RETURN_CONST             1 (None)

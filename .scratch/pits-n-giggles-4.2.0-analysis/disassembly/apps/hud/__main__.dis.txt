@@ -1,0 +1,21 @@
+  0           0 RESUME                   0
+
+ 23           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (('entry_point',))
+              6 IMPORT_NAME              0 (apps.hud.hud)
+              8 IMPORT_FROM              1 (entry_point)
+             10 STORE_NAME               1 (entry_point)
+             12 POP_TOP
+
+ 25          14 LOAD_NAME                2 (__name__)
+             16 LOAD_CONST               2 ('__main__')
+             18 COMPARE_OP              40 (==)
+             22 POP_JUMP_IF_FALSE        8 (to 40)
+
+ 26          24 PUSH_NULL
+             26 LOAD_NAME                1 (entry_point)
+             28 CALL                     0
+             36 POP_TOP
+             38 RETURN_CONST             3 (None)
+
+ 25     >>   40 RETURN_CONST             3 (None)

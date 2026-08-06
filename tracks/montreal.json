@@ -1,0 +1,20 @@
+{
+  "name": "Montreal",
+  "length_m": 4361,
+  "corners": [
+    {"id":1,  "fraction":0.033,"type":"medium", "direction":"right"},
+    {"id":2,  "fraction":0.062,"type":"medium", "direction":"left"},
+    {"id":3,  "fraction":0.092,"type":"medium", "direction":"right"},
+    {"id":4,  "fraction":0.173,"type":"medium", "direction":"left"},
+    {"id":5,  "name":"Casino 1",        "fraction":0.281,"type":"chicane","direction":"right"},
+    {"id":6,  "name":"Casino 2",        "fraction":0.305,"type":"chicane","direction":"left"},
+    {"id":7,  "fraction":0.372,"type":"medium", "direction":"right"},
+    {"id":8,  "name":"Senna's Hairpin", "fraction":0.440,"type":"hairpin","direction":"left"},
+    {"id":9,  "fraction":0.478,"type":"medium", "direction":"right"},
+    {"id":10, "fraction":0.614,"type":"medium", "direction":"left"},
+    {"id":11, "fraction":0.663,"type":"medium", "direction":"right"},
+    {"id":12, "fraction":0.754,"type":"medium", "direction":"left"},
+    {"id":13, "name":"Wall of Champs 1","fraction":0.838,"type":"chicane","direction":"right"},
+    {"id":14, "name":"Wall of Champs 2","fraction":0.867,"type":"chicane","direction":"left"}
+  ]
+}

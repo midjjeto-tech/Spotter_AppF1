@@ -1,0 +1,17 @@
+{
+  "name": "Imola",
+  "length_m": 4909,
+  "corners": [
+    {"id":1, "name":"Tamburello 1",    "fraction":0.045,"type":"chicane","direction":"right"},
+    {"id":2, "name":"Tamburello 2",    "fraction":0.066,"type":"chicane","direction":"left"},
+    {"id":3, "name":"Villeneuve",      "fraction":0.134,"type":"medium", "direction":"right"},
+    {"id":4, "name":"Tosa",            "fraction":0.230,"type":"hairpin","direction":"left"},
+    {"id":5, "name":"Piratella",       "fraction":0.376,"type":"medium", "direction":"left"},
+    {"id":6, "name":"Acque Minerali 1","fraction":0.437,"type":"medium", "direction":"right"},
+    {"id":7, "name":"Acque Minerali 2","fraction":0.464,"type":"medium", "direction":"left"},
+    {"id":8, "name":"Variante Alta 1", "fraction":0.568,"type":"chicane","direction":"right"},
+    {"id":9, "name":"Variante Alta 2", "fraction":0.590,"type":"chicane","direction":"left"},
+    {"id":10,"name":"Rivazza 1",       "fraction":0.755,"type":"hairpin","direction":"right"},
+    {"id":11,"name":"Rivazza 2",       "fraction":0.789,"type":"medium", "direction":"left"}
+  ]
+}

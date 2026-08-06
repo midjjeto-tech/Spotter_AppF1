@@ -1,0 +1,20 @@
+{
+  "name": "Suzuka",
+  "length_m": 5807,
+  "corners": [
+    {"id":1, "name":"First Curve",    "fraction":0.045,"type":"fast",   "direction":"right"},
+    {"id":2, "name":"First Curve 2",  "fraction":0.073,"type":"fast",   "direction":"left"},
+    {"id":3, "name":"S Curve 1",      "fraction":0.096,"type":"chicane","direction":"right"},
+    {"id":4, "name":"S Curve 2",      "fraction":0.116,"type":"chicane","direction":"left"},
+    {"id":5, "name":"S Curve 3",      "fraction":0.136,"type":"chicane","direction":"right"},
+    {"id":6, "name":"Dunlop",         "fraction":0.168,"type":"medium", "direction":"right"},
+    {"id":7, "name":"Degner 1",       "fraction":0.203,"type":"medium", "direction":"right"},
+    {"id":8, "name":"Degner 2",       "fraction":0.228,"type":"medium", "direction":"left"},
+    {"id":9, "name":"Hairpin",        "fraction":0.297,"type":"hairpin","direction":"left"},
+    {"id":10,"name":"Spoon 1",        "fraction":0.440,"type":"fast",   "direction":"left"},
+    {"id":11,"name":"Spoon 2",        "fraction":0.468,"type":"medium", "direction":"left"},
+    {"id":12,"name":"130R",           "fraction":0.600,"type":"fast",   "direction":"left"},
+    {"id":13,"name":"Casio Chicane 1","fraction":0.651,"type":"chicane","direction":"right"},
+    {"id":14,"name":"Casio Chicane 2","fraction":0.671,"type":"chicane","direction":"left"}
+  ]
+}

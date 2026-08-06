@@ -1,0 +1,14 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (1)
+              4 LOAD_CONST               1 (('FuelInfoPage',))
+              6 IMPORT_NAME              0 (fuel_page)
+              8 IMPORT_FROM              1 (FuelInfoPage)
+             10 STORE_NAME               1 (FuelInfoPage)
+             12 POP_TOP
+
+ 30          14 LOAD_CONST               2 ('FuelInfoPage')
+
+ 29          16 BUILD_LIST               1
+             18 STORE_NAME               2 (__all__)
+             20 RETURN_CONST             3 (None)

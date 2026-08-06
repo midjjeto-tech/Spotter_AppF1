@@ -1,0 +1,22 @@
+{
+  "name": "Melbourne",
+  "length_m": 5278,
+  "corners": [
+    {"id":1, "fraction":0.045,"type":"slow",   "direction":"right"},
+    {"id":2, "fraction":0.080,"type":"medium", "direction":"left"},
+    {"id":3, "fraction":0.133,"type":"slow",   "direction":"right"},
+    {"id":4, "fraction":0.165,"type":"medium", "direction":"left"},
+    {"id":5, "fraction":0.204,"type":"fast",   "direction":"right"},
+    {"id":6, "fraction":0.257,"type":"medium", "direction":"left"},
+    {"id":7, "fraction":0.291,"type":"medium", "direction":"right"},
+    {"id":8, "fraction":0.395,"type":"hairpin","direction":"left"},
+    {"id":9, "fraction":0.524,"type":"medium", "direction":"right"},
+    {"id":10,"fraction":0.554,"type":"slow",   "direction":"left"},
+    {"id":11,"fraction":0.635,"type":"chicane","direction":"right"},
+    {"id":12,"fraction":0.658,"type":"chicane","direction":"left"},
+    {"id":13,"fraction":0.774,"type":"medium", "direction":"right"},
+    {"id":14,"fraction":0.811,"type":"medium", "direction":"left"},
+    {"id":15,"fraction":0.890,"type":"chicane","direction":"right"},
+    {"id":16,"fraction":0.914,"type":"chicane","direction":"left"}
+  ]
+}

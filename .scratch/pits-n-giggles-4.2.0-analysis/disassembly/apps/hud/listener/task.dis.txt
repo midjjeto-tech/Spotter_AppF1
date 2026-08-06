@@ -1,0 +1,363 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               1 (None)
+             14 IMPORT_NAME              1 (threading)
+             16 STORE_NAME               1 (threading)
+
+ 27          18 LOAD_CONST               0 (0)
+             20 LOAD_CONST               2 (('Tuple',))
+             22 IMPORT_NAME              2 (typing)
+             24 IMPORT_FROM              3 (Tuple)
+             26 STORE_NAME               3 (Tuple)
+             28 POP_TOP
+
+ 29          30 LOAD_CONST               0 (0)
+             32 LOAD_CONST               3 (('IpcDealerClient', 'IpcSubscriberSync', 'PngAppId'))
+             34 IMPORT_NAME              4 (lib.ipc)
+             36 IMPORT_FROM              5 (IpcDealerClient)
+             38 STORE_NAME               5 (IpcDealerClient)
+             40 IMPORT_FROM              6 (IpcSubscriberSync)
+             42 STORE_NAME               6 (IpcSubscriberSync)
+             44 IMPORT_FROM              7 (PngAppId)
+             46 STORE_NAME               7 (PngAppId)
+             48 POP_TOP
+
+ 31          50 LOAD_CONST               4 (2)
+             52 LOAD_CONST               5 (('OverlaysMgr',))
+             54 IMPORT_NAME              8 (ui.infra)
+             56 IMPORT_FROM              9 (OverlaysMgr)
+             58 STORE_NAME               9 (OverlaysMgr)
+             60 POP_TOP
+
+ 35          62 LOAD_CONST               6 ('router_port')
+
+ 36          64 LOAD_NAME               10 (int)
+
+ 35          66 LOAD_CONST               7 ('logger')
+
+ 37          68 LOAD_NAME                0 (logging)
+             70 LOAD_ATTR               22 (Logger)
+
+ 35          90 LOAD_CONST               8 ('overlays_mgr')
+
+ 38          92 LOAD_NAME                9 (OverlaysMgr)
+
+ 35          94 LOAD_CONST               9 ('xpub_port')
+
+ 39          96 LOAD_NAME               10 (int)
+
+ 35          98 LOAD_CONST              10 ('return')
+
+ 40         100 LOAD_NAME                3 (Tuple)
+            102 LOAD_NAME                5 (IpcDealerClient)
+            104 LOAD_NAME                6 (IpcSubscriberSync)
+            106 BUILD_TUPLE              2
+            108 BINARY_SUBSCR
+
+ 35         112 BUILD_TUPLE             10
+            114 LOAD_CONST              11 (<code object run_hud_update_threads at 0x0000020DAF2D1530, file "apps\hud\listener\task.py", line 35>)
+            116 MAKE_FUNCTION            4 (annotations)
+            118 STORE_NAME              12 (run_hud_update_threads)
+
+ 55         120 LOAD_CONST               6 ('router_port')
+
+ 56         122 LOAD_NAME               10 (int)
+
+ 55         124 LOAD_CONST               7 ('logger')
+
+ 57         126 LOAD_NAME                0 (logging)
+            128 LOAD_ATTR               22 (Logger)
+
+ 55         148 LOAD_CONST               8 ('overlays_mgr')
+
+ 58         150 LOAD_NAME                9 (OverlaysMgr)
+
+ 55         152 LOAD_CONST              10 ('return')
+
+ 59         154 LOAD_NAME                5 (IpcDealerClient)
+
+ 55         156 BUILD_TUPLE              8
+            158 LOAD_CONST              12 (<code object _run_dealer_thread at 0x0000020DAEDF2910, file "apps\hud\listener\task.py", line 55>)
+            160 MAKE_FUNCTION            4 (annotations)
+            162 STORE_NAME              13 (_run_dealer_thread)
+
+ 97         164 LOAD_CONST               7 ('logger')
+
+ 98         166 LOAD_NAME                0 (logging)
+            168 LOAD_ATTR               22 (Logger)
+
+ 97         188 LOAD_CONST               8 ('overlays_mgr')
+
+ 99         190 LOAD_NAME                9 (OverlaysMgr)
+
+ 97         192 LOAD_CONST               9 ('xpub_port')
+
+100         194 LOAD_NAME               10 (int)
+
+ 97         196 LOAD_CONST              10 ('return')
+
+101         198 LOAD_NAME                6 (IpcSubscriberSync)
+
+ 97         200 BUILD_TUPLE              8
+            202 LOAD_CONST              13 (<code object _run_ipc_sub_thread at 0x0000020DAF2021F0, file "apps\hud\listener\task.py", line 97>)
+            204 MAKE_FUNCTION            4 (annotations)
+            206 STORE_NAME              14 (_run_ipc_sub_thread)
+            208 RETURN_CONST             1 (None)
+
+Disassembly of <code object run_hud_update_threads at 0x0000020DAF2D1530, file "apps\hud\listener\task.py", line 35>:
+ 35           0 RESUME                   0
+
+ 52           2 LOAD_GLOBAL              1 (NULL + _run_dealer_thread)
+             12 LOAD_FAST                0 (router_port)
+             14 LOAD_FAST                1 (logger)
+             16 LOAD_FAST                2 (overlays_mgr)
+             18 CALL                     3
+
+ 53          26 LOAD_GLOBAL              3 (NULL + _run_ipc_sub_thread)
+             36 LOAD_FAST                1 (logger)
+             38 LOAD_FAST                2 (overlays_mgr)
+             40 LOAD_FAST                3 (xpub_port)
+             42 CALL                     3
+
+ 52          50 BUILD_TUPLE              2
+             52 RETURN_VALUE
+
+Disassembly of <code object _run_dealer_thread at 0x0000020DAEDF2910, file "apps\hud\listener\task.py", line 55>:
+              0 MAKE_CELL                2 (overlays_mgr)
+
+ 55           2 RESUME                   0
+
+ 70           4 LOAD_GLOBAL              1 (NULL + IpcDealerClient)
+
+ 71          14 LOAD_CONST               1 ('127.0.0.1')
+
+ 72          16 LOAD_FAST                0 (router_port)
+
+ 73          18 LOAD_GLOBAL              3 (NULL + str)
+             28 LOAD_GLOBAL              4 (PngAppId)
+             38 LOAD_ATTR                6 (HUD)
+             58 CALL                     1
+
+ 74          66 LOAD_FAST                1 (logger)
+
+ 70          68 KW_NAMES                 2 (('host', 'port', 'identity', 'logger'))
+             70 CALL                     4
+             78 STORE_FAST               3 (dealer_client)
+
+ 77          80 LOAD_FAST                3 (dealer_client)
+             82 LOAD_ATTR                9 (NULL|self + route)
+            102 LOAD_CONST               3 ('hud-toggle-notification')
+            104 CALL                     1
+
+ 78         112 LOAD_CLOSURE             2 (overlays_mgr)
+            114 BUILD_TUPLE              1
+            116 LOAD_CONST               4 (<code object _ at 0x0000020DAF2B9530, file "apps\hud\listener\task.py", line 77>)
+            118 MAKE_FUNCTION            8 (closure)
+
+ 77         120 CALL                     0
+
+ 78         128 STORE_FAST               4 (_)
+
+ 82         130 LOAD_FAST                3 (dealer_client)
+            132 LOAD_ATTR                9 (NULL|self + route)
+            152 LOAD_CONST               5 ('hud-cycle-mfd-notification')
+            154 CALL                     1
+
+ 83         162 LOAD_CLOSURE             2 (overlays_mgr)
+            164 BUILD_TUPLE              1
+            166 LOAD_CONST               6 (<code object _ at 0x0000020DAED7A5B0, file "apps\hud\listener\task.py", line 82>)
+            168 MAKE_FUNCTION            8 (closure)
+
+ 82         170 CALL                     0
+
+ 83         178 STORE_FAST               4 (_)
+
+ 86         180 LOAD_FAST                3 (dealer_client)
+            182 LOAD_ATTR                9 (NULL|self + route)
+            202 LOAD_CONST               7 ('hud-prev-page-mfd-notification')
+            204 CALL                     1
+
+ 87         212 LOAD_CLOSURE             2 (overlays_mgr)
+            214 BUILD_TUPLE              1
+            216 LOAD_CONST               8 (<code object _ at 0x0000020DAECADC50, file "apps\hud\listener\task.py", line 86>)
+            218 MAKE_FUNCTION            8 (closure)
+
+ 86         220 CALL                     0
+
+ 87         228 STORE_FAST               4 (_)
+
+ 90         230 LOAD_FAST                3 (dealer_client)
+            232 LOAD_ATTR                9 (NULL|self + route)
+            252 LOAD_CONST               9 ('hud-mfd-interaction-notification')
+            254 CALL                     1
+
+ 91         262 LOAD_CLOSURE             2 (overlays_mgr)
+            264 BUILD_TUPLE              1
+            266 LOAD_CONST              10 (<code object _ at 0x0000020DAECADA70, file "apps\hud\listener\task.py", line 90>)
+            268 MAKE_FUNCTION            8 (closure)
+
+ 90         270 CALL                     0
+
+ 91         278 STORE_FAST               4 (_)
+
+ 94         280 LOAD_GLOBAL             11 (NULL + threading)
+            290 LOAD_ATTR               12 (Thread)
+            310 LOAD_FAST                3 (dealer_client)
+            312 LOAD_ATTR               14 (start)
+            332 LOAD_CONST              11 (True)
+            334 LOAD_CONST              12 ('HUD Dealer')
+            336 KW_NAMES                13 (('target', 'daemon', 'name'))
+            338 CALL                     3
+            346 LOAD_ATTR               15 (NULL|self + start)
+            366 CALL                     0
+            374 POP_TOP
+
+ 95         376 LOAD_FAST                3 (dealer_client)
+            378 RETURN_VALUE
+
+Disassembly of <code object _ at 0x0000020DAF2B9530, file "apps\hud\listener\task.py", line 77>:
+              0 COPY_FREE_VARS           1
+
+ 77           2 RESUME                   0
+
+ 79           4 LOAD_GLOBAL              1 (NULL + isinstance)
+             14 LOAD_FAST                0 (data)
+             16 LOAD_GLOBAL              2 (dict)
+             26 CALL                     2
+             34 POP_JUMP_IF_FALSE       33 (to 102)
+             36 LOAD_FAST                0 (data)
+             38 LOAD_ATTR                5 (NULL|self + get)
+             58 LOAD_CONST               1 ('message')
+             60 BUILD_MAP                0
+             62 CALL                     2
+             70 LOAD_ATTR                5 (NULL|self + get)
+             90 LOAD_CONST               2 ('oid')
+             92 CALL                     1
+            100 JUMP_FORWARD             1 (to 104)
+        >>  102 LOAD_CONST               0 (None)
+        >>  104 STORE_FAST               2 (oid)
+
+ 80         106 LOAD_DEREF               3 (overlays_mgr)
+            108 LOAD_ATTR                7 (NULL|self + toggle_overlays_visibility)
+            128 LOAD_FAST                2 (oid)
+            130 CALL                     1
+            138 POP_TOP
+            140 RETURN_CONST             0 (None)
+
+Disassembly of <code object _ at 0x0000020DAED7A5B0, file "apps\hud\listener\task.py", line 82>:
+              0 COPY_FREE_VARS           1
+
+ 82           2 RESUME                   0
+
+ 84           4 LOAD_DEREF               2 (overlays_mgr)
+              6 LOAD_ATTR                1 (NULL|self + next_page)
+             26 CALL                     0
+             34 POP_TOP
+             36 RETURN_CONST             0 (None)
+
+Disassembly of <code object _ at 0x0000020DAECADC50, file "apps\hud\listener\task.py", line 86>:
+              0 COPY_FREE_VARS           1
+
+ 86           2 RESUME                   0
+
+ 88           4 LOAD_DEREF               2 (overlays_mgr)
+              6 LOAD_ATTR                1 (NULL|self + prev_page)
+             26 CALL                     0
+             34 POP_TOP
+             36 RETURN_CONST             0 (None)
+
+Disassembly of <code object _ at 0x0000020DAECADA70, file "apps\hud\listener\task.py", line 90>:
+              0 COPY_FREE_VARS           1
+
+ 90           2 RESUME                   0
+
+ 92           4 LOAD_DEREF               2 (overlays_mgr)
+              6 LOAD_ATTR                1 (NULL|self + mfd_interact)
+             26 CALL                     0
+             34 POP_TOP
+             36 RETURN_CONST             0 (None)
+
+Disassembly of <code object _run_ipc_sub_thread at 0x0000020DAF2021F0, file "apps\hud\listener\task.py", line 97>:
+              0 MAKE_CELL                1 (overlays_mgr)
+
+ 97           2 RESUME                   0
+
+113           4 LOAD_GLOBAL              1 (NULL + IpcSubscriberSync)
+             14 LOAD_FAST                2 (xpub_port)
+             16 LOAD_FAST                0 (logger)
+             18 KW_NAMES                 1 (('port', 'logger'))
+             20 CALL                     2
+             28 STORE_FAST               3 (ipc_sub)
+
+115          30 LOAD_FAST                3 (ipc_sub)
+             32 LOAD_ATTR                3 (NULL|self + route)
+             52 LOAD_CONST               2 ('race-table-update')
+             54 CALL                     1
+
+116          62 LOAD_CLOSURE             1 (overlays_mgr)
+             64 BUILD_TUPLE              1
+             66 LOAD_CONST               3 (<code object _handle_race_table_update at 0x0000020DAF2BEA60, file "apps\hud\listener\task.py", line 115>)
+             68 MAKE_FUNCTION            8 (closure)
+
+115          70 CALL                     0
+
+116          78 STORE_FAST               4 (_handle_race_table_update)
+
+120          80 LOAD_FAST                3 (ipc_sub)
+             82 LOAD_ATTR                3 (NULL|self + route)
+            102 LOAD_CONST               4 ('stream-overlay-update')
+            104 CALL                     1
+
+121         112 LOAD_CLOSURE             1 (overlays_mgr)
+            114 BUILD_TUPLE              1
+            116 LOAD_CONST               5 (<code object _handle_stream_overlay_update at 0x0000020DAF2BEC40, file "apps\hud\listener\task.py", line 120>)
+            118 MAKE_FUNCTION            8 (closure)
+
+120         120 CALL                     0
+
+121         128 STORE_FAST               5 (_handle_stream_overlay_update)
+
+125         130 LOAD_GLOBAL              5 (NULL + threading)
+            140 LOAD_ATTR                6 (Thread)
+            160 LOAD_FAST                3 (ipc_sub)
+            162 LOAD_ATTR                8 (start)
+            182 LOAD_CONST               6 (True)
+            184 LOAD_CONST               7 ('IPC Subscriber')
+            186 KW_NAMES                 8 (('target', 'daemon', 'name'))
+            188 CALL                     3
+            196 LOAD_ATTR                9 (NULL|self + start)
+            216 CALL                     0
+            224 POP_TOP
+
+126         226 LOAD_FAST                3 (ipc_sub)
+            228 RETURN_VALUE
+
+Disassembly of <code object _handle_race_table_update at 0x0000020DAF2BEA60, file "apps\hud\listener\task.py", line 115>:
+              0 COPY_FREE_VARS           1
+
+115           2 RESUME                   0
+
+118           4 LOAD_DEREF               1 (overlays_mgr)
+              6 LOAD_ATTR                1 (NULL|self + race_table_update)
+             26 LOAD_FAST                0 (data)
+             28 CALL                     1
+             36 POP_TOP
+             38 RETURN_CONST             1 (None)
+
+Disassembly of <code object _handle_stream_overlay_update at 0x0000020DAF2BEC40, file "apps\hud\listener\task.py", line 120>:
+              0 COPY_FREE_VARS           1
+
+120           2 RESUME                   0
+
+123           4 LOAD_DEREF               1 (overlays_mgr)
+              6 LOAD_ATTR                1 (NULL|self + stream_overlays_update)
+             26 LOAD_FAST                0 (data)
+             28 CALL                     1
+             36 POP_TOP
+             38 RETURN_CONST             1 (None)

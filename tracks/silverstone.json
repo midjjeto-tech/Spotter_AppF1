@@ -1,0 +1,20 @@
+{
+  "name": "Silverstone",
+  "length_m": 5891,
+  "corners": [
+    {"id":1, "name":"Abbey",    "fraction":0.080,"type":"medium", "direction":"right"},
+    {"id":2, "name":"Farm",     "fraction":0.130,"type":"medium", "direction":"left"},
+    {"id":3, "name":"Village",  "fraction":0.190,"type":"slow",   "direction":"right"},
+    {"id":4, "name":"The Loop", "fraction":0.258,"type":"hairpin","direction":"right"},
+    {"id":5, "name":"Aintree",  "fraction":0.334,"type":"medium", "direction":"right"},
+    {"id":6, "name":"Wellington","fraction":0.390,"type":"medium","direction":"left"},
+    {"id":7, "name":"Brooklands","fraction":0.454,"type":"medium","direction":"right"},
+    {"id":8, "name":"Luffield", "fraction":0.530,"type":"slow",   "direction":"left"},
+    {"id":9, "name":"Woodcote", "fraction":0.645,"type":"fast",   "direction":"right"},
+    {"id":10,"name":"Copse",    "fraction":0.702,"type":"fast",   "direction":"right"},
+    {"id":11,"name":"Becketts", "fraction":0.780,"type":"fast",   "direction":"right"},
+    {"id":12,"name":"Chapel",   "fraction":0.845,"type":"fast",   "direction":"left"},
+    {"id":13,"name":"Stowe",    "fraction":0.903,"type":"medium", "direction":"right"},
+    {"id":14,"name":"Vale",     "fraction":0.956,"type":"slow",   "direction":"right"}
+  ]
+}

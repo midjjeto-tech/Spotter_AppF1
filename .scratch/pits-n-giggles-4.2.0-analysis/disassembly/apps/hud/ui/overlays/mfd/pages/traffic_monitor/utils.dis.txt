@@ -1,0 +1,307 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (('Any', 'Dict', 'List', 'Optional', 'Tuple'))
+              6 IMPORT_NAME              0 (typing)
+              8 IMPORT_FROM              1 (Any)
+             10 STORE_NAME               1 (Any)
+             12 IMPORT_FROM              2 (Dict)
+             14 STORE_NAME               2 (Dict)
+             16 IMPORT_FROM              3 (List)
+             18 STORE_NAME               3 (List)
+             20 IMPORT_FROM              4 (Optional)
+             22 STORE_NAME               4 (Optional)
+             24 IMPORT_FROM              5 (Tuple)
+             26 STORE_NAME               5 (Tuple)
+             28 POP_TOP
+
+ 27          30 LOAD_CONST               0 (0)
+             32 LOAD_CONST               2 (('TrackSegmentsDatabase',))
+             34 IMPORT_NAME              6 (lib.track_segment_info)
+             36 IMPORT_FROM              7 (TrackSegmentsDatabase)
+             38 STORE_NAME               7 (TrackSegmentsDatabase)
+             40 POP_TOP
+
+ 31          42 LOAD_CONST               3 ('table_entries')
+
+ 32          44 LOAD_NAME                3 (List)
+             46 LOAD_NAME                2 (Dict)
+             48 LOAD_NAME                8 (str)
+             50 LOAD_NAME                1 (Any)
+             52 BUILD_TUPLE              2
+             54 BINARY_SUBSCR
+             58 BINARY_SUBSCR
+
+ 31          62 LOAD_CONST               4 ('ref_lap_dist')
+
+ 33          64 LOAD_NAME                9 (float)
+
+ 31          66 LOAD_CONST               5 ('circuit_len')
+
+ 34          68 LOAD_NAME                9 (float)
+
+ 31          70 LOAD_CONST               6 ('return')
+
+ 35          72 LOAD_NAME                3 (List)
+             74 LOAD_NAME                5 (Tuple)
+             76 LOAD_NAME                9 (float)
+             78 LOAD_NAME                2 (Dict)
+             80 LOAD_NAME                8 (str)
+             82 LOAD_NAME                1 (Any)
+             84 BUILD_TUPLE              2
+             86 BINARY_SUBSCR
+             90 BUILD_TUPLE              2
+             92 BINARY_SUBSCR
+             96 BINARY_SUBSCR
+
+ 31         100 BUILD_TUPLE              8
+            102 LOAD_CONST               7 (<code object sort_by_rel_distance at 0x0000020DAF16B430, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\utils.py", line 31>)
+            104 MAKE_FUNCTION            4 (annotations)
+            106 STORE_NAME              10 (sort_by_rel_distance)
+
+ 54         108 LOAD_CONST               8 ('sorted_entries')
+
+ 55         110 LOAD_NAME                3 (List)
+            112 LOAD_NAME                5 (Tuple)
+            114 LOAD_NAME                9 (float)
+            116 LOAD_NAME                2 (Dict)
+            118 LOAD_NAME                8 (str)
+            120 LOAD_NAME                1 (Any)
+            122 BUILD_TUPLE              2
+            124 BINARY_SUBSCR
+            128 BUILD_TUPLE              2
+            130 BINARY_SUBSCR
+            134 BINARY_SUBSCR
+
+ 54         138 LOAD_CONST               9 ('ref_pos')
+
+ 56         140 LOAD_NAME               11 (int)
+
+ 54         142 LOAD_CONST              10 ('num_behind')
+
+ 57         144 LOAD_NAME               11 (int)
+
+ 54         146 LOAD_CONST               6 ('return')
+
+ 58         148 LOAD_NAME                3 (List)
+            150 LOAD_NAME                5 (Tuple)
+            152 LOAD_NAME                9 (float)
+            154 LOAD_NAME                2 (Dict)
+            156 LOAD_NAME                8 (str)
+            158 LOAD_NAME                1 (Any)
+            160 BUILD_TUPLE              2
+            162 BINARY_SUBSCR
+            166 BUILD_TUPLE              2
+            168 BINARY_SUBSCR
+            172 BINARY_SUBSCR
+
+ 54         176 BUILD_TUPLE              8
+            178 LOAD_CONST              11 (<code object get_traffic_window at 0x0000020DAF2F1990, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\utils.py", line 54>)
+            180 MAKE_FUNCTION            4 (annotations)
+            182 STORE_NAME              12 (get_traffic_window)
+
+ 68         184 NOP
+
+ 64         186 LOAD_CONST              18 ((None,))
+            188 LOAD_CONST              13 ('tracks_db')
+
+ 65         190 LOAD_NAME                7 (TrackSegmentsDatabase)
+
+ 64         192 LOAD_CONST              14 ('circuit_num')
+
+ 66         194 LOAD_NAME                4 (Optional)
+            196 LOAD_NAME               11 (int)
+            198 BINARY_SUBSCR
+
+ 64         202 LOAD_CONST              15 ('lap_dist')
+
+ 67         204 LOAD_NAME                4 (Optional)
+            206 LOAD_NAME                9 (float)
+            208 BINARY_SUBSCR
+
+ 64         212 LOAD_CONST              16 ('sector')
+
+ 68         214 LOAD_NAME                4 (Optional)
+            216 LOAD_NAME                1 (Any)
+            218 BINARY_SUBSCR
+
+ 64         222 LOAD_CONST               6 ('return')
+
+ 69         224 LOAD_NAME                8 (str)
+
+ 64         226 BUILD_TUPLE             10
+            228 LOAD_CONST              17 (<code object resolve_location at 0x0000020DAF225C30, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\utils.py", line 64>)
+            230 MAKE_FUNCTION            5 (defaults, annotations)
+            232 STORE_NAME              13 (resolve_location)
+            234 RETURN_CONST            12 (None)
+
+Disassembly of <code object sort_by_rel_distance at 0x0000020DAF16B430, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\utils.py", line 31>:
+ 31           0 RESUME                   0
+
+ 40           2 LOAD_FAST                1 (ref_lap_dist)
+              4 LOAD_FAST                2 (circuit_len)
+              6 BINARY_OP                6 (%)
+             10 STORE_FAST               3 (ref_norm)
+
+ 41          12 BUILD_LIST               0
+             14 STORE_FAST               4 (result)
+
+ 42          16 LOAD_FAST                0 (table_entries)
+             18 GET_ITER
+        >>   20 FOR_ITER                75 (to 174)
+             24 STORE_FAST               5 (row)
+
+ 43          26 LOAD_FAST                5 (row)
+             28 LOAD_ATTR                1 (NULL|self + get)
+             48 LOAD_CONST               1 ('lap-info')
+             50 BUILD_MAP                0
+             52 CALL                     2
+             60 LOAD_ATTR                1 (NULL|self + get)
+             80 LOAD_CONST               2 ('lap-distance')
+             82 CALL                     1
+             90 STORE_FAST               6 (lap_dist)
+
+ 44          92 LOAD_FAST                6 (lap_dist)
+             94 POP_JUMP_IF_NOT_NONE     1 (to 98)
+
+ 45          96 JUMP_BACKWARD           39 (to 20)
+
+ 46     >>   98 LOAD_FAST                3 (ref_norm)
+            100 LOAD_FAST                6 (lap_dist)
+            102 LOAD_FAST                2 (circuit_len)
+            104 BINARY_OP                6 (%)
+            108 BINARY_OP               10 (-)
+            112 STORE_FAST               7 (rel)
+
+ 47         114 LOAD_FAST                7 (rel)
+            116 LOAD_CONST               3 (0)
+            118 COMPARE_OP               2 (<)
+            122 POP_JUMP_IF_FALSE        5 (to 134)
+
+ 48         124 LOAD_FAST                7 (rel)
+            126 LOAD_FAST                2 (circuit_len)
+            128 BINARY_OP               13 (+=)
+            132 STORE_FAST               7 (rel)
+
+ 49     >>  134 LOAD_FAST                4 (result)
+            136 LOAD_ATTR                3 (NULL|self + append)
+            156 LOAD_FAST                7 (rel)
+            158 LOAD_FAST                5 (row)
+            160 BUILD_TUPLE              2
+            162 CALL                     1
+            170 POP_TOP
+            172 JUMP_BACKWARD           77 (to 20)
+
+ 42     >>  174 END_FOR
+
+ 50         176 LOAD_FAST                4 (result)
+            178 LOAD_ATTR                5 (NULL|self + sort)
+            198 LOAD_CONST               4 (<code object <lambda> at 0x0000020DB1039480, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\utils.py", line 50>)
+            200 MAKE_FUNCTION            0
+            202 KW_NAMES                 5 (('key',))
+            204 CALL                     1
+            212 POP_TOP
+
+ 51         214 LOAD_FAST                4 (result)
+            216 RETURN_VALUE
+
+Disassembly of <code object <lambda> at 0x0000020DB1039480, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\utils.py", line 50>:
+ 50           0 RESUME                   0
+              2 LOAD_FAST                0 (x)
+              4 LOAD_CONST               1 (0)
+              6 BINARY_SUBSCR
+             10 RETURN_VALUE
+
+Disassembly of <code object get_traffic_window at 0x0000020DAF2F1990, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\utils.py", line 54>:
+ 54           0 RESUME                   0
+
+ 60           2 LOAD_FAST                1 (ref_pos)
+              4 LOAD_CONST               1 (1)
+              6 BINARY_OP                0 (+)
+             10 STORE_FAST               3 (start)
+
+ 61          12 LOAD_FAST                0 (sorted_entries)
+             14 LOAD_FAST                3 (start)
+             16 LOAD_FAST                3 (start)
+             18 LOAD_FAST                2 (num_behind)
+             20 BINARY_OP                0 (+)
+             24 BINARY_SLICE
+             26 RETURN_VALUE
+
+Disassembly of <code object resolve_location at 0x0000020DAF225C30, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\utils.py", line 64>:
+ 64           0 RESUME                   0
+
+ 74           2 LOAD_FAST                3 (sector)
+              4 POP_JUMP_IF_NONE        11 (to 28)
+              6 LOAD_GLOBAL              1 (NULL + str)
+             16 LOAD_FAST                3 (sector)
+             18 CALL                     1
+             26 JUMP_FORWARD             1 (to 30)
+        >>   28 LOAD_CONST               1 ('---')
+        >>   30 STORE_FAST               4 (fallback)
+
+ 75          32 LOAD_FAST                1 (circuit_num)
+             34 POP_JUMP_IF_NONE         2 (to 40)
+             36 LOAD_FAST                2 (lap_dist)
+             38 POP_JUMP_IF_NOT_NONE     2 (to 44)
+
+ 76     >>   40 LOAD_FAST                4 (fallback)
+             42 RETURN_VALUE
+
+ 77     >>   44 LOAD_FAST                0 (tracks_db)
+             46 LOAD_ATTR                3 (NULL|self + get_segment_info)
+             66 LOAD_FAST                1 (circuit_num)
+             68 LOAD_FAST                2 (lap_dist)
+             70 CALL                     2
+             78 STORE_FAST               5 (segment)
+
+ 78          80 LOAD_FAST                5 (segment)
+             82 POP_JUMP_IF_NOT_NONE     2 (to 88)
+
+ 79          84 LOAD_FAST                4 (fallback)
+             86 RETURN_VALUE
+
+ 80     >>   88 LOAD_FAST                5 (segment)
+             90 LOAD_ATTR                4 (TYPE)
+
+ 81         110 COPY                     1
+            112 LOAD_CONST               2 ('corner')
+            114 COMPARE_OP              40 (==)
+            118 POP_JUMP_IF_FALSE       16 (to 152)
+            120 POP_TOP
+
+ 82         122 LOAD_CONST               3 ('T')
+            124 LOAD_FAST                5 (segment)
+            126 LOAD_ATTR                6 (corner_number)
+            146 FORMAT_VALUE             0
+            148 BUILD_STRING             2
+            150 RETURN_VALUE
+
+ 83     >>  152 LOAD_CONST               4 ('complex_corner')
+            154 COMPARE_OP              40 (==)
+            158 POP_JUMP_IF_FALSE       38 (to 236)
+
+ 84         160 LOAD_FAST                5 (segment)
+            162 LOAD_ATTR                8 (corner_numbers)
+            182 LOAD_CONST               5 (0)
+            184 BINARY_SUBSCR
+            188 LOAD_FAST                5 (segment)
+            190 LOAD_ATTR                8 (corner_numbers)
+            210 LOAD_CONST               6 (-1)
+            212 BINARY_SUBSCR
+            216 STORE_FAST               7 (last)
+            218 STORE_FAST               6 (first)
+
+ 85         220 LOAD_CONST               3 ('T')
+            222 LOAD_FAST                6 (first)
+            224 FORMAT_VALUE             0
+            226 LOAD_CONST               7 ('-')
+            228 LOAD_FAST                7 (last)
+            230 FORMAT_VALUE             0
+            232 BUILD_STRING             4
+            234 RETURN_VALUE
+
+ 86     >>  236 NOP
+
+ 87         238 LOAD_FAST                4 (fallback)
+            240 RETURN_VALUE

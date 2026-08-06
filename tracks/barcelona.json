@@ -1,0 +1,20 @@
+{
+  "name": "Barcelona",
+  "length_m": 4657,
+  "corners": [
+    {"id":1,  "fraction":0.040,"type":"slow",   "direction":"right"},
+    {"id":2,  "fraction":0.079,"type":"medium", "direction":"left"},
+    {"id":3,  "fraction":0.108,"type":"medium", "direction":"right"},
+    {"id":4,  "fraction":0.141,"type":"medium", "direction":"left"},
+    {"id":5,  "fraction":0.202,"type":"slow",   "direction":"left"},
+    {"id":6,  "fraction":0.245,"type":"medium", "direction":"right"},
+    {"id":7,  "fraction":0.275,"type":"medium", "direction":"left"},
+    {"id":8,  "fraction":0.312,"type":"fast",   "direction":"right"},
+    {"id":9,  "fraction":0.493,"type":"slow",   "direction":"left"},
+    {"id":10, "fraction":0.565,"type":"medium", "direction":"right"},
+    {"id":11, "fraction":0.626,"type":"fast",   "direction":"left"},
+    {"id":12, "fraction":0.695,"type":"fast",   "direction":"right"},
+    {"id":13, "fraction":0.754,"type":"fast",   "direction":"right"},
+    {"id":14, "fraction":0.823,"type":"medium", "direction":"left"}
+  ]
+}

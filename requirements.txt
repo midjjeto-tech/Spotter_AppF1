@@ -1,0 +1,55 @@
+bottle>=0.13
+# Пин на ==, а не >=: core/overlay_window.py::sync_once() зависит от точного
+# поведения pywebview.platforms.edgechromium.EdgeChrome.on_navigation_start
+# (форсит form.Show()/Activate() для transparent-окон в обход нашего
+# контроллера — sync_once() специально пере-применяет layered-стиль и
+# скрытие каждый тик, чтобы это компенсировать). Поднимать пин осознанно,
+# сверяя это поведение в новой версии, а не молча увеличивать нижний порог.
+pywebview==6.2.1
+psutil>=5.9
+aiohttp>=3.9
+pyttsx3>=2.90
+piper-tts>=1.4.0
+onnxruntime>=1.20.0
+numpy>=1.24
+# pandas — жёсткая зависимость движка: core.engine -> analytics.loader ->
+# analytics.openf1_loader импортирует pandas на уровне модуля (без него
+# core.engine вообще не импортируется). fastf1 тянет свою pandas, но analytics
+# использует её напрямую, поэтому пин явный.
+pandas>=2.0
+sounddevice>=0.4
+soundfile>=0.12
+
+# --- RAG (Retrieval-Augmented Generation) ---
+# sentence-transformers тянет torch (уже есть) + transformers + numpy (уже есть)
+# FAISS не нужен: numpy cosine search достаточен для базы ≤200 фактов
+sentence-transformers>=2.7
+# Для GPU-ускорения sentence-transformers:
+# torch --extra-index-url https://download.pytorch.org/whl/cu121
+
+# --- Yandex Cloud (gRPC client for SpeechKit v3) ---
+yandexcloud>=0.398.0       # gRPC client for SpeechKit v3 (Synthesizer.UtteranceSynthesis)
+
+# --- Sber GigaChat (альтернативный «мозг», config.LLM_PROVIDER="gigachat") ---
+# Официальный SDK: сам делает OAuth (30-мин токен + рефреш) и TLS-сертификат
+# Минцифры. Голос при этом остаётся Yandex SpeechKit.
+gigachat>=0.2.0
+
+# --- iRacing telemetry source (core/iracing_telemetry.py) ---
+# Опционально: нужен только если settings.telemetry_source="iracing".
+# Windows-only (доступ к shared memory самого iRacing); core/iracing_telemetry.py
+# деградирует до connected=False, если пакет не установлен.
+# Пин на ==, а не >=: pyirsdk (kutu/pyirsdk) не обновлялся больше года
+# (см. github.com/kutu/pyirsdk) — это последняя фактически существующая
+# версия на PyPI, а не консервативный нижний порог. Если когда-нибудь выйдет
+# новая версия, поднимать пин осознанно, сверив API startup/shutdown/
+# is_initialized/is_connected/freeze_var_buffer_latest с core/iracing_telemetry.py.
+pyirsdk==1.1.7
+
+# --- Только для разработки/тестов (не нужны в рантайме) ---
+# pytest>=8.0
+#
+# anthropic больше не используется (заменён на Yandex Foundation Models).
+# Yandex GPT/SpeechKit работают по REST через aiohttp — отдельный SDK не нужен.
+
+mss>=9.0  # RaceFeed hero-post screenshots (optional; degrades if absent)

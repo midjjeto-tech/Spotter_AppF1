@@ -1,0 +1,54 @@
+# --- Окружения и зависимости (2.7 ГБ, восстанавливается установкой) ---
+.venv/
+NewSpotterUI/node_modules/
+__pycache__/
+*.py[cod]
+
+# --- Сборка ---
+build/
+dist/
+NewSpotterUI/.next/
+NewSpotterUI/out/
+NewSpotterUI/tsconfig.tsbuildinfo
+# webui/ НЕ игнорируется намеренно: это собранный UI, который вшивается в EXE.
+# Держим его в истории, чтобы «доехала ли пересборка до пользователя» было видно
+# в diff'е, а не выяснялось после релиза.
+
+# --- Голосовые модели Piper (4 x 63 МБ) ---
+# Скачиваемые ассеты, а не наш код. В истории им не место, но без них не
+# соберётся EXE — build.ps1 гейтит их наличие и печатает, что положить.
+# Конфиги (.onnx.json) маленькие и остаются в репозитории.
+models/piper/*.onnx
+
+# --- Кэши (регенерируются на лету) ---
+.pytest_cache/
+.codebase-memory/
+tts_cache/
+fastf1_cache/
+ergast_cache/
+openf1_cache/
+.test-results/
+
+# --- Логи и ротации ---
+*.log
+*.log.[0-9]
+
+# --- Секреты: НИКОГДА не коммитить ---
+# Файлы шифруются DPAPI под учётку пользователя, но и шифротексту здесь не место.
+yandex_creds.json
+gigachat_creds.json
+*_creds.json
+certs/
+
+# --- Пользовательские данные конкретной установки ---
+settings.json
+race_cache.json
+commentator_memory.json
+overlay_layout/
+race_archive/
+game_sessions/
+# season/ и racefeed/ в КОРНЕ — это данные (JSON сезона, SQLite-архивы лент),
+# а не пакеты: код живёт в core/season.py и core/racefeed/. Корневой racefeed/
+# при этом импортируется как пустой namespace-пакет — путать их легко.
+season/
+racefeed/

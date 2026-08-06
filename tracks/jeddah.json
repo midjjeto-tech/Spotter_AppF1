@@ -1,0 +1,18 @@
+{
+  "name": "Jeddah",
+  "length_m": 6174,
+  "corners": [
+    {"id":1,  "fraction":0.024,"type":"slow",   "direction":"right"},
+    {"id":4,  "fraction":0.099,"type":"medium", "direction":"left"},
+    {"id":7,  "fraction":0.185,"type":"fast",   "direction":"left"},
+    {"id":10, "fraction":0.278,"type":"medium", "direction":"right"},
+    {"id":12, "fraction":0.330,"type":"slow",   "direction":"right"},
+    {"id":13, "fraction":0.360,"type":"medium", "direction":"left"},
+    {"id":17, "fraction":0.490,"type":"fast",   "direction":"right"},
+    {"id":20, "fraction":0.568,"type":"medium", "direction":"left"},
+    {"id":22, "fraction":0.640,"type":"slow",   "direction":"right"},
+    {"id":23, "fraction":0.671,"type":"medium", "direction":"left"},
+    {"id":25, "fraction":0.738,"type":"fast",   "direction":"right"},
+    {"id":27, "fraction":0.803,"type":"medium", "direction":"left"}
+  ]
+}

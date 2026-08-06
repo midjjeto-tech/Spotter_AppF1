@@ -1,0 +1,131 @@
+<h2>Шлем гонщика — варианты SVG</h2>
+<p class="subtitle">Выбери форму шлема. Все варианты — белый силуэт на красном фоне, как в твоём референсе.</p>
+
+<style>
+.preview-row {
+  display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 24px;
+}
+.preview-card {
+  background: #0d1018;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 20px;
+  cursor: pointer;
+  transition: border-color .2s;
+  flex: 1; min-width: 200px;
+}
+.preview-card:hover { border-color: rgba(232,0,45,.4); }
+.preview-card.selected { border-color: #e8002d; box-shadow: 0 0 0 1px #e8002d; }
+.preview-card .letter { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: #e8002d; margin-bottom: 14px; font-family: sans-serif; }
+
+/* App header simulation */
+.app-header-sim {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: #090b0f;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.brand-icon-sim {
+  width: 30px; height: 30px; border-radius: 6px;
+  background: #e8002d;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 14px rgba(232,0,45,.4);
+}
+.brand-name-sim {
+  font-weight: 700; font-size: 15px; letter-spacing: 1.8px;
+  text-transform: uppercase; color: #dde2ea; font-family: sans-serif;
+}
+.brand-name-sim span { color: #e8002d; }
+.brand-sub {
+  font-size: 9px; color: #3a4255; letter-spacing: 1.2px;
+  text-transform: uppercase; font-family: sans-serif; margin-top: 1px;
+}
+.card-desc { font-size: 11px; color: #68758a; font-family: sans-serif; margin-top: 8px; }
+</style>
+
+<div class="preview-row">
+
+  <!-- A: Front-view helmet, visor slot -->
+  <div class="preview-card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A — Анфас с визором</div>
+    <div class="app-header-sim">
+      <div class="brand-icon-sim">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="white">
+          <path d="M12 2C8 2 5 5.2 5 9.2V13l1.5 2.5h11L19 13V9.2C19 5.2 16 2 12 2z"/>
+          <path d="M8.5 10h7v2.2a3.5 3.5 0 0 1-7 0V10z" fill="#c8001f"/>
+          <rect x="8" y="14.5" width="8" height="2" rx="1" fill="white"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name-sim">Spotter <span>App</span></div>
+        <div class="brand-sub">Голосовой комментатор</div>
+      </div>
+    </div>
+    <div class="card-desc">Классический шлем анфас: купол + тёмный визор + подбородочная полоска</div>
+  </div>
+
+  <!-- B: Side-view profile helmet -->
+  <div class="preview-card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B — Профиль</div>
+    <div class="app-header-sim">
+      <div class="brand-icon-sim">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="white">
+          <path d="M4 12C4 7.6 7.1 4 11 4c3 0 5.5 1.5 7 3.8L20 9.5V15c0 1.1-.9 2-2 2H8l-3-2.5L4 12z"/>
+          <path d="M8 10.5h7.5v2A2.5 2.5 0 0 1 13 15H8v-4.5z" fill="#c8001f"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name-sim">Spotter <span>App</span></div>
+        <div class="brand-sub">Голосовой комментатор</div>
+      </div>
+    </div>
+    <div class="card-desc">Шлем сбоку — как на ТВ-картинке F1. Динамичнее, узнаваемее в маленьком размере</div>
+  </div>
+
+  <!-- C: Minimal helmet, just dome + visor line -->
+  <div class="preview-card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C — Минимализм</div>
+    <div class="app-header-sim">
+      <div class="brand-icon-sim">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+          <path d="M5 11C5 7 8.1 4 12 4s7 3 7 7v3H5v-3z" fill="white" stroke="none"/>
+          <path d="M8 14h8" stroke="#c8001f" stroke-width="2.5"/>
+          <path d="M7 17h10" stroke="white" stroke-width="2"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name-sim">Spotter <span>App</span></div>
+        <div class="brand-sub">Голосовой комментатор</div>
+      </div>
+    </div>
+    <div class="card-desc">Максимально упрощённый — купол + линия визора. Работает на любом размере</div>
+  </div>
+
+  <!-- D: Helmet with halo/aura (like F1 halo device reference) -->
+  <div class="preview-card" data-choice="d" onclick="toggleSelect(this)">
+    <div class="letter">D — Шлем + HALO</div>
+    <div class="app-header-sim">
+      <div class="brand-icon-sim">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="white">
+          <path d="M12 3C8.1 3 5 6.1 5 10v2.5l1 2h12l1-2V10c0-3.9-3.1-7-7-7z"/>
+          <path d="M9 11h6v1.5a3 3 0 0 1-6 0V11z" fill="#c8001f"/>
+          <path d="M8.5 15.5h7" stroke="#e8002d" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <ellipse cx="12" cy="8.5" rx="4" ry="1.2" fill="none" stroke="white" stroke-width="1" opacity="0.5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name-sim">Spotter <span>App</span></div>
+        <div class="brand-sub">Голосовой комментатор</div>
+      </div>
+    </div>
+    <div class="card-desc">Шлем + ореол HALO (элемент безопасности F1 с 2018). Узнаваем фанатами</div>
+  </div>
+
+</div>
+
+<div class="section">
+  <p class="subtitle">💡 Также показан подзаголовок «Голосовой комментатор» — нужен или убрать?</p>
+</div>

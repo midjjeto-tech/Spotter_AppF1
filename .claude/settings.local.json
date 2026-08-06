@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude mcp *)",
+      "PowerShell(claude mcp add --scope user --transport http n8n \"https://midjeto.app.n8n.cloud/mcp-server/http\")",
+      "Bash(.venv/Scripts/pip show *)",
+      "WebSearch",
+      "Bash(Get-ChildItem)",
+      "Bash(powershell -Command \"Get-Item core\\\\engine.py, voice\\\\tts.py, voice\\\\cache.py, config.py | Select-Object FullName, LastWriteTime\")"
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Lusail",
+  "length_m": 5380,
+  "corners": [
+    {"id":1,  "fraction":0.030,"type":"slow",   "direction":"left"},
+    {"id":2,  "fraction":0.067,"type":"fast",   "direction":"right"},
+    {"id":3,  "fraction":0.100,"type":"fast",   "direction":"left"},
+    {"id":4,  "fraction":0.140,"type":"fast",   "direction":"right"},
+    {"id":5,  "fraction":0.174,"type":"fast",   "direction":"left"},
+    {"id":6,  "fraction":0.225,"type":"medium", "direction":"right"},
+    {"id":7,  "fraction":0.268,"type":"medium", "direction":"left"},
+    {"id":8,  "fraction":0.326,"type":"medium", "direction":"right"},
+    {"id":9,  "fraction":0.382,"type":"medium", "direction":"left"},
+    {"id":10, "fraction":0.442,"type":"medium", "direction":"right"},
+    {"id":11, "fraction":0.525,"type":"hairpin","direction":"left"},
+    {"id":12, "fraction":0.567,"type":"medium", "direction":"right"},
+    {"id":13, "fraction":0.632,"type":"fast",   "direction":"left"},
+    {"id":14, "fraction":0.672,"type":"fast",   "direction":"right"},
+    {"id":15, "fraction":0.732,"type":"medium", "direction":"right"},
+    {"id":16, "fraction":0.793,"type":"slow",   "direction":"left"}
+  ]
+}

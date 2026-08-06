@@ -1,0 +1,97 @@
+What's new in v3.5.3
+--------------------
+
+(released 16/03/2025)
+
+Bug Fixes
+^^^^^^^^^
+
+- Fixed incorrect number of total laps (``Session.total_laps``) for the
+  2025 Grand Prix of Australia.
+
+- Fixed incorrectly added 58th lap for Norris in the 2025 Grand Prix of
+  Australia.
+
+
+What's new in v3.5.2
+--------------------
+
+(released 14/03/2025)
+
+Bug Fixes
+^^^^^^^^^
+
+- Use yellow instead of red as team color for Racing Bulls in the 2025 season
+  to better distinguish the color from others. (by @pesaventofilippo) (#707)
+
+- Switch to a linear interpolation that considers sample timestamps correctly
+  when merging/resampling telemetry data.
+
+
+What's new in v3.5.1
+--------------------
+
+(released 13/03/2025)
+
+
+New Features
+^^^^^^^^^^^^
+
+- :func:`~fastf1.plotting.get_driver_style` now replaces the magic ``'auto'``
+  color keyword recursively. This allows for more complex plotting styles, for
+  example when using the Plotly library. (by @Casper-Guo) (#701)
+
+
+Bug Fixes
+^^^^^^^^^
+
+- Missing drivers are now only added to session results based on data from
+  Jolpica-F1 (formerly Ergast), when the session type is fully supported by
+  the API. This fixes cases where drivers were incorrectly added in practice
+  sessions, for example. (by @Casper-Guo) (#699)
+
+
+
+What's new in v3.5.0
+--------------------
+
+(released 01/03/2025)
+
+
+New Features
+^^^^^^^^^^^^
+
+- The backend for the Ergast API is now changed to its successor Jolpica-F1
+  (see https://github.com/jolpica/jolpica-f1 ) to ensure continued support for
+  the 2025 season and later seasons.
+
+- Added team colors for the 2025 season. (by @Casper-Guo) (#690)
+
+
+Bug Fixes
+^^^^^^^^^
+
+- Incorrect and inconsistent data types in various places have been fixed. The
+  dtypes of all DataFrames after data loading now always match the dtypes that
+  are defined in the documentation. Some dtypes may have changed as a result
+  of this fix.
+
+- Fixed lap time alignment failures in some edge cases.
+
+
+Backwards Incompatible Changes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- ``Laps.pick_fastest()`` will now return ``None`` if no fastest lap exists, as
+  announced previously.
+  Previously, an empty ``Lap`` object was returned.
+
+
+Maintenance
+^^^^^^^^^^^
+
+- Addressed upcoming changes in pandas and fixed a related deprecation warning
+  caused by implicit type coercion. (by @Casper-Guo) (#676, #682)
+
+- Temporarily pinned ``websockets`` to version 14 or older to prevent issues
+  with live timing recording.

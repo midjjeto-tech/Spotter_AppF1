@@ -1,0 +1,18 @@
+{
+  "name": "Monaco",
+  "length_m": 3337,
+  "corners": [
+    {"id":1, "name":"Sainte Devote",      "fraction":0.065,"type":"medium", "direction":"right"},
+    {"id":2, "name":"Massenet",           "fraction":0.164,"type":"fast",   "direction":"left"},
+    {"id":3, "name":"Casino",             "fraction":0.248,"type":"slow",   "direction":"right"},
+    {"id":4, "name":"Mirabeau",           "fraction":0.340,"type":"medium", "direction":"right"},
+    {"id":5, "name":"Grand Hotel Hairpin","fraction":0.425,"type":"hairpin","direction":"left"},
+    {"id":6, "name":"Mirabeau Bas",       "fraction":0.523,"type":"medium", "direction":"right"},
+    {"id":7, "name":"Portier",            "fraction":0.614,"type":"medium", "direction":"right"},
+    {"id":8, "name":"Nouvelle Chicane",   "fraction":0.780,"type":"chicane","direction":"right"},
+    {"id":9, "name":"Tabac",              "fraction":0.855,"type":"medium", "direction":"right"},
+    {"id":10,"name":"Piscine",            "fraction":0.910,"type":"chicane","direction":"right"},
+    {"id":11,"name":"La Rascasse",        "fraction":0.956,"type":"hairpin","direction":"right"},
+    {"id":12,"name":"Anthony Noghes",     "fraction":0.985,"type":"medium", "direction":"left"}
+  ]
+}

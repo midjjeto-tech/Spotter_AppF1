@@ -1,0 +1,232 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('final',))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (final)
+             30 STORE_NAME               4 (final)
+             32 POP_TOP
+
+ 30          34 LOAD_CONST               0 (0)
+             36 LOAD_CONST               4 (('InputTelemetryData',))
+             38 IMPORT_NAME              5 (apps.hud.ui.infra.hf_types)
+             40 IMPORT_FROM              6 (InputTelemetryData)
+             42 STORE_NAME               6 (InputTelemetryData)
+             44 POP_TOP
+
+ 31          46 LOAD_CONST               0 (0)
+             48 LOAD_CONST               5 (('BaseOverlayQML',))
+             50 IMPORT_NAME              7 (apps.hud.ui.overlays.base)
+             52 IMPORT_FROM              8 (BaseOverlayQML)
+             54 STORE_NAME               8 (BaseOverlayQML)
+             56 POP_TOP
+
+ 32          58 LOAD_CONST               0 (0)
+             60 LOAD_CONST               6 (('OverlayId', 'OverlayPosition'))
+             62 IMPORT_NAME              9 (lib.config)
+             64 IMPORT_FROM             10 (OverlayId)
+             66 STORE_NAME              10 (OverlayId)
+             68 IMPORT_FROM             11 (OverlayPosition)
+             70 STORE_NAME              11 (OverlayPosition)
+             72 POP_TOP
+
+ 36          74 PUSH_NULL
+             76 LOAD_BUILD_CLASS
+             78 LOAD_CONST               7 (<code object InputTelemetryOverlay at 0x0000020DAF09BAB0, file "apps\hud\ui\overlays\input_telemetry\input_telemetry.py", line 36>)
+             80 MAKE_FUNCTION            0
+             82 LOAD_CONST               8 ('InputTelemetryOverlay')
+             84 LOAD_NAME                8 (BaseOverlayQML)
+             86 CALL                     3
+             94 STORE_NAME              12 (InputTelemetryOverlay)
+             96 RETURN_CONST             1 (None)
+
+Disassembly of <code object InputTelemetryOverlay at 0x0000020DAF09BAB0, file "apps\hud\ui\overlays\input_telemetry\input_telemetry.py", line 36>:
+              0 MAKE_CELL                0 (__class__)
+
+ 36           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('InputTelemetryOverlay')
+             10 STORE_NAME               2 (__qualname__)
+
+ 37          12 LOAD_CONST               1 ('\n    Track map overlay that displays an SVG representation of the current circuit.\n\n    - Loads appropriate SVG based on circuit name\n    - Displays the track map in the QML window\n    - Updates when circuit changes\n    ')
+             14 STORE_NAME               3 (__doc__)
+
+ 45          16 PUSH_NULL
+             18 LOAD_NAME                4 (Path)
+             20 LOAD_NAME                5 (__file__)
+             22 CALL                     1
+             30 LOAD_ATTR               12 (parent)
+             50 LOAD_CONST               2 ('input_telemetry.qml')
+             52 BINARY_OP               11 (/)
+             56 STORE_NAME               7 (QML_FILE)
+
+ 46          58 LOAD_NAME                8 (OverlayId)
+             60 LOAD_ATTR               18 (INPUT_TELEMETRY)
+             80 STORE_NAME              10 (OVERLAY_ID)
+
+ 48          82 LOAD_CONST               3 ('config')
+
+ 49          84 LOAD_NAME               11 (OverlayPosition)
+
+ 48          86 LOAD_CONST               4 ('logger')
+
+ 50          88 LOAD_NAME               12 (logging)
+             90 LOAD_ATTR               26 (Logger)
+
+ 48         110 LOAD_CONST               5 ('locked')
+
+ 51         112 LOAD_NAME               14 (bool)
+
+ 48         114 LOAD_CONST               6 ('opacity')
+
+ 52         116 LOAD_NAME               15 (int)
+
+ 48         118 LOAD_CONST               7 ('scale_factor')
+
+ 53         120 LOAD_NAME               16 (float)
+
+ 48         122 LOAD_CONST               8 ('windowed_overlay')
+
+ 54         124 LOAD_NAME               14 (bool)
+
+ 48         126 LOAD_CONST               9 ('refresh_interval_ms')
+
+ 55         128 LOAD_NAME               15 (int)
+
+ 48         130 LOAD_CONST              10 ('window_duration_sec')
+
+ 56         132 LOAD_NAME               16 (float)
+
+ 48         134 LOAD_CONST              11 ('return')
+
+ 56         136 LOAD_CONST              12 (None)
+
+ 48         138 BUILD_TUPLE             18
+            140 LOAD_CLOSURE             0 (__class__)
+            142 BUILD_TUPLE              1
+            144 LOAD_CONST              13 (<code object __init__ at 0x0000020DAF18BB20, file "apps\hud\ui\overlays\input_telemetry\input_telemetry.py", line 48>)
+            146 MAKE_FUNCTION           12 (annotations, closure)
+            148 STORE_NAME              17 (__init__)
+
+ 64         150 LOAD_NAME               18 (final)
+
+ 65         152 LOAD_CONST              14 (<code object post_setup at 0x0000020DAEC3DE30, file "apps\hud\ui\overlays\input_telemetry\input_telemetry.py", line 64>)
+            154 MAKE_FUNCTION            0
+
+ 64         156 CALL                     0
+
+ 65         164 STORE_NAME              19 (post_setup)
+
+ 68         166 LOAD_NAME               18 (final)
+
+ 69         168 LOAD_CONST              15 (<code object render_frame at 0x0000020DAF18BC90, file "apps\hud\ui\overlays\input_telemetry\input_telemetry.py", line 68>)
+            170 MAKE_FUNCTION            0
+
+ 68         172 CALL                     0
+
+ 69         180 STORE_NAME              20 (render_frame)
+            182 LOAD_CLOSURE             0 (__class__)
+            184 COPY                     1
+            186 STORE_NAME              21 (__classcell__)
+            188 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF18BB20, file "apps\hud\ui\overlays\input_telemetry\input_telemetry.py", line 48>:
+              0 COPY_FREE_VARS           1
+
+ 48           2 RESUME                   0
+
+ 58           4 LOAD_FAST                7 (refresh_interval_ms)
+              6 POP_JUMP_IF_TRUE         2 (to 12)
+              8 LOAD_ASSERTION_ERROR
+             10 RAISE_VARARGS            1
+
+ 59     >>   12 LOAD_CONST               1 (1000)
+             14 LOAD_FAST                7 (refresh_interval_ms)
+             16 BINARY_OP                2 (//)
+             20 STORE_FAST               9 (fps)
+
+ 60          22 LOAD_GLOBAL              1 (NULL + max)
+             32 LOAD_CONST               2 (1)
+             34 LOAD_GLOBAL              3 (NULL + round)
+             44 LOAD_FAST                8 (window_duration_sec)
+             46 LOAD_FAST                9 (fps)
+             48 BINARY_OP                5 (*)
+             52 CALL                     1
+             60 CALL                     2
+             68 LOAD_FAST                0 (self)
+             70 STORE_ATTR               2 (num_window_samples)
+
+ 61          80 LOAD_GLOBAL              6 (super)
+             90 LOAD_DEREF              10 (__class__)
+             92 LOAD_FAST                0 (self)
+             94 LOAD_SUPER_ATTR         17 (NULL|self + __init__)
+             98 LOAD_FAST                1 (config)
+            100 LOAD_FAST                2 (logger)
+            102 LOAD_FAST                3 (locked)
+            104 LOAD_FAST                4 (opacity)
+            106 LOAD_FAST                5 (scale_factor)
+            108 LOAD_FAST                6 (windowed_overlay)
+            110 LOAD_FAST                7 (refresh_interval_ms)
+            112 CALL                     7
+            120 POP_TOP
+
+ 62         122 LOAD_FAST                0 (self)
+            124 LOAD_ATTR               11 (NULL|self + subscribe_hf)
+            144 LOAD_GLOBAL             12 (InputTelemetryData)
+            154 CALL                     1
+            162 POP_TOP
+            164 RETURN_CONST             0 (None)
+
+Disassembly of <code object post_setup at 0x0000020DAEC3DE30, file "apps\hud\ui\overlays\input_telemetry\input_telemetry.py", line 64>:
+ 64           0 RESUME                   0
+
+ 66           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             24 LOAD_CONST               1 ('maxHistoryLength')
+             26 LOAD_FAST                0 (self)
+             28 LOAD_ATTR                2 (num_window_samples)
+             48 CALL                     2
+             56 POP_TOP
+             58 RETURN_CONST             0 (None)
+
+Disassembly of <code object render_frame at 0x0000020DAF18BC90, file "apps\hud\ui\overlays\input_telemetry\input_telemetry.py", line 68>:
+ 68           0 RESUME                   0
+
+ 71           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + get_latest_hf_data)
+             24 LOAD_GLOBAL              2 (InputTelemetryData)
+             34 CALL                     1
+             42 STORE_FAST               1 (data)
+
+ 72          44 LOAD_FAST                1 (data)
+             46 POP_JUMP_IF_TRUE         1 (to 50)
+
+ 73          48 RETURN_CONST             1 (None)
+
+ 75     >>   50 LOAD_FAST                0 (self)
+             52 LOAD_ATTR                5 (NULL|self + invoke_qml_method)
+             72 LOAD_CONST               2 ('updateTelemetry')
+             74 LOAD_FAST                1 (data)
+             76 LOAD_ATTR                6 (throttle)
+             96 LOAD_FAST                1 (data)
+             98 LOAD_ATTR                8 (brake)
+            118 LOAD_FAST                1 (data)
+            120 LOAD_ATTR               10 (steering)
+            140 LOAD_FAST                1 (data)
+            142 LOAD_ATTR               12 (rev_pct)
+            162 CALL                     5
+            170 POP_TOP
+            172 RETURN_CONST             1 (None)

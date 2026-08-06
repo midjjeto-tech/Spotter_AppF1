@@ -1,0 +1,95 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (('dataclass',))
+              6 IMPORT_NAME              0 (dataclasses)
+              8 IMPORT_FROM              1 (dataclass)
+             10 STORE_NAME               1 (dataclass)
+             12 POP_TOP
+
+ 26          14 LOAD_CONST               2 (1)
+             16 LOAD_CONST               3 (('HighFreqBase',))
+             18 IMPORT_NAME              2 (base)
+             20 IMPORT_FROM              3 (HighFreqBase)
+             22 STORE_NAME               3 (HighFreqBase)
+             24 POP_TOP
+
+ 30          26 PUSH_NULL
+             28 LOAD_NAME                1 (dataclass)
+             30 LOAD_CONST               4 (True)
+             32 LOAD_CONST               4 (True)
+             34 KW_NAMES                 5 (('slots', 'frozen'))
+             36 CALL                     2
+
+ 31          44 PUSH_NULL
+             46 LOAD_BUILD_CLASS
+             48 LOAD_CONST               6 (<code object DummyHFType at 0x0000020DAF2DF550, file "apps\hud\ui\infra\hf_types\template.py", line 30>)
+             50 MAKE_FUNCTION            0
+             52 LOAD_CONST               7 ('DummyHFType')
+             54 LOAD_NAME                3 (HighFreqBase)
+             56 CALL                     3
+
+ 30          64 CALL                     0
+
+ 31          72 STORE_NAME               4 (DummyHFType)
+             74 RETURN_CONST             8 (None)
+
+Disassembly of <code object DummyHFType at 0x0000020DAF2DF550, file "apps\hud\ui\infra\hf_types\template.py", line 30>:
+ 30           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('DummyHFType')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+ 32          12 LOAD_NAME                3 (int)
+             14 LOAD_NAME                4 (__annotations__)
+             16 LOAD_CONST               1 ('a')
+             18 STORE_SUBSCR
+
+ 33          22 LOAD_NAME                5 (str)
+             24 LOAD_NAME                4 (__annotations__)
+             26 LOAD_CONST               2 ('b')
+             28 STORE_SUBSCR
+
+ 34          32 LOAD_NAME                6 (float)
+             34 LOAD_NAME                4 (__annotations__)
+             36 LOAD_CONST               3 ('c')
+             38 STORE_SUBSCR
+
+ 36          42 LOAD_NAME                7 (classmethod)
+
+ 37          44 LOAD_CONST               4 ('json_data')
+             46 LOAD_NAME                8 (dict)
+             48 LOAD_CONST               5 ('return')
+             50 LOAD_CONST               0 ('DummyHFType')
+             52 BUILD_TUPLE              4
+             54 LOAD_CONST               6 (<code object from_json at 0x0000020DAED7A5B0, file "apps\hud\ui\infra\hf_types\template.py", line 36>)
+             56 MAKE_FUNCTION            4 (annotations)
+
+ 36          58 CALL                     0
+
+ 37          66 STORE_NAME               9 (from_json)
+             68 RETURN_CONST             7 (None)
+
+Disassembly of <code object from_json at 0x0000020DAED7A5B0, file "apps\hud\ui\infra\hf_types\template.py", line 36>:
+ 36           0 RESUME                   0
+
+ 38           2 PUSH_NULL
+              4 LOAD_FAST                0 (cls)
+
+ 39           6 LOAD_FAST                1 (json_data)
+              8 LOAD_CONST               1 ('a')
+             10 BINARY_SUBSCR
+
+ 40          14 LOAD_FAST                1 (json_data)
+             16 LOAD_CONST               2 ('b')
+             18 BINARY_SUBSCR
+
+ 41          22 LOAD_FAST                1 (json_data)
+             24 LOAD_CONST               3 ('c')
+             26 BINARY_SUBSCR
+
+ 38          30 KW_NAMES                 4 (('a', 'b', 'c'))
+             32 CALL                     3
+             40 RETURN_VALUE

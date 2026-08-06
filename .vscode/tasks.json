@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Spotter: Run",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/Scripts/pythonw.exe",
+      "args": ["app.pyw"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Spotter: Run (console)",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": ["app.pyw"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Spotter: Build EXE",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/Scripts/pyinstaller.exe",
+      "args": ["app.spec", "--noconfirm"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Las Vegas",
+  "length_m": 6201,
+  "corners": [
+    {"id":1,  "fraction":0.020,"type":"slow",   "direction":"right"},
+    {"id":2,  "fraction":0.040,"type":"slow",   "direction":"left"},
+    {"id":3,  "fraction":0.092,"type":"medium", "direction":"right"},
+    {"id":4,  "fraction":0.158,"type":"slow",   "direction":"right"},
+    {"id":5,  "fraction":0.179,"type":"slow",   "direction":"left"},
+    {"id":6,  "fraction":0.232,"type":"medium", "direction":"right"},
+    {"id":7,  "fraction":0.299,"type":"medium", "direction":"left"},
+    {"id":8,  "fraction":0.368,"type":"medium", "direction":"right"},
+    {"id":10, "fraction":0.461,"type":"slow",   "direction":"left"},
+    {"id":11, "fraction":0.490,"type":"medium", "direction":"right"},
+    {"id":12, "fraction":0.559,"type":"hairpin","direction":"left"},
+    {"id":13, "fraction":0.603,"type":"medium", "direction":"right"},
+    {"id":14, "fraction":0.664,"type":"slow",   "direction":"left"},
+    {"id":15, "fraction":0.692,"type":"slow",   "direction":"right"},
+    {"id":16, "fraction":0.761,"type":"medium", "direction":"left"},
+    {"id":17, "fraction":0.825,"type":"slow",   "direction":"right"}
+  ]
+}

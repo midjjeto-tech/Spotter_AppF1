@@ -1,0 +1,22 @@
+{
+  "name": "Shanghai",
+  "length_m": 5451,
+  "corners": [
+    {"id":1, "fraction":0.039,"type":"fast",   "direction":"left"},
+    {"id":2, "fraction":0.078,"type":"hairpin","direction":"left"},
+    {"id":3, "fraction":0.110,"type":"fast",   "direction":"right"},
+    {"id":4, "fraction":0.138,"type":"fast",   "direction":"left"},
+    {"id":5, "fraction":0.165,"type":"fast",   "direction":"right"},
+    {"id":6, "fraction":0.347,"type":"hairpin","direction":"right"},
+    {"id":7, "fraction":0.387,"type":"medium", "direction":"left"},
+    {"id":8, "fraction":0.415,"type":"medium", "direction":"right"},
+    {"id":9, "fraction":0.442,"type":"medium", "direction":"left"},
+    {"id":10,"fraction":0.493,"type":"slow",   "direction":"left"},
+    {"id":11,"fraction":0.588,"type":"fast",   "direction":"right"},
+    {"id":12,"fraction":0.623,"type":"fast",   "direction":"left"},
+    {"id":13,"fraction":0.657,"type":"fast",   "direction":"right"},
+    {"id":14,"fraction":0.727,"type":"medium", "direction":"left"},
+    {"id":15,"fraction":0.758,"type":"medium", "direction":"right"},
+    {"id":16,"fraction":0.845,"type":"hairpin","direction":"right"}
+  ]
+}

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #111520; font-family: 'Titillium Web', sans-serif; padding: 28px; }
+
+h1 { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #3a4255; margin-bottom: 24px; }
+
+/* === Реальный хедер приложения === */
+.app-header {
+  background: #090b0f;
+  border-bottom: 1px solid rgba(255,255,255,0.055);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px 0 18px; height: 52px;
+  border-radius: 8px 8px 0 0;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-icon {
+  width: 30px; height: 30px; border-radius: 6px;
+  background: #e8002d;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; box-shadow: 0 0 14px rgba(232,0,45,.38);
+}
+.brand-text { display: flex; flex-direction: column; gap: 1px; }
+.brand-name { font-weight: 700; font-size: 15px; letter-spacing: 1.8px; text-transform: uppercase; color: #dde2ea; line-height: 1; }
+.brand-name span { color: #e8002d; }
+.brand-sub { font-size: 9px; font-weight: 400; letter-spacing: 1.4px; text-transform: uppercase; color: #2c3347; line-height: 1; }
+
+.header-right { display: flex; align-items: center; gap: 14px; }
+.lights { display: flex; gap: 4px; }
+.light { width: 11px; height: 11px; border-radius: 50%; background: #191e28; border: 1px solid rgba(255,255,255,0.06); }
+.light.red { background: #e8002d; box-shadow: 0 0 8px rgba(232,0,45,.4); }
+.status-pill {
+  display: flex; align-items: center; gap: 7px;
+  padding: 4px 12px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.055); background: #131720;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+  color: #3a4255;
+}
+.dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* === Sidebar фрагмент === */
+.app-sidebar {
+  background: #090b0f;
+  border-right: 1px solid rgba(255,255,255,0.055);
+  padding: 14px 12px;
+  width: 230px;
+}
+.sidebar-label { font-size: 9px; font-weight: 700; letter-spacing: 2.2px; text-transform: uppercase; color: #3a4255; padding: 0 8px; margin-bottom: 5px; }
+
+.game-selector {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.055); background: #131720;
+  cursor: pointer;
+}
+.game-thumb {
+  width: 32px; height: 22px; border-radius: 4px;
+  background: #e8002d;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.game-name { font-size: 12px; font-weight: 600; color: #dde2ea; flex: 1; }
+.game-selector svg.chevron { width: 13px; height: 13px; opacity: .3; }
+
+/* === Карточки вариантов === */
+.section-label { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #3a4255; margin-bottom: 12px; margin-top: 28px; }
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.option-card {
+  background: #0d1018; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px;
+  padding: 16px; cursor: pointer; transition: border-color .2s, box-shadow .2s;
+  position: relative;
+}
+.option-card:hover { border-color: rgba(232,0,45,.35); }
+.option-card.selected { border-color: #e8002d; box-shadow: 0 0 0 1px #e8002d; }
+.option-card .badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: #e8002d; margin-bottom: 12px;
+}
+.option-desc { font-size: 11px; color: #3a4255; margin-top: 10px; line-height: 1.5; }
+
+.mb-sep { height: 1px; background: rgba(255,255,255,0.04); margin: 28px 0; }
+</style>
+</head>
+<body>
+
+<h1>Логотип Spotter App — финальные варианты</h1>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- РАЗДЕЛ 1: ИКОНКА БРЕНДА (ШЛЕМ) -->
+<!-- ═══════════════════════════════════════════════════ -->
+
+<div class="section-label">Иконка бренда — шлем гонщика</div>
+
+<div class="options-grid" id="logo-grid" data-group="logo">
+
+  <!-- A: Классический анфас, визор-прорезь -->
+  <div class="option-card" data-choice="logo-a" onclick="pick('logo', this)">
+    <div class="badge">A — анфас, прорезь визора</div>
+    <div class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24">
+            <path fill="white" fill-rule="evenodd" d="
+              M12 3C9 3 6.5 5.3 6 8.5L5.5 13.5V16C5.5 17.1 6.4 18 7.5 18H16.5C17.6 18 18.5 17.1 18.5 16V13.5L18 8.5C17.5 5.3 15 3 12 3Z
+              M7.5 9.5H16.5V11.5Q12 13.5 7.5 11.5Z
+            "/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">Spotter <span>App</span></div>
+          <div class="brand-sub">Голосовой комментатор</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="lights"><div class="light red"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div></div>
+        <div class="status-pill"><div class="dot"></div>Ожидание</div>
+      </div>
+    </div>
+    <div class="option-desc">Визор — прорезь: красный фон просвечивает насквозь. Максимальный контраст на любом размере.</div>
+  </div>
+
+  <!-- B: Без подзаголовка -->
+  <div class="option-card" data-choice="logo-b" onclick="pick('logo', this)">
+    <div class="badge">B — без подзаголовка</div>
+    <div class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24">
+            <path fill="white" fill-rule="evenodd" d="
+              M12 3C9 3 6.5 5.3 6 8.5L5.5 13.5V16C5.5 17.1 6.4 18 7.5 18H16.5C17.6 18 18.5 17.1 18.5 16V13.5L18 8.5C17.5 5.3 15 3 12 3Z
+              M7.5 9.5H16.5V11.5Q12 13.5 7.5 11.5Z
+            "/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">Spotter <span>App</span></div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="lights"><div class="light red"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div></div>
+        <div class="status-pill"><div class="dot"></div>Ожидание</div>
+      </div>
+    </div>
+    <div class="option-desc">Лаконичнее. Подзаголовок убран — заголовок становится крупнее визуально.</div>
+  </div>
+
+</div>
+
+<div class="mb-sep"></div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- РАЗДЕЛ 2: ИКОНКА ИГРЫ В САЙДБАРЕ -->
+<!-- ═══════════════════════════════════════════════════ -->
+
+<div class="section-label">Иконка игры в сайдбаре (32×22px)</div>
+
+<div class="options-grid" id="game-grid" data-group="game">
+
+  <!-- C: Машина (вид сверху) -->
+  <div class="option-card" data-choice="game-c" onclick="pick('game', this)">
+    <div class="badge">C — болид сверху</div>
+    <div class="app-sidebar">
+      <div class="sidebar-label">Игра</div>
+      <div class="game-selector">
+        <div class="game-thumb">
+          <svg width="26" height="16" viewBox="0 0 26 16" fill="white">
+            <path d="M13 1C10 1 7 2.5 6 4L4 6H2.5L2 8H3L2.5 10H4L6 12C7 13.5 10 15 13 15C16 15 19 13.5 20 12L22 10H23.5L23 8H22L23.5 6H22L20 4C19 2.5 16 1 13 1Z"/>
+            <rect x="6" y="6" width="14" height="4" rx="1" fill="#c8001f"/>
+            <rect x="4" y="5.5" width="2.5" height="5" rx="1" fill="white" opacity=".6"/>
+            <rect x="19.5" y="5.5" width="2.5" height="5" rx="1" fill="white" opacity=".6"/>
+          </svg>
+        </div>
+        <div class="game-name">F1 25</div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="option-desc">Вид болида F1 сверху. Кокпит + носовой конус узнаваемы.</div>
+  </div>
+
+  <!-- D: Руль F1 -->
+  <div class="option-card" data-choice="game-d" onclick="pick('game', this)">
+    <div class="badge">D — руль F1</div>
+    <div class="app-sidebar">
+      <div class="sidebar-label">Игра</div>
+      <div class="game-selector">
+        <div class="game-thumb">
+          <svg width="22" height="18" viewBox="0 0 22 18" fill="none">
+            <circle cx="11" cy="9" r="7.5" stroke="white" stroke-width="1.8"/>
+            <circle cx="11" cy="9" r="3" fill="white"/>
+            <line x1="3.5" y1="9" x2="8" y2="9" stroke="white" stroke-width="1.8"/>
+            <line x1="14" y1="9" x2="18.5" y2="9" stroke="white" stroke-width="1.8"/>
+            <line x1="11" y1="1.5" x2="11" y2="6" stroke="white" stroke-width="1.8"/>
+            <rect x="7" y="7" width="8" height="4" rx="1" fill="#e8002d"/>
+          </svg>
+        </div>
+        <div class="game-name">F1 25</div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="option-desc">Руль F1 с тремя спицами — мгновенно ассоциируется с симрейсингом.</div>
+  </div>
+
+  <!-- E: Шлем (как в лого) -->
+  <div class="option-card" data-choice="game-e" onclick="pick('game', this)">
+    <div class="badge">E — шлем (как лого)</div>
+    <div class="app-sidebar">
+      <div class="sidebar-label">Игра</div>
+      <div class="game-selector">
+        <div class="game-thumb">
+          <svg width="16" height="16" viewBox="0 0 24 24">
+            <path fill="white" fill-rule="evenodd" d="
+              M12 3C9 3 6.5 5.3 6 8.5L5.5 13.5V16C5.5 17.1 6.4 18 7.5 18H16.5C17.6 18 18.5 17.1 18.5 16V13.5L18 8.5C17.5 5.3 15 3 12 3Z
+              M7.5 9.5H16.5V11.5Q12 13.5 7.5 11.5Z
+            "/>
+          </svg>
+        </div>
+        <div class="game-name">F1 25</div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="option-desc">Та же иконка-шлем в сайдбаре — визуальная связность: шапка ↔ сайдбар.</div>
+  </div>
+
+  <!-- F: "F1" типографика -->
+  <div class="option-card" data-choice="game-f" onclick="pick('game', this)">
+    <div class="badge">F — типографика F1</div>
+    <div class="app-sidebar">
+      <div class="sidebar-label">Игра</div>
+      <div class="game-selector">
+        <div class="game-thumb">
+          <svg width="32" height="22" viewBox="0 0 32 22">
+            <text x="4" y="16" font-family="'Titillium Web', sans-serif" font-size="14" font-weight="700" fill="white" letter-spacing="-0.5">F1</text>
+          </svg>
+        </div>
+        <div class="game-name">F1 25</div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="option-desc">Жирный "F1" — как официальный стиль серии. Просто, но безошибочно.</div>
+  </div>
+
+</div>
+
+<script>
+const selections = {};
+function pick(group, el) {
+  document.querySelectorAll(`[data-group="${group}"] .option-card`).forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selections[group] = el.dataset.choice;
+  if (window.sendChoice) sendChoice(group, el.dataset.choice, el.querySelector('.badge').textContent.trim());
+}
+</script>
+
+</body>
+</html>

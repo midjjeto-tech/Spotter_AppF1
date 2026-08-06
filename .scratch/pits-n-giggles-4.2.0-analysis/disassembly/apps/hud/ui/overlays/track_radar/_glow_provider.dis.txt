@@ -1,0 +1,370 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (math)
+              8 STORE_NAME               0 (math)
+
+ 27          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('QSize', 'Qt'))
+             14 IMPORT_NAME              1 (PySide6.QtCore)
+             16 IMPORT_FROM              2 (QSize)
+             18 STORE_NAME               2 (QSize)
+             20 IMPORT_FROM              3 (Qt)
+             22 STORE_NAME               3 (Qt)
+             24 POP_TOP
+
+ 28          26 LOAD_CONST               0 (0)
+             28 LOAD_CONST               3 (('QColor', 'QImage', 'QPainter', 'QRadialGradient'))
+             30 IMPORT_NAME              4 (PySide6.QtGui)
+             32 IMPORT_FROM              5 (QColor)
+             34 STORE_NAME               5 (QColor)
+             36 IMPORT_FROM              6 (QImage)
+             38 STORE_NAME               6 (QImage)
+             40 IMPORT_FROM              7 (QPainter)
+             42 STORE_NAME               7 (QPainter)
+             44 IMPORT_FROM              8 (QRadialGradient)
+             46 STORE_NAME               8 (QRadialGradient)
+             48 POP_TOP
+
+ 29          50 LOAD_CONST               0 (0)
+             52 LOAD_CONST               4 (('QQmlImageProviderBase',))
+             54 IMPORT_NAME              9 (PySide6.QtQml)
+             56 IMPORT_FROM             10 (QQmlImageProviderBase)
+             58 STORE_NAME              10 (QQmlImageProviderBase)
+             60 POP_TOP
+
+ 30          62 LOAD_CONST               0 (0)
+             64 LOAD_CONST               5 (('QQuickImageProvider',))
+             66 IMPORT_NAME             11 (PySide6.QtQuick)
+             68 IMPORT_FROM             12 (QQuickImageProvider)
+             70 STORE_NAME              12 (QQuickImageProvider)
+             72 POP_TOP
+
+ 32          74 LOAD_CONST               6 (1)
+             76 LOAD_CONST               7 (('_RADAR_AREA_PX', '_RADAR_BASE_WIDTH'))
+             78 IMPORT_NAME             13 (_radar_math)
+             80 IMPORT_FROM             14 (_RADAR_AREA_PX)
+             82 STORE_NAME              14 (_RADAR_AREA_PX)
+             84 IMPORT_FROM             15 (_RADAR_BASE_WIDTH)
+             86 STORE_NAME              15 (_RADAR_BASE_WIDTH)
+             88 POP_TOP
+
+ 36          90 LOAD_CONST               8 ('is_left')
+             92 LOAD_NAME               16 (bool)
+             94 LOAD_CONST               9 ('car_w_px')
+             96 LOAD_NAME               17 (float)
+             98 LOAD_CONST              10 ('car_l_px')
+            100 LOAD_NAME               17 (float)
+            102 LOAD_CONST              11 ('return')
+            104 LOAD_NAME                6 (QImage)
+            106 BUILD_TUPLE              8
+            108 LOAD_CONST              12 (<code object _make_glow_image at 0x0000020DB0C520B0, file "apps\hud\ui\overlays\track_radar\_glow_provider.py", line 36>)
+            110 MAKE_FUNCTION            4 (annotations)
+            112 STORE_NAME              18 (_make_glow_image)
+
+ 96         114 PUSH_NULL
+            116 LOAD_BUILD_CLASS
+            118 LOAD_CONST              13 (<code object RadarGlowImageProvider at 0x0000020DAF2DF550, file "apps\hud\ui\overlays\track_radar\_glow_provider.py", line 96>)
+            120 MAKE_FUNCTION            0
+            122 LOAD_CONST              14 ('RadarGlowImageProvider')
+            124 LOAD_NAME               12 (QQuickImageProvider)
+            126 CALL                     3
+            134 STORE_NAME              19 (RadarGlowImageProvider)
+            136 RETURN_CONST             1 (None)
+
+Disassembly of <code object _make_glow_image at 0x0000020DB0C520B0, file "apps\hud\ui\overlays\track_radar\_glow_provider.py", line 36>:
+ 36           0 RESUME                   0
+
+ 45           2 LOAD_GLOBAL              0 (_RADAR_BASE_WIDTH)
+             12 STORE_FAST               3 (size)
+
+ 46          14 LOAD_GLOBAL              2 (_RADAR_AREA_PX)
+             24 LOAD_CONST               1 (2.0)
+             26 BINARY_OP               11 (/)
+             30 STORE_FAST               4 (half_r)
+
+ 47          32 LOAD_FAST                3 (size)
+             34 LOAD_CONST               1 (2.0)
+             36 BINARY_OP               11 (/)
+             40 COPY                     1
+             42 STORE_FAST               5 (cx)
+             44 STORE_FAST               6 (cy)
+
+ 48          46 LOAD_FAST                1 (car_w_px)
+             48 LOAD_CONST               1 (2.0)
+             50 BINARY_OP               11 (/)
+             54 STORE_FAST               7 (half_w)
+
+ 49          56 LOAD_FAST                2 (car_l_px)
+             58 LOAD_CONST               1 (2.0)
+             60 BINARY_OP               11 (/)
+             64 STORE_FAST               8 (half_l)
+
+ 51          66 LOAD_GLOBAL              5 (NULL + QImage)
+             76 LOAD_FAST                3 (size)
+             78 LOAD_FAST                3 (size)
+             80 LOAD_GLOBAL              4 (QImage)
+             90 LOAD_ATTR                6 (Format)
+            110 LOAD_ATTR                8 (Format_ARGB32_Premultiplied)
+            130 CALL                     3
+            138 STORE_FAST               9 (img)
+
+ 52         140 LOAD_FAST                9 (img)
+            142 LOAD_ATTR               11 (NULL|self + fill)
+            162 LOAD_GLOBAL             13 (NULL + QColor)
+            172 LOAD_CONST               2 (0)
+            174 LOAD_CONST               2 (0)
+            176 LOAD_CONST               2 (0)
+            178 LOAD_CONST               2 (0)
+            180 CALL                     4
+            188 CALL                     1
+            196 POP_TOP
+
+ 54         198 LOAD_GLOBAL             15 (NULL + QPainter)
+            208 LOAD_FAST                9 (img)
+            210 CALL                     1
+            218 STORE_FAST              10 (painter)
+
+ 55         220 LOAD_FAST               10 (painter)
+            222 LOAD_ATTR               17 (NULL|self + setRenderHint)
+            242 LOAD_GLOBAL             14 (QPainter)
+            252 LOAD_ATTR               18 (RenderHint)
+            272 LOAD_ATTR               20 (Antialiasing)
+            292 CALL                     1
+            300 POP_TOP
+
+ 57         302 LOAD_GLOBAL             23 (NULL + QRadialGradient)
+            312 LOAD_FAST                5 (cx)
+            314 LOAD_FAST                6 (cy)
+            316 LOAD_FAST                4 (half_r)
+            318 CALL                     3
+            326 STORE_FAST              11 (grad)
+
+ 58         328 LOAD_FAST               11 (grad)
+            330 LOAD_ATTR               25 (NULL|self + setColorAt)
+            350 LOAD_CONST               3 (0.0)
+            352 LOAD_GLOBAL             13 (NULL + QColor)
+            362 LOAD_CONST               4 (255)
+            364 LOAD_CONST               2 (0)
+            366 LOAD_CONST               2 (0)
+            368 LOAD_GLOBAL             27 (NULL + int)
+            378 LOAD_CONST               5 (204.0)
+            380 CALL                     1
+            388 CALL                     4
+            396 CALL                     2
+            404 POP_TOP
+
+ 59         406 LOAD_FAST               11 (grad)
+            408 LOAD_ATTR               25 (NULL|self + setColorAt)
+            428 LOAD_CONST               6 (0.3)
+            430 LOAD_GLOBAL             13 (NULL + QColor)
+            440 LOAD_CONST               4 (255)
+            442 LOAD_CONST               2 (0)
+            444 LOAD_CONST               2 (0)
+            446 LOAD_GLOBAL             27 (NULL + int)
+            456 LOAD_CONST               7 (102.0)
+            458 CALL                     1
+            466 CALL                     4
+            474 CALL                     2
+            482 POP_TOP
+
+ 60         484 LOAD_FAST               11 (grad)
+            486 LOAD_ATTR               25 (NULL|self + setColorAt)
+            506 LOAD_CONST               8 (1.0)
+            508 LOAD_GLOBAL             13 (NULL + QColor)
+            518 LOAD_CONST               4 (255)
+            520 LOAD_CONST               2 (0)
+            522 LOAD_CONST               2 (0)
+            524 LOAD_CONST               2 (0)
+            526 CALL                     4
+            534 CALL                     2
+            542 POP_TOP
+
+ 61         544 LOAD_FAST               10 (painter)
+            546 LOAD_ATTR               29 (NULL|self + setBrush)
+            566 LOAD_FAST               11 (grad)
+            568 CALL                     1
+            576 POP_TOP
+
+ 62         578 LOAD_FAST               10 (painter)
+            580 LOAD_ATTR               31 (NULL|self + setPen)
+            600 LOAD_GLOBAL             32 (Qt)
+            610 LOAD_ATTR               34 (PenStyle)
+            630 LOAD_ATTR               36 (NoPen)
+            650 CALL                     1
+            658 POP_TOP
+
+ 73         660 LOAD_GLOBAL             27 (NULL + int)
+            670 LOAD_FAST                5 (cx)
+            672 LOAD_FAST                4 (half_r)
+            674 BINARY_OP               10 (-)
+            678 CALL                     1
+            686 STORE_FAST              12 (rect_x)
+
+ 74         688 LOAD_GLOBAL             27 (NULL + int)
+            698 LOAD_FAST                6 (cy)
+            700 LOAD_FAST                4 (half_r)
+            702 BINARY_OP               10 (-)
+            706 CALL                     1
+            714 STORE_FAST              13 (rect_y)
+
+ 75         716 LOAD_GLOBAL             27 (NULL + int)
+            726 LOAD_FAST                4 (half_r)
+            728 LOAD_CONST               9 (2)
+            730 BINARY_OP                5 (*)
+            734 CALL                     1
+            742 STORE_FAST              14 (rect_size)
+
+ 79         744 LOAD_GLOBAL             39 (NULL + math)
+            754 LOAD_ATTR               40 (degrees)
+            774 LOAD_GLOBAL             39 (NULL + math)
+            784 LOAD_ATTR               42 (atan2)
+            804 LOAD_FAST                8 (half_l)
+            806 LOAD_FAST                7 (half_w)
+            808 CALL                     2
+            816 CALL                     1
+            824 STORE_FAST              15 (half_angle_deg)
+
+ 81         826 LOAD_FAST                0 (is_left)
+            828 POP_JUMP_IF_FALSE       33 (to 896)
+
+ 83         830 LOAD_GLOBAL             27 (NULL + int)
+            840 LOAD_FAST               15 (half_angle_deg)
+            842 UNARY_NEGATIVE
+            844 LOAD_CONST              10 (16)
+            846 BINARY_OP                5 (*)
+            850 CALL                     1
+            858 STORE_FAST              16 (qt_start)
+
+ 84         860 LOAD_GLOBAL             27 (NULL + int)
+            870 LOAD_FAST               15 (half_angle_deg)
+            872 LOAD_CONST               9 (2)
+            874 BINARY_OP                5 (*)
+            878 LOAD_CONST              10 (16)
+            880 BINARY_OP                5 (*)
+            884 CALL                     1
+            892 STORE_FAST              17 (qt_span)
+            894 JUMP_FORWARD            34 (to 964)
+
+ 87     >>  896 LOAD_GLOBAL             27 (NULL + int)
+            906 LOAD_CONST              11 (180)
+            908 LOAD_FAST               15 (half_angle_deg)
+            910 BINARY_OP               10 (-)
+            914 LOAD_CONST              10 (16)
+            916 BINARY_OP                5 (*)
+            920 CALL                     1
+            928 STORE_FAST              16 (qt_start)
+
+ 88         930 LOAD_GLOBAL             27 (NULL + int)
+            940 LOAD_FAST               15 (half_angle_deg)
+            942 LOAD_CONST               9 (2)
+            944 BINARY_OP                5 (*)
+            948 LOAD_CONST              10 (16)
+            950 BINARY_OP                5 (*)
+            954 CALL                     1
+            962 STORE_FAST              17 (qt_span)
+
+ 90     >>  964 LOAD_FAST               10 (painter)
+            966 LOAD_ATTR               45 (NULL|self + drawPie)
+            986 LOAD_FAST               12 (rect_x)
+            988 LOAD_FAST               13 (rect_y)
+            990 LOAD_FAST               14 (rect_size)
+            992 LOAD_FAST               14 (rect_size)
+            994 LOAD_FAST               16 (qt_start)
+            996 LOAD_FAST               17 (qt_span)
+            998 CALL                     6
+           1006 POP_TOP
+
+ 91        1008 LOAD_FAST               10 (painter)
+           1010 LOAD_ATTR               47 (NULL|self + end)
+           1030 CALL                     0
+           1038 POP_TOP
+
+ 92        1040 LOAD_FAST                9 (img)
+           1042 RETURN_VALUE
+
+Disassembly of <code object RadarGlowImageProvider at 0x0000020DAF2DF550, file "apps\hud\ui\overlays\track_radar\_glow_provider.py", line 96>:
+              0 MAKE_CELL                0 (__class__)
+
+ 96           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('RadarGlowImageProvider')
+             10 STORE_NAME               2 (__qualname__)
+
+ 97          12 LOAD_CONST               1 ('Serves pre-baked left/right glow sector images to QML via image://radar/glow-left|glow-right.')
+             14 STORE_NAME               3 (__doc__)
+
+ 99          16 LOAD_CONST               2 ('car_w_px')
+             18 LOAD_NAME                4 (float)
+             20 LOAD_CONST               3 ('car_l_px')
+             22 LOAD_NAME                4 (float)
+             24 BUILD_TUPLE              4
+             26 LOAD_CLOSURE             0 (__class__)
+             28 BUILD_TUPLE              1
+             30 LOAD_CONST               4 (<code object __init__ at 0x0000020DAF2F8870, file "apps\hud\ui\overlays\track_radar\_glow_provider.py", line 99>)
+             32 MAKE_FUNCTION           12 (annotations, closure)
+             34 STORE_NAME               5 (__init__)
+
+106          36 LOAD_CONST               5 ('image_id')
+             38 LOAD_NAME                6 (str)
+             40 LOAD_CONST               6 ('size')
+             42 LOAD_NAME                7 (QSize)
+             44 LOAD_CONST               7 ('requested_size')
+             46 LOAD_NAME                7 (QSize)
+             48 LOAD_CONST               8 ('return')
+             50 LOAD_NAME                8 (QImage)
+             52 BUILD_TUPLE              8
+             54 LOAD_CONST               9 (<code object requestImage at 0x0000020DAF2DF440, file "apps\hud\ui\overlays\track_radar\_glow_provider.py", line 106>)
+             56 MAKE_FUNCTION            4 (annotations)
+             58 STORE_NAME               9 (requestImage)
+             60 LOAD_CLOSURE             0 (__class__)
+             62 COPY                     1
+             64 STORE_NAME              10 (__classcell__)
+             66 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF2F8870, file "apps\hud\ui\overlays\track_radar\_glow_provider.py", line 99>:
+              0 COPY_FREE_VARS           1
+
+ 99           2 RESUME                   0
+
+100           4 LOAD_GLOBAL              0 (super)
+             14 LOAD_DEREF               3 (__class__)
+             16 LOAD_FAST                0 (self)
+             18 LOAD_SUPER_ATTR          5 (NULL|self + __init__)
+             22 LOAD_GLOBAL              4 (QQmlImageProviderBase)
+             32 LOAD_ATTR                6 (ImageType)
+             52 LOAD_ATTR                8 (Image)
+             72 CALL                     1
+             80 POP_TOP
+
+102          82 LOAD_GLOBAL             11 (NULL + _make_glow_image)
+             92 LOAD_CONST               1 (True)
+             94 LOAD_FAST                1 (car_w_px)
+             96 LOAD_FAST                2 (car_l_px)
+             98 CALL                     3
+
+103         106 LOAD_GLOBAL             11 (NULL + _make_glow_image)
+            116 LOAD_CONST               2 (False)
+            118 LOAD_FAST                1 (car_w_px)
+            120 LOAD_FAST                2 (car_l_px)
+            122 CALL                     3
+
+101         130 LOAD_CONST               3 (('glow-left', 'glow-right'))
+            132 BUILD_CONST_KEY_MAP      2
+            134 LOAD_FAST                0 (self)
+            136 STORE_ATTR               6 (_images)
+            146 RETURN_CONST             0 (None)
+
+Disassembly of <code object requestImage at 0x0000020DAF2DF440, file "apps\hud\ui\overlays\track_radar\_glow_provider.py", line 106>:
+106           0 RESUME                   0
+
+107           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_images)
+             24 LOAD_ATTR                3 (NULL|self + get)
+             44 LOAD_FAST                1 (image_id)
+             46 LOAD_GLOBAL              5 (NULL + QImage)
+             56 CALL                     0
+             64 CALL                     2
+             72 RETURN_VALUE

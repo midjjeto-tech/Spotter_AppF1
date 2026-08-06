@@ -1,0 +1,579 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (('dataclass',))
+              6 IMPORT_NAME              0 (dataclasses)
+              8 IMPORT_FROM              1 (dataclass)
+             10 STORE_NAME               1 (dataclass)
+             12 POP_TOP
+
+ 27          14 LOAD_CONST               2 (1)
+             16 LOAD_CONST               3 (('HighFreqBase',))
+             18 IMPORT_NAME              2 (base)
+             20 IMPORT_FROM              3 (HighFreqBase)
+             22 STORE_NAME               3 (HighFreqBase)
+             24 POP_TOP
+
+ 31          26 PUSH_NULL
+             28 LOAD_NAME                1 (dataclass)
+             30 LOAD_CONST               4 (True)
+             32 LOAD_CONST               4 (True)
+             34 KW_NAMES                 5 (('slots', 'frozen'))
+             36 CALL                     2
+
+ 32          44 PUSH_NULL
+             46 LOAD_BUILD_CLASS
+             48 LOAD_CONST               6 (<code object Vec3f at 0x0000020DAEC3DE30, file "apps\hud\ui\infra\hf_types\car_motion.py", line 31>)
+             50 MAKE_FUNCTION            0
+             52 LOAD_CONST               7 ('Vec3f')
+             54 CALL                     2
+
+ 31          62 CALL                     0
+
+ 32          70 STORE_NAME               4 (Vec3f)
+
+ 45          72 PUSH_NULL
+             74 LOAD_NAME                1 (dataclass)
+             76 LOAD_CONST               4 (True)
+             78 LOAD_CONST               4 (True)
+             80 KW_NAMES                 5 (('slots', 'frozen'))
+             82 CALL                     2
+
+ 46          90 PUSH_NULL
+             92 LOAD_BUILD_CLASS
+             94 LOAD_CONST               8 (<code object Orientation at 0x0000020DAF2D1530, file "apps\hud\ui\infra\hf_types\car_motion.py", line 45>)
+             96 MAKE_FUNCTION            0
+             98 LOAD_CONST               9 ('Orientation')
+            100 CALL                     2
+
+ 45         108 CALL                     0
+
+ 46         116 STORE_NAME               5 (Orientation)
+
+ 59         118 PUSH_NULL
+            120 LOAD_NAME                1 (dataclass)
+            122 LOAD_CONST               4 (True)
+            124 LOAD_CONST               4 (True)
+            126 KW_NAMES                 5 (('slots', 'frozen'))
+            128 CALL                     2
+
+ 60         136 PUSH_NULL
+            138 LOAD_BUILD_CLASS
+            140 LOAD_CONST              10 (<code object GForce at 0x0000020DAF2D1A30, file "apps\hud\ui\infra\hf_types\car_motion.py", line 59>)
+            142 MAKE_FUNCTION            0
+            144 LOAD_CONST              11 ('GForce')
+            146 CALL                     2
+
+ 59         154 CALL                     0
+
+ 60         162 STORE_NAME               6 (GForce)
+
+ 73         164 PUSH_NULL
+            166 LOAD_NAME                1 (dataclass)
+            168 LOAD_CONST               4 (True)
+            170 LOAD_CONST               4 (True)
+            172 KW_NAMES                 5 (('slots', 'frozen'))
+            174 CALL                     2
+
+ 74         182 PUSH_NULL
+            184 LOAD_BUILD_CLASS
+            186 LOAD_CONST              12 (<code object CarMotion at 0x0000020DAF2D4030, file "apps\hud\ui\infra\hf_types\car_motion.py", line 73>)
+            188 MAKE_FUNCTION            0
+            190 LOAD_CONST              13 ('CarMotion')
+            192 CALL                     2
+
+ 73         200 CALL                     0
+
+ 74         208 STORE_NAME               7 (CarMotion)
+
+ 96         210 PUSH_NULL
+            212 LOAD_NAME                1 (dataclass)
+            214 LOAD_CONST               4 (True)
+            216 LOAD_CONST               4 (True)
+            218 KW_NAMES                 5 (('slots', 'frozen'))
+            220 CALL                     2
+
+ 97         228 PUSH_NULL
+            230 LOAD_BUILD_CLASS
+            232 LOAD_CONST              14 (<code object DriverMotionInfo at 0x0000020DAF2C1F10, file "apps\hud\ui\infra\hf_types\car_motion.py", line 96>)
+            234 MAKE_FUNCTION            0
+            236 LOAD_CONST              15 ('DriverMotionInfo')
+            238 CALL                     2
+
+ 96         246 CALL                     0
+
+ 97         254 STORE_NAME               8 (DriverMotionInfo)
+
+116         256 PUSH_NULL
+            258 LOAD_NAME                1 (dataclass)
+            260 LOAD_CONST               4 (True)
+            262 LOAD_CONST               4 (True)
+            264 KW_NAMES                 5 (('slots', 'frozen'))
+            266 CALL                     2
+
+117         274 PUSH_NULL
+            276 LOAD_BUILD_CLASS
+            278 LOAD_CONST              16 (<code object LiveSessionMotionInfo at 0x0000020DAF2DF440, file "apps\hud\ui\infra\hf_types\car_motion.py", line 116>)
+            280 MAKE_FUNCTION            0
+            282 LOAD_CONST              17 ('LiveSessionMotionInfo')
+            284 LOAD_NAME                3 (HighFreqBase)
+            286 CALL                     3
+
+116         294 CALL                     0
+
+117         302 STORE_NAME               9 (LiveSessionMotionInfo)
+            304 RETURN_CONST            18 (None)
+
+Disassembly of <code object Vec3f at 0x0000020DAEC3DE30, file "apps\hud\ui\infra\hf_types\car_motion.py", line 31>:
+ 31           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('Vec3f')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+ 33          12 LOAD_NAME                3 (float)
+             14 LOAD_NAME                4 (__annotations__)
+             16 LOAD_CONST               1 ('x')
+             18 STORE_SUBSCR
+
+ 34          22 LOAD_NAME                3 (float)
+             24 LOAD_NAME                4 (__annotations__)
+             26 LOAD_CONST               2 ('y')
+             28 STORE_SUBSCR
+
+ 35          32 LOAD_NAME                3 (float)
+             34 LOAD_NAME                4 (__annotations__)
+             36 LOAD_CONST               3 ('z')
+             38 STORE_SUBSCR
+
+ 37          42 LOAD_NAME                5 (classmethod)
+
+ 38          44 LOAD_CONST               4 (<code object from_json at 0x0000020DAED7A5B0, file "apps\hud\ui\infra\hf_types\car_motion.py", line 37>)
+             46 MAKE_FUNCTION            0
+
+ 37          48 CALL                     0
+
+ 38          56 STORE_NAME               6 (from_json)
+             58 RETURN_CONST             5 (None)
+
+Disassembly of <code object from_json at 0x0000020DAED7A5B0, file "apps\hud\ui\infra\hf_types\car_motion.py", line 37>:
+ 37           0 RESUME                   0
+
+ 39           2 PUSH_NULL
+              4 LOAD_FAST                0 (cls)
+
+ 40           6 LOAD_FAST                1 (json_data)
+              8 LOAD_CONST               1 ('x')
+             10 BINARY_SUBSCR
+
+ 41          14 LOAD_FAST                1 (json_data)
+             16 LOAD_CONST               2 ('y')
+             18 BINARY_SUBSCR
+
+ 42          22 LOAD_FAST                1 (json_data)
+             24 LOAD_CONST               3 ('z')
+             26 BINARY_SUBSCR
+
+ 39          30 KW_NAMES                 4 (('x', 'y', 'z'))
+             32 CALL                     3
+             40 RETURN_VALUE
+
+Disassembly of <code object Orientation at 0x0000020DAF2D1530, file "apps\hud\ui\infra\hf_types\car_motion.py", line 45>:
+ 45           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('Orientation')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+ 47          12 LOAD_NAME                3 (float)
+             14 LOAD_NAME                4 (__annotations__)
+             16 LOAD_CONST               1 ('yaw')
+             18 STORE_SUBSCR
+
+ 48          22 LOAD_NAME                3 (float)
+             24 LOAD_NAME                4 (__annotations__)
+             26 LOAD_CONST               2 ('pitch')
+             28 STORE_SUBSCR
+
+ 49          32 LOAD_NAME                3 (float)
+             34 LOAD_NAME                4 (__annotations__)
+             36 LOAD_CONST               3 ('roll')
+             38 STORE_SUBSCR
+
+ 51          42 LOAD_NAME                5 (classmethod)
+
+ 52          44 LOAD_CONST               4 (<code object from_json at 0x0000020DAECADC50, file "apps\hud\ui\infra\hf_types\car_motion.py", line 51>)
+             46 MAKE_FUNCTION            0
+
+ 51          48 CALL                     0
+
+ 52          56 STORE_NAME               6 (from_json)
+             58 RETURN_CONST             5 (None)
+
+Disassembly of <code object from_json at 0x0000020DAECADC50, file "apps\hud\ui\infra\hf_types\car_motion.py", line 51>:
+ 51           0 RESUME                   0
+
+ 53           2 PUSH_NULL
+              4 LOAD_FAST                0 (cls)
+
+ 54           6 LOAD_FAST                1 (json_data)
+              8 LOAD_CONST               1 ('yaw')
+             10 BINARY_SUBSCR
+
+ 55          14 LOAD_FAST                1 (json_data)
+             16 LOAD_CONST               2 ('pitch')
+             18 BINARY_SUBSCR
+
+ 56          22 LOAD_FAST                1 (json_data)
+             24 LOAD_CONST               3 ('roll')
+             26 BINARY_SUBSCR
+
+ 53          30 KW_NAMES                 4 (('yaw', 'pitch', 'roll'))
+             32 CALL                     3
+             40 RETURN_VALUE
+
+Disassembly of <code object GForce at 0x0000020DAF2D1A30, file "apps\hud\ui\infra\hf_types\car_motion.py", line 59>:
+ 59           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('GForce')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+ 61          12 LOAD_NAME                3 (float)
+             14 LOAD_NAME                4 (__annotations__)
+             16 LOAD_CONST               1 ('lateral')
+             18 STORE_SUBSCR
+
+ 62          22 LOAD_NAME                3 (float)
+             24 LOAD_NAME                4 (__annotations__)
+             26 LOAD_CONST               2 ('longitudinal')
+             28 STORE_SUBSCR
+
+ 63          32 LOAD_NAME                3 (float)
+             34 LOAD_NAME                4 (__annotations__)
+             36 LOAD_CONST               3 ('vertical')
+             38 STORE_SUBSCR
+
+ 65          42 LOAD_NAME                5 (classmethod)
+
+ 66          44 LOAD_CONST               4 (<code object from_json at 0x0000020DAECADA70, file "apps\hud\ui\infra\hf_types\car_motion.py", line 65>)
+             46 MAKE_FUNCTION            0
+
+ 65          48 CALL                     0
+
+ 66          56 STORE_NAME               6 (from_json)
+             58 RETURN_CONST             5 (None)
+
+Disassembly of <code object from_json at 0x0000020DAECADA70, file "apps\hud\ui\infra\hf_types\car_motion.py", line 65>:
+ 65           0 RESUME                   0
+
+ 67           2 PUSH_NULL
+              4 LOAD_FAST                0 (cls)
+
+ 68           6 LOAD_FAST                1 (json_data)
+              8 LOAD_CONST               1 ('lateral')
+             10 BINARY_SUBSCR
+
+ 69          14 LOAD_FAST                1 (json_data)
+             16 LOAD_CONST               2 ('longitudinal')
+             18 BINARY_SUBSCR
+
+ 70          22 LOAD_FAST                1 (json_data)
+             24 LOAD_CONST               3 ('vertical')
+             26 BINARY_SUBSCR
+
+ 67          30 KW_NAMES                 4 (('lateral', 'longitudinal', 'vertical'))
+             32 CALL                     3
+             40 RETURN_VALUE
+
+Disassembly of <code object CarMotion at 0x0000020DAF2D4030, file "apps\hud\ui\infra\hf_types\car_motion.py", line 73>:
+ 73           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('CarMotion')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+ 75          12 LOAD_NAME                3 (Vec3f)
+             14 LOAD_NAME                4 (__annotations__)
+             16 LOAD_CONST               1 ('world_position')
+             18 STORE_SUBSCR
+
+ 76          22 LOAD_NAME                3 (Vec3f)
+             24 LOAD_NAME                4 (__annotations__)
+             26 LOAD_CONST               2 ('world_velocity')
+             28 STORE_SUBSCR
+
+ 77          32 LOAD_NAME                3 (Vec3f)
+             34 LOAD_NAME                4 (__annotations__)
+             36 LOAD_CONST               3 ('world_forward_dir')
+             38 STORE_SUBSCR
+
+ 78          42 LOAD_NAME                3 (Vec3f)
+             44 LOAD_NAME                4 (__annotations__)
+             46 LOAD_CONST               4 ('world_right_dir')
+             48 STORE_SUBSCR
+
+ 79          52 LOAD_NAME                5 (GForce)
+             54 LOAD_NAME                4 (__annotations__)
+             56 LOAD_CONST               5 ('g_force')
+             58 STORE_SUBSCR
+
+ 80          62 LOAD_NAME                6 (Orientation)
+             64 LOAD_NAME                4 (__annotations__)
+             66 LOAD_CONST               6 ('orientation')
+             68 STORE_SUBSCR
+
+ 82          72 LOAD_NAME                7 (classmethod)
+
+ 83          74 LOAD_CONST               7 (<code object from_json at 0x0000020DAF220BD0, file "apps\hud\ui\infra\hf_types\car_motion.py", line 82>)
+             76 MAKE_FUNCTION            0
+
+ 82          78 CALL                     0
+
+ 83          86 STORE_NAME               8 (from_json)
+             88 RETURN_CONST             8 (None)
+
+Disassembly of <code object from_json at 0x0000020DAF220BD0, file "apps\hud\ui\infra\hf_types\car_motion.py", line 82>:
+ 82           0 RESUME                   0
+
+ 85           2 LOAD_FAST                1 (json_data)
+              4 POP_JUMP_IF_TRUE         1 (to 8)
+
+ 86           6 RETURN_CONST             0 (None)
+
+ 87     >>    8 PUSH_NULL
+             10 LOAD_FAST                0 (cls)
+
+ 88          12 LOAD_GLOBAL              0 (Vec3f)
+             22 LOAD_ATTR                3 (NULL|self + from_json)
+             42 LOAD_FAST                1 (json_data)
+             44 LOAD_CONST               1 ('world-position')
+             46 BINARY_SUBSCR
+             50 CALL                     1
+
+ 89          58 LOAD_GLOBAL              0 (Vec3f)
+             68 LOAD_ATTR                3 (NULL|self + from_json)
+             88 LOAD_FAST                1 (json_data)
+             90 LOAD_CONST               2 ('world-velocity')
+             92 BINARY_SUBSCR
+             96 CALL                     1
+
+ 90         104 LOAD_GLOBAL              0 (Vec3f)
+            114 LOAD_ATTR                3 (NULL|self + from_json)
+            134 LOAD_FAST                1 (json_data)
+            136 LOAD_CONST               3 ('world-forward-dir')
+            138 BINARY_SUBSCR
+            142 CALL                     1
+
+ 91         150 LOAD_GLOBAL              0 (Vec3f)
+            160 LOAD_ATTR                3 (NULL|self + from_json)
+            180 LOAD_FAST                1 (json_data)
+            182 LOAD_CONST               4 ('world-right-dir')
+            184 BINARY_SUBSCR
+            188 CALL                     1
+
+ 92         196 LOAD_GLOBAL              4 (GForce)
+            206 LOAD_ATTR                3 (NULL|self + from_json)
+            226 LOAD_FAST                1 (json_data)
+            228 LOAD_CONST               5 ('g-force')
+            230 BINARY_SUBSCR
+            234 CALL                     1
+
+ 93         242 LOAD_GLOBAL              6 (Orientation)
+            252 LOAD_ATTR                3 (NULL|self + from_json)
+            272 LOAD_FAST                1 (json_data)
+            274 LOAD_CONST               6 ('orientation')
+            276 BINARY_SUBSCR
+            280 CALL                     1
+
+ 87         288 KW_NAMES                 7 (('world_position', 'world_velocity', 'world_forward_dir', 'world_right_dir', 'g_force', 'orientation'))
+            290 CALL                     6
+            298 RETURN_VALUE
+
+Disassembly of <code object DriverMotionInfo at 0x0000020DAF2C1F10, file "apps\hud\ui\infra\hf_types\car_motion.py", line 96>:
+ 96           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('DriverMotionInfo')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+ 98          12 LOAD_NAME                3 (str)
+             14 LOAD_NAME                4 (__annotations__)
+             16 LOAD_CONST               1 ('name')
+             18 STORE_SUBSCR
+
+ 99          22 LOAD_NAME                3 (str)
+             24 LOAD_NAME                4 (__annotations__)
+             26 LOAD_CONST               2 ('team')
+             28 STORE_SUBSCR
+
+100          32 LOAD_NAME                5 (float)
+             34 LOAD_NAME                4 (__annotations__)
+             36 LOAD_CONST               3 ('track_position')
+             38 STORE_SUBSCR
+
+101          42 LOAD_NAME                6 (int)
+             44 LOAD_NAME                4 (__annotations__)
+             46 LOAD_CONST               4 ('index')
+             48 STORE_SUBSCR
+
+102          52 LOAD_NAME                7 (bool)
+             54 LOAD_NAME                4 (__annotations__)
+             56 LOAD_CONST               5 ('is_ref')
+             58 STORE_SUBSCR
+
+103          62 LOAD_NAME                8 (CarMotion)
+             64 LOAD_NAME                4 (__annotations__)
+             66 LOAD_CONST               6 ('car_motion')
+             68 STORE_SUBSCR
+
+105          72 LOAD_NAME                9 (classmethod)
+
+106          74 LOAD_CONST               7 ('json_data')
+             76 LOAD_NAME               10 (dict)
+             78 LOAD_CONST               8 ('ref_index')
+             80 LOAD_NAME                6 (int)
+             82 BUILD_TUPLE              4
+             84 LOAD_CONST               9 (<code object from_json at 0x0000020DAF19B5A0, file "apps\hud\ui\infra\hf_types\car_motion.py", line 105>)
+             86 MAKE_FUNCTION            4 (annotations)
+
+105          88 CALL                     0
+
+106          96 STORE_NAME              11 (from_json)
+             98 RETURN_CONST            10 (None)
+
+Disassembly of <code object from_json at 0x0000020DAF19B5A0, file "apps\hud\ui\infra\hf_types\car_motion.py", line 105>:
+105           0 RESUME                   0
+
+107           2 PUSH_NULL
+              4 LOAD_FAST                0 (cls)
+
+108           6 LOAD_FAST                1 (json_data)
+              8 LOAD_CONST               1 ('name')
+             10 BINARY_SUBSCR
+
+109          14 LOAD_FAST                1 (json_data)
+             16 LOAD_CONST               2 ('team')
+             18 BINARY_SUBSCR
+
+110          22 LOAD_FAST                1 (json_data)
+             24 LOAD_CONST               3 ('track-position')
+             26 BINARY_SUBSCR
+
+111          30 LOAD_FAST                1 (json_data)
+             32 LOAD_CONST               4 ('index')
+             34 BINARY_SUBSCR
+
+112          38 LOAD_FAST                1 (json_data)
+             40 LOAD_CONST               4 ('index')
+             42 BINARY_SUBSCR
+             46 LOAD_FAST                2 (ref_index)
+             48 COMPARE_OP              40 (==)
+
+113          52 LOAD_GLOBAL              0 (CarMotion)
+             62 LOAD_ATTR                3 (NULL|self + from_json)
+             82 LOAD_FAST                1 (json_data)
+             84 LOAD_CONST               5 ('motion')
+             86 BINARY_SUBSCR
+             90 CALL                     1
+
+107          98 KW_NAMES                 6 (('name', 'team', 'track_position', 'index', 'is_ref', 'car_motion'))
+            100 CALL                     6
+            108 RETURN_VALUE
+
+Disassembly of <code object LiveSessionMotionInfo at 0x0000020DAF2DF440, file "apps\hud\ui\infra\hf_types\car_motion.py", line 116>:
+116           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('LiveSessionMotionInfo')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+118          12 LOAD_NAME                3 (list)
+             14 LOAD_NAME                4 (DriverMotionInfo)
+             16 BINARY_SUBSCR
+             20 LOAD_NAME                5 (__annotations__)
+             22 LOAD_CONST               1 ('motion_data')
+             24 STORE_SUBSCR
+
+119          28 LOAD_CONST               2 ('F1 Modern')
+             30 STORE_NAME               6 (formula_type)
+             32 LOAD_NAME                7 (str)
+             34 LOAD_NAME                5 (__annotations__)
+             36 LOAD_CONST               3 ('formula_type')
+             38 STORE_SUBSCR
+
+121          42 LOAD_NAME                8 (classmethod)
+
+122          44 LOAD_CONST               4 ('json_data')
+             46 LOAD_NAME                9 (dict)
+             48 LOAD_CONST               5 ('return')
+             50 LOAD_CONST               0 ('LiveSessionMotionInfo')
+             52 BUILD_TUPLE              4
+             54 LOAD_CONST               6 (<code object from_json at 0x0000020DAF2AD570, file "apps\hud\ui\infra\hf_types\car_motion.py", line 121>)
+             56 MAKE_FUNCTION            4 (annotations)
+
+121          58 CALL                     0
+
+122          66 STORE_NAME              10 (from_json)
+             68 RETURN_CONST             7 (None)
+
+Disassembly of <code object from_json at 0x0000020DAF2AD570, file "apps\hud\ui\infra\hf_types\car_motion.py", line 121>:
+121           0 RESUME                   0
+
+123           2 LOAD_FAST                1 (json_data)
+              4 LOAD_CONST               1 ('ref-index')
+              6 BINARY_SUBSCR
+             10 STORE_FAST               2 (ref_index)
+
+124          12 LOAD_FAST                1 (json_data)
+             14 LOAD_CONST               2 ('formula-type')
+             16 BINARY_SUBSCR
+             20 STORE_FAST               3 (formula_type)
+
+128          22 LOAD_FAST                1 (json_data)
+             24 LOAD_CONST               3 ('motion')
+             26 BINARY_SUBSCR
+             30 GET_ITER
+
+126          32 LOAD_FAST_AND_CLEAR      4 (driver_json)
+             34 SWAP                     2
+             36 BUILD_LIST               0
+             38 SWAP                     2
+
+128     >>   40 FOR_ITER                24 (to 92)
+             44 STORE_FAST               4 (driver_json)
+
+127          46 LOAD_GLOBAL              0 (DriverMotionInfo)
+             56 LOAD_ATTR                3 (NULL|self + from_json)
+             76 LOAD_FAST                4 (driver_json)
+             78 LOAD_FAST                2 (ref_index)
+             80 CALL                     2
+             88 LIST_APPEND              2
+             90 JUMP_BACKWARD           26 (to 40)
+
+128     >>   92 END_FOR
+
+126          94 STORE_FAST               5 (motion_data)
+             96 STORE_FAST               4 (driver_json)
+
+131          98 PUSH_NULL
+            100 LOAD_FAST                0 (cls)
+            102 LOAD_FAST                5 (motion_data)
+            104 LOAD_FAST                3 (formula_type)
+            106 KW_NAMES                 4 (('motion_data', 'formula_type'))
+            108 CALL                     2
+            116 RETURN_VALUE
+        >>  118 SWAP                     2
+            120 POP_TOP
+
+126         122 SWAP                     2
+            124 STORE_FAST               4 (driver_json)
+            126 RERAISE                  0
+ExceptionTable:
+  36 to 92 -> 118 [2]

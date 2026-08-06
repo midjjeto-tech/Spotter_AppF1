@@ -1,0 +1,897 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               1 (None)
+             14 IMPORT_NAME              1 (os)
+             16 STORE_NAME               1 (os)
+
+ 27          18 LOAD_CONST               0 (0)
+             20 LOAD_CONST               1 (None)
+             22 IMPORT_NAME              2 (threading)
+             24 STORE_NAME               2 (threading)
+
+ 29          26 LOAD_CONST               0 (0)
+             28 LOAD_CONST               2 (('report_ipc_port_from_child',))
+             30 IMPORT_NAME              3 (lib.child_proc_mgmt)
+             32 IMPORT_FROM              4 (report_ipc_port_from_child)
+             34 STORE_NAME               4 (report_ipc_port_from_child)
+             36 POP_TOP
+
+ 30          38 LOAD_CONST               0 (0)
+             40 LOAD_CONST               3 (('PNG_LOST_CONN_TO_PARENT',))
+             42 IMPORT_NAME              5 (lib.error_status)
+             44 IMPORT_FROM              6 (PNG_LOST_CONN_TO_PARENT)
+             46 STORE_NAME               6 (PNG_LOST_CONN_TO_PARENT)
+             48 POP_TOP
+
+ 31          50 LOAD_CONST               0 (0)
+             52 LOAD_CONST               4 (('IpcDealerClient', 'IpcServerSync', 'IpcSubscriberSync'))
+             54 IMPORT_NAME              7 (lib.ipc)
+             56 IMPORT_FROM              8 (IpcDealerClient)
+             58 STORE_NAME               8 (IpcDealerClient)
+             60 IMPORT_FROM              9 (IpcServerSync)
+             62 STORE_NAME               9 (IpcServerSync)
+             64 IMPORT_FROM             10 (IpcSubscriberSync)
+             66 STORE_NAME              10 (IpcSubscriberSync)
+             68 POP_TOP
+
+ 33          70 LOAD_CONST               5 (2)
+             72 LOAD_CONST               6 (('OverlaysMgr',))
+             74 IMPORT_NAME             11 (ui.infra)
+             76 IMPORT_FROM             12 (OverlaysMgr)
+             78 STORE_NAME              12 (OverlaysMgr)
+             80 POP_TOP
+
+ 37          82 LOAD_CONST               7 ('logger')
+
+ 38          84 LOAD_NAME                0 (logging)
+             86 LOAD_ATTR               26 (Logger)
+
+ 37         106 LOAD_CONST               8 ('overlays_mgr')
+
+ 39         108 LOAD_NAME               12 (OverlaysMgr)
+
+ 37         110 LOAD_CONST               9 ('dealer_client')
+
+ 40         112 LOAD_NAME                8 (IpcDealerClient)
+
+ 37         114 LOAD_CONST              10 ('ipc_sub')
+
+ 41         116 LOAD_NAME               10 (IpcSubscriberSync)
+
+ 37         118 LOAD_CONST              11 ('return')
+
+ 42         120 LOAD_NAME                2 (threading)
+            122 LOAD_ATTR               28 (Thread)
+
+ 37         142 BUILD_TUPLE             10
+            144 LOAD_CONST              12 (<code object run_ipc_task at 0x0000020DAF16B430, file "apps\hud\ipc\task.py", line 37>)
+            146 MAKE_FUNCTION            4 (annotations)
+            148 STORE_NAME              15 (run_ipc_task)
+
+ 70         150 LOAD_CONST              13 ('ipc_server')
+
+ 71         152 LOAD_NAME                9 (IpcServerSync)
+
+ 70         154 LOAD_CONST               7 ('logger')
+
+ 72         156 LOAD_NAME                0 (logging)
+            158 LOAD_ATTR               26 (Logger)
+
+ 70         178 LOAD_CONST               8 ('overlays_mgr')
+
+ 73         180 LOAD_NAME               12 (OverlaysMgr)
+
+ 70         182 LOAD_CONST               9 ('dealer_client')
+
+ 74         184 LOAD_NAME                8 (IpcDealerClient)
+
+ 70         186 LOAD_CONST              10 ('ipc_sub')
+
+ 75         188 LOAD_NAME               10 (IpcSubscriberSync)
+
+ 70         190 LOAD_CONST              11 ('return')
+
+ 76         192 LOAD_CONST               1 (None)
+
+ 70         194 BUILD_TUPLE             12
+            196 LOAD_CONST              14 (<code object _register_routes at 0x0000020DAEEA6860, file "apps\hud\ipc\task.py", line 70>)
+            198 MAKE_FUNCTION            4 (annotations)
+            200 STORE_NAME              16 (_register_routes)
+
+180         202 LOAD_CONST              15 ('args')
+
+181         204 LOAD_NAME               17 (dict)
+
+180         206 LOAD_CONST               7 ('logger')
+
+182         208 LOAD_NAME                0 (logging)
+            210 LOAD_ATTR               26 (Logger)
+
+180         230 LOAD_CONST               8 ('overlays_mgr')
+
+183         232 LOAD_NAME               12 (OverlaysMgr)
+
+180         234 LOAD_CONST               9 ('dealer_client')
+
+184         236 LOAD_NAME                8 (IpcDealerClient)
+
+180         238 LOAD_CONST              10 ('ipc_sub')
+
+185         240 LOAD_NAME               10 (IpcSubscriberSync)
+
+180         242 LOAD_CONST              11 ('return')
+
+186         244 LOAD_NAME               17 (dict)
+
+180         246 BUILD_TUPLE             12
+            248 LOAD_CONST              16 (<code object _shutdown_handler at 0x0000020DAF2B9E60, file "apps\hud\ipc\task.py", line 180>)
+            250 MAKE_FUNCTION            4 (annotations)
+            252 STORE_NAME              18 (_shutdown_handler)
+
+205         254 LOAD_CONST              15 ('args')
+
+206         256 LOAD_NAME               17 (dict)
+
+205         258 LOAD_CONST               7 ('logger')
+
+207         260 LOAD_NAME                0 (logging)
+            262 LOAD_ATTR               26 (Logger)
+
+205         282 LOAD_CONST               8 ('overlays_mgr')
+
+208         284 LOAD_NAME               12 (OverlaysMgr)
+
+205         286 LOAD_CONST               9 ('dealer_client')
+
+209         288 LOAD_NAME                8 (IpcDealerClient)
+
+205         290 LOAD_CONST              10 ('ipc_sub')
+
+210         292 LOAD_NAME               10 (IpcSubscriberSync)
+
+205         294 LOAD_CONST              11 ('return')
+
+211         296 LOAD_CONST               1 (None)
+
+205         298 BUILD_TUPLE             12
+            300 LOAD_CONST              17 (<code object _stop_other_tasks at 0x0000020DAEC770A0, file "apps\hud\ipc\task.py", line 205>)
+            302 MAKE_FUNCTION            4 (annotations)
+            304 STORE_NAME              19 (_stop_other_tasks)
+
+229         306 LOAD_CONST              18 ('count')
+            308 LOAD_NAME               20 (int)
+            310 LOAD_CONST               7 ('logger')
+            312 LOAD_NAME                0 (logging)
+            314 LOAD_ATTR               26 (Logger)
+            334 LOAD_CONST              11 ('return')
+            336 LOAD_CONST               1 (None)
+            338 BUILD_TUPLE              6
+            340 LOAD_CONST              19 (<code object _handle_heartbeat_missed at 0x0000020DAF2D4930, file "apps\hud\ipc\task.py", line 229>)
+            342 MAKE_FUNCTION            4 (annotations)
+            344 STORE_NAME              21 (_handle_heartbeat_missed)
+            346 RETURN_CONST             1 (None)
+
+Disassembly of <code object run_ipc_task at 0x0000020DAF16B430, file "apps\hud\ipc\task.py", line 37>:
+ 37           0 RESUME                   0
+
+ 54           2 LOAD_FAST                0 (logger)
+              4 LOAD_ATTR                1 (NULL|self + debug)
+             24 LOAD_CONST               1 ('Starting IPC server')
+             26 CALL                     1
+             34 POP_TOP
+
+ 55          36 LOAD_GLOBAL              3 (NULL + IpcServerSync)
+
+ 57          46 LOAD_CONST               2 ('hud')
+
+ 55          48 KW_NAMES                 3 (('name',))
+             50 CALL                     1
+             58 STORE_FAST               4 (ipc_server)
+
+ 59          60 LOAD_GLOBAL              5 (NULL + report_ipc_port_from_child)
+             70 LOAD_FAST                4 (ipc_server)
+             72 LOAD_ATTR                6 (port)
+             92 CALL                     1
+            100 POP_TOP
+
+ 60         102 LOAD_FAST                0 (logger)
+            104 LOAD_ATTR                1 (NULL|self + debug)
+            124 LOAD_CONST               4 ('Started IPC server on port %d')
+            126 LOAD_FAST                4 (ipc_server)
+            128 LOAD_ATTR                6 (port)
+            148 CALL                     2
+            156 POP_TOP
+
+ 61         158 LOAD_GLOBAL              9 (NULL + _register_routes)
+
+ 62         168 LOAD_FAST                4 (ipc_server)
+
+ 63         170 LOAD_FAST                0 (logger)
+
+ 64         172 LOAD_FAST                1 (overlays_mgr)
+
+ 65         174 LOAD_FAST                2 (dealer_client)
+
+ 66         176 LOAD_FAST                3 (ipc_sub)
+
+ 61         178 KW_NAMES                 5 (('ipc_server', 'logger', 'overlays_mgr', 'dealer_client', 'ipc_sub'))
+            180 CALL                     5
+            188 POP_TOP
+
+ 68         190 LOAD_FAST                4 (ipc_server)
+            192 LOAD_ATTR               11 (NULL|self + serve_in_thread)
+            212 CALL                     0
+            220 RETURN_VALUE
+
+Disassembly of <code object _register_routes at 0x0000020DAEEA6860, file "apps\hud\ipc\task.py", line 70>:
+              0 MAKE_CELL                1 (logger)
+              2 MAKE_CELL                2 (overlays_mgr)
+              4 MAKE_CELL                3 (dealer_client)
+              6 MAKE_CELL                4 (ipc_sub)
+
+ 70           8 RESUME                   0
+
+ 79          10 LOAD_FAST                0 (ipc_server)
+             12 LOAD_ATTR                1 (NULL|self + on)
+             32 LOAD_CONST               1 ('lock-widgets')
+             34 CALL                     1
+
+ 80          42 LOAD_CONST               2 ('args')
+             44 LOAD_GLOBAL              2 (dict)
+             54 LOAD_CONST               3 ('return')
+             56 LOAD_GLOBAL              2 (dict)
+             66 BUILD_TUPLE              4
+             68 LOAD_CLOSURE             1 (logger)
+             70 LOAD_CLOSURE             2 (overlays_mgr)
+             72 BUILD_TUPLE              2
+             74 LOAD_CONST               4 (<code object _lock_widgets at 0x0000020DAF2DF440, file "apps\hud\ipc\task.py", line 79>)
+             76 MAKE_FUNCTION           12 (annotations, closure)
+
+ 79          78 CALL                     0
+
+ 80          86 STORE_FAST               5 (_lock_widgets)
+
+ 84          88 LOAD_FAST                0 (ipc_server)
+             90 LOAD_ATTR                1 (NULL|self + on)
+            110 LOAD_CONST               5 ('toggle-overlays-visibility')
+            112 CALL                     1
+
+ 85         120 LOAD_CONST               2 ('args')
+            122 LOAD_GLOBAL              2 (dict)
+            132 LOAD_CONST               3 ('return')
+            134 LOAD_GLOBAL              2 (dict)
+            144 BUILD_TUPLE              4
+            146 LOAD_CLOSURE             1 (logger)
+            148 LOAD_CLOSURE             2 (overlays_mgr)
+            150 BUILD_TUPLE              2
+            152 LOAD_CONST               6 (<code object _toggle_visibility at 0x0000020DAF19FBD0, file "apps\hud\ipc\task.py", line 84>)
+            154 MAKE_FUNCTION           12 (annotations, closure)
+
+ 84         156 CALL                     0
+
+ 85         164 STORE_FAST               6 (_toggle_visibility)
+
+ 90         166 LOAD_FAST                0 (ipc_server)
+            168 LOAD_ATTR                1 (NULL|self + on)
+            188 LOAD_CONST               7 ('set-overlays-opacity')
+            190 CALL                     1
+
+ 91         198 LOAD_CONST               2 ('args')
+            200 LOAD_GLOBAL              2 (dict)
+            210 LOAD_CONST               3 ('return')
+            212 LOAD_GLOBAL              2 (dict)
+            222 BUILD_TUPLE              4
+            224 LOAD_CLOSURE             1 (logger)
+            226 LOAD_CLOSURE             2 (overlays_mgr)
+            228 BUILD_TUPLE              2
+            230 LOAD_CONST               8 (<code object _set_opacity at 0x0000020DAF2B9530, file "apps\hud\ipc\task.py", line 90>)
+            232 MAKE_FUNCTION           12 (annotations, closure)
+
+ 90         234 CALL                     0
+
+ 91         242 STORE_FAST               7 (_set_opacity)
+
+100         244 LOAD_FAST                0 (ipc_server)
+            246 LOAD_ATTR                1 (NULL|self + on)
+            266 LOAD_CONST               9 ('next-page')
+            268 CALL                     1
+
+101         276 LOAD_CONST               2 ('args')
+            278 LOAD_GLOBAL              2 (dict)
+            288 LOAD_CONST               3 ('return')
+            290 LOAD_GLOBAL              2 (dict)
+            300 BUILD_TUPLE              4
+            302 LOAD_CLOSURE             1 (logger)
+            304 LOAD_CLOSURE             2 (overlays_mgr)
+            306 BUILD_TUPLE              2
+            308 LOAD_CONST              10 (<code object _next_page at 0x0000020DAF2D46F0, file "apps\hud\ipc\task.py", line 100>)
+            310 MAKE_FUNCTION           12 (annotations, closure)
+
+100         312 CALL                     0
+
+101         320 STORE_FAST               8 (_next_page)
+
+107         322 LOAD_FAST                0 (ipc_server)
+            324 LOAD_ATTR                1 (NULL|self + on)
+            344 LOAD_CONST              11 ('prev-page')
+            346 CALL                     1
+
+108         354 LOAD_CONST               2 ('args')
+            356 LOAD_GLOBAL              2 (dict)
+            366 LOAD_CONST               3 ('return')
+            368 LOAD_GLOBAL              2 (dict)
+            378 BUILD_TUPLE              4
+            380 LOAD_CLOSURE             1 (logger)
+            382 LOAD_CLOSURE             2 (overlays_mgr)
+            384 BUILD_TUPLE              2
+            386 LOAD_CONST              12 (<code object _prev_page at 0x0000020DAF2D4030, file "apps\hud\ipc\task.py", line 107>)
+            388 MAKE_FUNCTION           12 (annotations, closure)
+
+107         390 CALL                     0
+
+108         398 STORE_FAST               9 (_prev_page)
+
+114         400 LOAD_FAST                0 (ipc_server)
+            402 LOAD_ATTR                1 (NULL|self + on)
+            422 LOAD_CONST              13 ('mfd-interact')
+            424 CALL                     1
+
+115         432 LOAD_CONST               2 ('args')
+            434 LOAD_GLOBAL              2 (dict)
+            444 LOAD_CONST               3 ('return')
+            446 LOAD_GLOBAL              2 (dict)
+            456 BUILD_TUPLE              4
+            458 LOAD_CLOSURE             1 (logger)
+            460 LOAD_CLOSURE             2 (overlays_mgr)
+            462 BUILD_TUPLE              2
+            464 LOAD_CONST              14 (<code object _mfd_interact at 0x0000020DAF2D45D0, file "apps\hud\ipc\task.py", line 114>)
+            466 MAKE_FUNCTION           12 (annotations, closure)
+
+114         468 CALL                     0
+
+115         476 STORE_FAST              10 (_mfd_interact)
+
+121         478 LOAD_FAST                0 (ipc_server)
+            480 LOAD_ATTR                1 (NULL|self + on)
+            500 LOAD_CONST              15 ('set-overlays-layout')
+            502 CALL                     1
+
+122         510 LOAD_CONST               2 ('args')
+            512 LOAD_GLOBAL              2 (dict)
+            522 LOAD_CONST               3 ('return')
+            524 LOAD_GLOBAL              2 (dict)
+            534 BUILD_TUPLE              4
+            536 LOAD_CLOSURE             1 (logger)
+            538 LOAD_CLOSURE             2 (overlays_mgr)
+            540 BUILD_TUPLE              2
+            542 LOAD_CONST              16 (<code object _set_overlays_layout at 0x0000020DAF2B9920, file "apps\hud\ipc\task.py", line 121>)
+            544 MAKE_FUNCTION           12 (annotations, closure)
+
+121         546 CALL                     0
+
+122         554 STORE_FAST              11 (_set_overlays_layout)
+
+133         556 LOAD_FAST                0 (ipc_server)
+            558 LOAD_ATTR                1 (NULL|self + on)
+            578 LOAD_CONST              17 ('set-track-radar-idle-opacity')
+            580 CALL                     1
+
+134         588 LOAD_CONST               2 ('args')
+            590 LOAD_GLOBAL              2 (dict)
+            600 LOAD_CONST               3 ('return')
+            602 LOAD_GLOBAL              2 (dict)
+            612 BUILD_TUPLE              4
+            614 LOAD_CLOSURE             1 (logger)
+            616 LOAD_CLOSURE             2 (overlays_mgr)
+            618 BUILD_TUPLE              2
+            620 LOAD_CONST              18 (<code object _set_track_radar_idle_opacity at 0x0000020DAF2B9A70, file "apps\hud\ipc\task.py", line 133>)
+            622 MAKE_FUNCTION           12 (annotations, closure)
+
+133         624 CALL                     0
+
+134         632 STORE_FAST              12 (_set_track_radar_idle_opacity)
+
+143         634 LOAD_FAST                0 (ipc_server)
+            636 LOAD_ATTR                1 (NULL|self + on)
+            656 LOAD_CONST              19 ('set-circuit-info-length')
+            658 CALL                     1
+
+144         666 LOAD_CONST               2 ('args')
+            668 LOAD_GLOBAL              2 (dict)
+            678 LOAD_CONST               3 ('return')
+            680 LOAD_GLOBAL              2 (dict)
+            690 BUILD_TUPLE              4
+            692 LOAD_CLOSURE             1 (logger)
+            694 LOAD_CLOSURE             2 (overlays_mgr)
+            696 BUILD_TUPLE              2
+            698 LOAD_CONST              20 (<code object _set_circuit_info_length at 0x0000020DAF2B9BC0, file "apps\hud\ipc\task.py", line 143>)
+            700 MAKE_FUNCTION           12 (annotations, closure)
+
+143         702 CALL                     0
+
+144         710 STORE_FAST              13 (_set_circuit_info_length)
+
+153         712 LOAD_FAST                0 (ipc_server)
+            714 LOAD_ATTR                4 (on_get_stats)
+
+154         734 LOAD_CONST              21 ('_args')
+            736 LOAD_GLOBAL              2 (dict)
+            746 LOAD_CONST               3 ('return')
+            748 LOAD_GLOBAL              2 (dict)
+            758 BUILD_TUPLE              4
+            760 LOAD_CLOSURE             3 (dealer_client)
+            762 LOAD_CLOSURE             4 (ipc_sub)
+            764 LOAD_CLOSURE             2 (overlays_mgr)
+            766 BUILD_TUPLE              3
+            768 LOAD_CONST              22 (<code object _get_stats at 0x0000020DAF19B5A0, file "apps\hud\ipc\task.py", line 153>)
+            770 MAKE_FUNCTION           12 (annotations, closure)
+
+153         772 CALL                     0
+
+154         780 STORE_FAST              14 (_get_stats)
+
+166         782 LOAD_FAST                0 (ipc_server)
+            784 LOAD_ATTR                6 (on_shutdown)
+
+167         804 LOAD_CONST               2 ('args')
+            806 LOAD_GLOBAL              2 (dict)
+            816 LOAD_CONST               3 ('return')
+            818 LOAD_GLOBAL              2 (dict)
+            828 BUILD_TUPLE              4
+            830 LOAD_CLOSURE             3 (dealer_client)
+            832 LOAD_CLOSURE             4 (ipc_sub)
+            834 LOAD_CLOSURE             1 (logger)
+            836 LOAD_CLOSURE             2 (overlays_mgr)
+            838 BUILD_TUPLE              4
+            840 LOAD_CONST              23 (<code object _shutdown at 0x0000020DAED7A5B0, file "apps\hud\ipc\task.py", line 166>)
+            842 MAKE_FUNCTION           12 (annotations, closure)
+
+166         844 CALL                     0
+
+167         852 STORE_FAST              15 (_shutdown)
+
+176         854 LOAD_FAST                0 (ipc_server)
+            856 LOAD_ATTR                8 (on_heartbeat_missed)
+
+177         876 LOAD_CONST              24 ('count')
+            878 LOAD_GLOBAL             10 (int)
+            888 LOAD_CONST               3 ('return')
+            890 LOAD_CONST              25 (None)
+            892 BUILD_TUPLE              4
+            894 LOAD_CLOSURE             1 (logger)
+            896 BUILD_TUPLE              1
+            898 LOAD_CONST              26 (<code object _heartbeat_missed at 0x0000020DAF2F17D0, file "apps\hud\ipc\task.py", line 176>)
+            900 MAKE_FUNCTION           12 (annotations, closure)
+
+176         902 CALL                     0
+
+177         910 STORE_FAST              16 (_heartbeat_missed)
+            912 RETURN_CONST            25 (None)
+
+Disassembly of <code object _lock_widgets at 0x0000020DAF2DF440, file "apps\hud\ipc\task.py", line 79>:
+              0 COPY_FREE_VARS           2
+
+ 79           2 RESUME                   0
+
+ 81           4 LOAD_DEREF               1 (logger)
+              6 LOAD_ATTR                1 (NULL|self + debug)
+             26 LOAD_CONST               1 ('Received lock-widgets command')
+             28 CALL                     1
+             36 POP_TOP
+
+ 82          38 LOAD_DEREF               2 (overlays_mgr)
+             40 LOAD_ATTR                3 (NULL|self + on_locked_state_change)
+             60 LOAD_FAST                0 (args)
+             62 CALL                     1
+             70 RETURN_VALUE
+
+Disassembly of <code object _toggle_visibility at 0x0000020DAF19FBD0, file "apps\hud\ipc\task.py", line 84>:
+              0 COPY_FREE_VARS           2
+
+ 84           2 RESUME                   0
+
+ 86           4 LOAD_DEREF               1 (logger)
+              6 LOAD_ATTR                1 (NULL|self + debug)
+             26 LOAD_CONST               1 ('Received toggle-visibility command. args: %s')
+             28 LOAD_FAST                0 (args)
+             30 CALL                     2
+             38 POP_TOP
+
+ 87          40 LOAD_DEREF               2 (overlays_mgr)
+             42 LOAD_ATTR                3 (NULL|self + toggle_overlays_visibility)
+             62 CALL                     0
+             70 POP_TOP
+
+ 88          72 LOAD_CONST               2 ('success')
+             74 LOAD_CONST               3 ('toggle-visibility handler executed.')
+             76 LOAD_CONST               4 (('status', 'message'))
+             78 BUILD_CONST_KEY_MAP      2
+             80 RETURN_VALUE
+
+Disassembly of <code object _set_opacity at 0x0000020DAF2B9530, file "apps\hud\ipc\task.py", line 90>:
+              0 COPY_FREE_VARS           2
+
+ 90           2 RESUME                   0
+
+ 92           4 LOAD_DEREF               2 (logger)
+              6 LOAD_ATTR                1 (NULL|self + debug)
+             26 LOAD_CONST               1 ('Received set-opacity command. args: %s')
+             28 LOAD_FAST                0 (args)
+             30 CALL                     2
+             38 POP_TOP
+
+ 94          40 LOAD_FAST                0 (args)
+             42 LOAD_ATTR                3 (NULL|self + get)
+             62 LOAD_CONST               2 ('opacity')
+             64 CALL                     1
+             72 COPY                     1
+             74 STORE_FAST               1 (opacity)
+             76 POP_JUMP_IF_FALSE       22 (to 122)
+
+ 95          78 LOAD_DEREF               3 (overlays_mgr)
+             80 LOAD_ATTR                5 (NULL|self + set_overlays_opacity)
+            100 LOAD_FAST                1 (opacity)
+            102 CALL                     1
+            110 POP_TOP
+
+ 96         112 LOAD_CONST               3 ('success')
+            114 LOAD_CONST               4 ('set-opacity handler executed.')
+            116 LOAD_CONST               5 (('status', 'message'))
+            118 BUILD_CONST_KEY_MAP      2
+            120 RETURN_VALUE
+
+ 98     >>  122 LOAD_CONST               6 ('error')
+            124 LOAD_CONST               7 ('Missing opacity value in set-opacity command.')
+            126 LOAD_CONST               5 (('status', 'message'))
+            128 BUILD_CONST_KEY_MAP      2
+            130 RETURN_VALUE
+
+Disassembly of <code object _next_page at 0x0000020DAF2D46F0, file "apps\hud\ipc\task.py", line 100>:
+              0 COPY_FREE_VARS           2
+
+100           2 RESUME                   0
+
+102           4 LOAD_DEREF               1 (logger)
+              6 LOAD_ATTR                1 (NULL|self + info)
+             26 LOAD_CONST               1 ('Received next-page command. args: %s')
+             28 LOAD_FAST                0 (args)
+             30 CALL                     2
+             38 POP_TOP
+
+104          40 LOAD_DEREF               2 (overlays_mgr)
+             42 LOAD_ATTR                3 (NULL|self + next_page)
+             62 CALL                     0
+             70 POP_TOP
+
+105          72 LOAD_CONST               2 ('success')
+             74 LOAD_CONST               3 ('next-page handler executed.')
+             76 LOAD_CONST               4 (('status', 'message'))
+             78 BUILD_CONST_KEY_MAP      2
+             80 RETURN_VALUE
+
+Disassembly of <code object _prev_page at 0x0000020DAF2D4030, file "apps\hud\ipc\task.py", line 107>:
+              0 COPY_FREE_VARS           2
+
+107           2 RESUME                   0
+
+109           4 LOAD_DEREF               1 (logger)
+              6 LOAD_ATTR                1 (NULL|self + info)
+             26 LOAD_CONST               1 ('Received prev-page command. args: %s')
+             28 LOAD_FAST                0 (args)
+             30 CALL                     2
+             38 POP_TOP
+
+111          40 LOAD_DEREF               2 (overlays_mgr)
+             42 LOAD_ATTR                3 (NULL|self + prev_page)
+             62 CALL                     0
+             70 POP_TOP
+
+112          72 LOAD_CONST               2 ('success')
+             74 LOAD_CONST               3 ('prev-page handler executed.')
+             76 LOAD_CONST               4 (('status', 'message'))
+             78 BUILD_CONST_KEY_MAP      2
+             80 RETURN_VALUE
+
+Disassembly of <code object _mfd_interact at 0x0000020DAF2D45D0, file "apps\hud\ipc\task.py", line 114>:
+              0 COPY_FREE_VARS           2
+
+114           2 RESUME                   0
+
+116           4 LOAD_DEREF               1 (logger)
+              6 LOAD_ATTR                1 (NULL|self + info)
+             26 LOAD_CONST               1 ('Received mfd-interact command. args: %s')
+             28 LOAD_FAST                0 (args)
+             30 CALL                     2
+             38 POP_TOP
+
+118          40 LOAD_DEREF               2 (overlays_mgr)
+             42 LOAD_ATTR                3 (NULL|self + mfd_interact)
+             62 CALL                     0
+             70 POP_TOP
+
+119          72 LOAD_CONST               2 ('success')
+             74 LOAD_CONST               3 ('mfd-interact handler executed.')
+             76 LOAD_CONST               4 (('status', 'message'))
+             78 BUILD_CONST_KEY_MAP      2
+             80 RETURN_VALUE
+
+Disassembly of <code object _set_overlays_layout at 0x0000020DAF2B9920, file "apps\hud\ipc\task.py", line 121>:
+              0 COPY_FREE_VARS           2
+
+121           2 RESUME                   0
+
+123           4 LOAD_DEREF               2 (logger)
+              6 LOAD_ATTR                1 (NULL|self + debug)
+             26 LOAD_CONST               1 ('Received reset-overlays command. args: %s')
+             28 LOAD_FAST                0 (args)
+             30 CALL                     2
+             38 POP_TOP
+
+124          40 LOAD_FAST                0 (args)
+             42 POP_JUMP_IF_TRUE         5 (to 54)
+
+125          44 LOAD_CONST               2 ('error')
+             46 LOAD_CONST               3 ('Missing args in set-overlays-layout command.')
+             48 LOAD_CONST               4 (('status', 'message'))
+             50 BUILD_CONST_KEY_MAP      2
+             52 RETURN_VALUE
+
+127     >>   54 LOAD_FAST                0 (args)
+             56 LOAD_ATTR                3 (NULL|self + get)
+             76 LOAD_CONST               5 ('layout')
+             78 CALL                     1
+             86 STORE_FAST               1 (layout)
+
+128          88 LOAD_FAST                1 (layout)
+             90 POP_JUMP_IF_TRUE         5 (to 102)
+
+129          92 LOAD_CONST               2 ('error')
+             94 LOAD_CONST               6 ('Missing layout in set-overlays-layout command.')
+             96 LOAD_CONST               4 (('status', 'message'))
+             98 BUILD_CONST_KEY_MAP      2
+            100 RETURN_VALUE
+
+131     >>  102 LOAD_DEREF               3 (overlays_mgr)
+            104 LOAD_ATTR                5 (NULL|self + set_overlays_layout)
+            124 LOAD_FAST                1 (layout)
+            126 CALL                     1
+            134 RETURN_VALUE
+
+Disassembly of <code object _set_track_radar_idle_opacity at 0x0000020DAF2B9A70, file "apps\hud\ipc\task.py", line 133>:
+              0 COPY_FREE_VARS           2
+
+133           2 RESUME                   0
+
+135           4 LOAD_DEREF               2 (logger)
+              6 LOAD_ATTR                1 (NULL|self + debug)
+             26 LOAD_CONST               1 ('Received set-track-radar-idle-opacity command. args: %s')
+             28 LOAD_FAST                0 (args)
+             30 CALL                     2
+             38 POP_TOP
+
+137          40 LOAD_FAST                0 (args)
+             42 LOAD_ATTR                3 (NULL|self + get)
+             62 LOAD_CONST               2 ('opacity')
+             64 CALL                     1
+             72 STORE_FAST               1 (opacity)
+
+138          74 LOAD_FAST                1 (opacity)
+             76 POP_JUMP_IF_NONE        22 (to 122)
+
+139          78 LOAD_DEREF               3 (overlays_mgr)
+             80 LOAD_ATTR                5 (NULL|self + set_track_radar_idle_opacity)
+            100 LOAD_FAST                1 (opacity)
+            102 CALL                     1
+            110 POP_TOP
+
+140         112 LOAD_CONST               3 ('success')
+            114 LOAD_CONST               4 ('set-track-radar-idle-opacity handler executed.')
+            116 LOAD_CONST               5 (('status', 'message'))
+            118 BUILD_CONST_KEY_MAP      2
+            120 RETURN_VALUE
+
+141     >>  122 LOAD_CONST               6 ('error')
+            124 LOAD_CONST               7 ('Missing opacity value in set-track-radar-idle-opacity command.')
+            126 LOAD_CONST               5 (('status', 'message'))
+            128 BUILD_CONST_KEY_MAP      2
+            130 RETURN_VALUE
+
+Disassembly of <code object _set_circuit_info_length at 0x0000020DAF2B9BC0, file "apps\hud\ipc\task.py", line 143>:
+              0 COPY_FREE_VARS           2
+
+143           2 RESUME                   0
+
+145           4 LOAD_DEREF               2 (logger)
+              6 LOAD_ATTR                1 (NULL|self + debug)
+             26 LOAD_CONST               1 ('Received set-circuit-info-length command. args: %s')
+             28 LOAD_FAST                0 (args)
+             30 CALL                     2
+             38 POP_TOP
+
+147          40 LOAD_FAST                0 (args)
+             42 LOAD_ATTR                3 (NULL|self + get)
+             62 LOAD_CONST               2 ('length')
+             64 CALL                     1
+             72 STORE_FAST               1 (length)
+
+148          74 LOAD_FAST                1 (length)
+             76 POP_JUMP_IF_NONE        22 (to 122)
+
+149          78 LOAD_DEREF               3 (overlays_mgr)
+             80 LOAD_ATTR                5 (NULL|self + set_circuit_info_length)
+            100 LOAD_FAST                1 (length)
+            102 CALL                     1
+            110 POP_TOP
+
+150         112 LOAD_CONST               3 ('success')
+            114 LOAD_CONST               4 ('set-circuit-info-length handler executed.')
+            116 LOAD_CONST               5 (('status', 'message'))
+            118 BUILD_CONST_KEY_MAP      2
+            120 RETURN_VALUE
+
+151     >>  122 LOAD_CONST               6 ('error')
+            124 LOAD_CONST               7 ('Missing length value in set-circuit-info-length command.')
+            126 LOAD_CONST               5 (('status', 'message'))
+            128 BUILD_CONST_KEY_MAP      2
+            130 RETURN_VALUE
+
+Disassembly of <code object _get_stats at 0x0000020DAF19B5A0, file "apps\hud\ipc\task.py", line 153>:
+              0 COPY_FREE_VARS           3
+
+153           2 RESUME                   0
+
+156           4 LOAD_CONST               1 ('success')
+
+158           6 LOAD_DEREF               3 (overlays_mgr)
+              8 LOAD_ATTR                1 (NULL|self + get_stats)
+             28 CALL                     0
+
+160          36 LOAD_DEREF               1 (dealer_client)
+             38 LOAD_ATTR                1 (NULL|self + get_stats)
+             58 CALL                     0
+
+161          66 LOAD_DEREF               2 (ipc_sub)
+             68 LOAD_ATTR                1 (NULL|self + get_stats)
+             88 CALL                     0
+
+159          96 LOAD_CONST               2 (('dealer', 'subscriber'))
+             98 BUILD_CONST_KEY_MAP      2
+
+157         100 LOAD_CONST               3 (('overlays', 'ingress'))
+            102 BUILD_CONST_KEY_MAP      2
+
+155         104 LOAD_CONST               4 (('status', 'stats'))
+            106 BUILD_CONST_KEY_MAP      2
+            108 RETURN_VALUE
+
+Disassembly of <code object _shutdown at 0x0000020DAED7A5B0, file "apps\hud\ipc\task.py", line 166>:
+              0 COPY_FREE_VARS           4
+
+166           2 RESUME                   0
+
+168           4 LOAD_GLOBAL              1 (NULL + _shutdown_handler)
+
+169          14 LOAD_FAST                0 (args)
+
+170          16 LOAD_DEREF               3 (logger)
+
+171          18 LOAD_DEREF               4 (overlays_mgr)
+
+172          20 LOAD_DEREF               1 (dealer_client)
+
+173          22 LOAD_DEREF               2 (ipc_sub)
+
+168          24 KW_NAMES                 1 (('logger', 'overlays_mgr', 'dealer_client', 'ipc_sub'))
+             26 CALL                     5
+             34 RETURN_VALUE
+
+Disassembly of <code object _heartbeat_missed at 0x0000020DAF2F17D0, file "apps\hud\ipc\task.py", line 176>:
+              0 COPY_FREE_VARS           1
+
+176           2 RESUME                   0
+
+178           4 LOAD_GLOBAL              1 (NULL + _handle_heartbeat_missed)
+             14 LOAD_FAST                0 (count)
+             16 LOAD_DEREF               1 (logger)
+             18 KW_NAMES                 1 (('logger',))
+             20 CALL                     2
+             28 POP_TOP
+             30 RETURN_CONST             0 (None)
+
+Disassembly of <code object _shutdown_handler at 0x0000020DAF2B9E60, file "apps\hud\ipc\task.py", line 180>:
+180           0 RESUME                   0
+
+197           2 LOAD_FAST                1 (logger)
+              4 LOAD_ATTR                1 (NULL|self + debug)
+             24 LOAD_CONST               1 ('In shutdown handler')
+             26 CALL                     1
+             34 POP_TOP
+
+198          36 LOAD_GLOBAL              3 (NULL + threading)
+             46 LOAD_ATTR                4 (Thread)
+             66 LOAD_GLOBAL              6 (_stop_other_tasks)
+             76 LOAD_FAST                0 (args)
+             78 LOAD_FAST                1 (logger)
+             80 LOAD_FAST                2 (overlays_mgr)
+             82 LOAD_FAST                3 (dealer_client)
+             84 LOAD_FAST                4 (ipc_sub)
+             86 BUILD_TUPLE              5
+
+199          88 LOAD_CONST               2 ('Shutdown tasks')
+
+198          90 KW_NAMES                 3 (('target', 'args', 'name'))
+             92 CALL                     3
+
+199         100 LOAD_ATTR                9 (NULL|self + start)
+            120 CALL                     0
+            128 POP_TOP
+
+201         130 LOAD_CONST               4 ('success')
+
+202         132 LOAD_CONST               5 ('Shutting down HUD manager')
+
+200         134 LOAD_CONST               6 (('status', 'message'))
+            136 BUILD_CONST_KEY_MAP      2
+            138 RETURN_VALUE
+
+Disassembly of <code object _stop_other_tasks at 0x0000020DAEC770A0, file "apps\hud\ipc\task.py", line 205>:
+205           0 RESUME                   0
+
+220           2 LOAD_FAST                0 (args)
+              4 LOAD_ATTR                1 (NULL|self + get)
+             24 LOAD_CONST               1 ('reason')
+             26 LOAD_CONST               2 ('N/A')
+             28 CALL                     2
+             36 STORE_FAST               5 (reason)
+
+221          38 LOAD_FAST                1 (logger)
+             40 LOAD_ATTR                3 (NULL|self + info)
+             60 LOAD_CONST               3 ('Shutdown command received via IPC. Reason: %s. Stopping all tasks...')
+             62 LOAD_FAST                5 (reason)
+             64 CALL                     2
+             72 POP_TOP
+
+223          74 LOAD_FAST                3 (dealer_client)
+             76 LOAD_ATTR                5 (NULL|self + close)
+             96 CALL                     0
+            104 POP_TOP
+
+224         106 LOAD_FAST                4 (ipc_sub)
+            108 LOAD_ATTR                5 (NULL|self + close)
+            128 CALL                     0
+            136 POP_TOP
+
+225         138 LOAD_FAST                2 (overlays_mgr)
+            140 LOAD_ATTR                7 (NULL|self + stop)
+            160 CALL                     0
+            168 POP_TOP
+
+227         170 LOAD_FAST                1 (logger)
+            172 LOAD_ATTR                3 (NULL|self + info)
+            192 LOAD_CONST               4 ('Exiting HUD subsystem')
+            194 CALL                     1
+            202 POP_TOP
+            204 RETURN_CONST             5 (None)
+
+Disassembly of <code object _handle_heartbeat_missed at 0x0000020DAF2D4930, file "apps\hud\ipc\task.py", line 229>:
+229           0 RESUME                   0
+
+232           2 LOAD_FAST                1 (logger)
+              4 LOAD_ATTR                1 (NULL|self + error)
+             24 LOAD_CONST               1 ('Missed heartbeat %d times. This process has probably been orphaned. Terminating...')
+             26 LOAD_FAST                0 (count)
+             28 CALL                     2
+             36 POP_TOP
+
+235          38 LOAD_GLOBAL              3 (NULL + os)
+             48 LOAD_ATTR                4 (_exit)
+             68 LOAD_GLOBAL              6 (PNG_LOST_CONN_TO_PARENT)
+             78 CALL                     1
+             86 POP_TOP
+             88 RETURN_CONST             2 (None)

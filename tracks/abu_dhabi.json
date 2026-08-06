@@ -1,0 +1,21 @@
+{
+  "name": "Abu Dhabi",
+  "length_m": 5281,
+  "corners": [
+    {"id":1,  "fraction":0.027,"type":"slow",   "direction":"right"},
+    {"id":2,  "fraction":0.058,"type":"medium", "direction":"left"},
+    {"id":3,  "fraction":0.100,"type":"medium", "direction":"right"},
+    {"id":4,  "fraction":0.157,"type":"medium", "direction":"left"},
+    {"id":5,  "fraction":0.190,"type":"medium", "direction":"right"},
+    {"id":6,  "fraction":0.228,"type":"slow",   "direction":"left"},
+    {"id":7,  "fraction":0.260,"type":"slow",   "direction":"right"},
+    {"id":8,  "fraction":0.300,"type":"hairpin","direction":"left"},
+    {"id":9,  "fraction":0.337,"type":"medium", "direction":"right"},
+    {"id":11, "fraction":0.432,"type":"medium", "direction":"left"},
+    {"id":12, "fraction":0.468,"type":"medium", "direction":"right"},
+    {"id":14, "fraction":0.572,"type":"fast",   "direction":"left"},
+    {"id":15, "fraction":0.612,"type":"fast",   "direction":"right"},
+    {"id":16, "fraction":0.664,"type":"medium", "direction":"left"},
+    {"id":17, "fraction":0.704,"type":"medium", "direction":"right"}
+  ]
+}

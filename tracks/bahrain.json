@@ -1,0 +1,21 @@
+{
+  "name": "Bahrain",
+  "length_m": 5412,
+  "corners": [
+    {"id":1,  "name":"Turn 1",  "fraction":0.055,"type":"slow",   "direction":"left"},
+    {"id":2,  "name":"Turn 2",  "fraction":0.094,"type":"fast",   "direction":"right"},
+    {"id":3,  "name":"Turn 3",  "fraction":0.119,"type":"medium", "direction":"left"},
+    {"id":4,  "name":"Turn 4",  "fraction":0.145,"type":"medium", "direction":"right"},
+    {"id":5,  "name":"Turn 5",  "fraction":0.170,"type":"slow",   "direction":"right"},
+    {"id":6,  "name":"Turn 6",  "fraction":0.195,"type":"medium", "direction":"left"},
+    {"id":7,  "name":"Turn 7",  "fraction":0.227,"type":"fast",   "direction":"right"},
+    {"id":8,  "name":"Turn 8",  "fraction":0.424,"type":"hairpin","direction":"left"},
+    {"id":9,  "name":"Turn 9",  "fraction":0.467,"type":"medium", "direction":"right"},
+    {"id":10, "name":"Turn 10", "fraction":0.557,"type":"slow",   "direction":"right"},
+    {"id":11, "name":"Turn 11", "fraction":0.584,"type":"slow",   "direction":"left"},
+    {"id":12, "name":"Turn 12", "fraction":0.645,"type":"fast",   "direction":"left"},
+    {"id":13, "name":"Turn 13", "fraction":0.765,"type":"hairpin","direction":"right"},
+    {"id":14, "name":"Turn 14", "fraction":0.803,"type":"medium", "direction":"left"},
+    {"id":15, "name":"Turn 15", "fraction":0.886,"type":"slow",   "direction":"right"}
+  ]
+}

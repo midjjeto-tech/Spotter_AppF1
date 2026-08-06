@@ -1,0 +1,732 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('Any', 'Dict', 'Optional', 'final'))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (Any)
+             30 STORE_NAME               4 (Any)
+             32 IMPORT_FROM              5 (Dict)
+             34 STORE_NAME               5 (Dict)
+             36 IMPORT_FROM              6 (Optional)
+             38 STORE_NAME               6 (Optional)
+             40 IMPORT_FROM              7 (final)
+             42 STORE_NAME               7 (final)
+             44 POP_TOP
+
+ 29          46 LOAD_CONST               0 (0)
+             48 LOAD_CONST               4 (('get_ers_mode_color', 'get_ref_row', 'is_race_type_session', 'is_tt_session'))
+             50 IMPORT_NAME              8 (apps.hud.common)
+             52 IMPORT_FROM              9 (get_ers_mode_color)
+             54 STORE_NAME               9 (get_ers_mode_color)
+             56 IMPORT_FROM             10 (get_ref_row)
+             58 STORE_NAME              10 (get_ref_row)
+             60 IMPORT_FROM             11 (is_race_type_session)
+             62 STORE_NAME              11 (is_race_type_session)
+             64 IMPORT_FROM             12 (is_tt_session)
+             66 STORE_NAME              12 (is_tt_session)
+             68 POP_TOP
+
+ 30          70 LOAD_CONST               0 (0)
+             72 LOAD_CONST               5 (('HudOverlayData',))
+             74 IMPORT_NAME             13 (apps.hud.ui.infra.hf_types)
+             76 IMPORT_FROM             14 (HudOverlayData)
+             78 STORE_NAME              14 (HudOverlayData)
+             80 POP_TOP
+
+ 31          82 LOAD_CONST               0 (0)
+             84 LOAD_CONST               6 (('BaseOverlayQML',))
+             86 IMPORT_NAME             15 (apps.hud.ui.overlays.base)
+             88 IMPORT_FROM             16 (BaseOverlayQML)
+             90 STORE_NAME              16 (BaseOverlayQML)
+             92 POP_TOP
+
+ 32          94 LOAD_CONST               0 (0)
+             96 LOAD_CONST               7 (('OverlaysFuelEstimationMode', 'OverlaysSpeedUnit', 'OverlayId', 'OverlayPosition'))
+             98 IMPORT_NAME             17 (lib.config)
+            100 IMPORT_FROM             18 (OverlaysFuelEstimationMode)
+            102 STORE_NAME              18 (OverlaysFuelEstimationMode)
+            104 IMPORT_FROM             19 (OverlaysSpeedUnit)
+            106 STORE_NAME              19 (OverlaysSpeedUnit)
+            108 IMPORT_FROM             20 (OverlayId)
+            110 STORE_NAME              20 (OverlayId)
+            112 IMPORT_FROM             21 (OverlayPosition)
+            114 STORE_NAME              21 (OverlayPosition)
+            116 POP_TOP
+
+ 34         118 LOAD_CONST               0 (0)
+            120 LOAD_CONST               8 (('CarStatusData',))
+            122 IMPORT_NAME             22 (lib.f1_types.packet_7_car_status_data)
+            124 IMPORT_FROM             23 (CarStatusData)
+            126 STORE_NAME              23 (CarStatusData)
+            128 POP_TOP
+
+ 38         130 PUSH_NULL
+            132 LOAD_BUILD_CLASS
+            134 LOAD_CONST               9 (<code object HudOverlay at 0x0000020DAF2021F0, file "apps\hud\ui\overlays\hud_overlay\hud_overlay.py", line 38>)
+            136 MAKE_FUNCTION            0
+            138 LOAD_CONST              10 ('HudOverlay')
+            140 LOAD_NAME               16 (BaseOverlayQML)
+            142 CALL                     3
+            150 STORE_NAME              24 (HudOverlay)
+            152 RETURN_CONST             1 (None)
+
+Disassembly of <code object HudOverlay at 0x0000020DAF2021F0, file "apps\hud\ui\overlays\hud_overlay\hud_overlay.py", line 38>:
+              0 MAKE_CELL                0 (__class__)
+
+ 38           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('HudOverlay')
+             10 STORE_NAME               2 (__qualname__)
+
+ 39          12 LOAD_CONST               1 ('\n    Extremely minimal QML overlay template.\n\n    - Loads QML\n    - Shows window\n    ')
+             14 STORE_NAME               3 (__doc__)
+
+ 47          16 PUSH_NULL
+             18 LOAD_NAME                4 (Path)
+             20 LOAD_NAME                5 (__file__)
+             22 CALL                     1
+             30 LOAD_ATTR               12 (parent)
+             50 LOAD_CONST               2 ('hud_overlay.qml')
+             52 BINARY_OP               11 (/)
+             56 STORE_NAME               7 (QML_FILE)
+
+ 48          58 LOAD_NAME                8 (OverlayId)
+             60 LOAD_ATTR               18 (HUD)
+             80 STORE_NAME              10 (OVERLAY_ID)
+
+ 58          82 LOAD_CONST               3 (None)
+
+ 59          84 LOAD_NAME               11 (OverlaysSpeedUnit)
+             86 LOAD_ATTR               24 (KMPH)
+
+ 60         106 LOAD_NAME               13 (OverlaysFuelEstimationMode)
+            108 LOAD_ATTR               28 (LINEAR_REGRESSION)
+
+ 50         128 BUILD_TUPLE              3
+            130 LOAD_CONST               4 ('config')
+
+ 52         132 LOAD_NAME               15 (OverlayPosition)
+
+ 50         134 LOAD_CONST               5 ('logger')
+
+ 53         136 LOAD_NAME               16 (logging)
+            138 LOAD_ATTR               34 (Logger)
+
+ 50         158 LOAD_CONST               6 ('locked')
+
+ 54         160 LOAD_NAME               18 (bool)
+
+ 50         162 LOAD_CONST               7 ('opacity')
+
+ 55         164 LOAD_NAME               19 (int)
+
+ 50         166 LOAD_CONST               8 ('scale_factor')
+
+ 56         168 LOAD_NAME               20 (float)
+
+ 50         170 LOAD_CONST               9 ('windowed_overlay')
+
+ 57         172 LOAD_NAME               18 (bool)
+
+ 50         174 LOAD_CONST              10 ('refresh_interval_ms')
+
+ 58         176 LOAD_NAME               21 (Optional)
+            178 LOAD_NAME               19 (int)
+            180 BINARY_SUBSCR
+
+ 50         184 LOAD_CONST              11 ('speed_unit')
+
+ 59         186 LOAD_NAME               11 (OverlaysSpeedUnit)
+
+ 50         188 LOAD_CONST              12 ('fuel_estimation_mode')
+
+ 60         190 LOAD_NAME               13 (OverlaysFuelEstimationMode)
+
+ 50         192 LOAD_CONST              13 ('return')
+
+ 61         194 LOAD_CONST               3 (None)
+
+ 50         196 BUILD_TUPLE             20
+            198 LOAD_CLOSURE             0 (__class__)
+            200 BUILD_TUPLE              1
+            202 LOAD_CONST              14 (<code object __init__ at 0x0000020DB1244030, file "apps\hud\ui\overlays\hud_overlay\hud_overlay.py", line 50>)
+            204 MAKE_FUNCTION           13 (defaults, annotations, closure)
+            206 STORE_NAME              22 (__init__)
+
+ 84         208 LOAD_NAME               23 (final)
+
+ 85         210 LOAD_CONST              15 (<code object render_frame at 0x0000020DB0C39120, file "apps\hud\ui\overlays\hud_overlay\hud_overlay.py", line 84>)
+            212 MAKE_FUNCTION            0
+
+ 84         214 CALL                     0
+
+ 85         222 STORE_NAME              24 (render_frame)
+
+165         224 LOAD_CONST              16 (<code object _register_event_handlers at 0x0000020DAF2C23D0, file "apps\hud\ui\overlays\hud_overlay\hud_overlay.py", line 165>)
+            226 MAKE_FUNCTION            0
+            228 STORE_NAME              25 (_register_event_handlers)
+            230 LOAD_CLOSURE             0 (__class__)
+            232 COPY                     1
+            234 STORE_NAME              26 (__classcell__)
+            236 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DB1244030, file "apps\hud\ui\overlays\hud_overlay\hud_overlay.py", line 50>:
+              0 COPY_FREE_VARS           1
+
+ 50           2 RESUME                   0
+
+ 63           4 LOAD_GLOBAL              0 (super)
+             14 LOAD_DEREF              10 (__class__)
+             16 LOAD_FAST                0 (self)
+             18 LOAD_SUPER_ATTR          5 (NULL|self + __init__)
+
+ 64          22 LOAD_FAST                1 (config)
+
+ 65          24 LOAD_FAST                2 (logger)
+
+ 66          26 LOAD_FAST                3 (locked)
+
+ 67          28 LOAD_FAST                4 (opacity)
+
+ 68          30 LOAD_FAST                5 (scale_factor)
+
+ 69          32 LOAD_FAST                6 (windowed_overlay)
+
+ 70          34 LOAD_FAST                7 (refresh_interval_ms)
+
+ 63          36 KW_NAMES                 1 (('config', 'logger', 'locked', 'opacity', 'scale_factor', 'windowed_overlay', 'refresh_interval_ms'))
+             38 CALL                     7
+             46 POP_TOP
+
+ 73          48 LOAD_FAST                8 (speed_unit)
+             50 LOAD_FAST                0 (self)
+             52 STORE_ATTR               2 (_speed_unit)
+
+ 74          62 LOAD_FAST                0 (self)
+             64 LOAD_ATTR                7 (NULL|self + subscribe_hf)
+             84 LOAD_GLOBAL              8 (HudOverlayData)
+             94 CALL                     1
+            102 POP_TOP
+
+ 76         104 LOAD_CONST               0 (None)
+            106 LOAD_FAST                0 (self)
+            108 STORE_ATTR               5 (_surplus_fuel)
+
+ 78         118 LOAD_GLOBAL             12 (OverlaysFuelEstimationMode)
+            128 LOAD_ATTR               14 (LINEAR_REGRESSION)
+            148 LOAD_CONST               2 ('surplus-laps-png')
+
+ 79         150 LOAD_GLOBAL             12 (OverlaysFuelEstimationMode)
+            160 LOAD_ATTR               16 (GAME_BUILT_IN)
+            180 LOAD_CONST               3 ('surplus-laps-game')
+
+ 77         182 BUILD_MAP                2
+
+ 80         184 LOAD_ATTR               19 (NULL|self + get)
+            204 LOAD_FAST                9 (fuel_estimation_mode)
+            206 CALL                     1
+
+ 77         214 LOAD_FAST                0 (self)
+            216 STORE_ATTR              10 (_surplus_fuel_key)
+
+ 81         226 LOAD_FAST                0 (self)
+            228 LOAD_ATTR               23 (NULL|self + _register_event_handlers)
+            248 CALL                     0
+            256 POP_TOP
+            258 RETURN_CONST             0 (None)
+
+Disassembly of <code object render_frame at 0x0000020DB0C39120, file "apps\hud\ui\overlays\hud_overlay\hud_overlay.py", line 84>:
+ 84           0 RESUME                   0
+
+ 90           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + get_latest_hf_data)
+             24 LOAD_GLOBAL              2 (HudOverlayData)
+             34 CALL                     1
+             42 STORE_FAST               1 (data)
+
+ 91          44 LOAD_FAST                1 (data)
+             46 POP_JUMP_IF_TRUE         1 (to 50)
+
+ 92          48 RETURN_CONST             1 (None)
+
+ 95     >>   50 LOAD_FAST                0 (self)
+             52 LOAD_ATTR                5 (NULL|self + set_qml_property)
+             72 LOAD_CONST               2 ('throttleValue')
+             74 LOAD_FAST                1 (data)
+             76 LOAD_ATTR                6 (throttle)
+             96 LOAD_CONST               3 (100.0)
+             98 BINARY_OP                5 (*)
+            102 CALL                     2
+            110 POP_TOP
+
+ 96         112 LOAD_FAST                0 (self)
+            114 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            134 LOAD_CONST               4 ('brakeValue')
+            136 LOAD_FAST                1 (data)
+            138 LOAD_ATTR                8 (brake)
+            158 LOAD_CONST               3 (100.0)
+            160 BINARY_OP                5 (*)
+            164 CALL                     2
+            172 POP_TOP
+
+ 99         174 LOAD_FAST                0 (self)
+            176 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            196 LOAD_CONST               5 ('revLightsPct')
+            198 LOAD_FAST                1 (data)
+            200 LOAD_ATTR               10 (rev_lights_pct)
+            220 CALL                     2
+            228 POP_TOP
+
+100         230 LOAD_FAST                0 (self)
+            232 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            252 LOAD_CONST               6 ('rpm')
+            254 LOAD_FAST                1 (data)
+            256 LOAD_ATTR               12 (rpm)
+            276 CALL                     2
+            284 POP_TOP
+
+101         286 LOAD_FAST                0 (self)
+            288 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            308 LOAD_CONST               7 ('gear')
+            310 LOAD_FAST                1 (data)
+            312 LOAD_ATTR               14 (gear)
+            332 CALL                     2
+            340 POP_TOP
+
+102         342 LOAD_FAST                0 (self)
+            344 LOAD_ATTR               16 (_speed_unit)
+            364 LOAD_GLOBAL             18 (OverlaysSpeedUnit)
+            374 LOAD_ATTR               20 (MPH)
+            394 COMPARE_OP              40 (==)
+            398 POP_JUMP_IF_FALSE       47 (to 494)
+
+103         400 LOAD_FAST                0 (self)
+            402 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            422 LOAD_CONST               8 ('speedKmph')
+            424 LOAD_FAST                1 (data)
+            426 LOAD_ATTR               22 (speed_mph)
+            446 CALL                     2
+            454 POP_TOP
+
+104         456 LOAD_FAST                0 (self)
+            458 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            478 LOAD_CONST               9 ('speedUnitLabel')
+            480 LOAD_CONST              10 ('mph')
+            482 CALL                     2
+            490 POP_TOP
+            492 JUMP_FORWARD            46 (to 586)
+
+106     >>  494 LOAD_FAST                0 (self)
+            496 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            516 LOAD_CONST               8 ('speedKmph')
+            518 LOAD_FAST                1 (data)
+            520 LOAD_ATTR               24 (speed_kmph)
+            540 CALL                     2
+            548 POP_TOP
+
+107         550 LOAD_FAST                0 (self)
+            552 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            572 LOAD_CONST               9 ('speedUnitLabel')
+            574 LOAD_CONST              11 ('km/h')
+            576 CALL                     2
+            584 POP_TOP
+
+110     >>  586 LOAD_FAST                1 (data)
+            588 LOAD_ATTR               26 (f1_26_data)
+            608 STORE_FAST               2 (f26)
+
+111         610 LOAD_FAST                2 (f26)
+            612 LOAD_ATTR               28 (enabled)
+            632 POP_JUMP_IF_FALSE       85 (to 804)
+
+112         634 LOAD_FAST                2 (f26)
+            636 LOAD_ATTR               30 (active_aero_mode)
+            656 LOAD_CONST              12 ('STRAIGHT_MODE')
+            658 COMPARE_OP              40 (==)
+            662 POP_JUMP_IF_FALSE        7 (to 678)
+
+113         664 LOAD_CONST              13 ('STRAIGHT')
+            666 STORE_FAST               3 (drs_text)
+
+114         668 LOAD_CONST              14 (True)
+            670 STORE_FAST               4 (drs_enabled)
+
+115         672 LOAD_CONST              15 (0)
+            674 STORE_FAST               5 (drs_dist)
+            676 JUMP_FORWARD            26 (to 730)
+
+117     >>  678 LOAD_CONST              16 ('CORNER')
+            680 STORE_FAST               3 (drs_text)
+
+118         682 LOAD_CONST              17 (False)
+            684 STORE_FAST               4 (drs_enabled)
+
+119         686 LOAD_GLOBAL             33 (NULL + min)
+            696 LOAD_FAST                2 (f26)
+            698 LOAD_ATTR               34 (active_aero_dist)
+            718 LOAD_CONST              18 (250)
+            720 CALL                     2
+            728 STORE_FAST               5 (drs_dist)
+
+120     >>  730 LOAD_FAST                2 (f26)
+            732 LOAD_ATTR               36 (active_aero_avlb)
+            752 STORE_FAST               6 (drs_avlb)
+
+121         754 LOAD_FAST                2 (f26)
+            756 LOAD_ATTR               38 (overtake_active)
+            776 STORE_FAST               7 (ot_enabled)
+
+122         778 LOAD_FAST                2 (f26)
+            780 LOAD_ATTR               40 (overtake_avlb)
+            800 STORE_FAST               8 (ot_avlb)
+            802 JUMP_FORWARD            52 (to 908)
+
+124     >>  804 LOAD_CONST              19 ('DRS')
+            806 LOAD_FAST                1 (data)
+            808 LOAD_ATTR               42 (drs_enabled)
+            828 STORE_FAST               4 (drs_enabled)
+            830 STORE_FAST               3 (drs_text)
+
+125         832 LOAD_GLOBAL             33 (NULL + min)
+            842 LOAD_FAST                1 (data)
+            844 LOAD_ATTR               44 (drs_distance)
+            864 LOAD_CONST              18 (250)
+            866 CALL                     2
+            874 STORE_FAST               5 (drs_dist)
+
+126         876 LOAD_FAST                1 (data)
+            878 LOAD_ATTR               46 (drs_available)
+            898 STORE_FAST               6 (drs_avlb)
+
+127         900 LOAD_CONST              17 (False)
+            902 STORE_FAST               7 (ot_enabled)
+
+128         904 LOAD_CONST              17 (False)
+            906 STORE_FAST               8 (ot_avlb)
+
+130     >>  908 LOAD_FAST                0 (self)
+            910 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            930 LOAD_CONST              20 ('drsText')
+            932 LOAD_FAST                3 (drs_text)
+            934 CALL                     2
+            942 POP_TOP
+
+131         944 LOAD_FAST                0 (self)
+            946 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            966 LOAD_CONST              21 ('drsEnabled')
+            968 LOAD_FAST                4 (drs_enabled)
+            970 CALL                     2
+            978 POP_TOP
+
+132         980 LOAD_FAST                0 (self)
+            982 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           1002 LOAD_CONST              22 ('drsAvailable')
+           1004 LOAD_FAST                6 (drs_avlb)
+           1006 CALL                     2
+           1014 POP_TOP
+
+133        1016 LOAD_FAST                0 (self)
+           1018 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           1038 LOAD_CONST              23 ('drsDistance')
+           1040 LOAD_FAST                5 (drs_dist)
+           1042 CALL                     2
+           1050 POP_TOP
+
+136        1052 LOAD_GLOBAL             48 (CarStatusData)
+           1062 LOAD_ATTR               50 (MAX_ERS_STORE_ENERGY)
+           1082 STORE_FAST               9 (_store)
+
+137        1084 LOAD_FAST                2 (f26)
+           1086 LOAD_ATTR               28 (enabled)
+           1106 POP_JUMP_IF_FALSE       91 (to 1290)
+
+138        1108 LOAD_FAST                2 (f26)
+           1110 LOAD_ATTR               52 (harv_limit_j)
+           1130 STORE_FAST              10 (_harv)
+
+139        1132 LOAD_GLOBAL             55 (NULL + round)
+           1142 LOAD_GLOBAL             33 (NULL + min)
+           1152 LOAD_FAST                1 (data)
+           1154 LOAD_ATTR               56 (ers_rem_j)
+           1174 LOAD_FAST                9 (_store)
+           1176 BINARY_OP               11 (/)
+           1180 LOAD_CONST               3 (100.0)
+           1182 BINARY_OP                5 (*)
+           1186 LOAD_CONST               3 (100.0)
+           1188 CALL                     2
+           1196 LOAD_CONST              24 (1)
+           1198 CALL                     2
+           1206 STORE_FAST              11 (ers_rem_pct)
+
+140        1208 LOAD_GLOBAL             55 (NULL + round)
+           1218 LOAD_GLOBAL             33 (NULL + min)
+           1228 LOAD_FAST                1 (data)
+           1230 LOAD_ATTR               58 (ers_harv_mguk_j)
+           1250 LOAD_FAST               10 (_harv)
+           1252 BINARY_OP               11 (/)
+           1256 LOAD_CONST               3 (100.0)
+           1258 BINARY_OP                5 (*)
+           1262 LOAD_CONST               3 (100.0)
+           1264 CALL                     2
+           1272 LOAD_CONST              24 (1)
+           1274 CALL                     2
+           1282 STORE_FAST              12 (ers_harv_pct)
+
+141        1284 LOAD_CONST              25 (100)
+           1286 STORE_FAST              13 (ers_dep_pct)
+           1288 JUMP_FORWARD           130 (to 1550)
+
+143     >> 1290 LOAD_GLOBAL             48 (CarStatusData)
+           1300 LOAD_ATTR               60 (MAX_MGUK_HARV_PER_LAP)
+           1320 STORE_FAST              10 (_harv)
+
+144        1322 LOAD_GLOBAL             55 (NULL + round)
+           1332 LOAD_GLOBAL             33 (NULL + min)
+           1342 LOAD_FAST                1 (data)
+           1344 LOAD_ATTR               56 (ers_rem_j)
+           1364 LOAD_FAST                9 (_store)
+           1366 BINARY_OP               11 (/)
+           1370 LOAD_CONST               3 (100.0)
+           1372 BINARY_OP                5 (*)
+           1376 LOAD_CONST               3 (100.0)
+           1378 CALL                     2
+           1386 LOAD_CONST              24 (1)
+           1388 CALL                     2
+           1396 STORE_FAST              11 (ers_rem_pct)
+
+145        1398 LOAD_GLOBAL             55 (NULL + round)
+           1408 LOAD_GLOBAL             33 (NULL + min)
+           1418 LOAD_FAST                1 (data)
+           1420 LOAD_ATTR               58 (ers_harv_mguk_j)
+           1440 LOAD_FAST               10 (_harv)
+           1442 BINARY_OP               11 (/)
+           1446 LOAD_CONST               3 (100.0)
+           1448 BINARY_OP                5 (*)
+           1452 LOAD_CONST               3 (100.0)
+           1454 CALL                     2
+           1462 LOAD_CONST              24 (1)
+           1464 CALL                     2
+           1472 STORE_FAST              12 (ers_harv_pct)
+
+146        1474 LOAD_GLOBAL             55 (NULL + round)
+           1484 LOAD_GLOBAL             33 (NULL + min)
+           1494 LOAD_FAST                1 (data)
+           1496 LOAD_ATTR               62 (ers_deployed_j)
+           1516 LOAD_FAST                9 (_store)
+           1518 BINARY_OP               11 (/)
+           1522 LOAD_CONST               3 (100.0)
+           1524 BINARY_OP                5 (*)
+           1528 LOAD_CONST               3 (100.0)
+           1530 CALL                     2
+           1538 LOAD_CONST              24 (1)
+           1540 CALL                     2
+           1548 STORE_FAST              13 (ers_dep_pct)
+
+148     >> 1550 LOAD_FAST                0 (self)
+           1552 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           1572 LOAD_CONST              26 ('ersRemPct')
+           1574 LOAD_FAST               11 (ers_rem_pct)
+           1576 CALL                     2
+           1584 POP_TOP
+
+149        1586 LOAD_FAST                0 (self)
+           1588 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           1608 LOAD_CONST              27 ('ersHarvPct')
+           1610 LOAD_FAST               12 (ers_harv_pct)
+           1612 CALL                     2
+           1620 POP_TOP
+
+150        1622 LOAD_FAST                0 (self)
+           1624 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           1644 LOAD_CONST              28 ('ersDeployedPct')
+           1646 LOAD_FAST               13 (ers_dep_pct)
+           1648 CALL                     2
+           1656 POP_TOP
+
+151        1658 LOAD_FAST                0 (self)
+           1660 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           1680 LOAD_CONST              29 ('ersMode')
+           1682 LOAD_FAST                1 (data)
+           1684 LOAD_ATTR               64 (ers_mode)
+           1704 CALL                     2
+           1712 POP_TOP
+
+152        1714 LOAD_FAST                0 (self)
+           1716 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           1736 LOAD_CONST              30 ('ersColor')
+           1738 LOAD_GLOBAL             67 (NULL + get_ers_mode_color)
+           1748 LOAD_FAST                1 (data)
+           1750 LOAD_ATTR               64 (ers_mode)
+           1770 LOAD_FAST                2 (f26)
+           1772 LOAD_ATTR               28 (enabled)
+           1792 LOAD_FAST                2 (f26)
+           1794 LOAD_ATTR               38 (overtake_active)
+           1814 CALL                     3
+           1822 CALL                     2
+           1830 POP_TOP
+
+153        1832 LOAD_FAST                0 (self)
+           1834 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           1854 LOAD_CONST              31 ('tlWarnings')
+           1856 LOAD_FAST                1 (data)
+           1858 LOAD_ATTR               68 (tl_warnings)
+           1878 CALL                     2
+           1886 POP_TOP
+
+154        1888 LOAD_FAST                0 (self)
+           1890 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           1910 LOAD_CONST              32 ('trackTempC')
+           1912 LOAD_FAST                1 (data)
+           1914 LOAD_ATTR               70 (track_temp)
+           1934 CALL                     2
+           1942 POP_TOP
+
+155        1944 LOAD_FAST                0 (self)
+           1946 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           1966 LOAD_CONST              33 ('airTempC')
+           1968 LOAD_FAST                1 (data)
+           1970 LOAD_ATTR               72 (air_temp)
+           1990 CALL                     2
+           1998 POP_TOP
+
+158        2000 LOAD_FAST                0 (self)
+           2002 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           2022 LOAD_CONST              34 ('surplusFuel')
+           2024 LOAD_FAST                0 (self)
+           2026 LOAD_ATTR               74 (_surplus_fuel)
+           2046 CALL                     2
+           2054 POP_TOP
+
+160        2056 LOAD_FAST                0 (self)
+           2058 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           2078 LOAD_CONST              35 ('isF126')
+           2080 LOAD_FAST                2 (f26)
+           2082 LOAD_ATTR               28 (enabled)
+           2102 CALL                     2
+           2110 POP_TOP
+
+161        2112 LOAD_FAST                0 (self)
+           2114 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           2134 LOAD_CONST              36 ('otEnabled')
+           2136 LOAD_FAST                7 (ot_enabled)
+           2138 CALL                     2
+           2146 POP_TOP
+
+162        2148 LOAD_FAST                0 (self)
+           2150 LOAD_ATTR                5 (NULL|self + set_qml_property)
+           2170 LOAD_CONST              37 ('otAvailable')
+           2172 LOAD_FAST                8 (ot_avlb)
+           2174 CALL                     2
+           2182 POP_TOP
+           2184 RETURN_CONST             1 (None)
+
+Disassembly of <code object _register_event_handlers at 0x0000020DAF2C23D0, file "apps\hud\ui\overlays\hud_overlay\hud_overlay.py", line 165>:
+              0 MAKE_CELL                0 (self)
+
+165           2 RESUME                   0
+
+166           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('race_table_update')
+             28 CALL                     1
+
+167          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (Dict)
+             48 LOAD_GLOBAL              4 (str)
+             58 LOAD_GLOBAL              6 (Any)
+             68 BUILD_TUPLE              2
+             70 BINARY_SUBSCR
+             74 LOAD_CONST               3 ('return')
+             76 LOAD_CONST               0 (None)
+             78 BUILD_TUPLE              4
+             80 LOAD_CLOSURE             0 (self)
+             82 BUILD_TUPLE              1
+             84 LOAD_CONST               4 (<code object update at 0x0000020DAF225DF0, file "apps\hud\ui\overlays\hud_overlay\hud_overlay.py", line 166>)
+             86 MAKE_FUNCTION           12 (annotations, closure)
+
+166          88 CALL                     0
+
+167          96 STORE_FAST               1 (update)
+             98 RETURN_CONST             0 (None)
+
+Disassembly of <code object update at 0x0000020DAF225DF0, file "apps\hud\ui\overlays\hud_overlay\hud_overlay.py", line 166>:
+              0 COPY_FREE_VARS           1
+
+166           2 RESUME                   0
+
+169           4 LOAD_GLOBAL              1 (NULL + get_ref_row)
+             14 LOAD_FAST                0 (data)
+             16 CALL                     1
+             24 STORE_FAST               1 (ref_row)
+
+170          26 LOAD_FAST                1 (ref_row)
+             28 POP_JUMP_IF_TRUE         1 (to 32)
+
+171          30 RETURN_CONST             1 (None)
+
+173     >>   32 LOAD_FAST                1 (ref_row)
+             34 LOAD_CONST               2 ('driver-info')
+             36 BINARY_SUBSCR
+             40 LOAD_CONST               3 ('telemetry-setting')
+             42 BINARY_SUBSCR
+             46 LOAD_CONST               4 ('Public')
+             48 COMPARE_OP              55 (!=)
+             52 POP_JUMP_IF_FALSE        8 (to 70)
+
+174          54 LOAD_CONST               1 (None)
+             56 LOAD_DEREF               4 (self)
+             58 STORE_ATTR               1 (_surplus_fuel)
+
+175          68 RETURN_CONST             1 (None)
+
+177     >>   70 LOAD_FAST                0 (data)
+             72 LOAD_CONST               5 ('event-type')
+             74 BINARY_SUBSCR
+             78 STORE_FAST               2 (session_type)
+
+178          80 LOAD_FAST                1 (ref_row)
+             82 LOAD_CONST               6 ('fuel-info')
+             84 BINARY_SUBSCR
+             88 STORE_FAST               3 (fuel)
+
+180          90 LOAD_GLOBAL              5 (NULL + is_race_type_session)
+            100 LOAD_FAST                2 (session_type)
+            102 CALL                     1
+            110 POP_JUMP_IF_FALSE       33 (to 178)
+
+181         112 LOAD_FAST                3 (fuel)
+            114 LOAD_ATTR                7 (NULL|self + get)
+            134 LOAD_DEREF               4 (self)
+            136 LOAD_ATTR                8 (_surplus_fuel_key)
+            156 CALL                     1
+            164 LOAD_DEREF               4 (self)
+            166 STORE_ATTR               1 (_surplus_fuel)
+            176 RETURN_CONST             1 (None)
+
+182     >>  178 LOAD_GLOBAL             11 (NULL + is_tt_session)
+            188 LOAD_FAST                2 (session_type)
+            190 CALL                     1
+            198 POP_JUMP_IF_FALSE       23 (to 246)
+
+183         200 LOAD_FAST                3 (fuel)
+            202 LOAD_ATTR                7 (NULL|self + get)
+            222 LOAD_CONST               7 ('surplus-laps-game')
+            224 CALL                     1
+            232 LOAD_DEREF               4 (self)
+            234 STORE_ATTR               1 (_surplus_fuel)
+            244 RETURN_CONST             1 (None)
+
+182     >>  246 RETURN_CONST             1 (None)

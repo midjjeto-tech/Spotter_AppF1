@@ -1,0 +1,1945 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               1 (None)
+             14 IMPORT_NAME              1 (os)
+             16 STORE_NAME               1 (os)
+
+ 27          18 LOAD_CONST               0 (0)
+             20 LOAD_CONST               2 (('Any', 'Dict', 'List', 'Optional'))
+             22 IMPORT_NAME              2 (typing)
+             24 IMPORT_FROM              3 (Any)
+             26 STORE_NAME               3 (Any)
+             28 IMPORT_FROM              4 (Dict)
+             30 STORE_NAME               4 (Dict)
+             32 IMPORT_FROM              5 (List)
+             34 STORE_NAME               5 (List)
+             36 IMPORT_FROM              6 (Optional)
+             38 STORE_NAME               6 (Optional)
+             40 POP_TOP
+
+ 29          42 LOAD_CONST               0 (0)
+             44 LOAD_CONST               3 (('get_ref_row', 'get_ref_row_index', 'is_tt_session'))
+             46 IMPORT_NAME              7 (apps.hud.common)
+             48 IMPORT_FROM              8 (get_ref_row)
+             50 STORE_NAME               8 (get_ref_row)
+             52 IMPORT_FROM              9 (get_ref_row_index)
+             54 STORE_NAME               9 (get_ref_row_index)
+             56 IMPORT_FROM             10 (is_tt_session)
+             58 STORE_NAME              10 (is_tt_session)
+             60 POP_TOP
+
+ 30          62 LOAD_CONST               0 (0)
+             64 LOAD_CONST               4 (('BaseOverlay', 'CircuitInfoOverlay', 'HudOverlay', 'InputTelemetryOverlay', 'LapTimerOverlay', 'MfdOverlay', 'PuOverlay', 'TimingTowerOverlay', 'TrackRadarOverlay'))
+             66 IMPORT_NAME             11 (apps.hud.ui.overlays)
+             68 IMPORT_FROM             12 (BaseOverlay)
+             70 STORE_NAME              12 (BaseOverlay)
+             72 IMPORT_FROM             13 (CircuitInfoOverlay)
+             74 STORE_NAME              13 (CircuitInfoOverlay)
+             76 IMPORT_FROM             14 (HudOverlay)
+             78 STORE_NAME              14 (HudOverlay)
+             80 IMPORT_FROM             15 (InputTelemetryOverlay)
+             82 STORE_NAME              15 (InputTelemetryOverlay)
+             84 IMPORT_FROM             16 (LapTimerOverlay)
+             86 STORE_NAME              16 (LapTimerOverlay)
+             88 IMPORT_FROM             17 (MfdOverlay)
+             90 STORE_NAME              17 (MfdOverlay)
+             92 IMPORT_FROM             18 (PuOverlay)
+             94 STORE_NAME              18 (PuOverlay)
+             96 IMPORT_FROM             19 (TimingTowerOverlay)
+             98 STORE_NAME              19 (TimingTowerOverlay)
+            100 IMPORT_FROM             20 (TrackRadarOverlay)
+            102 STORE_NAME              20 (TrackRadarOverlay)
+            104 POP_TOP
+
+ 34         106 LOAD_CONST               0 (0)
+            108 LOAD_CONST               5 (('load_fonts',))
+            110 IMPORT_NAME             21 (lib.assets_loader)
+            112 IMPORT_FROM             22 (load_fonts)
+            114 STORE_NAME              22 (load_fonts)
+            116 POP_TOP
+
+ 35         118 LOAD_CONST               0 (0)
+            120 LOAD_CONST               6 (('notify_parent_init_complete',))
+            122 IMPORT_NAME             23 (lib.child_proc_mgmt)
+            124 IMPORT_FROM             24 (notify_parent_init_complete)
+            126 STORE_NAME              24 (notify_parent_init_complete)
+            128 POP_TOP
+
+ 36         130 LOAD_CONST               0 (0)
+            132 LOAD_CONST               7 (('OverlayPosition', 'PngSettings'))
+            134 IMPORT_NAME             25 (lib.config)
+            136 IMPORT_FROM             26 (OverlayPosition)
+            138 STORE_NAME              26 (OverlayPosition)
+            140 IMPORT_FROM             27 (PngSettings)
+            142 STORE_NAME              27 (PngSettings)
+            144 POP_TOP
+
+ 37         146 LOAD_CONST               0 (0)
+            148 LOAD_CONST               8 (('RateLimiter',))
+            150 IMPORT_NAME             28 (lib.rate_limiter)
+            152 IMPORT_FROM             29 (RateLimiter)
+            154 STORE_NAME              29 (RateLimiter)
+            156 POP_TOP
+
+ 38         158 LOAD_CONST               0 (0)
+            160 LOAD_CONST               9 (('WatchDogTimerSync',))
+            162 IMPORT_NAME             30 (lib.wdt)
+            164 IMPORT_FROM             31 (WatchDogTimerSync)
+            166 STORE_NAME              31 (WatchDogTimerSync)
+            168 POP_TOP
+
+ 40         170 LOAD_CONST              10 (1)
+            172 LOAD_CONST              11 (('HudOverlayData', 'InputTelemetryData', 'LiveSessionMotionInfo'))
+            174 IMPORT_NAME             32 (hf_types)
+            176 IMPORT_FROM             33 (HudOverlayData)
+            178 STORE_NAME              33 (HudOverlayData)
+            180 IMPORT_FROM             34 (InputTelemetryData)
+            182 STORE_NAME              34 (InputTelemetryData)
+            184 IMPORT_FROM             35 (LiveSessionMotionInfo)
+            186 STORE_NAME              35 (LiveSessionMotionInfo)
+            188 POP_TOP
+
+ 41         190 LOAD_CONST              10 (1)
+            192 LOAD_CONST              12 (('WindowManager',))
+            194 IMPORT_NAME             36 (window_mgr)
+            196 IMPORT_FROM             37 (WindowManager)
+            198 STORE_NAME              37 (WindowManager)
+            200 POP_TOP
+
+ 45         202 PUSH_NULL
+            204 LOAD_BUILD_CLASS
+            206 LOAD_CONST              13 (<code object OverlaysMgr at 0x0000020DB0C16680, file "apps\hud\ui\infra\overlays_mgr.py", line 45>)
+            208 MAKE_FUNCTION            0
+            210 LOAD_CONST              14 ('OverlaysMgr')
+            212 CALL                     2
+            220 STORE_NAME              38 (OverlaysMgr)
+            222 RETURN_CONST             1 (None)
+
+Disassembly of <code object OverlaysMgr at 0x0000020DB0C16680, file "apps\hud\ui\infra\overlays_mgr.py", line 45>:
+ 45           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('OverlaysMgr')
+              8 STORE_NAME               2 (__qualname__)
+
+ 49          10 NOP
+
+ 46          12 LOAD_CONST              50 ((False,))
+             14 LOAD_CONST               1 ('logger')
+
+ 47          16 LOAD_NAME                3 (logging)
+             18 LOAD_ATTR                8 (Logger)
+
+ 46          38 LOAD_CONST               2 ('settings')
+
+ 48          40 LOAD_NAME                5 (PngSettings)
+
+ 46          42 LOAD_CONST               3 ('debug')
+
+ 49          44 LOAD_NAME                6 (bool)
+
+ 46          46 BUILD_TUPLE              6
+             48 LOAD_CONST               4 (<code object __init__ at 0x0000020DB0CCD620, file "apps\hud\ui\infra\overlays_mgr.py", line 46>)
+             50 MAKE_FUNCTION            5 (defaults, annotations)
+             52 STORE_NAME               7 (__init__)
+
+186          54 LOAD_CONST               5 (<code object run at 0x0000020DAF2F85B0, file "apps\hud\ui\infra\overlays_mgr.py", line 186>)
+             56 MAKE_FUNCTION            0
+             58 STORE_NAME               8 (run)
+
+193          60 LOAD_CONST               6 (<code object stop at 0x0000020DAF2F82F0, file "apps\hud\ui\infra\overlays_mgr.py", line 193>)
+             62 MAKE_FUNCTION            0
+             64 STORE_NAME               9 (stop)
+
+200          66 LOAD_CONST               7 ('return')
+             68 LOAD_NAME               10 (Dict)
+             70 LOAD_NAME               11 (str)
+             72 LOAD_NAME               12 (Any)
+             74 BUILD_TUPLE              2
+             76 BINARY_SUBSCR
+             80 BUILD_TUPLE              2
+             82 LOAD_CONST               8 (<code object get_stats at 0x0000020DAF2AD6B0, file "apps\hud\ui\infra\overlays_mgr.py", line 200>)
+             84 MAKE_FUNCTION            4 (annotations)
+             86 STORE_NAME              13 (get_stats)
+
+213          88 LOAD_CONST               9 ('data')
+             90 LOAD_NAME               10 (Dict)
+             92 LOAD_NAME               11 (str)
+             94 LOAD_NAME               12 (Any)
+             96 BUILD_TUPLE              2
+             98 BINARY_SUBSCR
+            102 BUILD_TUPLE              2
+            104 LOAD_CONST              10 (<code object race_table_update at 0x0000020DAEC770A0, file "apps\hud\ui\infra\overlays_mgr.py", line 213>)
+            106 MAKE_FUNCTION            4 (annotations)
+            108 STORE_NAME              14 (race_table_update)
+
+221         110 LOAD_CONST              11 (<code object stream_overlays_update at 0x0000020DAF16B290, file "apps\hud\ui\infra\overlays_mgr.py", line 221>)
+            112 MAKE_FUNCTION            0
+            114 STORE_NAME              15 (stream_overlays_update)
+
+231         116 LOAD_CONST              51 (('',))
+            118 LOAD_CONST              12 ('oid')
+            120 LOAD_NAME               16 (Optional)
+            122 LOAD_NAME               11 (str)
+            124 BINARY_SUBSCR
+            128 BUILD_TUPLE              2
+            130 LOAD_CONST              13 (<code object toggle_overlays_visibility at 0x0000020DAF09BAB0, file "apps\hud\ui\infra\overlays_mgr.py", line 231>)
+            132 MAKE_FUNCTION            5 (defaults, annotations)
+            134 STORE_NAME              17 (toggle_overlays_visibility)
+
+240         136 LOAD_CONST              14 ('args')
+            138 LOAD_NAME               10 (Dict)
+            140 LOAD_NAME               11 (str)
+            142 LOAD_NAME                6 (bool)
+            144 BUILD_TUPLE              2
+            146 BINARY_SUBSCR
+            150 BUILD_TUPLE              2
+            152 LOAD_CONST              15 (<code object on_locked_state_change at 0x0000020DB0C178E0, file "apps\hud\ui\infra\overlays_mgr.py", line 240>)
+            154 MAKE_FUNCTION            4 (annotations)
+            156 STORE_NAME              18 (on_locked_state_change)
+
+303         158 LOAD_CONST              16 ('opacity')
+            160 LOAD_NAME               19 (int)
+            162 BUILD_TUPLE              2
+            164 LOAD_CONST              17 (<code object set_overlays_opacity at 0x0000020DAF2AD570, file "apps\hud\ui\infra\overlays_mgr.py", line 303>)
+            166 MAKE_FUNCTION            4 (annotations)
+            168 STORE_NAME              20 (set_overlays_opacity)
+
+308         170 LOAD_CONST              18 (<code object next_page at 0x0000020DAF19FBD0, file "apps\hud\ui\infra\overlays_mgr.py", line 308>)
+            172 MAKE_FUNCTION            0
+            174 STORE_NAME              21 (next_page)
+
+312         176 LOAD_CONST              19 (<code object prev_page at 0x0000020DAF2D4030, file "apps\hud\ui\infra\overlays_mgr.py", line 312>)
+            178 MAKE_FUNCTION            0
+            180 STORE_NAME              22 (prev_page)
+
+316         182 LOAD_CONST              20 (<code object mfd_interact at 0x0000020DAF2D46F0, file "apps\hud\ui\infra\overlays_mgr.py", line 316>)
+            184 MAKE_FUNCTION            0
+            186 STORE_NAME              23 (mfd_interact)
+
+320         188 LOAD_CONST              21 ('layout')
+            190 LOAD_NAME               10 (Dict)
+            192 LOAD_NAME               11 (str)
+            194 LOAD_NAME               10 (Dict)
+            196 LOAD_NAME               11 (str)
+            198 LOAD_NAME               19 (int)
+            200 BUILD_TUPLE              2
+            202 BINARY_SUBSCR
+            206 BUILD_TUPLE              2
+            208 BINARY_SUBSCR
+            212 BUILD_TUPLE              2
+            214 LOAD_CONST              22 (<code object set_overlays_layout at 0x0000020DAEEAFCC0, file "apps\hud\ui\infra\overlays_mgr.py", line 320>)
+            216 MAKE_FUNCTION            4 (annotations)
+            218 STORE_NAME              24 (set_overlays_layout)
+
+352         220 LOAD_CONST              12 ('oid')
+            222 LOAD_NAME               11 (str)
+            224 LOAD_CONST              23 ('scale_factor')
+            226 LOAD_NAME               25 (float)
+            228 BUILD_TUPLE              4
+            230 LOAD_CONST              24 (<code object set_scale_factor at 0x0000020DAF2AD930, file "apps\hud\ui\infra\overlays_mgr.py", line 352>)
+            232 MAKE_FUNCTION            4 (annotations)
+            234 STORE_NAME              26 (set_scale_factor)
+
+358         236 LOAD_CONST              16 ('opacity')
+            238 LOAD_NAME               19 (int)
+            240 BUILD_TUPLE              2
+            242 LOAD_CONST              25 (<code object set_track_radar_idle_opacity at 0x0000020DAF2F8870, file "apps\hud\ui\infra\overlays_mgr.py", line 358>)
+            244 MAKE_FUNCTION            4 (annotations)
+            246 STORE_NAME              27 (set_track_radar_idle_opacity)
+
+367         248 LOAD_CONST              26 ('length')
+            250 LOAD_NAME               19 (int)
+            252 BUILD_TUPLE              2
+            254 LOAD_CONST              27 (<code object set_circuit_info_length at 0x0000020DAF2F89D0, file "apps\hud\ui\infra\overlays_mgr.py", line 367>)
+            256 MAKE_FUNCTION            4 (annotations)
+            258 STORE_NAME              28 (set_circuit_info_length)
+
+378         260 LOAD_CONST              28 (<code object _reset_config at 0x0000020DB1038D30, file "apps\hud\ui\infra\overlays_mgr.py", line 378>)
+            262 MAKE_FUNCTION            0
+            264 STORE_NAME              29 (_reset_config)
+
+382         266 LOAD_CONST              52 ((5000,))
+            268 LOAD_CONST              29 ('overlay_id')
+            270 LOAD_NAME               11 (str)
+            272 LOAD_CONST              30 ('timeout_ms')
+            274 LOAD_NAME               19 (int)
+            276 LOAD_CONST               7 ('return')
+            278 LOAD_NAME               16 (Optional)
+            280 LOAD_NAME               30 (OverlayPosition)
+            282 BINARY_SUBSCR
+            286 BUILD_TUPLE              6
+            288 LOAD_CONST              31 (<code object _get_window_info at 0x0000020DAF18BC90, file "apps\hud\ui\infra\overlays_mgr.py", line 382>)
+            290 MAKE_FUNCTION            5 (defaults, annotations)
+            292 STORE_NAME              31 (_get_window_info)
+
+390         294 LOAD_CONST              52 ((5000,))
+            296 LOAD_CONST              29 ('overlay_id')
+            298 LOAD_NAME               11 (str)
+            300 LOAD_CONST              30 ('timeout_ms')
+            302 LOAD_NAME               19 (int)
+            304 LOAD_CONST               7 ('return')
+            306 LOAD_NAME               16 (Optional)
+            308 LOAD_NAME               10 (Dict)
+            310 LOAD_NAME               11 (str)
+            312 LOAD_NAME               12 (Any)
+            314 BUILD_TUPLE              2
+            316 BINARY_SUBSCR
+            320 BINARY_SUBSCR
+            324 BUILD_TUPLE              6
+            326 LOAD_CONST              32 (<code object _get_overlay_stats at 0x0000020DAF2ADA70, file "apps\hud\ui\infra\overlays_mgr.py", line 390>)
+            328 MAKE_FUNCTION            5 (defaults, annotations)
+            330 STORE_NAME              32 (_get_overlay_stats)
+
+395         332 LOAD_CONST              33 ('enabled')
+
+398         334 LOAD_NAME                6 (bool)
+
+395         336 LOAD_CONST              34 ('overlay_cls')
+
+399         338 LOAD_NAME               33 (BaseOverlay)
+
+395         340 LOAD_CONST              35 ('overlay_cfg')
+
+400         342 LOAD_NAME               30 (OverlayPosition)
+
+395         344 LOAD_CONST              16 ('opacity')
+
+401         346 LOAD_NAME               25 (float)
+
+395         348 LOAD_CONST              36 ('windowed_overlay')
+
+402         350 LOAD_NAME                6 (bool)
+
+395         352 BUILD_TUPLE             10
+            354 LOAD_CONST              37 (<code object _register_overlay_if_enabled at 0x0000020DB10484E0, file "apps\hud\ui\infra\overlays_mgr.py", line 395>)
+            356 MAKE_FUNCTION            4 (annotations)
+            358 STORE_NAME              34 (_register_overlay_if_enabled)
+
+421         360 LOAD_CONST               9 ('data')
+            362 LOAD_NAME               10 (Dict)
+            364 LOAD_NAME               11 (str)
+            366 LOAD_NAME               12 (Any)
+            368 BUILD_TUPLE              2
+            370 BINARY_SUBSCR
+            374 BUILD_TUPLE              2
+            376 LOAD_CONST              38 (<code object _input_telemetry_update at 0x0000020DAF2D45D0, file "apps\hud\ui\infra\overlays_mgr.py", line 421>)
+            378 MAKE_FUNCTION            4 (annotations)
+            380 STORE_NAME              35 (_input_telemetry_update)
+
+425         382 LOAD_CONST               9 ('data')
+            384 LOAD_NAME               10 (Dict)
+            386 LOAD_NAME               11 (str)
+            388 LOAD_NAME               12 (Any)
+            390 BUILD_TUPLE              2
+            392 BINARY_SUBSCR
+            396 BUILD_TUPLE              2
+            398 LOAD_CONST              39 (<code object _motion_update at 0x0000020DAF2D4930, file "apps\hud\ui\infra\overlays_mgr.py", line 425>)
+            400 MAKE_FUNCTION            4 (annotations)
+            402 STORE_NAME              36 (_motion_update)
+
+429         404 LOAD_CONST               9 ('data')
+            406 LOAD_NAME               10 (Dict)
+            408 LOAD_NAME               11 (str)
+            410 LOAD_NAME               12 (Any)
+            412 BUILD_TUPLE              2
+            414 BINARY_SUBSCR
+            418 BUILD_TUPLE              2
+            420 LOAD_CONST              40 (<code object _hud_overlay_update at 0x0000020DAF2D4810, file "apps\hud\ui\infra\overlays_mgr.py", line 429>)
+            422 MAKE_FUNCTION            4 (annotations)
+            424 STORE_NAME              37 (_hud_overlay_update)
+
+433         426 LOAD_CONST              41 ('visible')
+            428 LOAD_NAME                6 (bool)
+            430 BUILD_TUPLE              2
+            432 LOAD_CONST              42 (<code object _set_overlays_visibility at 0x0000020DAF2DF440, file "apps\hud\ui\infra\overlays_mgr.py", line 433>)
+            434 MAKE_FUNCTION            4 (annotations)
+            436 STORE_NAME              38 (_set_overlays_visibility)
+
+436         438 LOAD_CONST              43 ('active')
+            440 LOAD_NAME                6 (bool)
+            442 BUILD_TUPLE              2
+            444 LOAD_CONST              44 (<code object _set_telemetry_active at 0x0000020DAF2DF770, file "apps\hud\ui\infra\overlays_mgr.py", line 436>)
+            446 MAKE_FUNCTION            4 (annotations)
+            448 STORE_NAME              39 (_set_telemetry_active)
+
+439         450 LOAD_CONST              43 ('active')
+            452 LOAD_NAME                6 (bool)
+            454 BUILD_TUPLE              2
+            456 LOAD_CONST              45 (<code object _wdt_status_callback at 0x0000020DAF19B5A0, file "apps\hud\ui\infra\overlays_mgr.py", line 439>)
+            458 MAKE_FUNCTION            4 (annotations)
+            460 STORE_NAME              40 (_wdt_status_callback)
+
+445         462 LOAD_CONST               9 ('data')
+            464 LOAD_NAME               10 (Dict)
+            466 LOAD_NAME               11 (str)
+            468 LOAD_NAME               12 (Any)
+            470 BUILD_TUPLE              2
+            472 BINARY_SUBSCR
+            476 BUILD_TUPLE              2
+            478 LOAD_CONST              46 (<code object _handle_in_menu_status at 0x0000020DAEB6E060, file "apps\hud\ui\infra\overlays_mgr.py", line 445>)
+            480 MAKE_FUNCTION            4 (annotations)
+            482 STORE_NAME              41 (_handle_in_menu_status)
+
+473         484 LOAD_CONST              47 (<code object _update_telemetry_active at 0x0000020DAF2D4A50, file "apps\hud\ui\infra\overlays_mgr.py", line 473>)
+            486 MAKE_FUNCTION            0
+            488 STORE_NAME              42 (_update_telemetry_active)
+
+477         490 LOAD_CONST               9 ('data')
+            492 LOAD_NAME               10 (Dict)
+            494 LOAD_NAME               11 (str)
+            496 LOAD_NAME               12 (Any)
+            498 BUILD_TUPLE              2
+            500 BINARY_SUBSCR
+            504 BUILD_TUPLE              2
+            506 LOAD_CONST              48 (<code object _prep_race_table_data at 0x0000020DAF2C2170, file "apps\hud\ui\infra\overlays_mgr.py", line 477>)
+            508 MAKE_FUNCTION            4 (annotations)
+            510 STORE_NAME              43 (_prep_race_table_data)
+            512 RETURN_CONST            49 (None)
+
+Disassembly of <code object __init__ at 0x0000020DB0CCD620, file "apps\hud\ui\infra\overlays_mgr.py", line 46>:
+ 46           0 RESUME                   0
+
+ 57           2 LOAD_FAST                2 (settings)
+              4 LOAD_ATTR                0 (Display)
+             24 LOAD_ATTR                2 (use_cpu_acceleration)
+             44 POP_JUMP_IF_FALSE       36 (to 118)
+
+ 58          46 LOAD_CONST               1 ('software')
+             48 LOAD_GLOBAL              4 (os)
+             58 LOAD_ATTR                6 (environ)
+             78 LOAD_CONST               2 ('QT_QUICK_BACKEND')
+             80 STORE_SUBSCR
+
+ 59          84 LOAD_FAST                1 (logger)
+             86 LOAD_ATTR                9 (NULL|self + debug)
+            106 LOAD_CONST               3 ('Using software backend')
+            108 CALL                     1
+            116 POP_TOP
+
+ 61     >>  118 LOAD_FAST                1 (logger)
+            120 LOAD_FAST                0 (self)
+            122 STORE_ATTR               5 (logger)
+
+ 62         132 LOAD_FAST                3 (debug)
+            134 LOAD_FAST                0 (self)
+            136 STORE_ATTR               6 (debug_mode)
+
+ 63         146 LOAD_CONST               4 (False)
+            148 LOAD_FAST                0 (self)
+            150 STORE_ATTR               7 (running)
+
+ 64         160 LOAD_GLOBAL             17 (NULL + RateLimiter)
+            170 LOAD_FAST                2 (settings)
+            172 LOAD_ATTR                0 (Display)
+            192 LOAD_ATTR               18 (refresh_interval)
+            212 KW_NAMES                 5 (('interval_ms',))
+            214 CALL                     1
+            222 LOAD_FAST                0 (self)
+            224 STORE_ATTR              10 (rate_limiter)
+
+ 65         234 LOAD_CONST               4 (False)
+            236 LOAD_FAST                0 (self)
+            238 STORE_ATTR              11 (_local_wdt_ok)
+
+ 66         248 LOAD_FAST                2 (settings)
+            250 LOAD_ATTR               24 (HUD)
+            270 LOAD_ATTR               26 (auto_hide_in_menu)
+            290 LOAD_FAST                0 (self)
+            292 STORE_ATTR              14 (_auto_hide_in_menu)
+
+ 70         302 LOAD_FAST                2 (settings)
+            304 LOAD_ATTR                0 (Display)
+            324 LOAD_ATTR               30 (wdt_timeout)
+            344 POP_JUMP_IF_NONE        43 (to 432)
+
+ 67         346 LOAD_GLOBAL             33 (NULL + WatchDogTimerSync)
+
+ 68         356 LOAD_FAST                0 (self)
+            358 LOAD_ATTR               34 (_wdt_status_callback)
+
+ 69         378 LOAD_FAST                2 (settings)
+            380 LOAD_ATTR                0 (Display)
+            400 LOAD_ATTR               30 (wdt_timeout)
+
+ 67         420 KW_NAMES                 7 (('status_callback', 'timeout'))
+            422 CALL                     2
+            430 JUMP_FORWARD             1 (to 434)
+
+ 70     >>  432 LOAD_CONST               6 (None)
+
+ 67     >>  434 LOAD_FAST                0 (self)
+            436 STORE_ATTR              18 (wdt)
+
+ 72         446 LOAD_FAST                2 (settings)
+            448 LOAD_ATTR               24 (HUD)
+            468 LOAD_ATTR               38 (enabled)
+            488 POP_JUMP_IF_TRUE         7 (to 504)
+            490 LOAD_ASSERTION_ERROR
+            492 LOAD_CONST               8 ('HUD must be enabled to run overlays manager')
+            494 CALL                     0
+            502 RAISE_VARARGS            1
+
+ 73     >>  504 LOAD_GLOBAL             41 (NULL + WindowManager)
+            514 LOAD_FAST                1 (logger)
+            516 LOAD_GLOBAL             42 (notify_parent_init_complete)
+            526 CALL                     2
+            534 LOAD_FAST                0 (self)
+            536 STORE_ATTR              22 (window_manager)
+
+ 74         546 LOAD_GLOBAL             47 (NULL + load_fonts)
+            556 LOAD_FAST                0 (self)
+            558 LOAD_ATTR               10 (logger)
+            578 LOAD_ATTR                8 (debug)
+            598 LOAD_FAST                0 (self)
+            600 LOAD_ATTR               10 (logger)
+            620 LOAD_ATTR               48 (error)
+            640 KW_NAMES                 9 (('debug_log_printer', 'error_log_printer'))
+            642 CALL                     2
+            650 POP_TOP
+
+ 76         652 LOAD_FAST                0 (self)
+            654 LOAD_ATTR               51 (NULL|self + _register_overlay_if_enabled)
+
+ 77         674 LOAD_FAST                2 (settings)
+            676 LOAD_ATTR               24 (HUD)
+            696 LOAD_ATTR               52 (show_lap_timer)
+
+ 78         716 LOAD_GLOBAL             54 (LapTimerOverlay)
+
+ 79         726 LOAD_FAST                2 (settings)
+            728 LOAD_ATTR               24 (HUD)
+            748 LOAD_ATTR               56 (layout)
+            768 LOAD_GLOBAL             54 (LapTimerOverlay)
+            778 LOAD_ATTR               58 (OVERLAY_ID)
+            798 BINARY_SUBSCR
+
+ 80         802 LOAD_FAST                2 (settings)
+            804 LOAD_ATTR               24 (HUD)
+            824 LOAD_ATTR               60 (overlays_opacity)
+
+ 81         844 LOAD_FAST                2 (settings)
+            846 LOAD_ATTR               24 (HUD)
+            866 LOAD_ATTR               62 (use_windowed_overlays)
+
+ 82         886 LOAD_FAST                2 (settings)
+            888 LOAD_ATTR               24 (HUD)
+            908 LOAD_ATTR               56 (layout)
+            928 LOAD_GLOBAL             54 (LapTimerOverlay)
+            938 LOAD_ATTR               58 (OVERLAY_ID)
+            958 BINARY_SUBSCR
+            962 LOAD_ATTR               64 (scale_factor)
+
+ 83         982 LOAD_FAST                2 (settings)
+            984 LOAD_ATTR               24 (HUD)
+           1004 LOAD_ATTR               66 (lap_timer_minimal)
+
+ 76        1024 KW_NAMES                10 (('enabled', 'overlay_cls', 'overlay_cfg', 'opacity', 'windowed_overlay', 'scale_factor', 'min_overlay_style'))
+           1026 CALL                     7
+           1034 POP_TOP
+
+ 86        1036 LOAD_FAST                0 (self)
+           1038 LOAD_ATTR               51 (NULL|self + _register_overlay_if_enabled)
+
+ 87        1058 LOAD_FAST                2 (settings)
+           1060 LOAD_ATTR               24 (HUD)
+           1080 LOAD_ATTR               68 (show_timing_tower)
+
+ 88        1100 LOAD_GLOBAL             70 (TimingTowerOverlay)
+
+ 89        1110 LOAD_FAST                2 (settings)
+           1112 LOAD_ATTR               24 (HUD)
+           1132 LOAD_ATTR               60 (overlays_opacity)
+
+ 90        1152 LOAD_FAST                2 (settings)
+           1154 LOAD_ATTR               24 (HUD)
+           1174 LOAD_ATTR               56 (layout)
+           1194 LOAD_GLOBAL             70 (TimingTowerOverlay)
+           1204 LOAD_ATTR               58 (OVERLAY_ID)
+           1224 BINARY_SUBSCR
+
+ 91        1228 LOAD_FAST                2 (settings)
+           1230 LOAD_ATTR               24 (HUD)
+           1250 LOAD_ATTR               62 (use_windowed_overlays)
+
+ 92        1270 LOAD_FAST                2 (settings)
+           1272 LOAD_ATTR               24 (HUD)
+           1292 LOAD_ATTR               56 (layout)
+           1312 LOAD_GLOBAL             70 (TimingTowerOverlay)
+           1322 LOAD_ATTR               58 (OVERLAY_ID)
+           1342 BINARY_SUBSCR
+           1346 LOAD_ATTR               64 (scale_factor)
+
+ 93        1366 LOAD_FAST                2 (settings)
+           1368 LOAD_ATTR               24 (HUD)
+           1388 LOAD_ATTR               72 (timing_tower_num_adjacent_cars)
+
+ 94        1408 LOAD_FAST                2 (settings)
+           1410 LOAD_ATTR               24 (HUD)
+           1430 LOAD_ATTR               74 (overlays_fuel_estimation_mode)
+
+ 95        1450 LOAD_FAST                2 (settings)
+           1452 LOAD_ATTR               24 (HUD)
+           1472 LOAD_ATTR               76 (overlays_speed_unit)
+
+ 96        1492 LOAD_FAST                2 (settings)
+           1494 LOAD_ATTR               24 (HUD)
+           1514 LOAD_ATTR               78 (timing_tower_col_options)
+
+ 97        1534 LOAD_FAST                2 (settings)
+           1536 LOAD_ATTR               24 (HUD)
+           1556 LOAD_ATTR               80 (timing_tower_relative_best_last_lap)
+
+ 98        1576 LOAD_FAST                2 (settings)
+           1578 LOAD_ATTR               24 (HUD)
+           1598 LOAD_ATTR               82 (timing_tower_combined_tl_pens)
+
+ 86        1618 KW_NAMES                11 (('enabled', 'overlay_cls', 'opacity', 'overlay_cfg', 'windowed_overlay', 'scale_factor', 'num_adjacent_cars', 'fuel_est_mode', 'speed_unit', 'tt_col_options', 'relative_best_last_lap', 'combined_tl_pens'))
+           1620 CALL                    12
+           1628 POP_TOP
+
+101        1630 LOAD_FAST                0 (self)
+           1632 LOAD_ATTR               51 (NULL|self + _register_overlay_if_enabled)
+
+102        1652 LOAD_FAST                2 (settings)
+           1654 LOAD_ATTR               24 (HUD)
+           1674 LOAD_ATTR               84 (show_input_overlay)
+
+103        1694 LOAD_GLOBAL             86 (InputTelemetryOverlay)
+
+104        1704 LOAD_FAST                2 (settings)
+           1706 LOAD_ATTR               24 (HUD)
+           1726 LOAD_ATTR               60 (overlays_opacity)
+
+105        1746 LOAD_FAST                2 (settings)
+           1748 LOAD_ATTR               24 (HUD)
+           1768 LOAD_ATTR               56 (layout)
+           1788 LOAD_GLOBAL             86 (InputTelemetryOverlay)
+           1798 LOAD_ATTR               58 (OVERLAY_ID)
+           1818 BINARY_SUBSCR
+
+106        1822 LOAD_FAST                2 (settings)
+           1824 LOAD_ATTR               24 (HUD)
+           1844 LOAD_ATTR               62 (use_windowed_overlays)
+
+107        1864 LOAD_FAST                2 (settings)
+           1866 LOAD_ATTR               24 (HUD)
+           1886 LOAD_ATTR               56 (layout)
+           1906 LOAD_GLOBAL             86 (InputTelemetryOverlay)
+           1916 LOAD_ATTR               58 (OVERLAY_ID)
+           1936 BINARY_SUBSCR
+           1940 LOAD_ATTR               64 (scale_factor)
+
+108        1960 LOAD_FAST                2 (settings)
+           1962 LOAD_ATTR                0 (Display)
+           1982 LOAD_ATTR               88 (realtime_overlay_update_interval_ms)
+
+109        2002 LOAD_FAST                2 (settings)
+           2004 LOAD_ATTR               24 (HUD)
+           2024 LOAD_ATTR               90 (input_overlay_buffer_duration_sec)
+
+101        2044 KW_NAMES                12 (('enabled', 'overlay_cls', 'opacity', 'overlay_cfg', 'windowed_overlay', 'scale_factor', 'refresh_interval_ms', 'window_duration_sec'))
+           2046 CALL                     8
+           2054 POP_TOP
+
+125        2056 LOAD_FAST                0 (self)
+           2058 LOAD_ATTR               51 (NULL|self + _register_overlay_if_enabled)
+
+126        2078 LOAD_FAST                2 (settings)
+           2080 LOAD_ATTR               24 (HUD)
+           2100 LOAD_ATTR               92 (show_track_radar_overlay)
+
+127        2120 LOAD_GLOBAL             94 (TrackRadarOverlay)
+
+128        2130 LOAD_FAST                2 (settings)
+           2132 LOAD_ATTR               24 (HUD)
+           2152 LOAD_ATTR               60 (overlays_opacity)
+
+129        2172 LOAD_FAST                2 (settings)
+           2174 LOAD_ATTR               24 (HUD)
+           2194 LOAD_ATTR               56 (layout)
+           2214 LOAD_GLOBAL             94 (TrackRadarOverlay)
+           2224 LOAD_ATTR               58 (OVERLAY_ID)
+           2244 BINARY_SUBSCR
+
+130        2248 LOAD_FAST                2 (settings)
+           2250 LOAD_ATTR               24 (HUD)
+           2270 LOAD_ATTR               62 (use_windowed_overlays)
+
+131        2290 LOAD_FAST                2 (settings)
+           2292 LOAD_ATTR               24 (HUD)
+           2312 LOAD_ATTR               56 (layout)
+           2332 LOAD_GLOBAL             94 (TrackRadarOverlay)
+           2342 LOAD_ATTR               58 (OVERLAY_ID)
+           2362 BINARY_SUBSCR
+           2366 LOAD_ATTR               64 (scale_factor)
+
+132        2386 LOAD_FAST                2 (settings)
+           2388 LOAD_ATTR                0 (Display)
+           2408 LOAD_ATTR               88 (realtime_overlay_update_interval_ms)
+
+133        2428 LOAD_FAST                2 (settings)
+           2430 LOAD_ATTR               24 (HUD)
+           2450 LOAD_ATTR               96 (track_radar_idle_opacity)
+
+125        2470 KW_NAMES                13 (('enabled', 'overlay_cls', 'opacity', 'overlay_cfg', 'windowed_overlay', 'scale_factor', 'refresh_interval_ms', 'idle_opacity'))
+           2472 CALL                     8
+           2480 POP_TOP
+
+136        2482 LOAD_FAST                0 (self)
+           2484 LOAD_ATTR               51 (NULL|self + _register_overlay_if_enabled)
+
+137        2504 LOAD_FAST                2 (settings)
+           2506 LOAD_ATTR               24 (HUD)
+           2526 LOAD_ATTR               98 (show_hud_overlay)
+
+138        2546 LOAD_GLOBAL            100 (HudOverlay)
+
+139        2556 LOAD_FAST                2 (settings)
+           2558 LOAD_ATTR               24 (HUD)
+           2578 LOAD_ATTR               60 (overlays_opacity)
+
+140        2598 LOAD_FAST                2 (settings)
+           2600 LOAD_ATTR               24 (HUD)
+           2620 LOAD_ATTR               56 (layout)
+           2640 LOAD_GLOBAL            100 (HudOverlay)
+           2650 LOAD_ATTR               58 (OVERLAY_ID)
+           2670 BINARY_SUBSCR
+
+141        2674 LOAD_FAST                2 (settings)
+           2676 LOAD_ATTR               24 (HUD)
+           2696 LOAD_ATTR               62 (use_windowed_overlays)
+
+142        2716 LOAD_FAST                2 (settings)
+           2718 LOAD_ATTR               24 (HUD)
+           2738 LOAD_ATTR               56 (layout)
+           2758 LOAD_GLOBAL            100 (HudOverlay)
+           2768 LOAD_ATTR               58 (OVERLAY_ID)
+           2788 BINARY_SUBSCR
+           2792 LOAD_ATTR               64 (scale_factor)
+
+143        2812 LOAD_FAST                2 (settings)
+           2814 LOAD_ATTR                0 (Display)
+           2834 LOAD_ATTR               88 (realtime_overlay_update_interval_ms)
+
+144        2854 LOAD_FAST                2 (settings)
+           2856 LOAD_ATTR               24 (HUD)
+           2876 LOAD_ATTR               76 (overlays_speed_unit)
+
+145        2896 LOAD_FAST                2 (settings)
+           2898 LOAD_ATTR               24 (HUD)
+           2918 LOAD_ATTR               74 (overlays_fuel_estimation_mode)
+
+136        2938 KW_NAMES                14 (('enabled', 'overlay_cls', 'opacity', 'overlay_cfg', 'windowed_overlay', 'scale_factor', 'refresh_interval_ms', 'speed_unit', 'fuel_estimation_mode'))
+           2940 CALL                     9
+           2948 POP_TOP
+
+148        2950 LOAD_FAST                0 (self)
+           2952 LOAD_ATTR               51 (NULL|self + _register_overlay_if_enabled)
+
+149        2972 LOAD_FAST                2 (settings)
+           2974 LOAD_ATTR               24 (HUD)
+           2994 LOAD_ATTR              102 (show_circuit_info)
+
+150        3014 LOAD_GLOBAL            104 (CircuitInfoOverlay)
+
+151        3024 LOAD_FAST                2 (settings)
+           3026 LOAD_ATTR               24 (HUD)
+           3046 LOAD_ATTR               60 (overlays_opacity)
+
+152        3066 LOAD_FAST                2 (settings)
+           3068 LOAD_ATTR               24 (HUD)
+           3088 LOAD_ATTR               56 (layout)
+           3108 LOAD_GLOBAL            104 (CircuitInfoOverlay)
+           3118 LOAD_ATTR               58 (OVERLAY_ID)
+           3138 BINARY_SUBSCR
+
+153        3142 LOAD_FAST                2 (settings)
+           3144 LOAD_ATTR               24 (HUD)
+           3164 LOAD_ATTR               62 (use_windowed_overlays)
+
+154        3184 LOAD_FAST                2 (settings)
+           3186 LOAD_ATTR               24 (HUD)
+           3206 LOAD_ATTR               56 (layout)
+           3226 LOAD_GLOBAL            104 (CircuitInfoOverlay)
+           3236 LOAD_ATTR               58 (OVERLAY_ID)
+           3256 BINARY_SUBSCR
+           3260 LOAD_ATTR               64 (scale_factor)
+
+155        3280 LOAD_FAST                2 (settings)
+           3282 LOAD_ATTR               24 (HUD)
+           3302 LOAD_ATTR              106 (circuit_info_length)
+
+156        3322 LOAD_FAST                2 (settings)
+           3324 LOAD_ATTR                0 (Display)
+           3344 LOAD_ATTR               88 (realtime_overlay_update_interval_ms)
+
+148        3364 KW_NAMES                15 (('enabled', 'overlay_cls', 'opacity', 'overlay_cfg', 'windowed_overlay', 'scale_factor', 'circuit_info_length', 'refresh_interval_ms'))
+           3366 CALL                     8
+           3374 POP_TOP
+
+159        3376 LOAD_FAST                0 (self)
+           3378 LOAD_ATTR               51 (NULL|self + _register_overlay_if_enabled)
+
+160        3398 LOAD_FAST                2 (settings)
+           3400 LOAD_ATTR               24 (HUD)
+           3420 LOAD_ATTR              108 (show_pu_info)
+
+161        3440 LOAD_GLOBAL            110 (PuOverlay)
+
+162        3450 LOAD_FAST                2 (settings)
+           3452 LOAD_ATTR               24 (HUD)
+           3472 LOAD_ATTR               60 (overlays_opacity)
+
+163        3492 LOAD_FAST                2 (settings)
+           3494 LOAD_ATTR               24 (HUD)
+           3514 LOAD_ATTR               56 (layout)
+           3534 LOAD_GLOBAL            110 (PuOverlay)
+           3544 LOAD_ATTR               58 (OVERLAY_ID)
+           3564 BINARY_SUBSCR
+
+164        3568 LOAD_FAST                2 (settings)
+           3570 LOAD_ATTR               24 (HUD)
+           3590 LOAD_ATTR               62 (use_windowed_overlays)
+
+165        3610 LOAD_FAST                2 (settings)
+           3612 LOAD_ATTR               24 (HUD)
+           3632 LOAD_ATTR               56 (layout)
+           3652 LOAD_GLOBAL            110 (PuOverlay)
+           3662 LOAD_ATTR               58 (OVERLAY_ID)
+           3682 BINARY_SUBSCR
+           3686 LOAD_ATTR               64 (scale_factor)
+
+159        3706 KW_NAMES                16 (('enabled', 'overlay_cls', 'opacity', 'overlay_cfg', 'windowed_overlay', 'scale_factor'))
+           3708 CALL                     6
+           3716 POP_TOP
+
+168        3718 LOAD_FAST                2 (settings)
+           3720 LOAD_ATTR               24 (HUD)
+           3740 LOAD_ATTR              112 (show_mfd)
+           3760 POP_JUMP_IF_FALSE      193 (to 4148)
+
+169        3762 LOAD_FAST                0 (self)
+           3764 LOAD_ATTR               44 (window_manager)
+           3784 LOAD_ATTR              115 (NULL|self + register_overlay)
+
+170        3804 LOAD_GLOBAL            116 (MfdOverlay)
+           3814 LOAD_ATTR               58 (OVERLAY_ID)
+
+171        3834 LOAD_GLOBAL            117 (NULL + MfdOverlay)
+
+172        3844 LOAD_FAST                2 (settings)
+           3846 LOAD_ATTR               24 (HUD)
+           3866 LOAD_ATTR               56 (layout)
+           3886 LOAD_GLOBAL            116 (MfdOverlay)
+           3896 LOAD_ATTR               58 (OVERLAY_ID)
+           3916 BINARY_SUBSCR
+
+173        3920 LOAD_FAST                2 (settings)
+
+174        3922 LOAD_FAST                0 (self)
+           3924 LOAD_ATTR               10 (logger)
+
+175        3944 LOAD_CONST              17 (True)
+
+176        3946 LOAD_FAST                2 (settings)
+           3948 LOAD_ATTR               24 (HUD)
+           3968 LOAD_ATTR               60 (overlays_opacity)
+
+177        3988 LOAD_FAST                2 (settings)
+           3990 LOAD_ATTR               24 (HUD)
+           4010 LOAD_ATTR               56 (layout)
+           4030 LOAD_GLOBAL            116 (MfdOverlay)
+           4040 LOAD_ATTR               58 (OVERLAY_ID)
+           4060 BINARY_SUBSCR
+           4064 LOAD_ATTR               64 (scale_factor)
+
+178        4084 LOAD_FAST                2 (settings)
+           4086 LOAD_ATTR               24 (HUD)
+           4106 LOAD_ATTR               62 (use_windowed_overlays)
+
+171        4126 KW_NAMES                18 (('locked', 'opacity', 'scale_factor', 'windowed_overlay'))
+           4128 CALL                     7
+
+169        4136 CALL                     2
+           4144 POP_TOP
+           4146 JUMP_FORWARD            27 (to 4202)
+
+182     >> 4148 LOAD_FAST                0 (self)
+           4150 LOAD_ATTR               10 (logger)
+           4170 LOAD_ATTR                9 (NULL|self + debug)
+           4190 LOAD_CONST              19 ('MFD overlay is disabled')
+           4192 CALL                     1
+           4200 POP_TOP
+
+184     >> 4202 LOAD_FAST                0 (self)
+           4204 LOAD_ATTR               10 (logger)
+           4224 LOAD_ATTR                9 (NULL|self + debug)
+           4244 LOAD_CONST              20 ('Overlays manager initialized')
+           4246 CALL                     1
+           4254 POP_TOP
+           4256 RETURN_CONST             6 (None)
+
+Disassembly of <code object run at 0x0000020DAF2F85B0, file "apps\hud\ui\infra\overlays_mgr.py", line 186>:
+186           0 RESUME                   0
+
+188           2 LOAD_CONST               1 (True)
+              4 LOAD_FAST                0 (self)
+              6 STORE_ATTR               0 (running)
+
+189          16 LOAD_FAST                0 (self)
+             18 LOAD_ATTR                2 (wdt)
+             38 POP_JUMP_IF_FALSE       26 (to 92)
+
+190          40 LOAD_FAST                0 (self)
+             42 LOAD_ATTR                2 (wdt)
+             62 LOAD_ATTR                5 (NULL|self + start)
+             82 CALL                     0
+             90 POP_TOP
+
+191     >>   92 LOAD_FAST                0 (self)
+             94 LOAD_ATTR                6 (window_manager)
+            114 LOAD_ATTR                9 (NULL|self + run)
+            134 CALL                     0
+            142 POP_TOP
+            144 RETURN_CONST             2 (None)
+
+Disassembly of <code object stop at 0x0000020DAF2F82F0, file "apps\hud\ui\infra\overlays_mgr.py", line 193>:
+193           0 RESUME                   0
+
+195           2 LOAD_CONST               1 (False)
+              4 LOAD_FAST                0 (self)
+              6 STORE_ATTR               0 (running)
+
+196          16 LOAD_FAST                0 (self)
+             18 LOAD_ATTR                2 (wdt)
+             38 POP_JUMP_IF_FALSE       26 (to 92)
+
+197          40 LOAD_FAST                0 (self)
+             42 LOAD_ATTR                2 (wdt)
+             62 LOAD_ATTR                5 (NULL|self + stop)
+             82 CALL                     0
+             90 POP_TOP
+
+198     >>   92 LOAD_FAST                0 (self)
+             94 LOAD_ATTR                6 (window_manager)
+            114 LOAD_ATTR                5 (NULL|self + stop)
+            134 CALL                     0
+            142 POP_TOP
+            144 RETURN_CONST             2 (None)
+
+Disassembly of <code object get_stats at 0x0000020DAF2AD6B0, file "apps\hud\ui\infra\overlays_mgr.py", line 200>:
+200           0 RESUME                   0
+
+208           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (window_manager)
+             24 LOAD_ATTR                2 (overlays)
+             44 GET_ITER
+
+206          46 LOAD_FAST_AND_CLEAR      1 (overlay_id)
+             48 SWAP                     2
+             50 BUILD_MAP                0
+             52 SWAP                     2
+
+208     >>   54 FOR_ITER                20 (to 98)
+             58 STORE_FAST               1 (overlay_id)
+
+207          60 LOAD_FAST                1 (overlay_id)
+             62 LOAD_FAST                0 (self)
+             64 LOAD_ATTR                5 (NULL|self + _get_overlay_stats)
+             84 LOAD_FAST                1 (overlay_id)
+             86 CALL                     1
+             94 MAP_ADD                  2
+             96 JUMP_BACKWARD           22 (to 54)
+
+208     >>   98 END_FOR
+
+206         100 SWAP                     2
+            102 STORE_FAST               1 (overlay_id)
+            104 RETURN_VALUE
+        >>  106 SWAP                     2
+            108 POP_TOP
+            110 SWAP                     2
+            112 STORE_FAST               1 (overlay_id)
+            114 RERAISE                  0
+ExceptionTable:
+  50 to 98 -> 106 [2]
+
+Disassembly of <code object race_table_update at 0x0000020DAEC770A0, file "apps\hud\ui\infra\overlays_mgr.py", line 213>:
+213           0 RESUME                   0
+
+215           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (wdt)
+             24 POP_JUMP_IF_FALSE       26 (to 78)
+
+216          26 LOAD_FAST                0 (self)
+             28 LOAD_ATTR                0 (wdt)
+             48 LOAD_ATTR                3 (NULL|self + kick)
+             68 CALL                     0
+             76 POP_TOP
+
+217     >>   78 LOAD_FAST                0 (self)
+             80 LOAD_ATTR                5 (NULL|self + _prep_race_table_data)
+            100 LOAD_FAST                1 (data)
+            102 CALL                     1
+            110 POP_TOP
+
+218         112 LOAD_FAST                0 (self)
+            114 LOAD_ATTR                6 (window_manager)
+            134 LOAD_ATTR                9 (NULL|self + broadcast_data)
+            154 LOAD_CONST               1 ('race_table_update')
+            156 LOAD_FAST                1 (data)
+            158 CALL                     2
+            166 POP_TOP
+
+219         168 LOAD_FAST                0 (self)
+            170 LOAD_ATTR               11 (NULL|self + _handle_in_menu_status)
+            190 LOAD_FAST                1 (data)
+            192 CALL                     1
+            200 POP_TOP
+            202 RETURN_CONST             2 (None)
+
+Disassembly of <code object stream_overlays_update at 0x0000020DAF16B290, file "apps\hud\ui\infra\overlays_mgr.py", line 221>:
+221           0 RESUME                   0
+
+223           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + _input_telemetry_update)
+             24 LOAD_FAST                1 (data)
+             26 CALL                     1
+             34 POP_TOP
+
+224          36 LOAD_FAST                0 (self)
+             38 LOAD_ATTR                3 (NULL|self + _motion_update)
+             58 LOAD_FAST                1 (data)
+             60 CALL                     1
+             68 POP_TOP
+
+225          70 LOAD_FAST                0 (self)
+             72 LOAD_ATTR                5 (NULL|self + _hud_overlay_update)
+             92 LOAD_FAST                1 (data)
+             94 CALL                     1
+            102 POP_TOP
+
+226         104 LOAD_FAST                0 (self)
+            106 LOAD_ATTR                6 (rate_limiter)
+            126 LOAD_ATTR                9 (NULL|self + allows)
+            146 LOAD_CONST               1 ('stream-overlay-update')
+            148 CALL                     1
+            156 POP_JUMP_IF_FALSE       29 (to 216)
+
+227         158 LOAD_FAST                0 (self)
+            160 LOAD_ATTR               10 (window_manager)
+            180 LOAD_ATTR               13 (NULL|self + broadcast_data)
+            200 LOAD_CONST               2 ('stream_overlay_update')
+            202 LOAD_FAST                1 (data)
+            204 CALL                     2
+            212 POP_TOP
+            214 RETURN_CONST             3 (None)
+
+226     >>  216 RETURN_CONST             3 (None)
+
+Disassembly of <code object toggle_overlays_visibility at 0x0000020DAF09BAB0, file "apps\hud\ui\infra\overlays_mgr.py", line 231>:
+231           0 RESUME                   0
+
+234           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (logger)
+             24 LOAD_ATTR                3 (NULL|self + debug)
+             44 LOAD_CONST               1 ('Toggling overlays visibility. oid=%s')
+             46 LOAD_FAST                1 (oid)
+             48 CALL                     2
+             56 POP_TOP
+
+235          58 LOAD_FAST                1 (oid)
+             60 POP_JUMP_IF_FALSE       32 (to 126)
+
+236          62 LOAD_FAST                0 (self)
+             64 LOAD_ATTR                4 (window_manager)
+             84 LOAD_ATTR                7 (NULL|self + unicast_data)
+            104 LOAD_FAST                1 (oid)
+            106 LOAD_CONST               2 ('__toggle_visibility__')
+            108 BUILD_MAP                0
+            110 LOAD_CONST               3 (True)
+            112 KW_NAMES                 4 (('high_prio',))
+            114 CALL                     4
+            122 POP_TOP
+            124 RETURN_CONST             5 (None)
+
+238     >>  126 LOAD_FAST                0 (self)
+            128 LOAD_ATTR                4 (window_manager)
+            148 LOAD_ATTR                9 (NULL|self + broadcast_data)
+            168 LOAD_CONST               2 ('__toggle_visibility__')
+            170 BUILD_MAP                0
+            172 LOAD_CONST               3 (True)
+            174 KW_NAMES                 4 (('high_prio',))
+            176 CALL                     3
+            184 POP_TOP
+            186 RETURN_CONST             5 (None)
+
+Disassembly of <code object on_locked_state_change at 0x0000020DB0C178E0, file "apps\hud\ui\infra\overlays_mgr.py", line 240>:
+240           0 RESUME                   0
+
+243           2 LOAD_CONST               1 ('success')
+
+244           4 LOAD_CONST               2 ('lock-widgets handler executed.')
+
+242           6 LOAD_CONST               3 (('status', 'message'))
+              8 BUILD_CONST_KEY_MAP      2
+             10 STORE_FAST               2 (rsp)
+
+250          12 LOAD_FAST                1 (args)
+             14 LOAD_ATTR                1 (NULL|self + get)
+             34 LOAD_CONST               4 ('new-value')
+             36 CALL                     1
+             44 STORE_FAST               3 (locked_value)
+
+251          46 LOAD_GLOBAL              3 (NULL + isinstance)
+             56 LOAD_FAST                3 (locked_value)
+             58 LOAD_GLOBAL              4 (bool)
+             68 CALL                     2
+             76 POP_JUMP_IF_TRUE        12 (to 102)
+
+252          78 LOAD_CONST               5 ('error')
+             80 LOAD_FAST                2 (rsp)
+             82 LOAD_CONST               6 ('status')
+             84 STORE_SUBSCR
+
+253          88 LOAD_CONST               7 ("Invalid or missing 'new-value' in args")
+             90 LOAD_FAST                2 (rsp)
+             92 LOAD_CONST               8 ('message')
+             94 STORE_SUBSCR
+
+254          98 LOAD_FAST                2 (rsp)
+            100 RETURN_VALUE
+
+259     >>  102 NOP
+
+260         104 LOAD_FAST                0 (self)
+            106 LOAD_ATTR                6 (window_manager)
+            126 LOAD_ATTR                9 (NULL|self + broadcast_data)
+            146 LOAD_CONST               9 ('__set_locked_state__')
+            148 LOAD_FAST                1 (args)
+            150 LOAD_CONST              10 (True)
+            152 KW_NAMES                11 (('high_prio',))
+            154 CALL                     3
+            162 POP_TOP
+
+269         164 LOAD_FAST                3 (locked_value)
+            166 POP_JUMP_IF_TRUE         2 (to 172)
+
+270         168 LOAD_FAST                2 (rsp)
+            170 RETURN_VALUE
+
+275     >>  172 BUILD_MAP                0
+            174 STORE_FAST               5 (layout)
+
+277         176 LOAD_GLOBAL             19 (NULL + list)
+            186 LOAD_FAST                0 (self)
+            188 LOAD_ATTR                6 (window_manager)
+            208 LOAD_ATTR               20 (overlays)
+            228 LOAD_ATTR               23 (NULL|self + keys)
+            248 CALL                     0
+            256 CALL                     1
+            264 GET_ITER
+        >>  266 FOR_ITER                72 (to 414)
+            270 STORE_FAST               6 (overlay_id)
+
+278         272 NOP
+
+279         274 LOAD_FAST                0 (self)
+            276 LOAD_ATTR               25 (NULL|self + _get_window_info)
+            296 LOAD_FAST                6 (overlay_id)
+            298 CALL                     1
+            306 STORE_FAST               7 (curr_params)
+
+280         308 LOAD_FAST                0 (self)
+            310 LOAD_ATTR               12 (logger)
+            330 LOAD_ATTR               27 (NULL|self + debug)
+
+281         350 LOAD_CONST              15 ("Current config for overlay '%s' is %s")
+
+282         352 LOAD_FAST                6 (overlay_id)
+
+283         354 LOAD_FAST                7 (curr_params)
+
+280         356 CALL                     3
+            364 POP_TOP
+
+285         366 LOAD_FAST                7 (curr_params)
+            368 POP_JUMP_IF_FALSE       16 (to 402)
+            370 LOAD_FAST                7 (curr_params)
+            372 LOAD_ATTR               29 (NULL|self + toJSON)
+            392 CALL                     0
+            400 JUMP_FORWARD             1 (to 404)
+        >>  402 BUILD_MAP                0
+        >>  404 LOAD_FAST                5 (layout)
+            406 LOAD_FAST                6 (overlay_id)
+            408 STORE_SUBSCR
+            412 JUMP_BACKWARD           74 (to 266)
+
+277     >>  414 END_FOR
+
+300         416 LOAD_FAST                5 (layout)
+            418 LOAD_FAST                2 (rsp)
+            420 LOAD_CONST              19 ('layout')
+            422 STORE_SUBSCR
+
+301         426 LOAD_FAST                2 (rsp)
+            428 RETURN_VALUE
+        >>  430 PUSH_EXC_INFO
+
+261         432 LOAD_GLOBAL             10 (Exception)
+            442 CHECK_EXC_MATCH
+            444 POP_JUMP_IF_FALSE       63 (to 572)
+            446 STORE_FAST               4 (e)
+
+262         448 LOAD_FAST                0 (self)
+            450 LOAD_ATTR               12 (logger)
+            470 LOAD_ATTR               15 (NULL|self + exception)
+            490 LOAD_CONST              12 ('Failed to broadcast locked state')
+            492 CALL                     1
+            500 POP_TOP
+
+263         502 LOAD_CONST               5 ('error')
+            504 LOAD_FAST                2 (rsp)
+            506 LOAD_CONST               6 ('status')
+            508 STORE_SUBSCR
+
+264         512 LOAD_CONST              13 ('Failed to apply locked state to overlays')
+            514 LOAD_FAST                2 (rsp)
+            516 LOAD_CONST               8 ('message')
+            518 STORE_SUBSCR
+
+265         522 LOAD_GLOBAL             17 (NULL + str)
+            532 LOAD_FAST                4 (e)
+            534 CALL                     1
+            542 LOAD_FAST                2 (rsp)
+            544 LOAD_CONST               5 ('error')
+            546 STORE_SUBSCR
+
+266         550 LOAD_FAST                2 (rsp)
+            552 SWAP                     2
+            554 POP_EXCEPT
+            556 LOAD_CONST              14 (None)
+            558 STORE_FAST               4 (e)
+            560 DELETE_FAST              4 (e)
+            562 RETURN_VALUE
+        >>  564 LOAD_CONST              14 (None)
+            566 STORE_FAST               4 (e)
+            568 DELETE_FAST              4 (e)
+            570 RERAISE                  1
+
+261     >>  572 RERAISE                  0
+        >>  574 COPY                     3
+            576 POP_EXCEPT
+            578 RERAISE                  1
+        >>  580 PUSH_EXC_INFO
+
+287         582 LOAD_GLOBAL             10 (Exception)
+            592 CHECK_EXC_MATCH
+            594 POP_JUMP_IF_FALSE       62 (to 720)
+            596 STORE_FAST               4 (e)
+
+288         598 LOAD_FAST                0 (self)
+            600 LOAD_ATTR               12 (logger)
+            620 LOAD_ATTR               15 (NULL|self + exception)
+
+289         640 LOAD_CONST              16 ("Aborting layout capture; failed for overlay '%s'")
+
+290         642 LOAD_FAST                6 (overlay_id)
+
+288         644 CALL                     2
+            652 POP_TOP
+
+292         654 LOAD_CONST               5 ('error')
+            656 LOAD_FAST                2 (rsp)
+            658 LOAD_CONST               6 ('status')
+            660 STORE_SUBSCR
+
+293         664 LOAD_CONST              17 ('Failed to capture overlay layout')
+            666 LOAD_FAST                2 (rsp)
+            668 LOAD_CONST               8 ('message')
+            670 STORE_SUBSCR
+
+294         674 LOAD_FAST                6 (overlay_id)
+            676 FORMAT_VALUE             0
+            678 LOAD_CONST              18 (': ')
+            680 LOAD_FAST                4 (e)
+            682 FORMAT_VALUE             0
+            684 BUILD_STRING             3
+            686 LOAD_FAST                2 (rsp)
+            688 LOAD_CONST               5 ('error')
+            690 STORE_SUBSCR
+
+295         694 LOAD_FAST                2 (rsp)
+            696 SWAP                     2
+            698 POP_EXCEPT
+            700 LOAD_CONST              14 (None)
+            702 STORE_FAST               4 (e)
+            704 DELETE_FAST              4 (e)
+            706 SWAP                     2
+            708 POP_TOP
+            710 RETURN_VALUE
+        >>  712 LOAD_CONST              14 (None)
+            714 STORE_FAST               4 (e)
+            716 DELETE_FAST              4 (e)
+            718 RERAISE                  1
+
+287     >>  720 RERAISE                  0
+        >>  722 COPY                     3
+            724 POP_EXCEPT
+            726 RERAISE                  1
+ExceptionTable:
+  104 to 162 -> 430 [0]
+  274 to 410 -> 580 [1]
+  430 to 446 -> 574 [1] lasti
+  448 to 550 -> 564 [1] lasti
+  552 to 552 -> 574 [1] lasti
+  564 to 572 -> 574 [1] lasti
+  580 to 596 -> 722 [2] lasti
+  598 to 694 -> 712 [2] lasti
+  696 to 696 -> 722 [2] lasti
+  712 to 720 -> 722 [2] lasti
+
+Disassembly of <code object set_overlays_opacity at 0x0000020DAF2AD570, file "apps\hud\ui\infra\overlays_mgr.py", line 303>:
+303           0 RESUME                   0
+
+305           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (logger)
+             24 LOAD_ATTR                3 (NULL|self + debug)
+             44 LOAD_CONST               1 ('Setting overlays opacity to %s%%')
+             46 LOAD_FAST                1 (opacity)
+             48 CALL                     2
+             56 POP_TOP
+
+306          58 LOAD_FAST                0 (self)
+             60 LOAD_ATTR                4 (window_manager)
+             80 LOAD_ATTR                7 (NULL|self + broadcast_data)
+            100 LOAD_CONST               2 ('__set_opacity__')
+            102 LOAD_CONST               3 ('opacity')
+            104 LOAD_FAST                1 (opacity)
+            106 BUILD_MAP                1
+            108 LOAD_CONST               4 (True)
+            110 KW_NAMES                 5 (('high_prio',))
+            112 CALL                     3
+            120 POP_TOP
+            122 RETURN_CONST             6 (None)
+
+Disassembly of <code object next_page at 0x0000020DAF19FBD0, file "apps\hud\ui\infra\overlays_mgr.py", line 308>:
+308           0 RESUME                   0
+
+310           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (window_manager)
+             24 LOAD_ATTR                3 (NULL|self + unicast_data)
+             44 LOAD_GLOBAL              4 (MfdOverlay)
+             54 LOAD_ATTR                6 (OVERLAY_ID)
+             74 LOAD_CONST               1 ('next_page')
+             76 BUILD_MAP                0
+             78 CALL                     3
+             86 POP_TOP
+             88 RETURN_CONST             2 (None)
+
+Disassembly of <code object prev_page at 0x0000020DAF2D4030, file "apps\hud\ui\infra\overlays_mgr.py", line 312>:
+312           0 RESUME                   0
+
+314           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (window_manager)
+             24 LOAD_ATTR                3 (NULL|self + unicast_data)
+             44 LOAD_GLOBAL              4 (MfdOverlay)
+             54 LOAD_ATTR                6 (OVERLAY_ID)
+             74 LOAD_CONST               1 ('prev_page')
+             76 BUILD_MAP                0
+             78 CALL                     3
+             86 POP_TOP
+             88 RETURN_CONST             2 (None)
+
+Disassembly of <code object mfd_interact at 0x0000020DAF2D46F0, file "apps\hud\ui\infra\overlays_mgr.py", line 316>:
+316           0 RESUME                   0
+
+318           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (window_manager)
+             24 LOAD_ATTR                3 (NULL|self + unicast_data)
+             44 LOAD_GLOBAL              4 (MfdOverlay)
+             54 LOAD_ATTR                6 (OVERLAY_ID)
+             74 LOAD_CONST               1 ('mfd_interact')
+             76 BUILD_MAP                0
+             78 CALL                     3
+             86 POP_TOP
+             88 RETURN_CONST             2 (None)
+
+Disassembly of <code object set_overlays_layout at 0x0000020DAEEAFCC0, file "apps\hud\ui\infra\overlays_mgr.py", line 320>:
+320           0 RESUME                   0
+
+323           2 LOAD_CONST               1 ('success')
+
+324           4 LOAD_CONST               2 ('Overlays layout applied successfully.')
+
+322           6 LOAD_CONST               3 (('status', 'message'))
+              8 BUILD_CONST_KEY_MAP      2
+             10 STORE_FAST               2 (rsp)
+
+327          12 LOAD_GLOBAL              1 (NULL + isinstance)
+             22 LOAD_FAST                1 (layout)
+             24 LOAD_GLOBAL              2 (dict)
+             34 CALL                     2
+             42 POP_JUMP_IF_TRUE        12 (to 68)
+
+328          44 LOAD_CONST               4 ('error')
+             46 LOAD_FAST                2 (rsp)
+             48 LOAD_CONST               5 ('status')
+             50 STORE_SUBSCR
+
+329          54 LOAD_CONST               6 ('Invalid layout payload (expected dict)')
+             56 LOAD_FAST                2 (rsp)
+             58 LOAD_CONST               4 ('error')
+             60 STORE_SUBSCR
+
+330          64 LOAD_FAST                2 (rsp)
+             66 RETURN_VALUE
+
+332     >>   68 LOAD_FAST                1 (layout)
+             70 LOAD_ATTR                5 (NULL|self + items)
+             90 CALL                     0
+             98 GET_ITER
+        >>  100 FOR_ITER                35 (to 174)
+            104 UNPACK_SEQUENCE          2
+            108 STORE_FAST               3 (overlay_id)
+            110 STORE_FAST               4 (overlay_layout)
+
+333         112 NOP
+
+334         114 LOAD_FAST                0 (self)
+            116 LOAD_ATTR                6 (window_manager)
+            136 LOAD_ATTR                9 (NULL|self + unicast_data)
+
+335         156 LOAD_FAST                3 (overlay_id)
+
+336         158 LOAD_CONST               7 ('__set_config__')
+
+337         160 LOAD_FAST                4 (overlay_layout)
+
+334         162 CALL                     3
+            170 POP_TOP
+            172 JUMP_BACKWARD           37 (to 100)
+
+332     >>  174 END_FOR
+
+349         176 LOAD_FAST                0 (self)
+            178 LOAD_ATTR               17 (NULL|self + _set_overlays_visibility)
+            198 LOAD_CONST              11 (True)
+            200 CALL                     1
+            208 POP_TOP
+
+350         210 LOAD_FAST                2 (rsp)
+            212 RETURN_VALUE
+        >>  214 PUSH_EXC_INFO
+
+339         216 LOAD_GLOBAL             10 (Exception)
+            226 CHECK_EXC_MATCH
+            228 POP_JUMP_IF_FALSE       57 (to 344)
+            230 STORE_FAST               5 (e)
+
+340         232 LOAD_FAST                0 (self)
+            234 LOAD_ATTR               12 (logger)
+            254 LOAD_ATTR               15 (NULL|self + exception)
+
+341         274 LOAD_CONST               8 ("Failed to apply layout for overlay '%s'")
+
+342         276 LOAD_FAST                3 (overlay_id)
+
+340         278 CALL                     2
+            286 POP_TOP
+
+344         288 LOAD_CONST               4 ('error')
+            290 LOAD_FAST                2 (rsp)
+            292 LOAD_CONST               5 ('status')
+            294 STORE_SUBSCR
+
+345         298 LOAD_FAST                3 (overlay_id)
+            300 FORMAT_VALUE             0
+            302 LOAD_CONST               9 (': ')
+            304 LOAD_FAST                5 (e)
+            306 FORMAT_VALUE             0
+            308 BUILD_STRING             3
+            310 LOAD_FAST                2 (rsp)
+            312 LOAD_CONST               4 ('error')
+            314 STORE_SUBSCR
+
+346         318 LOAD_FAST                2 (rsp)
+            320 SWAP                     2
+            322 POP_EXCEPT
+            324 LOAD_CONST              10 (None)
+            326 STORE_FAST               5 (e)
+            328 DELETE_FAST              5 (e)
+            330 SWAP                     2
+            332 POP_TOP
+            334 RETURN_VALUE
+        >>  336 LOAD_CONST              10 (None)
+            338 STORE_FAST               5 (e)
+            340 DELETE_FAST              5 (e)
+            342 RERAISE                  1
+
+339     >>  344 RERAISE                  0
+        >>  346 COPY                     3
+            348 POP_EXCEPT
+            350 RERAISE                  1
+ExceptionTable:
+  114 to 170 -> 214 [1]
+  214 to 230 -> 346 [2] lasti
+  232 to 318 -> 336 [2] lasti
+  320 to 320 -> 346 [2] lasti
+  336 to 344 -> 346 [2] lasti
+
+Disassembly of <code object set_scale_factor at 0x0000020DAF2AD930, file "apps\hud\ui\infra\overlays_mgr.py", line 352>:
+352           0 RESUME                   0
+
+355           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (logger)
+             24 LOAD_ATTR                3 (NULL|self + debug)
+             44 LOAD_CONST               1 ('Setting overlay %s scale factor to %s')
+             46 LOAD_FAST                1 (oid)
+             48 LOAD_FAST                2 (scale_factor)
+             50 CALL                     3
+             58 POP_TOP
+
+356          60 LOAD_FAST                0 (self)
+             62 LOAD_ATTR                4 (window_manager)
+             82 LOAD_ATTR                7 (NULL|self + unicast_data)
+            102 LOAD_FAST                1 (oid)
+            104 LOAD_CONST               2 ('__set_scale_factor__')
+            106 LOAD_CONST               3 ('scale_factor')
+            108 LOAD_FAST                2 (scale_factor)
+            110 BUILD_MAP                1
+            112 CALL                     3
+            120 POP_TOP
+            122 RETURN_CONST             4 (None)
+
+Disassembly of <code object set_track_radar_idle_opacity at 0x0000020DAF2F8870, file "apps\hud\ui\infra\overlays_mgr.py", line 358>:
+358           0 RESUME                   0
+
+359           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (logger)
+             24 LOAD_ATTR                3 (NULL|self + debug)
+             44 LOAD_CONST               1 ('Setting track radar idle opacity to %s%%')
+             46 LOAD_FAST                1 (opacity)
+             48 CALL                     2
+             56 POP_TOP
+
+360          58 LOAD_FAST                0 (self)
+             60 LOAD_ATTR                4 (window_manager)
+             80 LOAD_ATTR                7 (NULL|self + unicast_data)
+
+361         100 LOAD_GLOBAL              8 (TrackRadarOverlay)
+            110 LOAD_ATTR               10 (OVERLAY_ID)
+
+362         130 LOAD_CONST               2 ('set_track_radar_idle_opacity')
+
+363         132 LOAD_CONST               3 ('opacity')
+            134 LOAD_FAST                1 (opacity)
+            136 BUILD_MAP                1
+
+364         138 LOAD_CONST               4 (True)
+
+360         140 KW_NAMES                 5 (('overlay_id', 'event', 'data', 'high_prio'))
+            142 CALL                     4
+            150 POP_TOP
+            152 RETURN_CONST             0 (None)
+
+Disassembly of <code object set_circuit_info_length at 0x0000020DAF2F89D0, file "apps\hud\ui\infra\overlays_mgr.py", line 367>:
+367           0 RESUME                   0
+
+368           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (logger)
+             24 LOAD_ATTR                3 (NULL|self + debug)
+             44 LOAD_CONST               1 ('Setting circuit info length to %spx')
+             46 LOAD_FAST                1 (length)
+             48 CALL                     2
+             56 POP_TOP
+
+369          58 LOAD_FAST                0 (self)
+             60 LOAD_ATTR                4 (window_manager)
+             80 LOAD_ATTR                7 (NULL|self + unicast_data)
+
+370         100 LOAD_GLOBAL              8 (CircuitInfoOverlay)
+            110 LOAD_ATTR               10 (OVERLAY_ID)
+
+371         130 LOAD_CONST               2 ('set_circuit_info_length')
+
+372         132 LOAD_CONST               3 ('length')
+            134 LOAD_FAST                1 (length)
+            136 BUILD_MAP                1
+
+373         138 LOAD_CONST               4 (True)
+
+369         140 KW_NAMES                 5 (('overlay_id', 'event', 'data', 'high_prio'))
+            142 CALL                     4
+            150 POP_TOP
+            152 RETURN_CONST             0 (None)
+
+Disassembly of <code object _reset_config at 0x0000020DB1038D30, file "apps\hud\ui\infra\overlays_mgr.py", line 378>:
+378           0 RESUME                   0
+
+380           2 RETURN_CONST             1 (None)
+
+Disassembly of <code object _get_window_info at 0x0000020DAF18BC90, file "apps\hud\ui\infra\overlays_mgr.py", line 382>:
+382           0 RESUME                   0
+
+384           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (logger)
+             24 LOAD_ATTR                3 (NULL|self + debug)
+             44 LOAD_CONST               1 ('Requesting window info for %s')
+             46 LOAD_FAST                1 (overlay_id)
+             48 CALL                     2
+             56 POP_TOP
+
+385          58 LOAD_FAST                0 (self)
+             60 LOAD_ATTR                4 (window_manager)
+             80 LOAD_ATTR                7 (NULL|self + request)
+            100 LOAD_FAST                1 (overlay_id)
+            102 LOAD_CONST               2 ('get_window_info')
+            104 LOAD_FAST                2 (timeout_ms)
+            106 KW_NAMES                 3 (('timeout_ms',))
+            108 CALL                     3
+            116 STORE_FAST               3 (ret)
+
+386         118 LOAD_FAST                3 (ret)
+            120 POP_JUMP_IF_TRUE         1 (to 124)
+
+387         122 RETURN_CONST             4 (None)
+
+388     >>  124 LOAD_GLOBAL              9 (NULL + OverlayPosition)
+            134 LOAD_ATTR               10 (fromJSON)
+            154 LOAD_FAST                3 (ret)
+            156 CALL                     1
+            164 RETURN_VALUE
+
+Disassembly of <code object _get_overlay_stats at 0x0000020DAF2ADA70, file "apps\hud\ui\infra\overlays_mgr.py", line 390>:
+390           0 RESUME                   0
+
+392           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (logger)
+             24 LOAD_ATTR                3 (NULL|self + debug)
+             44 LOAD_CONST               1 ('Requesting window stats for %s')
+             46 LOAD_FAST                1 (overlay_id)
+             48 CALL                     2
+             56 POP_TOP
+
+393          58 LOAD_FAST                0 (self)
+             60 LOAD_ATTR                4 (window_manager)
+             80 LOAD_ATTR                7 (NULL|self + request)
+            100 LOAD_FAST                1 (overlay_id)
+            102 LOAD_CONST               2 ('get_window_stats')
+            104 LOAD_FAST                2 (timeout_ms)
+            106 KW_NAMES                 3 (('timeout_ms',))
+            108 CALL                     3
+            116 RETURN_VALUE
+
+Disassembly of <code object _register_overlay_if_enabled at 0x0000020DB10484E0, file "apps\hud\ui\infra\overlays_mgr.py", line 395>:
+395           0 RESUME                   0
+
+405           2 LOAD_FAST                1 (enabled)
+              4 POP_JUMP_IF_TRUE        39 (to 84)
+
+406           6 LOAD_FAST                0 (self)
+              8 LOAD_ATTR                0 (logger)
+             28 LOAD_ATTR                3 (NULL|self + debug)
+             48 LOAD_CONST               1 ('%s overlay is disabled')
+             50 LOAD_FAST                2 (overlay_cls)
+             52 LOAD_ATTR                4 (OVERLAY_ID)
+             72 CALL                     2
+             80 POP_TOP
+
+407          82 RETURN_CONST             0 (None)
+
+409     >>   84 LOAD_FAST                0 (self)
+             86 LOAD_ATTR                6 (window_manager)
+            106 LOAD_ATTR                9 (NULL|self + register_overlay)
+
+410         126 LOAD_FAST                2 (overlay_cls)
+            128 LOAD_ATTR                4 (OVERLAY_ID)
+
+411         148 PUSH_NULL
+            150 LOAD_FAST                2 (overlay_cls)
+
+412         152 LOAD_FAST                3 (overlay_cfg)
+
+413         154 LOAD_FAST                0 (self)
+            156 LOAD_ATTR                0 (logger)
+
+411         176 BUILD_TUPLE              2
+
+414         178 LOAD_CONST               2 (True)
+
+415         180 LOAD_FAST                4 (opacity)
+
+416         182 LOAD_FAST                5 (windowed_overlay)
+
+411         184 LOAD_CONST               3 (('locked', 'opacity', 'windowed_overlay'))
+            186 BUILD_CONST_KEY_MAP      3
+
+417         188 LOAD_FAST                6 (overlay_kwargs)
+
+411         190 DICT_MERGE               1
+            192 CALL_FUNCTION_EX         1
+
+409         194 CALL                     2
+            202 POP_TOP
+            204 RETURN_CONST             0 (None)
+
+Disassembly of <code object _input_telemetry_update at 0x0000020DAF2D45D0, file "apps\hud\ui\infra\overlays_mgr.py", line 421>:
+421           0 RESUME                   0
+
+423           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (window_manager)
+             24 LOAD_ATTR                3 (NULL|self + send_high_freq_data)
+             44 LOAD_GLOBAL              5 (NULL + InputTelemetryData)
+             54 LOAD_ATTR                6 (from_json)
+             74 LOAD_FAST                1 (data)
+             76 CALL                     1
+             84 CALL                     1
+             92 POP_TOP
+             94 RETURN_CONST             1 (None)
+
+Disassembly of <code object _motion_update at 0x0000020DAF2D4930, file "apps\hud\ui\infra\overlays_mgr.py", line 425>:
+425           0 RESUME                   0
+
+427           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (window_manager)
+             24 LOAD_ATTR                3 (NULL|self + send_high_freq_data)
+             44 LOAD_GLOBAL              5 (NULL + LiveSessionMotionInfo)
+             54 LOAD_ATTR                6 (from_json)
+             74 LOAD_FAST                1 (data)
+             76 CALL                     1
+             84 CALL                     1
+             92 POP_TOP
+             94 RETURN_CONST             1 (None)
+
+Disassembly of <code object _hud_overlay_update at 0x0000020DAF2D4810, file "apps\hud\ui\infra\overlays_mgr.py", line 429>:
+429           0 RESUME                   0
+
+431           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (window_manager)
+             24 LOAD_ATTR                3 (NULL|self + send_high_freq_data)
+             44 LOAD_GLOBAL              5 (NULL + HudOverlayData)
+             54 LOAD_ATTR                6 (from_json)
+             74 LOAD_FAST                1 (data)
+             76 CALL                     1
+             84 CALL                     1
+             92 POP_TOP
+             94 RETURN_CONST             1 (None)
+
+Disassembly of <code object _set_overlays_visibility at 0x0000020DAF2DF440, file "apps\hud\ui\infra\overlays_mgr.py", line 433>:
+433           0 RESUME                   0
+
+434           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (window_manager)
+             24 LOAD_ATTR                3 (NULL|self + broadcast_data)
+             44 LOAD_CONST               1 ('__set_visibility__')
+             46 LOAD_CONST               2 ('visible')
+             48 LOAD_FAST                1 (visible)
+             50 BUILD_MAP                1
+             52 LOAD_CONST               3 (True)
+             54 KW_NAMES                 4 (('high_prio',))
+             56 CALL                     3
+             64 POP_TOP
+             66 RETURN_CONST             0 (None)
+
+Disassembly of <code object _set_telemetry_active at 0x0000020DAF2DF770, file "apps\hud\ui\infra\overlays_mgr.py", line 436>:
+436           0 RESUME                   0
+
+437           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (window_manager)
+             24 LOAD_ATTR                3 (NULL|self + broadcast_data)
+             44 LOAD_CONST               1 ('__set_telemetry_active__')
+             46 LOAD_CONST               2 ('active')
+             48 LOAD_FAST                1 (active)
+             50 BUILD_MAP                1
+             52 LOAD_CONST               3 (True)
+             54 KW_NAMES                 4 (('high_prio',))
+             56 CALL                     3
+             64 POP_TOP
+             66 RETURN_CONST             0 (None)
+
+Disassembly of <code object _wdt_status_callback at 0x0000020DAF19B5A0, file "apps\hud\ui\infra\overlays_mgr.py", line 439>:
+439           0 RESUME                   0
+
+441           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (logger)
+             24 LOAD_ATTR                3 (NULL|self + debug)
+             44 LOAD_CONST               1 ('Local WDT status: %s')
+             46 LOAD_FAST                1 (active)
+             48 CALL                     2
+             56 POP_TOP
+
+442          58 LOAD_FAST                1 (active)
+             60 LOAD_FAST                0 (self)
+             62 STORE_ATTR               2 (_local_wdt_ok)
+
+443          72 LOAD_FAST                0 (self)
+             74 LOAD_ATTR                7 (NULL|self + _update_telemetry_active)
+             94 CALL                     0
+            102 POP_TOP
+            104 RETURN_CONST             2 (None)
+
+Disassembly of <code object _handle_in_menu_status at 0x0000020DAEB6E060, file "apps\hud\ui\infra\overlays_mgr.py", line 445>:
+445           0 RESUME                   0
+
+447           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_auto_hide_in_menu)
+             24 POP_JUMP_IF_TRUE         1 (to 28)
+
+448          26 RETURN_CONST             1 (None)
+
+449     >>   28 LOAD_FAST                1 (data)
+             30 LOAD_ATTR                3 (NULL|self + get)
+             50 LOAD_CONST               2 ('in-menu')
+             52 LOAD_CONST               3 (False)
+             54 CALL                     2
+             62 POP_JUMP_IF_FALSE       18 (to 100)
+
+450          64 LOAD_FAST                0 (self)
+             66 LOAD_ATTR                5 (NULL|self + _set_telemetry_active)
+             86 LOAD_CONST               3 (False)
+             88 CALL                     1
+             96 POP_TOP
+
+451          98 RETURN_CONST             1 (None)
+
+453     >>  100 LOAD_FAST                1 (data)
+            102 LOAD_ATTR                3 (NULL|self + get)
+            122 LOAD_CONST               4 ('is-spectating')
+            124 LOAD_CONST               3 (False)
+            126 CALL                     2
+            134 POP_JUMP_IF_TRUE       141 (to 418)
+
+454         136 LOAD_FAST                1 (data)
+            138 LOAD_CONST               5 ('event-type')
+            140 BINARY_SUBSCR
+            144 STORE_FAST               2 (session_type)
+
+455         146 LOAD_CONST               1 (None)
+            148 STORE_FAST               3 (driver_status)
+
+456         150 LOAD_GLOBAL              7 (NULL + is_tt_session)
+            160 LOAD_FAST                2 (session_type)
+            162 CALL                     1
+            170 POP_JUMP_IF_FALSE       34 (to 240)
+
+457         172 LOAD_FAST                1 (data)
+            174 LOAD_ATTR                3 (NULL|self + get)
+            194 LOAD_CONST               6 ('tt-data')
+            196 BUILD_MAP                0
+            198 CALL                     2
+            206 LOAD_ATTR                3 (NULL|self + get)
+            226 LOAD_CONST               7 ('driver-status')
+            228 CALL                     1
+            236 STORE_FAST               3 (driver_status)
+            238 JUMP_FORWARD            66 (to 372)
+
+459     >>  240 LOAD_GLOBAL              9 (NULL + get_ref_row)
+            250 LOAD_FAST                1 (data)
+            252 CALL                     1
+            260 STORE_FAST               4 (ref_row)
+
+462         262 LOAD_FAST                4 (ref_row)
+            264 POP_JUMP_IF_FALSE       53 (to 372)
+
+463         266 LOAD_FAST                4 (ref_row)
+            268 LOAD_ATTR                3 (NULL|self + get)
+            288 LOAD_CONST               8 ('lap-info')
+            290 BUILD_MAP                0
+            292 CALL                     2
+            300 STORE_FAST               5 (lap_info)
+
+464         302 LOAD_FAST                5 (lap_info)
+            304 LOAD_ATTR                3 (NULL|self + get)
+            324 LOAD_CONST               9 ('curr-lap')
+            326 BUILD_MAP                0
+            328 CALL                     2
+            336 STORE_FAST               6 (curr_lap)
+
+465         338 LOAD_FAST                6 (curr_lap)
+            340 LOAD_ATTR                3 (NULL|self + get)
+            360 LOAD_CONST               7 ('driver-status')
+            362 CALL                     1
+            370 STORE_FAST               3 (driver_status)
+
+467     >>  372 LOAD_FAST                3 (driver_status)
+            374 LOAD_CONST              10 ('IN_GARAGE')
+            376 COMPARE_OP              40 (==)
+            380 POP_JUMP_IF_FALSE       18 (to 418)
+
+468         382 LOAD_FAST                0 (self)
+            384 LOAD_ATTR                5 (NULL|self + _set_telemetry_active)
+            404 LOAD_CONST               3 (False)
+            406 CALL                     1
+            414 POP_TOP
+
+469         416 RETURN_CONST             1 (None)
+
+471     >>  418 LOAD_FAST                0 (self)
+            420 LOAD_ATTR               11 (NULL|self + _update_telemetry_active)
+            440 CALL                     0
+            448 POP_TOP
+            450 RETURN_CONST             1 (None)
+
+Disassembly of <code object _update_telemetry_active at 0x0000020DAF2D4A50, file "apps\hud\ui\infra\overlays_mgr.py", line 473>:
+473           0 RESUME                   0
+
+475           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + _set_telemetry_active)
+             24 LOAD_FAST                0 (self)
+             26 LOAD_ATTR                2 (wdt)
+             46 POP_JUMP_IF_NOT_NONE     7 (to 62)
+             48 LOAD_CONST               2 (True)
+             50 CALL                     1
+             58 POP_TOP
+             60 RETURN_CONST             1 (None)
+        >>   62 LOAD_FAST                0 (self)
+             64 LOAD_ATTR                4 (_local_wdt_ok)
+             84 CALL                     1
+             92 POP_TOP
+             94 RETURN_CONST             1 (None)
+
+Disassembly of <code object _prep_race_table_data at 0x0000020DAF2C2170, file "apps\hud\ui\infra\overlays_mgr.py", line 477>:
+477           0 RESUME                   0
+
+479           2 LOAD_FAST                1 (data)
+              4 LOAD_ATTR                1 (NULL|self + get)
+             24 LOAD_CONST               1 ('table-entries')
+             26 BUILD_LIST               0
+             28 CALL                     2
+             36 STORE_FAST               2 (table_entries)
+
+480          38 LOAD_FAST                2 (table_entries)
+             40 LOAD_ATTR                3 (NULL|self + sort)
+             60 LOAD_CONST               2 (<code object <lambda> at 0x0000020DAF2F1990, file "apps\hud\ui\infra\overlays_mgr.py", line 480>)
+             62 MAKE_FUNCTION            0
+             64 KW_NAMES                 3 (('key',))
+             66 CALL                     1
+             74 POP_TOP
+
+481          76 LOAD_GLOBAL              5 (NULL + get_ref_row_index)
+             86 LOAD_FAST                1 (data)
+             88 CALL                     1
+             96 STORE_FAST               3 (ref_row_idx)
+
+482          98 LOAD_FAST                3 (ref_row_idx)
+            100 LOAD_FAST                1 (data)
+            102 LOAD_CONST               4 ('ref-row-index')
+            104 STORE_SUBSCR
+            108 RETURN_CONST             5 (None)
+
+Disassembly of <code object <lambda> at 0x0000020DAF2F1990, file "apps\hud\ui\infra\overlays_mgr.py", line 480>:
+480           0 RESUME                   0
+              2 LOAD_FAST                0 (x)
+              4 LOAD_CONST               1 ('driver-info')
+              6 BINARY_SUBSCR
+             10 LOAD_CONST               2 ('position')
+             12 BINARY_SUBSCR
+             16 RETURN_VALUE

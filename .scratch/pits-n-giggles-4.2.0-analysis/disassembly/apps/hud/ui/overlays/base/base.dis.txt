@@ -1,0 +1,1798 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (ctypes)
+              8 STORE_NAME               0 (ctypes)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               1 (None)
+             14 IMPORT_NAME              1 (logging)
+             16 STORE_NAME               1 (logging)
+
+ 27          18 LOAD_CONST               0 (0)
+             20 LOAD_CONST               2 (('Path',))
+             22 IMPORT_NAME              2 (pathlib)
+             24 IMPORT_FROM              3 (Path)
+             26 STORE_NAME               3 (Path)
+             28 POP_TOP
+
+ 28          30 LOAD_CONST               0 (0)
+             32 LOAD_CONST               3 (('perf_counter_ns',))
+             34 IMPORT_NAME              4 (time)
+             36 IMPORT_FROM              5 (perf_counter_ns)
+             38 STORE_NAME               5 (perf_counter_ns)
+             40 POP_TOP
+
+ 29          42 LOAD_CONST               0 (0)
+             44 LOAD_CONST               4 (('Any', 'Callable', 'Dict', 'Optional', 'Type', 'TypeVar'))
+             46 IMPORT_NAME              6 (typing)
+             48 IMPORT_FROM              7 (Any)
+             50 STORE_NAME               7 (Any)
+             52 IMPORT_FROM              8 (Callable)
+             54 STORE_NAME               8 (Callable)
+             56 IMPORT_FROM              9 (Dict)
+             58 STORE_NAME               9 (Dict)
+             60 IMPORT_FROM             10 (Optional)
+             62 STORE_NAME              10 (Optional)
+             64 IMPORT_FROM             11 (Type)
+             66 STORE_NAME              11 (Type)
+             68 IMPORT_FROM             12 (TypeVar)
+             70 STORE_NAME              12 (TypeVar)
+             72 POP_TOP
+
+ 31          74 LOAD_CONST               0 (0)
+             76 LOAD_CONST               5 (('Signal', 'Slot'))
+             78 IMPORT_NAME             13 (PySide6.QtCore)
+             80 IMPORT_FROM             14 (Signal)
+             82 STORE_NAME              14 (Signal)
+             84 IMPORT_FROM             15 (Slot)
+             86 STORE_NAME              15 (Slot)
+             88 POP_TOP
+
+ 32          90 LOAD_CONST               0 (0)
+             92 LOAD_CONST               6 (('QIcon',))
+             94 IMPORT_NAME             16 (PySide6.QtGui)
+             96 IMPORT_FROM             17 (QIcon)
+             98 STORE_NAME              17 (QIcon)
+            100 POP_TOP
+
+ 34         102 LOAD_CONST               0 (0)
+            104 LOAD_CONST               7 (('HighFreqBase',))
+            106 IMPORT_NAME             18 (apps.hud.ui.infra.hf_types)
+            108 IMPORT_FROM             19 (HighFreqBase)
+            110 STORE_NAME              19 (HighFreqBase)
+            112 POP_TOP
+
+ 35         114 LOAD_CONST               0 (0)
+            116 LOAD_CONST               8 (('load_icon',))
+            118 IMPORT_NAME             20 (lib.assets_loader)
+            120 IMPORT_FROM             21 (load_icon)
+            122 STORE_NAME              21 (load_icon)
+            124 POP_TOP
+
+ 36         126 LOAD_CONST               0 (0)
+            128 LOAD_CONST               9 (('OverlayPosition',))
+            130 IMPORT_NAME             22 (lib.config)
+            132 IMPORT_FROM             23 (OverlayPosition)
+            134 STORE_NAME              23 (OverlayPosition)
+            136 POP_TOP
+
+ 37         138 LOAD_CONST               0 (0)
+            140 LOAD_CONST              10 (('EventCounter',))
+            142 IMPORT_NAME             24 (lib.event_counter)
+            144 IMPORT_FROM             25 (EventCounter)
+            146 STORE_NAME              25 (EventCounter)
+            148 POP_TOP
+
+ 38         150 LOAD_CONST               0 (0)
+            152 LOAD_CONST              11 (('APP_NAME_SNAKE',))
+            154 IMPORT_NAME             26 (meta.meta)
+            156 IMPORT_FROM             27 (APP_NAME_SNAKE)
+            158 STORE_NAME              27 (APP_NAME_SNAKE)
+            160 POP_TOP
+
+ 42         162 LOAD_NAME                8 (Callable)
+            164 LOAD_NAME                9 (Dict)
+            166 LOAD_NAME               28 (str)
+            168 LOAD_NAME                7 (Any)
+            170 BUILD_TUPLE              2
+            172 BINARY_SUBSCR
+            176 BUILD_LIST               1
+            178 LOAD_CONST               1 (None)
+            180 BUILD_TUPLE              2
+            182 BINARY_SUBSCR
+            186 STORE_NAME              29 (OverlayCommandHandler)
+
+ 43         188 LOAD_NAME                8 (Callable)
+            190 LOAD_NAME                9 (Dict)
+            192 LOAD_NAME               28 (str)
+            194 LOAD_NAME                7 (Any)
+            196 BUILD_TUPLE              2
+            198 BINARY_SUBSCR
+            202 BUILD_LIST               1
+            204 LOAD_NAME               28 (str)
+            206 BUILD_TUPLE              2
+            208 BINARY_SUBSCR
+            212 STORE_NAME              30 (OverlayRequestHandler)
+
+ 45         214 PUSH_NULL
+            216 LOAD_NAME               12 (TypeVar)
+            218 LOAD_CONST              12 ('HighFreqObjType')
+            220 LOAD_NAME               19 (HighFreqBase)
+            222 KW_NAMES                13 (('bound',))
+            224 CALL                     2
+            232 STORE_NAME              31 (HighFreqObjType)
+
+ 49         234 PUSH_NULL
+            236 LOAD_BUILD_CLASS
+            238 LOAD_CONST              14 (<code object BaseOverlay at 0x0000020DB0CBE880, file "apps\hud\ui\overlays\base\base.py", line 49>)
+            240 MAKE_FUNCTION            0
+            242 LOAD_CONST              15 ('BaseOverlay')
+            244 CALL                     2
+            252 STORE_NAME              32 (BaseOverlay)
+            254 RETURN_CONST             1 (None)
+
+Disassembly of <code object BaseOverlay at 0x0000020DB0CBE880, file "apps\hud\ui\overlays\base\base.py", line 49>:
+ 49           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('BaseOverlay')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+ 50          12 LOAD_CONST               1 ('\n    Rendering-engine-agnostic overlay base class providing the core overlay lifecycle,\n    configuration handling, and command/request infrastructure.\n\n    This class contains no UI toolkit assumptions and does not depend on any rendering\n    engine. It defines the high-level behavior shared by all overlay types, while\n    delegating rendering and windowing to derived classes.\n\n    Responsibilities provided by BaseOverlay:\n    -----------------------------------------\n    - Stores overlay identity, configuration, and runtime state.\n    - Defines the command/request dispatch mechanism. Derived overlays automatically gain:\n        - `on_event()` decorator for command handlers\n        - `on_request()` decorator for request/response handlers\n        - Automatic dispatch via `_handle_cmd()` and `_handle_request()`\n    - Manages default commands such as:\n        - toggling visibility (fade in/out)\n        - updating locked state\n        - setting opacity\n        - applying new configuration\n        - returning geometry/position (`get_window_info`)\n    - Drives UI lifecycle by calling:\n        - `_setup_window()`     (partially implemented here; extended by rendering subclass)\n        - `post_setup()`        (no-op hook called after _setup_window; override in leaf classes)\n        - `build_ui()`          (implemented by rendering subclass)\n        - `apply_config()`      (UI-specific geometry/opacity; implemented by rendering subclass)\n\n    What derived classes must implement:\n    ------------------------------------\n    Rendering subclasses (e.g. BaseOverlayQML) must implement:\n        - `set_window_title()`   - set window title\n        - `set_window_icon()`    - set window icon\n        - `build_ui()`           - construct the UI\n        - `apply_config()`       - apply geometry and opacity\n        - `update_window_flags()`- locked mode / windowed overlay behavior\n        - `set_opacity()`        - apply opacity to the backend window\n        - `get_window_info()`    - return window geometry\n        - `set_window_position()`- set window position and update self.config\n        - `set_visibility()`     - show or hide the window\n        - `get_visibility()`     - return current visibility state\n\n    When to subclass BaseOverlay:\n    ------------------------------\n    Do not subclass BaseOverlay directly for new overlays. Instead subclass one of:\n        - BaseOverlayQML     - for QML-based overlays\n\n    BaseOverlay deliberately contains no UI behavior so that multiple rendering\n    technologies can coexist and share the same command/IPC infrastructure.\n\n    Subclass BaseOverlay only if you need to add new UI-specific behavior.\n    ')
+             14 STORE_NAME               3 (__doc__)
+
+101          16 PUSH_NULL
+             18 LOAD_NAME                4 (Signal)
+             20 LOAD_NAME                5 (str)
+             22 LOAD_NAME                6 (object)
+             24 CALL                     2
+             32 STORE_NAME               7 (response_signal)
+
+102          34 LOAD_CONST               2 ('')
+             36 STORE_NAME               8 (OVERLAY_ID)
+             38 LOAD_NAME                5 (str)
+             40 LOAD_NAME                9 (__annotations__)
+             42 LOAD_CONST               3 ('OVERLAY_ID')
+             44 STORE_SUBSCR
+
+104          48 LOAD_CONST               4 ('config')
+
+105          50 LOAD_NAME               10 (OverlayPosition)
+
+104          52 LOAD_CONST               5 ('logger')
+
+106          54 LOAD_NAME               11 (logging)
+             56 LOAD_ATTR               24 (Logger)
+
+104          76 LOAD_CONST               6 ('locked')
+
+107          78 LOAD_NAME               13 (bool)
+
+104          80 LOAD_CONST               7 ('opacity')
+
+108          82 LOAD_NAME               14 (int)
+
+104          84 LOAD_CONST               8 ('scale_factor')
+
+109          86 LOAD_NAME               15 (float)
+
+104          88 LOAD_CONST               9 ('windowed_overlay')
+
+110          90 LOAD_NAME               13 (bool)
+
+104          92 BUILD_TUPLE             12
+             94 LOAD_CONST              10 (<code object __init__ at 0x0000020DAEDE7840, file "apps\hud\ui\overlays\base\base.py", line 104>)
+             96 MAKE_FUNCTION            4 (annotations)
+             98 STORE_NAME              16 (__init__)
+
+145         100 LOAD_CONST               6 ('locked')
+            102 LOAD_NAME               13 (bool)
+            104 BUILD_TUPLE              2
+            106 LOAD_CONST              11 (<code object set_locked_state at 0x0000020DAF16B430, file "apps\hud\ui\overlays\base\base.py", line 145>)
+            108 MAKE_FUNCTION            4 (annotations)
+            110 STORE_NAME              17 (set_locked_state)
+
+154         112 LOAD_CONST              12 (<code object toggle_visibility at 0x0000020DAEEDBC10, file "apps\hud\ui\overlays\base\base.py", line 154>)
+            114 MAKE_FUNCTION            0
+            116 STORE_NAME              18 (toggle_visibility)
+
+166         118 LOAD_CONST              13 ('active')
+            120 LOAD_NAME               13 (bool)
+            122 BUILD_TUPLE              2
+            124 LOAD_CONST              14 (<code object set_telemetry_active at 0x0000020DAEFD7E10, file "apps\hud\ui\overlays\base\base.py", line 166>)
+            126 MAKE_FUNCTION            4 (annotations)
+            128 STORE_NAME              19 (set_telemetry_active)
+
+189         130 LOAD_CONST              15 (<code object pre_setup at 0x0000020DAF2949F0, file "apps\hud\ui\overlays\base\base.py", line 189>)
+            132 MAKE_FUNCTION            0
+            134 STORE_NAME              20 (pre_setup)
+
+196         136 LOAD_CONST              16 (<code object post_setup at 0x0000020DB1038440, file "apps\hud\ui\overlays\base\base.py", line 196>)
+            138 MAKE_FUNCTION            0
+            140 STORE_NAME              21 (post_setup)
+
+199         142 LOAD_CONST              17 (<code object _setup_window at 0x0000020DAF29EA30, file "apps\hud\ui\overlays\base\base.py", line 199>)
+            144 MAKE_FUNCTION            0
+            146 STORE_NAME              22 (_setup_window)
+
+206         148 LOAD_CONST              18 ('title')
+            150 LOAD_NAME                5 (str)
+            152 BUILD_TUPLE              2
+            154 LOAD_CONST              19 (<code object set_window_title at 0x0000020DB1038D30, file "apps\hud\ui\overlays\base\base.py", line 206>)
+            156 MAKE_FUNCTION            4 (annotations)
+            158 STORE_NAME              23 (set_window_title)
+
+209         160 LOAD_CONST              20 ('icon')
+            162 LOAD_NAME               24 (QIcon)
+            164 BUILD_TUPLE              2
+            166 LOAD_CONST              21 (<code object set_window_icon at 0x0000020DB10382A0, file "apps\hud\ui\overlays\base\base.py", line 209>)
+            168 MAKE_FUNCTION            4 (annotations)
+            170 STORE_NAME              25 (set_window_icon)
+
+212         172 LOAD_CONST              22 (<code object build_ui at 0x0000020DB1038850, file "apps\hud\ui\overlays\base\base.py", line 212>)
+            174 MAKE_FUNCTION            0
+            176 STORE_NAME              26 (build_ui)
+
+215         178 LOAD_CONST              23 (<code object apply_config at 0x0000020DB1038920, file "apps\hud\ui\overlays\base\base.py", line 215>)
+            180 MAKE_FUNCTION            0
+            182 STORE_NAME              27 (apply_config)
+
+218         184 LOAD_CONST              24 (<code object update_window_flags at 0x0000020DB1038AC0, file "apps\hud\ui\overlays\base\base.py", line 218>)
+            186 MAKE_FUNCTION            0
+            188 STORE_NAME              28 (update_window_flags)
+
+221         190 LOAD_CONST               7 ('opacity')
+            192 LOAD_NAME               14 (int)
+            194 BUILD_TUPLE              2
+            196 LOAD_CONST              25 (<code object set_opacity at 0x0000020DB1038B90, file "apps\hud\ui\overlays\base\base.py", line 221>)
+            198 MAKE_FUNCTION            4 (annotations)
+            200 STORE_NAME              29 (set_opacity)
+
+224         202 LOAD_CONST              26 ('return')
+            204 LOAD_NAME               10 (OverlayPosition)
+            206 BUILD_TUPLE              2
+            208 LOAD_CONST              27 (<code object get_window_info at 0x0000020DB1038C60, file "apps\hud\ui\overlays\base\base.py", line 224>)
+            210 MAKE_FUNCTION            4 (annotations)
+            212 STORE_NAME              30 (get_window_info)
+
+227         214 LOAD_CONST               4 ('config')
+            216 LOAD_NAME               10 (OverlayPosition)
+            218 BUILD_TUPLE              2
+            220 LOAD_CONST              28 (<code object set_window_position at 0x0000020DB1038E00, file "apps\hud\ui\overlays\base\base.py", line 227>)
+            222 MAKE_FUNCTION            4 (annotations)
+            224 STORE_NAME              31 (set_window_position)
+
+230         226 LOAD_CONST              29 ('visible')
+            228 LOAD_NAME               13 (bool)
+            230 BUILD_TUPLE              2
+            232 LOAD_CONST              30 (<code object set_visibility at 0x0000020DB1038ED0, file "apps\hud\ui\overlays\base\base.py", line 230>)
+            234 MAKE_FUNCTION            4 (annotations)
+            236 STORE_NAME              32 (set_visibility)
+
+233         238 LOAD_CONST              26 ('return')
+            240 LOAD_NAME               13 (bool)
+            242 BUILD_TUPLE              2
+            244 LOAD_CONST              31 (<code object get_visibility at 0x0000020DB1038FA0, file "apps\hud\ui\overlays\base\base.py", line 233>)
+            246 MAKE_FUNCTION            4 (annotations)
+            248 STORE_NAME              33 (get_visibility)
+
+239         250 LOAD_CONST              32 ('cmd_name')
+            252 LOAD_NAME                5 (str)
+            254 BUILD_TUPLE              2
+            256 LOAD_CONST              33 (<code object on_event at 0x0000020DAF2BEB50, file "apps\hud\ui\overlays\base\base.py", line 239>)
+            258 MAKE_FUNCTION            4 (annotations)
+            260 STORE_NAME              34 (on_event)
+
+245         262 LOAD_CONST              34 ('request_type')
+            264 LOAD_NAME                5 (str)
+            266 BUILD_TUPLE              2
+            268 LOAD_CONST              35 (<code object on_request at 0x0000020DAF2BED30, file "apps\hud\ui\overlays\base\base.py", line 245>)
+            270 MAKE_FUNCTION            4 (annotations)
+            272 STORE_NAME              35 (on_request)
+
+251         274 LOAD_CONST              36 ('obj_type')
+            276 LOAD_NAME               36 (HighFreqObjType)
+            278 LOAD_CONST              26 ('return')
+            280 LOAD_CONST              37 (None)
+            282 BUILD_TUPLE              4
+            284 LOAD_CONST              38 (<code object subscribe_hf at 0x0000020DAF2DF550, file "apps\hud\ui\overlays\base\base.py", line 251>)
+            286 MAKE_FUNCTION            4 (annotations)
+            288 STORE_NAME              37 (subscribe_hf)
+
+257         290 LOAD_CONST              39 ('data')
+            292 LOAD_NAME               38 (HighFreqBase)
+            294 BUILD_TUPLE              2
+            296 LOAD_CONST              40 (<code object update_hf_data_cache at 0x0000020DAF2D1630, file "apps\hud\ui\overlays\base\base.py", line 257>)
+            298 MAKE_FUNCTION            4 (annotations)
+            300 STORE_NAME              39 (update_hf_data_cache)
+
+261         302 LOAD_CONST              41 ('type_')
+            304 LOAD_NAME               40 (Type)
+            306 LOAD_NAME               36 (HighFreqObjType)
+            308 BINARY_SUBSCR
+            312 LOAD_CONST              26 ('return')
+            314 LOAD_NAME               41 (Optional)
+            316 LOAD_NAME               36 (HighFreqObjType)
+            318 BINARY_SUBSCR
+            322 BUILD_TUPLE              4
+            324 LOAD_CONST              42 (<code object get_latest_hf_data at 0x0000020DAF2DF660, file "apps\hud\ui\overlays\base\base.py", line 261>)
+            326 MAKE_FUNCTION            4 (annotations)
+            328 STORE_NAME              42 (get_latest_hf_data)
+
+265         330 LOAD_CONST              26 ('return')
+            332 LOAD_NAME               43 (dict)
+            334 BUILD_TUPLE              2
+            336 LOAD_CONST              43 (<code object get_stats at 0x0000020DAF2D1830, file "apps\hud\ui\overlays\base\base.py", line 265>)
+            338 MAKE_FUNCTION            4 (annotations)
+            340 STORE_NAME              44 (get_stats)
+
+269         342 LOAD_CONST              44 ('event_type')
+            344 LOAD_NAME                5 (str)
+            346 LOAD_CONST              26 ('return')
+            348 LOAD_CONST              37 (None)
+            350 BUILD_TUPLE              4
+            352 LOAD_CONST              45 (<code object _track_event at 0x0000020DAF2ADBB0, file "apps\hud\ui\overlays\base\base.py", line 269>)
+            354 MAKE_FUNCTION            4 (annotations)
+            356 STORE_NAME              45 (_track_event)
+
+273         358 LOAD_CONST              44 ('event_type')
+            360 LOAD_NAME                5 (str)
+            362 LOAD_CONST              26 ('return')
+            364 LOAD_CONST              37 (None)
+            366 BUILD_TUPLE              4
+            368 LOAD_CONST              46 (<code object _track_hf_event at 0x0000020DAF2AD7F0, file "apps\hud\ui\overlays\base\base.py", line 273>)
+            370 MAKE_FUNCTION            4 (annotations)
+            372 STORE_NAME              46 (_track_hf_event)
+
+277         374 LOAD_CONST              61 (('return', None))
+            376 LOAD_CONST              47 (<code object _clear_hf_pending at 0x0000020DAF2D1730, file "apps\hud\ui\overlays\base\base.py", line 277>)
+            378 MAKE_FUNCTION            4 (annotations)
+            380 STORE_NAME              47 (_clear_hf_pending)
+
+281         382 LOAD_CONST              44 ('event_type')
+            384 LOAD_NAME                5 (str)
+            386 LOAD_CONST              48 ('sent_ts_ns')
+            388 LOAD_NAME               14 (int)
+            390 LOAD_CONST              49 ('recv_ts_ns')
+            392 LOAD_NAME               14 (int)
+            394 LOAD_CONST              26 ('return')
+            396 LOAD_CONST              37 (None)
+            398 BUILD_TUPLE              8
+            400 LOAD_CONST              50 (<code object _track_hf_pipeline_latency at 0x0000020DAF2ADE30, file "apps\hud\ui\overlays\base\base.py", line 281>)
+            402 MAKE_FUNCTION            4 (annotations)
+            404 STORE_NAME              48 (_track_hf_pipeline_latency)
+
+285         406 LOAD_CONST              44 ('event_type')
+            408 LOAD_NAME                5 (str)
+            410 LOAD_CONST              48 ('sent_ts_ns')
+            412 LOAD_NAME               14 (int)
+            414 LOAD_CONST              49 ('recv_ts_ns')
+            416 LOAD_NAME               14 (int)
+            418 LOAD_CONST              26 ('return')
+            420 LOAD_CONST              37 (None)
+            422 BUILD_TUPLE              8
+            424 LOAD_CONST              51 (<code object _track_cmd_pipeline_latency at 0x0000020DAF2AD6B0, file "apps\hud\ui\overlays\base\base.py", line 285>)
+            426 MAKE_FUNCTION            4 (annotations)
+            428 STORE_NAME              49 (_track_cmd_pipeline_latency)
+
+292         430 LOAD_CONST              52 (<code object _register_default_handlers at 0x0000020DB0C21E10, file "apps\hud\ui\overlays\base\base.py", line 292>)
+            432 MAKE_FUNCTION            0
+            434 STORE_NAME              50 (_register_default_handlers)
+
+351         436 PUSH_NULL
+            438 LOAD_NAME               51 (Slot)
+            440 LOAD_NAME                5 (str)
+            442 LOAD_NAME               13 (bool)
+            444 LOAD_NAME                5 (str)
+            446 LOAD_NAME                6 (object)
+            448 CALL                     4
+
+352         456 LOAD_CONST              53 ('recipient')
+            458 LOAD_NAME                5 (str)
+            460 LOAD_CONST              54 ('high_prio')
+            462 LOAD_NAME               13 (bool)
+            464 LOAD_CONST              55 ('cmd')
+            466 LOAD_NAME                5 (str)
+            468 LOAD_CONST              39 ('data')
+            470 LOAD_NAME               43 (dict)
+            472 BUILD_TUPLE              8
+            474 LOAD_CONST              56 (<code object _handle_cmd at 0x0000020DAEF0C070, file "apps\hud\ui\overlays\base\base.py", line 351>)
+            476 MAKE_FUNCTION            4 (annotations)
+
+351         478 CALL                     0
+
+352         486 STORE_NAME              52 (_handle_cmd)
+
+375         488 PUSH_NULL
+            490 LOAD_NAME               51 (Slot)
+            492 LOAD_NAME                5 (str)
+            494 LOAD_NAME                5 (str)
+            496 LOAD_NAME                6 (object)
+            498 CALL                     3
+
+376         506 LOAD_CONST              53 ('recipient')
+            508 LOAD_NAME                5 (str)
+            510 LOAD_CONST              34 ('request_type')
+            512 LOAD_NAME                5 (str)
+            514 LOAD_CONST              57 ('request_data')
+            516 LOAD_NAME                6 (object)
+            518 BUILD_TUPLE              6
+            520 LOAD_CONST              58 (<code object _handle_request at 0x0000020DAEF0A600, file "apps\hud\ui\overlays\base\base.py", line 375>)
+            522 MAKE_FUNCTION            4 (annotations)
+
+375         524 CALL                     0
+
+376         532 STORE_NAME              53 (_handle_request)
+
+401         534 PUSH_NULL
+            536 LOAD_NAME               51 (Slot)
+            538 LOAD_NAME                6 (object)
+            540 CALL                     1
+
+402         548 LOAD_CONST              59 ('payload')
+            550 LOAD_NAME               38 (HighFreqBase)
+            552 BUILD_TUPLE              2
+            554 LOAD_CONST              60 (<code object _handle_high_freq_data at 0x0000020DAEB8E470, file "apps\hud\ui\overlays\base\base.py", line 401>)
+            556 MAKE_FUNCTION            4 (annotations)
+
+401         558 CALL                     0
+
+402         566 STORE_NAME              54 (_handle_high_freq_data)
+            568 RETURN_CONST            37 (None)
+
+Disassembly of <code object __init__ at 0x0000020DAEDE7840, file "apps\hud\ui\overlays\base\base.py", line 104>:
+104           0 RESUME                   0
+
+112           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (OVERLAY_ID)
+             24 POP_JUMP_IF_TRUE         2 (to 30)
+             26 LOAD_ASSERTION_ERROR
+             28 RAISE_VARARGS            1
+
+114     >>   30 LOAD_FAST                6 (windowed_overlay)
+             32 LOAD_FAST                0 (self)
+             34 STORE_ATTR               1 (windowed_overlay)
+
+115          44 LOAD_FAST                1 (config)
+             46 LOAD_FAST                0 (self)
+             48 STORE_ATTR               2 (config)
+
+116          58 LOAD_FAST                3 (locked)
+             60 LOAD_FAST                0 (self)
+             62 STORE_ATTR               3 (locked)
+
+117          72 LOAD_FAST                2 (logger)
+             74 LOAD_FAST                0 (self)
+             76 STORE_ATTR               4 (logger)
+
+118          86 LOAD_FAST                4 (opacity)
+             88 LOAD_FAST                0 (self)
+             90 STORE_ATTR               5 (opacity)
+
+119         100 LOAD_FAST                5 (scale_factor)
+            102 LOAD_FAST                0 (self)
+            104 STORE_ATTR               6 (scale_factor)
+
+120         114 LOAD_CONST               1 (True)
+            116 LOAD_FAST                0 (self)
+            118 STORE_ATTR               7 (telemetry_active)
+
+122         128 BUILD_MAP                0
+            130 LOAD_FAST                0 (self)
+            132 STORE_ATTR               8 (_command_handlers)
+
+123         142 BUILD_MAP                0
+            144 LOAD_FAST                0 (self)
+            146 STORE_ATTR               9 (_request_handlers)
+
+124         156 BUILD_MAP                0
+            158 LOAD_FAST                0 (self)
+            160 STORE_ATTR              10 (_latest_hf)
+
+125         170 LOAD_GLOBAL             23 (NULL + set)
+            180 CALL                     0
+            188 LOAD_FAST                0 (self)
+            190 STORE_ATTR              12 (_hf_subscriptions)
+
+126         200 BUILD_MAP                0
+            202 LOAD_FAST                0 (self)
+            204 STORE_ATTR              13 (_hf_last_seq)
+
+127         214 LOAD_GLOBAL             23 (NULL + set)
+            224 CALL                     0
+            232 LOAD_FAST                0 (self)
+            234 STORE_ATTR              14 (_hf_pending)
+
+128         244 LOAD_GLOBAL             31 (NULL + EventCounter)
+            254 CALL                     0
+            262 LOAD_FAST                0 (self)
+            264 STORE_ATTR              16 (_stats)
+
+129         274 LOAD_CONST               2 (False)
+            276 LOAD_FAST                0 (self)
+            278 STORE_ATTR              17 (_user_hidden)
+
+132         288 LOAD_FAST                0 (self)
+            290 LOAD_ATTR               37 (NULL|self + pre_setup)
+            310 CALL                     0
+            318 POP_TOP
+
+133         320 LOAD_FAST                0 (self)
+            322 LOAD_ATTR               39 (NULL|self + _setup_window)
+            342 CALL                     0
+            350 POP_TOP
+
+134         352 LOAD_FAST                0 (self)
+            354 LOAD_ATTR               41 (NULL|self + post_setup)
+            374 CALL                     0
+            382 POP_TOP
+
+135         384 LOAD_FAST                0 (self)
+            386 LOAD_ATTR               43 (NULL|self + build_ui)
+            406 CALL                     0
+            414 POP_TOP
+
+136         416 LOAD_FAST                0 (self)
+            418 LOAD_ATTR               45 (NULL|self + apply_config)
+            438 CALL                     0
+            446 POP_TOP
+
+139         448 LOAD_FAST                0 (self)
+            450 LOAD_ATTR               47 (NULL|self + _register_default_handlers)
+            470 CALL                     0
+            478 POP_TOP
+            480 RETURN_CONST             0 (None)
+
+Disassembly of <code object set_locked_state at 0x0000020DAF16B430, file "apps\hud\ui\overlays\base\base.py", line 145>:
+145           0 RESUME                   0
+
+147           2 LOAD_FAST                1 (locked)
+              4 LOAD_FAST                0 (self)
+              6 STORE_ATTR               0 (locked)
+
+148          16 LOAD_FAST                0 (self)
+             18 LOAD_ATTR                3 (NULL|self + update_window_flags)
+             38 CALL                     0
+             46 POP_TOP
+
+150          48 LOAD_FAST                0 (self)
+             50 LOAD_ATTR                0 (locked)
+             70 POP_JUMP_IF_FALSE       69 (to 210)
+             72 LOAD_FAST                0 (self)
+             74 LOAD_ATTR                4 (telemetry_active)
+             94 POP_JUMP_IF_TRUE        56 (to 208)
+
+151          96 LOAD_FAST                0 (self)
+             98 LOAD_ATTR                6 (logger)
+            118 LOAD_ATTR                9 (NULL|self + debug)
+            138 LOAD_CONST               1 ('%s locking overlay. But hiding it since telemetry is not active')
+            140 LOAD_FAST                0 (self)
+            142 LOAD_ATTR               10 (OVERLAY_ID)
+            162 CALL                     2
+            170 POP_TOP
+
+152         172 LOAD_FAST                0 (self)
+            174 LOAD_ATTR               13 (NULL|self + set_visibility)
+            194 LOAD_CONST               2 (False)
+            196 CALL                     1
+            204 POP_TOP
+            206 RETURN_CONST             3 (None)
+
+150     >>  208 RETURN_CONST             3 (None)
+        >>  210 RETURN_CONST             3 (None)
+
+Disassembly of <code object toggle_visibility at 0x0000020DAEEDBC10, file "apps\hud\ui\overlays\base\base.py", line 154>:
+154           0 RESUME                   0
+
+156           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (logger)
+             24 LOAD_ATTR                3 (NULL|self + debug)
+             44 LOAD_CONST               1 ('%s | Toggling visibility')
+             46 LOAD_FAST                0 (self)
+             48 LOAD_ATTR                4 (OVERLAY_ID)
+             68 CALL                     2
+             76 POP_TOP
+
+157          78 LOAD_FAST                0 (self)
+             80 LOAD_ATTR                7 (NULL|self + get_visibility)
+            100 CALL                     0
+            108 POP_JUMP_IF_FALSE       63 (to 236)
+
+158         110 LOAD_FAST                0 (self)
+            112 LOAD_ATTR                0 (logger)
+            132 LOAD_ATTR                3 (NULL|self + debug)
+            152 LOAD_CONST               2 ('%s | Fading out overlay')
+            154 LOAD_FAST                0 (self)
+            156 LOAD_ATTR                4 (OVERLAY_ID)
+            176 CALL                     2
+            184 POP_TOP
+
+159         186 LOAD_FAST                0 (self)
+            188 LOAD_ATTR                9 (NULL|self + set_visibility)
+            208 LOAD_CONST               3 (False)
+            210 CALL                     1
+            218 POP_TOP
+
+160         220 LOAD_CONST               4 (True)
+            222 LOAD_FAST                0 (self)
+            224 STORE_ATTR               5 (_user_hidden)
+            234 RETURN_CONST             6 (None)
+
+162     >>  236 LOAD_FAST                0 (self)
+            238 LOAD_ATTR                0 (logger)
+            258 LOAD_ATTR                3 (NULL|self + debug)
+            278 LOAD_CONST               5 ('%s | Fading in overlay')
+            280 LOAD_FAST                0 (self)
+            282 LOAD_ATTR                4 (OVERLAY_ID)
+            302 CALL                     2
+            310 POP_TOP
+
+163         312 LOAD_FAST                0 (self)
+            314 LOAD_ATTR                9 (NULL|self + set_visibility)
+            334 LOAD_CONST               4 (True)
+            336 CALL                     1
+            344 POP_TOP
+
+164         346 LOAD_CONST               3 (False)
+            348 LOAD_FAST                0 (self)
+            350 STORE_ATTR               5 (_user_hidden)
+            360 RETURN_CONST             6 (None)
+
+Disassembly of <code object set_telemetry_active at 0x0000020DAEFD7E10, file "apps\hud\ui\overlays\base\base.py", line 166>:
+166           0 RESUME                   0
+
+168           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (telemetry_active)
+             24 LOAD_FAST                1 (active)
+             26 COMPARE_OP              40 (==)
+             30 POP_JUMP_IF_FALSE        1 (to 34)
+
+169          32 RETURN_CONST             1 (None)
+
+171     >>   34 LOAD_FAST                0 (self)
+             36 LOAD_ATTR                2 (logger)
+             56 LOAD_ATTR                5 (NULL|self + debug)
+             76 LOAD_CONST               2 ('%s set_telemetry_active. current: %s, new: %s')
+
+172          78 LOAD_FAST                0 (self)
+             80 LOAD_ATTR                6 (OVERLAY_ID)
+            100 LOAD_FAST                0 (self)
+            102 LOAD_ATTR                0 (telemetry_active)
+            122 LOAD_FAST                1 (active)
+
+171         124 CALL                     4
+            132 POP_TOP
+
+173         134 LOAD_FAST                1 (active)
+            136 LOAD_FAST                0 (self)
+            138 STORE_ATTR               0 (telemetry_active)
+
+175         148 LOAD_FAST                0 (self)
+            150 LOAD_ATTR                8 (locked)
+            170 POP_JUMP_IF_TRUE         1 (to 174)
+
+178         172 RETURN_CONST             1 (None)
+
+180     >>  174 LOAD_FAST                1 (active)
+            176 POP_JUMP_IF_FALSE       31 (to 240)
+
+181         178 LOAD_FAST                0 (self)
+            180 LOAD_ATTR               10 (_user_hidden)
+            200 POP_JUMP_IF_TRUE        18 (to 238)
+
+182         202 LOAD_FAST                0 (self)
+            204 LOAD_ATTR               13 (NULL|self + set_visibility)
+            224 LOAD_CONST               3 (True)
+            226 CALL                     1
+            234 POP_TOP
+            236 RETURN_CONST             1 (None)
+
+181     >>  238 RETURN_CONST             1 (None)
+
+184     >>  240 LOAD_FAST                0 (self)
+            242 LOAD_ATTR               13 (NULL|self + set_visibility)
+            262 LOAD_CONST               4 (False)
+            264 CALL                     1
+            272 POP_TOP
+            274 RETURN_CONST             1 (None)
+
+Disassembly of <code object pre_setup at 0x0000020DAF2949F0, file "apps\hud\ui\overlays\base\base.py", line 189>:
+189           0 RESUME                   0
+              2 RETURN_CONST             1 (None)
+
+Disassembly of <code object post_setup at 0x0000020DB1038440, file "apps\hud\ui\overlays\base\base.py", line 196>:
+196           0 RESUME                   0
+              2 RETURN_CONST             1 (None)
+
+Disassembly of <code object _setup_window at 0x0000020DAF29EA30, file "apps\hud\ui\overlays\base\base.py", line 199>:
+199           0 RESUME                   0
+
+200           2 LOAD_GLOBAL              0 (ctypes)
+             12 LOAD_ATTR                2 (windll)
+             32 LOAD_ATTR                4 (shell32)
+             52 LOAD_ATTR                7 (NULL|self + SetCurrentProcessExplicitAppUserModelID)
+             72 LOAD_GLOBAL              8 (APP_NAME_SNAKE)
+             82 CALL                     1
+             90 POP_TOP
+
+201          92 LOAD_FAST                0 (self)
+             94 LOAD_ATTR               11 (NULL|self + set_window_title)
+            114 LOAD_FAST                0 (self)
+            116 LOAD_ATTR               12 (OVERLAY_ID)
+            136 CALL                     1
+            144 POP_TOP
+
+202         146 LOAD_FAST                0 (self)
+            148 LOAD_ATTR               15 (NULL|self + set_window_icon)
+            168 LOAD_GLOBAL             17 (NULL + load_icon)
+            178 LOAD_GLOBAL             19 (NULL + Path)
+            188 LOAD_CONST               1 ('assets')
+            190 CALL                     1
+            198 LOAD_CONST               2 ('logo.png')
+            200 BINARY_OP               11 (/)
+
+203         204 LOAD_FAST                0 (self)
+            206 LOAD_ATTR               20 (logger)
+            226 LOAD_ATTR               22 (debug)
+
+204         246 LOAD_FAST                0 (self)
+            248 LOAD_ATTR               20 (logger)
+            268 LOAD_ATTR               24 (error)
+
+202         288 KW_NAMES                 3 (('debug_log_printer', 'error_log_printer'))
+            290 CALL                     3
+            298 CALL                     1
+            306 POP_TOP
+            308 RETURN_CONST             0 (None)
+
+Disassembly of <code object set_window_title at 0x0000020DB1038D30, file "apps\hud\ui\overlays\base\base.py", line 206>:
+206           0 RESUME                   0
+
+207           2 LOAD_GLOBAL              0 (NotImplementedError)
+             12 RAISE_VARARGS            1
+
+Disassembly of <code object set_window_icon at 0x0000020DB10382A0, file "apps\hud\ui\overlays\base\base.py", line 209>:
+209           0 RESUME                   0
+
+210           2 LOAD_GLOBAL              0 (NotImplementedError)
+             12 RAISE_VARARGS            1
+
+Disassembly of <code object build_ui at 0x0000020DB1038850, file "apps\hud\ui\overlays\base\base.py", line 212>:
+212           0 RESUME                   0
+
+213           2 LOAD_GLOBAL              0 (NotImplementedError)
+             12 RAISE_VARARGS            1
+
+Disassembly of <code object apply_config at 0x0000020DB1038920, file "apps\hud\ui\overlays\base\base.py", line 215>:
+215           0 RESUME                   0
+
+216           2 LOAD_GLOBAL              0 (NotImplementedError)
+             12 RAISE_VARARGS            1
+
+Disassembly of <code object update_window_flags at 0x0000020DB1038AC0, file "apps\hud\ui\overlays\base\base.py", line 218>:
+218           0 RESUME                   0
+
+219           2 LOAD_GLOBAL              0 (NotImplementedError)
+             12 RAISE_VARARGS            1
+
+Disassembly of <code object set_opacity at 0x0000020DB1038B90, file "apps\hud\ui\overlays\base\base.py", line 221>:
+221           0 RESUME                   0
+
+222           2 LOAD_GLOBAL              0 (NotImplementedError)
+             12 RAISE_VARARGS            1
+
+Disassembly of <code object get_window_info at 0x0000020DB1038C60, file "apps\hud\ui\overlays\base\base.py", line 224>:
+224           0 RESUME                   0
+
+225           2 LOAD_GLOBAL              0 (NotImplementedError)
+             12 RAISE_VARARGS            1
+
+Disassembly of <code object set_window_position at 0x0000020DB1038E00, file "apps\hud\ui\overlays\base\base.py", line 227>:
+227           0 RESUME                   0
+
+228           2 LOAD_GLOBAL              0 (NotImplementedError)
+             12 RAISE_VARARGS            1
+
+Disassembly of <code object set_visibility at 0x0000020DB1038ED0, file "apps\hud\ui\overlays\base\base.py", line 230>:
+230           0 RESUME                   0
+
+231           2 LOAD_GLOBAL              0 (NotImplementedError)
+             12 RAISE_VARARGS            1
+
+Disassembly of <code object get_visibility at 0x0000020DB1038FA0, file "apps\hud\ui\overlays\base\base.py", line 233>:
+233           0 RESUME                   0
+
+234           2 LOAD_GLOBAL              0 (NotImplementedError)
+             12 RAISE_VARARGS            1
+
+Disassembly of <code object on_event at 0x0000020DAF2BEB50, file "apps\hud\ui\overlays\base\base.py", line 239>:
+              0 MAKE_CELL                0 (self)
+              2 MAKE_CELL                1 (cmd_name)
+
+239           4 RESUME                   0
+
+240           6 LOAD_CONST               1 ('func')
+              8 LOAD_GLOBAL              0 (OverlayCommandHandler)
+             18 BUILD_TUPLE              2
+             20 LOAD_CLOSURE             1 (cmd_name)
+             22 LOAD_CLOSURE             0 (self)
+             24 BUILD_TUPLE              2
+             26 LOAD_CONST               2 (<code object decorator at 0x0000020DAF2BEA60, file "apps\hud\ui\overlays\base\base.py", line 240>)
+             28 MAKE_FUNCTION           12 (annotations, closure)
+             30 STORE_FAST               2 (decorator)
+
+243          32 LOAD_FAST                2 (decorator)
+             34 RETURN_VALUE
+
+Disassembly of <code object decorator at 0x0000020DAF2BEA60, file "apps\hud\ui\overlays\base\base.py", line 240>:
+              0 COPY_FREE_VARS           2
+
+240           2 RESUME                   0
+
+241           4 LOAD_FAST                0 (func)
+              6 LOAD_DEREF               2 (self)
+              8 LOAD_ATTR                0 (_command_handlers)
+             28 LOAD_DEREF               1 (cmd_name)
+             30 STORE_SUBSCR
+
+242          34 LOAD_FAST                0 (func)
+             36 RETURN_VALUE
+
+Disassembly of <code object on_request at 0x0000020DAF2BED30, file "apps\hud\ui\overlays\base\base.py", line 245>:
+              0 MAKE_CELL                0 (self)
+              2 MAKE_CELL                1 (request_type)
+
+245           4 RESUME                   0
+
+246           6 LOAD_CONST               1 ('func')
+              8 LOAD_GLOBAL              0 (OverlayRequestHandler)
+             18 BUILD_TUPLE              2
+             20 LOAD_CLOSURE             1 (request_type)
+             22 LOAD_CLOSURE             0 (self)
+             24 BUILD_TUPLE              2
+             26 LOAD_CONST               2 (<code object decorator at 0x0000020DAF2BEC40, file "apps\hud\ui\overlays\base\base.py", line 246>)
+             28 MAKE_FUNCTION           12 (annotations, closure)
+             30 STORE_FAST               2 (decorator)
+
+249          32 LOAD_FAST                2 (decorator)
+             34 RETURN_VALUE
+
+Disassembly of <code object decorator at 0x0000020DAF2BEC40, file "apps\hud\ui\overlays\base\base.py", line 246>:
+              0 COPY_FREE_VARS           2
+
+246           2 RESUME                   0
+
+247           4 LOAD_FAST                0 (func)
+              6 LOAD_DEREF               2 (self)
+              8 LOAD_ATTR                0 (_request_handlers)
+             28 LOAD_DEREF               1 (request_type)
+             30 STORE_SUBSCR
+
+248          34 LOAD_FAST                0 (func)
+             36 RETURN_VALUE
+
+Disassembly of <code object subscribe_hf at 0x0000020DAF2DF550, file "apps\hud\ui\overlays\base\base.py", line 251>:
+251           0 RESUME                   0
+
+255           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_hf_subscriptions)
+             24 LOAD_ATTR                3 (NULL|self + add)
+             44 LOAD_FAST                1 (obj_type)
+             46 LOAD_ATTR                4 (__hf_type__)
+             66 CALL                     1
+             74 POP_TOP
+             76 RETURN_CONST             1 (None)
+
+Disassembly of <code object update_hf_data_cache at 0x0000020DAF2D1630, file "apps\hud\ui\overlays\base\base.py", line 257>:
+257           0 RESUME                   0
+
+259           2 LOAD_FAST                1 (data)
+              4 LOAD_FAST                0 (self)
+              6 LOAD_ATTR                0 (_latest_hf)
+             26 LOAD_FAST                1 (data)
+             28 LOAD_ATTR                2 (__hf_type__)
+             48 STORE_SUBSCR
+             52 RETURN_CONST             1 (None)
+
+Disassembly of <code object get_latest_hf_data at 0x0000020DAF2DF660, file "apps\hud\ui\overlays\base\base.py", line 261>:
+261           0 RESUME                   0
+
+263           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_latest_hf)
+             24 LOAD_ATTR                3 (NULL|self + get)
+             44 LOAD_FAST                1 (type_)
+             46 LOAD_ATTR                4 (__hf_type__)
+             66 CALL                     1
+             74 RETURN_VALUE
+
+Disassembly of <code object get_stats at 0x0000020DAF2D1830, file "apps\hud\ui\overlays\base\base.py", line 265>:
+265           0 RESUME                   0
+
+267           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_stats)
+             24 LOAD_ATTR                3 (NULL|self + get_stats)
+             44 CALL                     0
+             52 RETURN_VALUE
+
+Disassembly of <code object _track_event at 0x0000020DAF2ADBB0, file "apps\hud\ui\overlays\base\base.py", line 269>:
+269           0 RESUME                   0
+
+270           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_stats)
+             24 LOAD_ATTR                3 (NULL|self + track_event)
+             44 LOAD_CONST               1 ('__EVENTS__')
+             46 LOAD_CONST               2 ('__TOTAL__')
+             48 CALL                     2
+             56 POP_TOP
+
+271          58 LOAD_FAST                0 (self)
+             60 LOAD_ATTR                0 (_stats)
+             80 LOAD_ATTR                3 (NULL|self + track_event)
+            100 LOAD_CONST               1 ('__EVENTS__')
+            102 LOAD_FAST                1 (event_type)
+            104 CALL                     2
+            112 POP_TOP
+            114 RETURN_CONST             0 (None)
+
+Disassembly of <code object _track_hf_event at 0x0000020DAF2AD7F0, file "apps\hud\ui\overlays\base\base.py", line 273>:
+273           0 RESUME                   0
+
+274           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_stats)
+             24 LOAD_ATTR                3 (NULL|self + track_event)
+             44 LOAD_CONST               1 ('__HF_EVENTS__')
+             46 LOAD_CONST               2 ('__TOTAL__')
+             48 CALL                     2
+             56 POP_TOP
+
+275          58 LOAD_FAST                0 (self)
+             60 LOAD_ATTR                0 (_stats)
+             80 LOAD_ATTR                3 (NULL|self + track_event)
+            100 LOAD_CONST               1 ('__HF_EVENTS__')
+            102 LOAD_FAST                1 (event_type)
+            104 CALL                     2
+            112 POP_TOP
+            114 RETURN_CONST             0 (None)
+
+Disassembly of <code object _clear_hf_pending at 0x0000020DAF2D1730, file "apps\hud\ui\overlays\base\base.py", line 277>:
+277           0 RESUME                   0
+
+279           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_hf_pending)
+             24 LOAD_ATTR                3 (NULL|self + clear)
+             44 CALL                     0
+             52 POP_TOP
+             54 RETURN_CONST             1 (None)
+
+Disassembly of <code object _track_hf_pipeline_latency at 0x0000020DAF2ADE30, file "apps\hud\ui\overlays\base\base.py", line 281>:
+281           0 RESUME                   0
+
+282           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_stats)
+             24 LOAD_ATTR                3 (NULL|self + track_packet_latency)
+             44 LOAD_CONST               1 ('__HF_PIPELINE_LATENCY__')
+             46 LOAD_CONST               2 ('__TOTAL__')
+             48 LOAD_FAST                2 (sent_ts_ns)
+             50 LOAD_FAST                3 (recv_ts_ns)
+             52 CALL                     4
+             60 POP_TOP
+
+283          62 LOAD_FAST                0 (self)
+             64 LOAD_ATTR                0 (_stats)
+             84 LOAD_ATTR                3 (NULL|self + track_packet_latency)
+            104 LOAD_CONST               1 ('__HF_PIPELINE_LATENCY__')
+            106 LOAD_FAST                1 (event_type)
+            108 LOAD_FAST                2 (sent_ts_ns)
+            110 LOAD_FAST                3 (recv_ts_ns)
+            112 CALL                     4
+            120 POP_TOP
+            122 RETURN_CONST             0 (None)
+
+Disassembly of <code object _track_cmd_pipeline_latency at 0x0000020DAF2AD6B0, file "apps\hud\ui\overlays\base\base.py", line 285>:
+285           0 RESUME                   0
+
+286           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_stats)
+             24 LOAD_ATTR                3 (NULL|self + track_packet_latency)
+             44 LOAD_CONST               1 ('__CMD_PIPELINE_LATENCY__')
+             46 LOAD_CONST               2 ('__TOTAL__')
+             48 LOAD_FAST                2 (sent_ts_ns)
+             50 LOAD_FAST                3 (recv_ts_ns)
+             52 CALL                     4
+             60 POP_TOP
+
+287          62 LOAD_FAST                0 (self)
+             64 LOAD_ATTR                0 (_stats)
+             84 LOAD_ATTR                3 (NULL|self + track_packet_latency)
+            104 LOAD_CONST               1 ('__CMD_PIPELINE_LATENCY__')
+            106 LOAD_FAST                1 (event_type)
+            108 LOAD_FAST                2 (sent_ts_ns)
+            110 LOAD_FAST                3 (recv_ts_ns)
+            112 CALL                     4
+            120 POP_TOP
+            122 RETURN_CONST             0 (None)
+
+Disassembly of <code object _register_default_handlers at 0x0000020DB0C21E10, file "apps\hud\ui\overlays\base\base.py", line 292>:
+              0 MAKE_CELL                0 (self)
+
+292           2 RESUME                   0
+
+294           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_request)
+             26 LOAD_CONST               1 ('get_window_info')
+             28 CALL                     1
+
+295          36 LOAD_CONST               2 ('_data')
+             38 LOAD_GLOBAL              2 (dict)
+             48 BUILD_TUPLE              2
+             50 LOAD_CLOSURE             0 (self)
+             52 BUILD_TUPLE              1
+             54 LOAD_CONST               3 (<code object _get_info at 0x0000020DAF2B9BC0, file "apps\hud\ui\overlays\base\base.py", line 294>)
+             56 MAKE_FUNCTION           12 (annotations, closure)
+
+294          58 CALL                     0
+
+295          66 STORE_FAST               1 (_get_info)
+
+300          68 LOAD_DEREF               0 (self)
+             70 LOAD_ATTR                1 (NULL|self + on_request)
+             90 LOAD_CONST               4 ('get_window_stats')
+             92 CALL                     1
+
+301         100 LOAD_CONST               2 ('_data')
+            102 LOAD_GLOBAL              2 (dict)
+            112 BUILD_TUPLE              2
+            114 LOAD_CLOSURE             0 (self)
+            116 BUILD_TUPLE              1
+            118 LOAD_CONST               5 (<code object _get_stats at 0x0000020DAF2C1F10, file "apps\hud\ui\overlays\base\base.py", line 300>)
+            120 MAKE_FUNCTION           12 (annotations, closure)
+
+300         122 CALL                     0
+
+301         130 STORE_FAST               2 (_get_stats)
+
+306         132 LOAD_DEREF               0 (self)
+            134 LOAD_ATTR                5 (NULL|self + on_event)
+            154 LOAD_CONST               6 ('__set_locked_state__')
+            156 CALL                     1
+
+307         164 LOAD_CONST               7 ('data')
+            166 LOAD_GLOBAL              2 (dict)
+            176 BUILD_TUPLE              2
+            178 LOAD_CLOSURE             0 (self)
+            180 BUILD_TUPLE              1
+            182 LOAD_CONST               8 (<code object _set_locked at 0x0000020DB1048670, file "apps\hud\ui\overlays\base\base.py", line 306>)
+            184 MAKE_FUNCTION           12 (annotations, closure)
+
+306         186 CALL                     0
+
+307         194 STORE_FAST               3 (_set_locked)
+
+317         196 LOAD_DEREF               0 (self)
+            198 LOAD_ATTR                5 (NULL|self + on_event)
+            218 LOAD_CONST               9 ('__toggle_visibility__')
+            220 CALL                     1
+
+318         228 LOAD_CONST               2 ('_data')
+            230 LOAD_GLOBAL              6 (Dict)
+            240 LOAD_GLOBAL              8 (str)
+            250 LOAD_GLOBAL             10 (Any)
+            260 BUILD_TUPLE              2
+            262 BINARY_SUBSCR
+            266 BUILD_TUPLE              2
+            268 LOAD_CLOSURE             0 (self)
+            270 BUILD_TUPLE              1
+            272 LOAD_CONST              10 (<code object _handle_toggle_visibility at 0x0000020DAF2BEF10, file "apps\hud\ui\overlays\base\base.py", line 317>)
+            274 MAKE_FUNCTION           12 (annotations, closure)
+
+317         276 CALL                     0
+
+318         284 STORE_FAST               4 (_handle_toggle_visibility)
+
+322         286 LOAD_DEREF               0 (self)
+            288 LOAD_ATTR                5 (NULL|self + on_event)
+            308 LOAD_CONST              11 ('__set_visibility__')
+            310 CALL                     1
+
+323         318 LOAD_CONST               7 ('data')
+            320 LOAD_GLOBAL              6 (Dict)
+            330 LOAD_GLOBAL              8 (str)
+            340 LOAD_GLOBAL             10 (Any)
+            350 BUILD_TUPLE              2
+            352 BINARY_SUBSCR
+            356 BUILD_TUPLE              2
+            358 LOAD_CLOSURE             0 (self)
+            360 BUILD_TUPLE              1
+            362 LOAD_CONST              12 (<code object _handle_set_visibility at 0x0000020DAF2D1530, file "apps\hud\ui\overlays\base\base.py", line 322>)
+            364 MAKE_FUNCTION           12 (annotations, closure)
+
+322         366 CALL                     0
+
+323         374 STORE_FAST               5 (_handle_set_visibility)
+
+328         376 LOAD_DEREF               0 (self)
+            378 LOAD_ATTR                5 (NULL|self + on_event)
+            398 LOAD_CONST              13 ('__set_opacity__')
+            400 CALL                     1
+
+329         408 LOAD_CONST               7 ('data')
+            410 LOAD_GLOBAL              6 (Dict)
+            420 LOAD_GLOBAL              8 (str)
+            430 LOAD_GLOBAL             10 (Any)
+            440 BUILD_TUPLE              2
+            442 BINARY_SUBSCR
+            446 BUILD_TUPLE              2
+            448 LOAD_CLOSURE             0 (self)
+            450 BUILD_TUPLE              1
+            452 LOAD_CONST              14 (<code object _handle_set_opacity at 0x0000020DAF2D1A30, file "apps\hud\ui\overlays\base\base.py", line 328>)
+            454 MAKE_FUNCTION           12 (annotations, closure)
+
+328         456 CALL                     0
+
+329         464 STORE_FAST               6 (_handle_set_opacity)
+
+335         466 LOAD_DEREF               0 (self)
+            468 LOAD_ATTR                5 (NULL|self + on_event)
+            488 LOAD_CONST              15 ('__set_config__')
+            490 CALL                     1
+
+336         498 LOAD_CONST               7 ('data')
+            500 LOAD_GLOBAL              6 (Dict)
+            510 LOAD_GLOBAL              8 (str)
+            520 LOAD_GLOBAL             10 (Any)
+            530 BUILD_TUPLE              2
+            532 BINARY_SUBSCR
+            536 LOAD_CONST              16 ('return')
+            538 LOAD_CONST              17 (None)
+            540 BUILD_TUPLE              4
+            542 LOAD_CLOSURE             0 (self)
+            544 BUILD_TUPLE              1
+            546 LOAD_CONST              18 (<code object _handle_set_window_config at 0x0000020DAF2F85B0, file "apps\hud\ui\overlays\base\base.py", line 335>)
+            548 MAKE_FUNCTION           12 (annotations, closure)
+
+335         550 CALL                     0
+
+336         558 STORE_FAST               7 (_handle_set_window_config)
+
+342         560 LOAD_DEREF               0 (self)
+            562 LOAD_ATTR                5 (NULL|self + on_event)
+            582 LOAD_CONST              19 ('__set_telemetry_active__')
+            584 CALL                     1
+
+343         592 LOAD_CONST               7 ('data')
+            594 LOAD_GLOBAL              6 (Dict)
+            604 LOAD_GLOBAL              8 (str)
+            614 LOAD_GLOBAL             10 (Any)
+            624 BUILD_TUPLE              2
+            626 BINARY_SUBSCR
+            630 LOAD_CONST              16 ('return')
+            632 LOAD_CONST              17 (None)
+            634 BUILD_TUPLE              4
+            636 LOAD_CLOSURE             0 (self)
+            638 BUILD_TUPLE              1
+            640 LOAD_CONST              20 (<code object _handle_set_telemetry_active at 0x0000020DAF2D1930, file "apps\hud\ui\overlays\base\base.py", line 342>)
+            642 MAKE_FUNCTION           12 (annotations, closure)
+
+342         644 CALL                     0
+
+343         652 STORE_FAST               8 (_handle_set_telemetry_active)
+            654 RETURN_CONST            17 (None)
+
+Disassembly of <code object _get_info at 0x0000020DAF2B9BC0, file "apps\hud\ui\overlays\base\base.py", line 294>:
+              0 COPY_FREE_VARS           1
+
+294           2 RESUME                   0
+
+297           4 LOAD_DEREF               1 (self)
+              6 LOAD_ATTR                0 (logger)
+             26 LOAD_ATTR                3 (NULL|self + debug)
+             46 LOAD_CONST               1 ('%s | Received request "get_window_info"')
+             48 LOAD_DEREF               1 (self)
+             50 LOAD_ATTR                4 (OVERLAY_ID)
+             70 CALL                     2
+             78 POP_TOP
+
+298          80 LOAD_DEREF               1 (self)
+             82 LOAD_ATTR                7 (NULL|self + get_window_info)
+            102 CALL                     0
+            110 LOAD_ATTR                9 (NULL|self + toJSON)
+            130 CALL                     0
+            138 RETURN_VALUE
+
+Disassembly of <code object _get_stats at 0x0000020DAF2C1F10, file "apps\hud\ui\overlays\base\base.py", line 300>:
+              0 COPY_FREE_VARS           1
+
+300           2 RESUME                   0
+
+303           4 LOAD_DEREF               1 (self)
+              6 LOAD_ATTR                0 (logger)
+             26 LOAD_ATTR                3 (NULL|self + debug)
+             46 LOAD_CONST               1 ('%s | Received request "get_window_stats"')
+             48 LOAD_DEREF               1 (self)
+             50 LOAD_ATTR                4 (OVERLAY_ID)
+             70 CALL                     2
+             78 POP_TOP
+
+304          80 LOAD_DEREF               1 (self)
+             82 LOAD_ATTR                7 (NULL|self + get_stats)
+            102 CALL                     0
+            110 RETURN_VALUE
+
+Disassembly of <code object _set_locked at 0x0000020DB1048670, file "apps\hud\ui\overlays\base\base.py", line 306>:
+              0 COPY_FREE_VARS           1
+
+306           2 RESUME                   0
+
+309           4 LOAD_FAST                0 (data)
+              6 LOAD_ATTR                1 (NULL|self + get)
+             26 LOAD_CONST               1 ('new-value')
+             28 LOAD_CONST               2 (False)
+             30 CALL                     2
+             38 STORE_FAST               1 (locked)
+
+310          40 LOAD_DEREF               2 (self)
+             42 LOAD_ATTR                2 (logger)
+             62 LOAD_ATTR                5 (NULL|self + debug)
+             82 LOAD_CONST               3 ('%s | Setting locked state to %s')
+             84 LOAD_DEREF               2 (self)
+             86 LOAD_ATTR                6 (OVERLAY_ID)
+            106 LOAD_FAST                1 (locked)
+            108 CALL                     3
+            116 POP_TOP
+
+311         118 LOAD_DEREF               2 (self)
+            120 LOAD_ATTR                9 (NULL|self + set_locked_state)
+            140 LOAD_FAST                1 (locked)
+            142 CALL                     1
+            150 POP_TOP
+
+312         152 LOAD_FAST                1 (locked)
+            154 POP_JUMP_IF_TRUE        18 (to 192)
+
+315         156 LOAD_DEREF               2 (self)
+            158 LOAD_ATTR               11 (NULL|self + set_visibility)
+            178 LOAD_CONST               4 (True)
+            180 CALL                     1
+            188 POP_TOP
+            190 RETURN_CONST             5 (None)
+
+312     >>  192 RETURN_CONST             5 (None)
+
+Disassembly of <code object _handle_toggle_visibility at 0x0000020DAF2BEF10, file "apps\hud\ui\overlays\base\base.py", line 317>:
+              0 COPY_FREE_VARS           1
+
+317           2 RESUME                   0
+
+320           4 LOAD_DEREF               1 (self)
+              6 LOAD_ATTR                1 (NULL|self + toggle_visibility)
+             26 CALL                     0
+             34 POP_TOP
+             36 RETURN_CONST             1 (None)
+
+Disassembly of <code object _handle_set_visibility at 0x0000020DAF2D1530, file "apps\hud\ui\overlays\base\base.py", line 322>:
+              0 COPY_FREE_VARS           1
+
+322           2 RESUME                   0
+
+325           4 LOAD_FAST                0 (data)
+              6 LOAD_CONST               1 ('visible')
+              8 BINARY_SUBSCR
+             12 STORE_FAST               1 (visible)
+
+326          14 LOAD_DEREF               2 (self)
+             16 LOAD_ATTR                1 (NULL|self + set_visibility)
+             36 LOAD_FAST                1 (visible)
+             38 CALL                     1
+             46 POP_TOP
+             48 RETURN_CONST             2 (None)
+
+Disassembly of <code object _handle_set_opacity at 0x0000020DAF2D1A30, file "apps\hud\ui\overlays\base\base.py", line 328>:
+              0 COPY_FREE_VARS           1
+
+328           2 RESUME                   0
+
+331           4 LOAD_FAST                0 (data)
+              6 LOAD_CONST               1 ('opacity')
+              8 BINARY_SUBSCR
+             12 STORE_FAST               1 (opacity)
+
+332          14 LOAD_FAST                1 (opacity)
+             16 LOAD_DEREF               2 (self)
+             18 STORE_ATTR               0 (opacity)
+
+333          28 LOAD_DEREF               2 (self)
+             30 LOAD_ATTR                3 (NULL|self + set_opacity)
+             50 LOAD_FAST                1 (opacity)
+             52 CALL                     1
+             60 POP_TOP
+             62 RETURN_CONST             2 (None)
+
+Disassembly of <code object _handle_set_window_config at 0x0000020DAF2F85B0, file "apps\hud\ui\overlays\base\base.py", line 335>:
+              0 COPY_FREE_VARS           1
+
+335           2 RESUME                   0
+
+338           4 LOAD_GLOBAL              1 (NULL + OverlayPosition)
+             14 LOAD_ATTR                2 (fromJSON)
+             34 LOAD_FAST                0 (data)
+             36 CALL                     1
+             44 STORE_FAST               1 (config)
+
+339          46 LOAD_DEREF               2 (self)
+             48 LOAD_ATTR                4 (logger)
+             68 LOAD_ATTR                7 (NULL|self + debug)
+             88 LOAD_CONST               1 ('%s | Setting window config to %s')
+             90 LOAD_DEREF               2 (self)
+             92 LOAD_ATTR                8 (OVERLAY_ID)
+            112 LOAD_FAST                1 (config)
+            114 CALL                     3
+            122 POP_TOP
+
+340         124 LOAD_DEREF               2 (self)
+            126 LOAD_ATTR               11 (NULL|self + set_window_position)
+            146 LOAD_FAST                1 (config)
+            148 CALL                     1
+            156 POP_TOP
+            158 RETURN_CONST             2 (None)
+
+Disassembly of <code object _handle_set_telemetry_active at 0x0000020DAF2D1930, file "apps\hud\ui\overlays\base\base.py", line 342>:
+              0 COPY_FREE_VARS           1
+
+342           2 RESUME                   0
+
+345           4 LOAD_FAST                0 (data)
+              6 LOAD_CONST               1 ('active')
+              8 BINARY_SUBSCR
+             12 STORE_FAST               1 (active)
+
+346          14 LOAD_DEREF               2 (self)
+             16 LOAD_ATTR                1 (NULL|self + set_telemetry_active)
+             36 LOAD_FAST                1 (active)
+             38 CALL                     1
+             46 POP_TOP
+             48 RETURN_CONST             2 (None)
+
+Disassembly of <code object _handle_cmd at 0x0000020DAEF0C070, file "apps\hud\ui\overlays\base\base.py", line 351>:
+351           0 RESUME                   0
+
+353           2 LOAD_FAST                1 (recipient)
+              4 POP_JUMP_IF_FALSE       16 (to 38)
+              6 LOAD_FAST                1 (recipient)
+              8 LOAD_FAST                0 (self)
+             10 LOAD_ATTR                0 (OVERLAY_ID)
+             30 COMPARE_OP              55 (!=)
+             34 POP_JUMP_IF_FALSE        1 (to 38)
+
+354          36 RETURN_CONST             0 (None)
+
+355     >>   38 LOAD_FAST                0 (self)
+             40 LOAD_ATTR                3 (NULL|self + get_visibility)
+             60 CALL                     0
+             68 STORE_FAST               5 (visibile)
+
+356          70 LOAD_FAST                5 (visibile)
+             72 POP_JUMP_IF_TRUE         3 (to 80)
+             74 LOAD_FAST                2 (high_prio)
+             76 POP_JUMP_IF_TRUE         1 (to 80)
+
+358          78 RETURN_CONST             0 (None)
+
+359     >>   80 LOAD_FAST                0 (self)
+             82 LOAD_ATTR                4 (_command_handlers)
+            102 LOAD_ATTR                7 (NULL|self + get)
+            122 LOAD_FAST                3 (cmd)
+            124 CALL                     1
+            132 STORE_FAST               6 (handler)
+
+360         134 LOAD_FAST                6 (handler)
+            136 POP_JUMP_IF_TRUE         1 (to 140)
+
+361         138 RETURN_CONST             0 (None)
+
+362     >>  140 LOAD_FAST                0 (self)
+            142 LOAD_ATTR                9 (NULL|self + _track_event)
+            162 LOAD_FAST                3 (cmd)
+            164 CALL                     1
+            172 POP_TOP
+
+363         174 LOAD_FAST                4 (data)
+            176 LOAD_CONST               1 ('__payload__')
+            178 BINARY_SUBSCR
+            182 STORE_FAST               7 (payload)
+
+364         184 LOAD_FAST                4 (data)
+            186 LOAD_CONST               2 ('__meta__')
+            188 BINARY_SUBSCR
+            192 LOAD_CONST               3 ('__timestamp__')
+            194 BINARY_SUBSCR
+            198 STORE_FAST               8 (timestamp)
+
+365         200 LOAD_FAST                0 (self)
+            202 LOAD_ATTR               11 (NULL|self + _track_cmd_pipeline_latency)
+            222 LOAD_FAST                3 (cmd)
+            224 LOAD_FAST                8 (timestamp)
+            226 LOAD_GLOBAL             13 (NULL + perf_counter_ns)
+            236 CALL                     0
+            244 CALL                     3
+            252 POP_TOP
+
+366         254 NOP
+
+367         256 PUSH_NULL
+            258 LOAD_FAST                6 (handler)
+            260 LOAD_FAST                7 (payload)
+            262 CALL                     1
+            270 POP_TOP
+            272 RETURN_CONST             0 (None)
+        >>  274 PUSH_EXC_INFO
+
+368         276 LOAD_GLOBAL             14 (AssertionError)
+            286 CHECK_EXC_MATCH
+            288 POP_JUMP_IF_FALSE       41 (to 372)
+            290 POP_TOP
+
+369         292 LOAD_FAST                0 (self)
+            294 LOAD_ATTR               16 (logger)
+            314 LOAD_ATTR               19 (NULL|self + exception)
+            334 LOAD_CONST               4 ("%s | Assertion error handling command '%s'")
+            336 LOAD_FAST                0 (self)
+            338 LOAD_ATTR                0 (OVERLAY_ID)
+            358 LOAD_FAST                3 (cmd)
+            360 CALL                     3
+            368 POP_TOP
+
+370         370 RAISE_VARARGS            0
+
+371     >>  372 LOAD_GLOBAL             20 (Exception)
+            382 CHECK_EXC_MATCH
+            384 POP_JUMP_IF_FALSE       78 (to 542)
+            386 STORE_FAST               9 (e)
+
+372         388 LOAD_FAST                0 (self)
+            390 LOAD_ATTR               16 (logger)
+            410 LOAD_ATTR               19 (NULL|self + exception)
+            430 LOAD_CONST               5 ("%s | Error handling command '%s': %s")
+            432 LOAD_FAST                0 (self)
+            434 LOAD_ATTR                0 (OVERLAY_ID)
+            454 LOAD_FAST                3 (cmd)
+            456 LOAD_FAST                9 (e)
+            458 CALL                     4
+            466 POP_TOP
+
+373         468 LOAD_FAST                0 (self)
+            470 LOAD_ATTR               22 (_stats)
+            490 LOAD_ATTR               25 (NULL|self + track_event)
+            510 LOAD_CONST               6 ('__EXCEPTION__')
+            512 LOAD_FAST                3 (cmd)
+            514 CALL                     2
+            522 POP_TOP
+            524 POP_EXCEPT
+            526 LOAD_CONST               0 (None)
+            528 STORE_FAST               9 (e)
+            530 DELETE_FAST              9 (e)
+            532 RETURN_CONST             0 (None)
+        >>  534 LOAD_CONST               0 (None)
+            536 STORE_FAST               9 (e)
+            538 DELETE_FAST              9 (e)
+            540 RERAISE                  1
+
+371     >>  542 RERAISE                  0
+        >>  544 COPY                     3
+            546 POP_EXCEPT
+            548 RERAISE                  1
+ExceptionTable:
+  256 to 270 -> 274 [0]
+  274 to 386 -> 544 [1] lasti
+  388 to 522 -> 534 [1] lasti
+  534 to 542 -> 544 [1] lasti
+
+Disassembly of <code object _handle_request at 0x0000020DAEF0A600, file "apps\hud\ui\overlays\base\base.py", line 375>:
+375           0 RESUME                   0
+
+384           2 LOAD_FAST                1 (recipient)
+              4 POP_JUMP_IF_FALSE       16 (to 38)
+              6 LOAD_FAST                1 (recipient)
+              8 LOAD_FAST                0 (self)
+             10 LOAD_ATTR                0 (OVERLAY_ID)
+             30 COMPARE_OP              55 (!=)
+             34 POP_JUMP_IF_FALSE        1 (to 38)
+
+385          36 RETURN_CONST             1 (None)
+
+387     >>   38 LOAD_FAST                0 (self)
+             40 LOAD_ATTR                2 (_request_handlers)
+             60 LOAD_ATTR                5 (NULL|self + get)
+             80 LOAD_FAST                2 (request_type)
+             82 CALL                     1
+             90 COPY                     1
+             92 STORE_FAST               4 (handler)
+             94 POP_JUMP_IF_FALSE       77 (to 250)
+
+388          96 LOAD_FAST                0 (self)
+             98 LOAD_ATTR                6 (logger)
+            118 LOAD_ATTR                9 (NULL|self + debug)
+            138 LOAD_CONST               2 ("%s | Handling request '%s'")
+            140 LOAD_FAST                0 (self)
+            142 LOAD_ATTR                0 (OVERLAY_ID)
+            162 LOAD_FAST                2 (request_type)
+            164 CALL                     3
+            172 POP_TOP
+
+389         174 NOP
+
+390         176 PUSH_NULL
+            178 LOAD_FAST                4 (handler)
+            180 LOAD_FAST                3 (request_data)
+            182 CALL                     1
+            190 STORE_FAST               5 (response)
+
+392         192 LOAD_FAST                0 (self)
+            194 LOAD_ATTR               10 (response_signal)
+            214 LOAD_ATTR               13 (NULL|self + emit)
+            234 LOAD_FAST                2 (request_type)
+            236 LOAD_FAST                5 (response)
+            238 CALL                     2
+            246 POP_TOP
+            248 RETURN_CONST             1 (None)
+
+399     >>  250 LOAD_FAST                0 (self)
+            252 LOAD_ATTR                6 (logger)
+            272 LOAD_ATTR                9 (NULL|self + debug)
+            292 LOAD_CONST               5 ("%s | No handler for request '%s'")
+            294 LOAD_FAST                0 (self)
+            296 LOAD_ATTR                0 (OVERLAY_ID)
+            316 LOAD_FAST                2 (request_type)
+            318 CALL                     3
+            326 POP_TOP
+            328 RETURN_CONST             1 (None)
+        >>  330 PUSH_EXC_INFO
+
+393         332 LOAD_GLOBAL             14 (AssertionError)
+            342 CHECK_EXC_MATCH
+            344 POP_JUMP_IF_FALSE       41 (to 428)
+            346 POP_TOP
+
+394         348 LOAD_FAST                0 (self)
+            350 LOAD_ATTR                6 (logger)
+            370 LOAD_ATTR               17 (NULL|self + exception)
+            390 LOAD_CONST               3 ("%s | Assertion error handling request '%s'")
+            392 LOAD_FAST                0 (self)
+            394 LOAD_ATTR                0 (OVERLAY_ID)
+            414 LOAD_FAST                2 (request_type)
+            416 CALL                     3
+            424 POP_TOP
+
+395         426 RAISE_VARARGS            0
+
+396     >>  428 LOAD_GLOBAL             18 (Exception)
+            438 CHECK_EXC_MATCH
+            440 POP_JUMP_IF_FALSE       50 (to 542)
+            442 STORE_FAST               6 (e)
+
+397         444 LOAD_FAST                0 (self)
+            446 LOAD_ATTR                6 (logger)
+            466 LOAD_ATTR               17 (NULL|self + exception)
+            486 LOAD_CONST               4 ("%s | Error handling request '%s': %s")
+            488 LOAD_FAST                0 (self)
+            490 LOAD_ATTR                0 (OVERLAY_ID)
+            510 LOAD_FAST                2 (request_type)
+            512 LOAD_FAST                6 (e)
+            514 CALL                     4
+            522 POP_TOP
+            524 POP_EXCEPT
+            526 LOAD_CONST               1 (None)
+            528 STORE_FAST               6 (e)
+            530 DELETE_FAST              6 (e)
+            532 RETURN_CONST             1 (None)
+        >>  534 LOAD_CONST               1 (None)
+            536 STORE_FAST               6 (e)
+            538 DELETE_FAST              6 (e)
+            540 RERAISE                  1
+
+396     >>  542 RERAISE                  0
+        >>  544 COPY                     3
+            546 POP_EXCEPT
+            548 RERAISE                  1
+ExceptionTable:
+  176 to 246 -> 330 [0]
+  330 to 442 -> 544 [1] lasti
+  444 to 522 -> 534 [1] lasti
+  534 to 542 -> 544 [1] lasti
+
+Disassembly of <code object _handle_high_freq_data at 0x0000020DAEB8E470, file "apps\hud\ui\overlays\base\base.py", line 401>:
+401           0 RESUME                   0
+
+403           2 LOAD_FAST                1 (payload)
+              4 LOAD_ATTR                0 (__hf_type__)
+             24 LOAD_FAST                0 (self)
+             26 LOAD_ATTR                2 (_hf_subscriptions)
+             46 CONTAINS_OP              1
+             48 POP_JUMP_IF_FALSE        1 (to 52)
+
+404          50 RETURN_CONST             0 (None)
+
+406     >>   52 LOAD_FAST                0 (self)
+             54 LOAD_ATTR                5 (NULL|self + _track_hf_pipeline_latency)
+
+407          74 LOAD_FAST                1 (payload)
+             76 LOAD_ATTR                0 (__hf_type__)
+
+408          96 LOAD_FAST                1 (payload)
+             98 LOAD_ATTR                6 (__timestamp__)
+
+409         118 LOAD_GLOBAL              9 (NULL + perf_counter_ns)
+            128 CALL                     0
+
+406         136 CALL                     3
+            144 POP_TOP
+
+412         146 LOAD_FAST                1 (payload)
+            148 LOAD_ATTR                0 (__hf_type__)
+            168 STORE_FAST               2 (msg_type)
+
+413         170 LOAD_FAST                1 (payload)
+            172 LOAD_ATTR               10 (__seq__)
+            192 STORE_FAST               3 (curr_seq)
+
+414         194 LOAD_FAST                0 (self)
+            196 LOAD_ATTR               12 (_hf_last_seq)
+            216 LOAD_ATTR               15 (NULL|self + get)
+            236 LOAD_FAST                2 (msg_type)
+            238 CALL                     1
+            246 STORE_FAST               4 (prev_seq)
+
+415         248 LOAD_FAST                4 (prev_seq)
+            250 POP_JUMP_IF_NOT_NONE    16 (to 284)
+
+417         252 LOAD_FAST                3 (curr_seq)
+            254 LOAD_FAST                0 (self)
+            256 LOAD_ATTR               12 (_hf_last_seq)
+            276 LOAD_FAST                2 (msg_type)
+            278 STORE_SUBSCR
+            282 JUMP_FORWARD           158 (to 600)
+
+418     >>  284 LOAD_FAST                3 (curr_seq)
+            286 LOAD_FAST                4 (prev_seq)
+            288 LOAD_CONST               1 (1)
+            290 BINARY_OP                0 (+)
+            294 COMPARE_OP              40 (==)
+            298 POP_JUMP_IF_FALSE       16 (to 332)
+
+420         300 LOAD_FAST                3 (curr_seq)
+            302 LOAD_FAST                0 (self)
+            304 LOAD_ATTR               12 (_hf_last_seq)
+            324 LOAD_FAST                2 (msg_type)
+            326 STORE_SUBSCR
+            330 JUMP_FORWARD           134 (to 600)
+
+421     >>  332 LOAD_FAST                3 (curr_seq)
+            334 LOAD_FAST                4 (prev_seq)
+            336 LOAD_CONST               1 (1)
+            338 BINARY_OP                0 (+)
+            342 COMPARE_OP              68 (>)
+            346 POP_JUMP_IF_FALSE       84 (to 516)
+
+423         348 LOAD_FAST                3 (curr_seq)
+            350 LOAD_FAST                4 (prev_seq)
+            352 BINARY_OP               10 (-)
+            356 LOAD_CONST               1 (1)
+            358 BINARY_OP               10 (-)
+            362 STORE_FAST               5 (lost)
+
+424         364 LOAD_FAST                0 (self)
+            366 LOAD_ATTR               16 (_stats)
+            386 LOAD_ATTR               19 (NULL|self + track_event)
+            406 LOAD_CONST               2 ('__HF_LOSS__')
+            408 LOAD_CONST               3 ('__TOTAL__')
+            410 LOAD_FAST                5 (lost)
+            412 KW_NAMES                 4 (('count',))
+            414 CALL                     3
+            422 POP_TOP
+
+425         424 LOAD_FAST                0 (self)
+            426 LOAD_ATTR               16 (_stats)
+            446 LOAD_ATTR               19 (NULL|self + track_event)
+            466 LOAD_CONST               2 ('__HF_LOSS__')
+            468 LOAD_FAST                2 (msg_type)
+            470 LOAD_FAST                5 (lost)
+            472 KW_NAMES                 4 (('count',))
+            474 CALL                     3
+            482 POP_TOP
+
+426         484 LOAD_FAST                3 (curr_seq)
+            486 LOAD_FAST                0 (self)
+            488 LOAD_ATTR               12 (_hf_last_seq)
+            508 LOAD_FAST                2 (msg_type)
+            510 STORE_SUBSCR
+            514 JUMP_FORWARD            42 (to 600)
+
+429     >>  516 LOAD_FAST                0 (self)
+            518 LOAD_ATTR               20 (logger)
+            538 LOAD_ATTR               23 (NULL|self + error)
+
+430         558 LOAD_CONST               5 ('%s | HF out-of-order: type=%s prev_seq=%d curr_seq=%d')
+
+431         560 LOAD_FAST                0 (self)
+            562 LOAD_ATTR               24 (OVERLAY_ID)
+            582 LOAD_FAST                2 (msg_type)
+            584 LOAD_FAST                4 (prev_seq)
+            586 LOAD_FAST                3 (curr_seq)
+
+429         588 CALL                     5
+            596 POP_TOP
+
+433         598 RETURN_CONST             0 (None)
+
+435     >>  600 LOAD_FAST                1 (payload)
+            602 LOAD_FAST                0 (self)
+            604 LOAD_ATTR               26 (_latest_hf)
+            624 LOAD_FAST                1 (payload)
+            626 LOAD_ATTR                0 (__hf_type__)
+            646 STORE_SUBSCR
+
+436         650 LOAD_FAST                0 (self)
+            652 LOAD_ATTR               29 (NULL|self + get_visibility)
+            672 CALL                     0
+            680 POP_JUMP_IF_FALSE      156 (to 994)
+
+437         682 LOAD_FAST                1 (payload)
+            684 LOAD_ATTR                0 (__hf_type__)
+            704 LOAD_FAST                0 (self)
+            706 LOAD_ATTR               30 (_hf_pending)
+            726 CONTAINS_OP              0
+            728 POP_JUMP_IF_FALSE       67 (to 864)
+
+439         730 LOAD_FAST                0 (self)
+            732 LOAD_ATTR               16 (_stats)
+            752 LOAD_ATTR               19 (NULL|self + track_event)
+            772 LOAD_CONST               6 ('__HF_DROPPED_VISIBLE__')
+            774 LOAD_CONST               3 ('__TOTAL__')
+            776 CALL                     2
+            784 POP_TOP
+
+440         786 LOAD_FAST                0 (self)
+            788 LOAD_ATTR               16 (_stats)
+            808 LOAD_ATTR               19 (NULL|self + track_event)
+            828 LOAD_CONST               6 ('__HF_DROPPED_VISIBLE__')
+            830 LOAD_FAST                1 (payload)
+            832 LOAD_ATTR                0 (__hf_type__)
+            852 CALL                     2
+            860 POP_TOP
+            862 JUMP_FORWARD            37 (to 938)
+
+442     >>  864 LOAD_FAST                0 (self)
+            866 LOAD_ATTR               30 (_hf_pending)
+            886 LOAD_ATTR               33 (NULL|self + add)
+            906 LOAD_FAST                1 (payload)
+            908 LOAD_ATTR                0 (__hf_type__)
+            928 CALL                     1
+            936 POP_TOP
+
+443     >>  938 LOAD_FAST                0 (self)
+            940 LOAD_ATTR               35 (NULL|self + _track_hf_event)
+            960 LOAD_FAST                1 (payload)
+            962 LOAD_ATTR                0 (__hf_type__)
+            982 CALL                     1
+            990 POP_TOP
+            992 RETURN_CONST             0 (None)
+
+445     >>  994 LOAD_FAST                0 (self)
+            996 LOAD_ATTR               16 (_stats)
+           1016 LOAD_ATTR               19 (NULL|self + track_event)
+           1036 LOAD_CONST               7 ('__HF_DROPPED_HIDDEN__')
+           1038 LOAD_CONST               3 ('__TOTAL__')
+           1040 CALL                     2
+           1048 POP_TOP
+
+446        1050 LOAD_FAST                0 (self)
+           1052 LOAD_ATTR               16 (_stats)
+           1072 LOAD_ATTR               19 (NULL|self + track_event)
+           1092 LOAD_CONST               7 ('__HF_DROPPED_HIDDEN__')
+           1094 LOAD_FAST                1 (payload)
+           1096 LOAD_ATTR                0 (__hf_type__)
+           1116 CALL                     2
+           1124 POP_TOP
+           1126 RETURN_CONST             0 (None)

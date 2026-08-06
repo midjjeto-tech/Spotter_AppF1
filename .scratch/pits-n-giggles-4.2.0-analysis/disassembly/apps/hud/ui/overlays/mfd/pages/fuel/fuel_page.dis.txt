@@ -1,0 +1,434 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('Any', 'Dict', 'TYPE_CHECKING'))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (Any)
+             30 STORE_NAME               4 (Any)
+             32 IMPORT_FROM              5 (Dict)
+             34 STORE_NAME               5 (Dict)
+             36 IMPORT_FROM              6 (TYPE_CHECKING)
+             38 STORE_NAME               6 (TYPE_CHECKING)
+             40 POP_TOP
+
+ 29          42 LOAD_CONST               0 (0)
+             44 LOAD_CONST               4 (('get_ref_row', 'is_race_type_session'))
+             46 IMPORT_NAME              7 (apps.hud.common)
+             48 IMPORT_FROM              8 (get_ref_row)
+             50 STORE_NAME               8 (get_ref_row)
+             52 IMPORT_FROM              9 (is_race_type_session)
+             54 STORE_NAME               9 (is_race_type_session)
+             56 POP_TOP
+
+ 30          58 LOAD_CONST               0 (0)
+             60 LOAD_CONST               5 (('MfdPageBase',))
+             62 IMPORT_NAME             10 (apps.hud.ui.overlays.mfd.pages.base_page)
+             64 IMPORT_FROM             11 (MfdPageBase)
+             66 STORE_NAME              11 (MfdPageBase)
+             68 POP_TOP
+
+ 31          70 LOAD_CONST               0 (0)
+             72 LOAD_CONST               6 (('MfdPageId', 'OverlaysFuelEstimationMode'))
+             74 IMPORT_NAME             12 (lib.config)
+             76 IMPORT_FROM             13 (MfdPageId)
+             78 STORE_NAME              13 (MfdPageId)
+             80 IMPORT_FROM             14 (OverlaysFuelEstimationMode)
+             82 STORE_NAME              14 (OverlaysFuelEstimationMode)
+             84 POP_TOP
+
+ 32          86 LOAD_CONST               0 (0)
+             88 LOAD_CONST               7 (('F1Utils',))
+             90 IMPORT_NAME             15 (lib.f1_types)
+             92 IMPORT_FROM             16 (F1Utils)
+             94 STORE_NAME              16 (F1Utils)
+             96 POP_TOP
+
+ 34          98 LOAD_NAME                6 (TYPE_CHECKING)
+            100 POP_JUMP_IF_FALSE        6 (to 114)
+
+ 35         102 LOAD_CONST               0 (0)
+            104 LOAD_CONST               8 (('MfdOverlay',))
+            106 IMPORT_NAME             17 (apps.hud.ui.overlays.mfd.mfd)
+            108 IMPORT_FROM             18 (MfdOverlay)
+            110 STORE_NAME              18 (MfdOverlay)
+            112 POP_TOP
+
+ 39     >>  114 PUSH_NULL
+            116 LOAD_BUILD_CLASS
+            118 LOAD_CONST               9 (<code object FuelInfoPage at 0x0000020DAF18BB20, file "apps\hud\ui\overlays\mfd\pages\fuel\fuel_page.py", line 39>)
+            120 MAKE_FUNCTION            0
+            122 LOAD_CONST              10 ('FuelInfoPage')
+            124 LOAD_NAME               11 (MfdPageBase)
+            126 CALL                     3
+            134 STORE_NAME              19 (FuelInfoPage)
+            136 RETURN_CONST             1 (None)
+
+Disassembly of <code object FuelInfoPage at 0x0000020DAF18BB20, file "apps\hud\ui\overlays\mfd\pages\fuel\fuel_page.py", line 39>:
+              0 MAKE_CELL                0 (__class__)
+
+ 39           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('FuelInfoPage')
+             10 STORE_NAME               2 (__qualname__)
+             12 SETUP_ANNOTATIONS
+
+ 40          14 LOAD_NAME                3 (MfdPageId)
+             16 LOAD_ATTR                8 (FUEL_INFO)
+             36 STORE_NAME               5 (KEY)
+
+ 41          38 PUSH_NULL
+             40 LOAD_NAME                6 (Path)
+             42 LOAD_NAME                7 (__file__)
+             44 CALL                     1
+             52 LOAD_ATTR               16 (parent)
+             72 LOAD_CONST               1 ('fuel_page.qml')
+             74 BINARY_OP               11 (/)
+             78 STORE_NAME               9 (QML_FILE)
+             80 LOAD_NAME                6 (Path)
+             82 LOAD_NAME               10 (__annotations__)
+             84 LOAD_CONST               2 ('QML_FILE')
+             86 STORE_SUBSCR
+
+ 43          90 LOAD_CONST               3 (0.2)
+             92 STORE_NAME              11 (MIN_FUEL)
+
+ 45          94 LOAD_CONST               4 ('overlay')
+             96 LOAD_CONST               5 ('MfdOverlay')
+             98 LOAD_CONST               6 ('logger')
+            100 LOAD_NAME               12 (logging)
+            102 LOAD_ATTR               26 (Logger)
+            122 LOAD_CONST               7 ('fuel_est_mode')
+            124 LOAD_NAME               14 (OverlaysFuelEstimationMode)
+            126 BUILD_TUPLE              6
+            128 LOAD_CLOSURE             0 (__class__)
+            130 BUILD_TUPLE              1
+            132 LOAD_CONST               8 (<code object __init__ at 0x0000020DAF19FBD0, file "apps\hud\ui\overlays\mfd\pages\fuel\fuel_page.py", line 45>)
+            134 MAKE_FUNCTION           12 (annotations, closure)
+            136 STORE_NAME              15 (__init__)
+
+ 50         138 LOAD_CONST               9 (<code object _init_handlers at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\mfd\pages\fuel\fuel_page.py", line 50>)
+            140 MAKE_FUNCTION            0
+            142 STORE_NAME              16 (_init_handlers)
+
+ 92         144 LOAD_CONST              10 (<code object _fmt at 0x0000020DAF2F1990, file "apps\hud\ui\overlays\mfd\pages\fuel\fuel_page.py", line 92>)
+            146 MAKE_FUNCTION            0
+            148 STORE_NAME              17 (_fmt)
+
+ 95         150 LOAD_CONST              12 (('return', None))
+            152 LOAD_CONST              11 (<code object _set_all_dim at 0x0000020DAF2AD930, file "apps\hud\ui\overlays\mfd\pages\fuel\fuel_page.py", line 95>)
+            154 MAKE_FUNCTION            4 (annotations)
+            156 STORE_NAME              18 (_set_all_dim)
+            158 LOAD_CLOSURE             0 (__class__)
+            160 COPY                     1
+            162 STORE_NAME              19 (__classcell__)
+            164 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF19FBD0, file "apps\hud\ui\overlays\mfd\pages\fuel\fuel_page.py", line 45>:
+              0 COPY_FREE_VARS           1
+
+ 45           2 RESUME                   0
+
+ 46           4 LOAD_GLOBAL              0 (super)
+             14 LOAD_DEREF               4 (__class__)
+             16 LOAD_FAST                0 (self)
+             18 LOAD_SUPER_ATTR          5 (NULL|self + __init__)
+             22 LOAD_FAST                1 (overlay)
+             24 LOAD_FAST                2 (logger)
+             26 CALL                     2
+             34 POP_TOP
+
+ 47          36 LOAD_FAST                0 (self)
+             38 LOAD_ATTR                5 (NULL|self + _init_handlers)
+             58 CALL                     0
+             66 POP_TOP
+
+ 48          68 LOAD_FAST                3 (fuel_est_mode)
+             70 LOAD_FAST                0 (self)
+             72 STORE_ATTR               3 (_fuel_est_mode)
+             82 RETURN_CONST             0 (None)
+
+Disassembly of <code object _init_handlers at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\mfd\pages\fuel\fuel_page.py", line 50>:
+              0 MAKE_CELL                0 (self)
+
+ 50           2 RESUME                   0
+
+ 51           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('race_table_update')
+             28 CALL                     1
+
+ 52          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (Dict)
+             48 LOAD_GLOBAL              4 (str)
+             58 LOAD_GLOBAL              6 (Any)
+             68 BUILD_TUPLE              2
+             70 BINARY_SUBSCR
+             74 LOAD_CONST               3 ('return')
+             76 LOAD_CONST               0 (None)
+             78 BUILD_TUPLE              4
+             80 LOAD_CLOSURE             0 (self)
+             82 BUILD_TUPLE              1
+             84 LOAD_CONST               4 (<code object update at 0x0000020DAEAD2840, file "apps\hud\ui\overlays\mfd\pages\fuel\fuel_page.py", line 51>)
+             86 MAKE_FUNCTION           12 (annotations, closure)
+
+ 51          88 CALL                     0
+
+ 52          96 STORE_FAST               1 (update)
+             98 RETURN_CONST             0 (None)
+
+Disassembly of <code object update at 0x0000020DAEAD2840, file "apps\hud\ui\overlays\mfd\pages\fuel\fuel_page.py", line 51>:
+              0 COPY_FREE_VARS           1
+
+ 51           2 RESUME                   0
+
+ 54           4 LOAD_GLOBAL              1 (NULL + get_ref_row)
+             14 LOAD_FAST                0 (data)
+             16 CALL                     1
+             24 STORE_FAST               1 (ref_row)
+
+ 55          26 LOAD_FAST                1 (ref_row)
+             28 POP_JUMP_IF_TRUE         1 (to 32)
+
+ 56          30 RETURN_CONST             1 (None)
+
+ 58     >>   32 LOAD_FAST                1 (ref_row)
+             34 LOAD_CONST               2 ('driver-info')
+             36 BINARY_SUBSCR
+             40 LOAD_CONST               3 ('telemetry-setting')
+             42 BINARY_SUBSCR
+             46 LOAD_CONST               4 ('Public')
+             48 COMPARE_OP              55 (!=)
+             52 POP_JUMP_IF_FALSE       17 (to 88)
+
+ 59          54 LOAD_DEREF               5 (self)
+             56 LOAD_ATTR                3 (NULL|self + _set_all_dim)
+             76 CALL                     0
+             84 POP_TOP
+
+ 60          86 RETURN_CONST             1 (None)
+
+ 62     >>   88 LOAD_FAST                0 (data)
+             90 LOAD_CONST               5 ('event-type')
+             92 BINARY_SUBSCR
+             96 STORE_FAST               2 (session_type)
+
+ 63          98 LOAD_FAST                1 (ref_row)
+            100 LOAD_CONST               6 ('fuel-info')
+            102 BINARY_SUBSCR
+            106 STORE_FAST               3 (fuel)
+
+ 65         108 LOAD_DEREF               5 (self)
+            110 LOAD_ATTR                5 (NULL|self + set_page_property)
+            130 LOAD_CONST               7 ('lastValue')
+            132 LOAD_DEREF               5 (self)
+            134 LOAD_ATTR                7 (NULL|self + _fmt)
+            154 LOAD_FAST                3 (fuel)
+            156 LOAD_ATTR                9 (NULL|self + get)
+            176 LOAD_CONST               8 ('last-lap-fuel-used')
+            178 CALL                     1
+            186 CALL                     1
+            194 CALL                     2
+            202 POP_TOP
+
+ 67         204 LOAD_GLOBAL             11 (NULL + is_race_type_session)
+            214 LOAD_FAST                2 (session_type)
+            216 CALL                     1
+            224 POP_JUMP_IF_FALSE      209 (to 644)
+
+ 68         226 LOAD_DEREF               5 (self)
+            228 LOAD_ATTR                5 (NULL|self + set_page_property)
+            248 LOAD_CONST               9 ('currValue')
+            250 LOAD_DEREF               5 (self)
+            252 LOAD_ATTR                7 (NULL|self + _fmt)
+            272 LOAD_FAST                3 (fuel)
+            274 LOAD_ATTR                9 (NULL|self + get)
+            294 LOAD_CONST              10 ('curr-fuel-rate')
+            296 CALL                     1
+            304 CALL                     1
+            312 CALL                     2
+            320 POP_TOP
+
+ 69         322 LOAD_DEREF               5 (self)
+            324 LOAD_ATTR                5 (NULL|self + set_page_property)
+            344 LOAD_CONST              11 ('tgtAvgValue')
+            346 LOAD_DEREF               5 (self)
+            348 LOAD_ATTR                7 (NULL|self + _fmt)
+            368 LOAD_FAST                3 (fuel)
+            370 LOAD_ATTR                9 (NULL|self + get)
+            390 LOAD_CONST              12 ('target-fuel-rate-average')
+            392 CALL                     1
+            400 CALL                     1
+            408 CALL                     2
+            416 POP_TOP
+
+ 70         418 LOAD_DEREF               5 (self)
+            420 LOAD_ATTR                5 (NULL|self + set_page_property)
+            440 LOAD_CONST              13 ('tgtNextValue')
+            442 LOAD_DEREF               5 (self)
+            444 LOAD_ATTR                7 (NULL|self + _fmt)
+            464 LOAD_FAST                3 (fuel)
+            466 LOAD_ATTR                9 (NULL|self + get)
+            486 LOAD_CONST              14 ('target-fuel-rate-next-lap')
+            488 CALL                     1
+            496 CALL                     1
+            504 CALL                     2
+            512 POP_TOP
+
+ 71         514 LOAD_DEREF               5 (self)
+            516 LOAD_ATTR               12 (_fuel_est_mode)
+            536 LOAD_GLOBAL             14 (OverlaysFuelEstimationMode)
+            546 LOAD_ATTR               16 (LINEAR_REGRESSION)
+            566 COMPARE_OP              40 (==)
+            570 POP_JUMP_IF_FALSE       18 (to 608)
+
+ 72         572 LOAD_FAST                3 (fuel)
+            574 LOAD_ATTR                9 (NULL|self + get)
+            594 LOAD_CONST              15 ('surplus-laps-png')
+            596 CALL                     1
+            604 STORE_FAST               4 (surplus)
+            606 JUMP_FORWARD            89 (to 786)
+
+ 74     >>  608 LOAD_FAST                3 (fuel)
+            610 LOAD_ATTR                9 (NULL|self + get)
+            630 LOAD_CONST              16 ('surplus-laps-game')
+            632 CALL                     1
+            640 STORE_FAST               4 (surplus)
+            642 JUMP_FORWARD            71 (to 786)
+
+ 76     >>  644 LOAD_DEREF               5 (self)
+            646 LOAD_ATTR                5 (NULL|self + set_page_property)
+            666 LOAD_CONST               9 ('currValue')
+            668 LOAD_CONST              17 ('---')
+            670 CALL                     2
+            678 POP_TOP
+
+ 77         680 LOAD_DEREF               5 (self)
+            682 LOAD_ATTR                5 (NULL|self + set_page_property)
+            702 LOAD_CONST              11 ('tgtAvgValue')
+            704 LOAD_CONST              17 ('---')
+            706 CALL                     2
+            714 POP_TOP
+
+ 78         716 LOAD_DEREF               5 (self)
+            718 LOAD_ATTR                5 (NULL|self + set_page_property)
+            738 LOAD_CONST              13 ('tgtNextValue')
+            740 LOAD_CONST              17 ('---')
+            742 CALL                     2
+            750 POP_TOP
+
+ 79         752 LOAD_FAST                3 (fuel)
+            754 LOAD_ATTR                9 (NULL|self + get)
+            774 LOAD_CONST              16 ('surplus-laps-game')
+            776 CALL                     1
+            784 STORE_FAST               4 (surplus)
+
+ 81     >>  786 LOAD_FAST                4 (surplus)
+            788 POP_JUMP_IF_NONE        81 (to 952)
+
+ 82         790 LOAD_DEREF               5 (self)
+            792 LOAD_ATTR                5 (NULL|self + set_page_property)
+
+ 83         812 LOAD_CONST              18 ('surplusText')
+
+ 84         814 LOAD_CONST              19 ('Surplus: ')
+            816 LOAD_GLOBAL             19 (NULL + F1Utils)
+            826 LOAD_ATTR               20 (formatFloat)
+            846 LOAD_FAST                4 (surplus)
+            848 LOAD_CONST              20 (3)
+            850 LOAD_CONST              21 (True)
+            852 KW_NAMES                22 (('precision', 'signed'))
+            854 CALL                     3
+            862 FORMAT_VALUE             0
+            864 LOAD_CONST              23 (' laps')
+            866 BUILD_STRING             3
+
+ 82         868 CALL                     2
+            876 POP_TOP
+
+ 86         878 LOAD_DEREF               5 (self)
+            880 LOAD_ATTR                5 (NULL|self + set_page_property)
+            900 LOAD_CONST              24 ('surplusValue')
+            902 LOAD_FAST                4 (surplus)
+            904 CALL                     2
+            912 POP_TOP
+
+ 87         914 LOAD_DEREF               5 (self)
+            916 LOAD_ATTR                5 (NULL|self + set_page_property)
+            936 LOAD_CONST              25 ('surplusValid')
+            938 LOAD_CONST              21 (True)
+            940 CALL                     2
+            948 POP_TOP
+            950 RETURN_CONST             1 (None)
+
+ 89     >>  952 LOAD_DEREF               5 (self)
+            954 LOAD_ATTR                5 (NULL|self + set_page_property)
+            974 LOAD_CONST              18 ('surplusText')
+            976 LOAD_CONST              26 ('Surplus: ---')
+            978 CALL                     2
+            986 POP_TOP
+
+ 90         988 LOAD_DEREF               5 (self)
+            990 LOAD_ATTR                5 (NULL|self + set_page_property)
+           1010 LOAD_CONST              25 ('surplusValid')
+           1012 LOAD_CONST              27 (False)
+           1014 CALL                     2
+           1022 POP_TOP
+           1024 RETURN_CONST             1 (None)
+
+Disassembly of <code object _fmt at 0x0000020DAF2F1990, file "apps\hud\ui\overlays\mfd\pages\fuel\fuel_page.py", line 92>:
+ 92           0 RESUME                   0
+
+ 93           2 LOAD_FAST                1 (value)
+              4 POP_JUMP_IF_NONE         4 (to 14)
+              6 LOAD_FAST                1 (value)
+              8 LOAD_CONST               1 ('.3f')
+             10 FORMAT_VALUE             4 (with format)
+             12 RETURN_VALUE
+        >>   14 LOAD_CONST               2 ('---')
+             16 RETURN_VALUE
+
+Disassembly of <code object _set_all_dim at 0x0000020DAF2AD930, file "apps\hud\ui\overlays\mfd\pages\fuel\fuel_page.py", line 95>:
+ 95           0 RESUME                   0
+
+ 96           2 LOAD_CONST               1 (('currValue', 'lastValue', 'tgtAvgValue', 'tgtNextValue'))
+              4 GET_ITER
+        >>    6 FOR_ITER                20 (to 50)
+             10 STORE_FAST               1 (prop)
+
+ 97          12 LOAD_FAST                0 (self)
+             14 LOAD_ATTR                1 (NULL|self + set_page_property)
+             34 LOAD_FAST                1 (prop)
+             36 LOAD_CONST               2 ('---')
+             38 CALL                     2
+             46 POP_TOP
+             48 JUMP_BACKWARD           22 (to 6)
+
+ 96     >>   50 END_FOR
+
+ 98          52 LOAD_FAST                0 (self)
+             54 LOAD_ATTR                1 (NULL|self + set_page_property)
+             74 LOAD_CONST               3 ('surplusText')
+             76 LOAD_CONST               4 ('Surplus: ---')
+             78 CALL                     2
+             86 POP_TOP
+
+ 99          88 LOAD_FAST                0 (self)
+             90 LOAD_ATTR                1 (NULL|self + set_page_property)
+            110 LOAD_CONST               5 ('surplusValid')
+            112 LOAD_CONST               6 (False)
+            114 CALL                     2
+            122 POP_TOP
+            124 RETURN_CONST             0 (None)

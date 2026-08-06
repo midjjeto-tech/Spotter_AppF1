@@ -1,0 +1,215 @@
+  0           0 RESUME                   0
+
+ 25           2 SETUP_ANNOTATIONS
+              4 LOAD_CONST               0 (0)
+              6 LOAD_CONST               1 (('NamedTuple',))
+              8 IMPORT_NAME              0 (typing)
+             10 IMPORT_FROM              1 (NamedTuple)
+             12 STORE_NAME               1 (NamedTuple)
+             14 POP_TOP
+
+ 29          16 PUSH_NULL
+             18 LOAD_BUILD_CLASS
+             20 LOAD_CONST               2 (<code object _CarDims at 0x0000020DAECADC50, file "apps\hud\ui\overlays\track_radar\_radar_math.py", line 29>)
+             22 MAKE_FUNCTION            0
+             24 LOAD_CONST               3 ('_CarDims')
+             26 LOAD_NAME                1 (NamedTuple)
+             28 CALL                     3
+             36 STORE_NAME               2 (_CarDims)
+
+ 35          38 PUSH_NULL
+             40 LOAD_NAME                2 (_CarDims)
+             42 LOAD_CONST               4 (2.0)
+             44 LOAD_CONST               5 (5.63)
+             46 CALL                     2
+
+ 36          54 PUSH_NULL
+             56 LOAD_NAME                2 (_CarDims)
+             58 LOAD_CONST               4 (2.0)
+             60 LOAD_CONST               5 (5.63)
+             62 CALL                     2
+
+ 37          70 PUSH_NULL
+             72 LOAD_NAME                2 (_CarDims)
+             74 LOAD_CONST               4 (2.0)
+             76 LOAD_CONST               5 (5.63)
+             78 CALL                     2
+
+ 38          86 PUSH_NULL
+             88 LOAD_NAME                2 (_CarDims)
+             90 LOAD_CONST               4 (2.0)
+             92 LOAD_CONST               5 (5.63)
+             94 CALL                     2
+
+ 39         102 PUSH_NULL
+            104 LOAD_NAME                2 (_CarDims)
+            106 LOAD_CONST               4 (2.0)
+            108 LOAD_CONST               5 (5.63)
+            110 CALL                     2
+
+ 40         118 PUSH_NULL
+            120 LOAD_NAME                2 (_CarDims)
+            122 LOAD_CONST               4 (2.0)
+            124 LOAD_CONST               5 (5.63)
+            126 CALL                     2
+
+ 41         134 PUSH_NULL
+            136 LOAD_NAME                2 (_CarDims)
+            138 LOAD_CONST               6 (1.9)
+            140 LOAD_CONST               7 (5.285)
+            142 CALL                     2
+
+ 42         150 PUSH_NULL
+            152 LOAD_NAME                2 (_CarDims)
+            154 LOAD_CONST               6 (1.9)
+            156 LOAD_CONST               7 (5.285)
+            158 CALL                     2
+
+ 43         166 PUSH_NULL
+            168 LOAD_NAME                2 (_CarDims)
+            170 LOAD_CONST               6 (1.9)
+            172 LOAD_CONST               8 (5.4)
+            174 CALL                     2
+
+ 34         182 LOAD_CONST               9 (('F1 Modern', 'F1 Classic', 'F1 Generic', 'F1 World', 'F1 Elimination', 'Esports', 'F2', 'F2 2021', 'F1 26'))
+            184 BUILD_CONST_KEY_MAP      9
+            186 STORE_NAME               3 (_CAR_DIMENSIONS_M)
+            188 LOAD_NAME                4 (dict)
+            190 LOAD_NAME                5 (str)
+            192 LOAD_NAME                2 (_CarDims)
+            194 BUILD_TUPLE              2
+            196 BINARY_SUBSCR
+            200 LOAD_NAME                6 (__annotations__)
+            202 LOAD_CONST              10 ('_CAR_DIMENSIONS_M')
+            204 STORE_SUBSCR
+
+ 45         208 PUSH_NULL
+            210 LOAD_NAME                2 (_CarDims)
+            212 LOAD_CONST               4 (2.0)
+            214 LOAD_CONST               5 (5.63)
+            216 CALL                     2
+            224 STORE_NAME               7 (_DEFAULT_CAR_DIMENSIONS_M)
+
+ 50         226 LOAD_CONST              11 (25.0)
+            228 STORE_NAME               8 (_RADAR_RANGE_M)
+
+ 51         230 LOAD_CONST              12 (300)
+            232 STORE_NAME               9 (_RADAR_BASE_WIDTH)
+
+ 52         234 LOAD_CONST              13 (0.85)
+            236 STORE_NAME              10 (_RADAR_AREA_RATIO)
+
+ 53         238 LOAD_NAME                9 (_RADAR_BASE_WIDTH)
+            240 LOAD_NAME               10 (_RADAR_AREA_RATIO)
+            242 BINARY_OP                5 (*)
+            246 STORE_NAME              11 (_RADAR_AREA_PX)
+
+ 57         248 LOAD_CONST              14 ('formula_type')
+            250 LOAD_NAME                5 (str)
+            252 LOAD_CONST              15 ('return')
+            254 LOAD_NAME               12 (tuple)
+            256 LOAD_NAME               13 (float)
+            258 LOAD_NAME               13 (float)
+            260 BUILD_TUPLE              2
+            262 BINARY_SUBSCR
+            266 BUILD_TUPLE              4
+            268 LOAD_CONST              16 (<code object car_px at 0x0000020DAF09BAB0, file "apps\hud\ui\overlays\track_radar\_radar_math.py", line 57>)
+            270 MAKE_FUNCTION            4 (annotations)
+            272 STORE_NAME              14 (car_px)
+
+ 64         274 LOAD_CONST              17 ('rel_x')
+            276 LOAD_NAME               13 (float)
+            278 LOAD_CONST              18 ('rel_z')
+            280 LOAD_NAME               13 (float)
+            282 LOAD_CONST              15 ('return')
+            284 LOAD_NAME               12 (tuple)
+            286 LOAD_NAME               13 (float)
+            288 LOAD_NAME               13 (float)
+            290 BUILD_TUPLE              2
+            292 BINARY_SUBSCR
+            296 BUILD_TUPLE              6
+            298 LOAD_CONST              19 (<code object to_radar_coords at 0x0000020DAF19FBD0, file "apps\hud\ui\overlays\track_radar\_radar_math.py", line 64>)
+            300 MAKE_FUNCTION            4 (annotations)
+            302 STORE_NAME              15 (to_radar_coords)
+            304 RETURN_CONST            20 (None)
+
+Disassembly of <code object _CarDims at 0x0000020DAECADC50, file "apps\hud\ui\overlays\track_radar\_radar_math.py", line 29>:
+ 29           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('_CarDims')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+ 30          12 LOAD_NAME                3 (float)
+             14 LOAD_NAME                4 (__annotations__)
+             16 LOAD_CONST               1 ('width_m')
+             18 STORE_SUBSCR
+
+ 31          22 LOAD_NAME                3 (float)
+             24 LOAD_NAME                4 (__annotations__)
+             26 LOAD_CONST               2 ('length_m')
+             28 STORE_SUBSCR
+             32 RETURN_CONST             3 (None)
+
+Disassembly of <code object car_px at 0x0000020DAF09BAB0, file "apps\hud\ui\overlays\track_radar\_radar_math.py", line 57>:
+ 57           0 RESUME                   0
+
+ 59           2 LOAD_GLOBAL              0 (_CAR_DIMENSIONS_M)
+             12 LOAD_ATTR                3 (NULL|self + get)
+             32 LOAD_FAST                0 (formula_type)
+             34 LOAD_GLOBAL              4 (_DEFAULT_CAR_DIMENSIONS_M)
+             44 CALL                     2
+             52 STORE_FAST               1 (dims)
+
+ 60          54 LOAD_GLOBAL              6 (_RADAR_AREA_PX)
+             64 LOAD_CONST               1 (2.0)
+             66 BINARY_OP               11 (/)
+             70 LOAD_GLOBAL              8 (_RADAR_RANGE_M)
+             80 BINARY_OP               11 (/)
+             84 STORE_FAST               2 (px_per_m)
+
+ 61          86 LOAD_GLOBAL             11 (NULL + round)
+             96 LOAD_FAST                1 (dims)
+             98 LOAD_ATTR               12 (width_m)
+            118 LOAD_FAST                2 (px_per_m)
+            120 BINARY_OP                5 (*)
+            124 LOAD_CONST               2 (1)
+            126 CALL                     2
+            134 LOAD_GLOBAL             11 (NULL + round)
+            144 LOAD_FAST                1 (dims)
+            146 LOAD_ATTR               14 (length_m)
+            166 LOAD_FAST                2 (px_per_m)
+            168 BINARY_OP                5 (*)
+            172 LOAD_CONST               2 (1)
+            174 CALL                     2
+            182 BUILD_TUPLE              2
+            184 RETURN_VALUE
+
+Disassembly of <code object to_radar_coords at 0x0000020DAF19FBD0, file "apps\hud\ui\overlays\track_radar\_radar_math.py", line 64>:
+ 64           0 RESUME                   0
+
+ 68           2 LOAD_GLOBAL              0 (_RADAR_BASE_WIDTH)
+             12 LOAD_CONST               1 (2)
+             14 BINARY_OP               11 (/)
+             18 STORE_FAST               2 (center)
+
+ 69          20 LOAD_GLOBAL              2 (_RADAR_AREA_PX)
+             30 LOAD_CONST               1 (2)
+             32 BINARY_OP               11 (/)
+             36 LOAD_GLOBAL              4 (_RADAR_RANGE_M)
+             46 BINARY_OP               11 (/)
+             50 STORE_FAST               3 (scale)
+
+ 70          52 LOAD_FAST                2 (center)
+             54 LOAD_FAST                0 (rel_x)
+             56 LOAD_FAST                3 (scale)
+             58 BINARY_OP                5 (*)
+             62 BINARY_OP               10 (-)
+             66 LOAD_FAST                2 (center)
+             68 LOAD_FAST                1 (rel_z)
+             70 LOAD_FAST                3 (scale)
+             72 BINARY_OP                5 (*)
+             76 BINARY_OP               10 (-)
+             80 BUILD_TUPLE              2
+             82 RETURN_VALUE

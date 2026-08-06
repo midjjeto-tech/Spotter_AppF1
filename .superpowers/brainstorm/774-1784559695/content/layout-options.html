@@ -1,0 +1,133 @@
+<style>
+  .mock-app { background:#0b0d10; padding:24px; border-radius:12px; font-family: -apple-system, "Segoe UI", sans-serif; }
+  .mock-grid { display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; }
+  .mock-card { position:relative; background:#15181c; border:1px solid #262a30; border-radius:10px; padding:16px; }
+  .mock-card.active { border-color:#27F4D255; background:#27F4D211; }
+  .mock-bar { position:absolute; left:0; top:16px; width:4px; height:28px; border-radius:0 4px 4px 0; background:#27F4D2; }
+  .mock-title-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .mock-title { font-weight:800; color:#e8e8ea; font-size:15px; }
+  .mock-tagline { font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:#8a8f98; margin-bottom:8px; }
+  .mock-desc { font-size:12px; line-height:1.5; color:#a5a9b1; }
+  .badge { display:inline-flex; align-items:center; gap:4px; font-size:10px; padding:2px 7px; border-radius:999px; background:#27F4D222; color:#27F4D2; font-weight:600; cursor:pointer; }
+  .badge:hover { background:#27F4D233; }
+  .expand-list { margin-top:10px; padding-top:10px; border-top:1px dashed #262a30; font-size:11px; color:#8a8f98; }
+  .expand-list ul { margin:6px 0 0; padding-left:16px; line-height:1.7; }
+  .other-card { opacity:.55; }
+  .panel { background:#15181c; border:1px solid #262a30; border-radius:10px; padding:16px; margin-top:14px; }
+  .panel-title { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:#8a8f98; margin-bottom:10px; }
+  .feat-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; font-size:11px; color:#c3c7cd; }
+  .feat { background:#0e1013; border:1px solid #21252b; border-radius:6px; padding:8px; }
+  .tooltip-wrap { position:relative; display:inline-block; }
+  .tooltip-box { position:absolute; top:26px; left:0; width:230px; background:#1d2126; border:1px solid #2c3138; border-radius:8px; padding:10px; font-size:11px; color:#c3c7cd; box-shadow:0 8px 24px rgba(0,0,0,.4); z-index:5; }
+</style>
+
+<h2>Как показать, что Calm = голос инженера?</h2>
+<p class="subtitle">Три варианта размещения бейджа + списка функций на странице Voice. Смотри, как это будет выглядеть внутри существующей сетки из 4 персон.</p>
+
+<div class="options" data-multiselect="false">
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Бейдж на карточке + список раскрывается прямо под ней</h3>
+      <p>Клик по бейджу "⚙ Голос инженера" разворачивает список функций внутри самой карточки Calm, остальные 3 карточки не двигаются.</p>
+      <div class="mockup-body" style="margin-top:10px">
+        <div class="mock-app">
+          <div class="mock-grid">
+            <div class="mock-card"><div class="mock-title-row"><span class="mock-title">TV</span></div><div class="mock-tagline">Телевизионный</div><div class="mock-desc">Энергичный комментатор...</div></div>
+            <div class="mock-card"><div class="mock-title-row"><span class="mock-title">Hype</span></div><div class="mock-tagline">Фанат на стриме</div><div class="mock-desc">Кричит от восторга...</div></div>
+            <div class="mock-card active">
+              <span class="mock-bar"></span>
+              <div class="mock-title-row"><span class="mock-title">Calm</span><span class="badge">⚙ Голос инженера</span></div>
+              <div class="mock-tagline">Аналитик</div>
+              <div class="mock-desc">Спокойный аналитик. Объясняет сдержанно, по делу.</div>
+              <div class="expand-list">
+                Этим же голосом всегда звучит инженерский канал — независимо от выбранной персоны:
+                <ul>
+                  <li>Box-call, гэп-дайджест, DRS</li>
+                  <li>Позиция, лидер, окно пит-стопа</li>
+                  <li>Трек-лимиты, defense, повреждения</li>
+                  <li>Safety Car / VSC / красный флаг</li>
+                  <li>Ответы на голосовые вопросы (Push-to-talk)</li>
+                </ul>
+              </div>
+            </div>
+            <div class="mock-card"><div class="mock-title-row"><span class="mock-title">Toxic</span></div><div class="mock-tagline">Напарник</div><div class="mock-desc">Саркастично комментирует...</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Бейдж + всплывающая подсказка (tooltip) при наведении</h3>
+      <p>Компактнее всего — ничего не двигается и не разворачивается, список появляется только при наведении/тапе на бейдж.</p>
+      <div class="mockup-body" style="margin-top:10px">
+        <div class="mock-app">
+          <div class="mock-grid">
+            <div class="mock-card"><div class="mock-title-row"><span class="mock-title">TV</span></div><div class="mock-tagline">Телевизионный</div><div class="mock-desc">Энергичный комментатор...</div></div>
+            <div class="mock-card"><div class="mock-title-row"><span class="mock-title">Hype</span></div><div class="mock-tagline">Фанат на стриме</div><div class="mock-desc">Кричит от восторга...</div></div>
+            <div class="mock-card active">
+              <span class="mock-bar"></span>
+              <div class="mock-title-row">
+                <span class="mock-title">Calm</span>
+                <span class="tooltip-wrap">
+                  <span class="badge">⚙ Голос инженера ⓘ</span>
+                  <div class="tooltip-box">
+                    Этим голосом звучит весь инженерский канал (box-call, DRS, позиция, трек-лимиты, Safety Car, ответы на push-to-talk вопросы) — независимо от выбранной персоны комментатора.
+                  </div>
+                </span>
+              </div>
+              <div class="mock-tagline">Аналитик</div>
+              <div class="mock-desc">Спокойный аналитик. Объясняет сдержанно, по делу.</div>
+            </div>
+            <div class="mock-card"><div class="mock-title-row"><span class="mock-title">Toxic</span></div><div class="mock-tagline">Напарник</div><div class="mock-desc">Саркастично комментирует...</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Бейдж на карточке + отдельная панель ниже всей сетки</h3>
+      <p>Бейдж на Calm — короткая метка-указатель. Полный список функций — в отдельной постоянной панели "Инженерский канал" под всей сеткой персон (не только по клику).</p>
+      <div class="mockup-body" style="margin-top:10px">
+        <div class="mock-app">
+          <div class="mock-grid">
+            <div class="mock-card"><div class="mock-title-row"><span class="mock-title">TV</span></div><div class="mock-tagline">Телевизионный</div><div class="mock-desc">Энергичный комментатор...</div></div>
+            <div class="mock-card"><div class="mock-title-row"><span class="mock-title">Hype</span></div><div class="mock-tagline">Фанат на стриме</div><div class="mock-desc">Кричит от восторга...</div></div>
+            <div class="mock-card active">
+              <span class="mock-bar"></span>
+              <div class="mock-title-row"><span class="mock-title">Calm</span><span class="badge">⚙ Инженер ↓</span></div>
+              <div class="mock-tagline">Аналитик</div>
+              <div class="mock-desc">Спокойный аналитик. Объясняет сдержанно, по делу.</div>
+            </div>
+            <div class="mock-card"><div class="mock-title-row"><span class="mock-title">Toxic</span></div><div class="mock-tagline">Напарник</div><div class="mock-desc">Саркастично комментирует...</div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">⚙ Инженерский канал — всегда голосом Calm</div>
+            <div class="feat-grid">
+              <div class="feat">Box-call</div>
+              <div class="feat">Гэп-дайджест</div>
+              <div class="feat">DRS-подсказки</div>
+              <div class="feat">Позиция / лидер</div>
+              <div class="feat">Окно пит-стопа</div>
+              <div class="feat">Трек-лимиты</div>
+              <div class="feat">Defense</div>
+              <div class="feat">Повреждения</div>
+              <div class="feat">Safety Car / VSC</div>
+              <div class="feat">Push-to-talk вопросы</div>
+              <div class="feat">Голосовые команды</div>
+              <div class="feat">+ 9 тем Voice Q&A</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

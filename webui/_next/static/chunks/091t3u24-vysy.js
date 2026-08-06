@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,94468,t=>{"use strict";var e=t.i(76350),i=t.i(97950);t.s(["default",0,function(){return(0,e.jsx)(i.InGameOverlay,{})}])}]);

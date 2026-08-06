@@ -1,0 +1,608 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (('dataclass',))
+              6 IMPORT_NAME              0 (dataclasses)
+              8 IMPORT_FROM              1 (dataclass)
+             10 STORE_NAME               1 (dataclass)
+             12 POP_TOP
+
+ 26          14 LOAD_CONST               2 (1)
+             16 LOAD_CONST               3 (('HighFreqBase',))
+             18 IMPORT_NAME              2 (base)
+             20 IMPORT_FROM              3 (HighFreqBase)
+             22 STORE_NAME               3 (HighFreqBase)
+             24 POP_TOP
+
+ 30          26 PUSH_NULL
+             28 LOAD_NAME                1 (dataclass)
+             30 LOAD_CONST               4 (True)
+             32 LOAD_CONST               4 (True)
+             34 KW_NAMES                 5 (('slots', 'frozen'))
+             36 CALL                     2
+
+ 31          44 PUSH_NULL
+             46 LOAD_BUILD_CLASS
+             48 LOAD_CONST               6 (<code object HudOverlayData26 at 0x0000020DAF2AD6B0, file "apps\hud\ui\infra\hf_types\hud_overlay_data.py", line 30>)
+             50 MAKE_FUNCTION            0
+             52 LOAD_CONST               7 ('HudOverlayData26')
+             54 CALL                     2
+
+ 30          62 CALL                     0
+
+ 31          70 STORE_NAME               4 (HudOverlayData26)
+
+ 55          72 PUSH_NULL
+             74 LOAD_NAME                1 (dataclass)
+             76 LOAD_CONST               4 (True)
+             78 LOAD_CONST               4 (True)
+             80 KW_NAMES                 5 (('slots', 'frozen'))
+             82 CALL                     2
+
+ 56          90 PUSH_NULL
+             92 LOAD_BUILD_CLASS
+             94 LOAD_CONST               8 (<code object HudOverlayData at 0x0000020DAEF0C8B0, file "apps\hud\ui\infra\hf_types\hud_overlay_data.py", line 55>)
+             96 MAKE_FUNCTION            0
+             98 LOAD_CONST               9 ('HudOverlayData')
+            100 LOAD_NAME                3 (HighFreqBase)
+            102 CALL                     3
+
+ 55         110 CALL                     0
+
+ 56         118 STORE_NAME               5 (HudOverlayData)
+            120 RETURN_CONST            10 (None)
+
+Disassembly of <code object HudOverlayData26 at 0x0000020DAF2AD6B0, file "apps\hud\ui\infra\hf_types\hud_overlay_data.py", line 30>:
+ 30           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('HudOverlayData26')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+ 33          12 LOAD_NAME                3 (bool)
+             14 LOAD_NAME                4 (__annotations__)
+             16 LOAD_CONST               1 ('enabled')
+             18 STORE_SUBSCR
+
+ 34          22 LOAD_NAME                5 (str)
+             24 LOAD_NAME                4 (__annotations__)
+             26 LOAD_CONST               2 ('active_aero_mode')
+             28 STORE_SUBSCR
+
+ 35          32 LOAD_NAME                3 (bool)
+             34 LOAD_NAME                4 (__annotations__)
+             36 LOAD_CONST               3 ('active_aero_avlb')
+             38 STORE_SUBSCR
+
+ 36          42 LOAD_NAME                6 (int)
+             44 LOAD_NAME                4 (__annotations__)
+             46 LOAD_CONST               4 ('active_aero_dist')
+             48 STORE_SUBSCR
+
+ 37          52 LOAD_NAME                3 (bool)
+             54 LOAD_NAME                4 (__annotations__)
+             56 LOAD_CONST               5 ('overtake_avlb')
+             58 STORE_SUBSCR
+
+ 38          62 LOAD_NAME                3 (bool)
+             64 LOAD_NAME                4 (__annotations__)
+             66 LOAD_CONST               6 ('overtake_active')
+             68 STORE_SUBSCR
+
+ 39          72 LOAD_NAME                6 (int)
+             74 LOAD_NAME                4 (__annotations__)
+             76 LOAD_CONST               7 ('overtake_dist')
+             78 STORE_SUBSCR
+
+ 40          82 LOAD_NAME                7 (float)
+             84 LOAD_NAME                4 (__annotations__)
+             86 LOAD_CONST               8 ('harv_limit_j')
+             88 STORE_SUBSCR
+
+ 42          92 LOAD_NAME                8 (classmethod)
+
+ 43          94 LOAD_CONST               9 ('json_data')
+             96 LOAD_NAME                9 (dict)
+             98 LOAD_CONST              10 ('return')
+            100 LOAD_CONST               0 ('HudOverlayData26')
+            102 BUILD_TUPLE              4
+            104 LOAD_CONST              11 (<code object from_json at 0x0000020DAF19FBD0, file "apps\hud\ui\infra\hf_types\hud_overlay_data.py", line 42>)
+            106 MAKE_FUNCTION            4 (annotations)
+
+ 42         108 CALL                     0
+
+ 43         116 STORE_NAME              10 (from_json)
+            118 RETURN_CONST            12 (None)
+
+Disassembly of <code object from_json at 0x0000020DAF19FBD0, file "apps\hud\ui\infra\hf_types\hud_overlay_data.py", line 42>:
+ 42           0 RESUME                   0
+
+ 44           2 PUSH_NULL
+              4 LOAD_FAST                0 (cls)
+
+ 45           6 LOAD_FAST                1 (json_data)
+              8 LOAD_CONST               1 ('2026-regs-enabled')
+             10 BINARY_SUBSCR
+
+ 46          14 LOAD_FAST                1 (json_data)
+             16 LOAD_CONST               2 ('active-aero-mode')
+             18 BINARY_SUBSCR
+
+ 47          22 LOAD_FAST                1 (json_data)
+             24 LOAD_CONST               3 ('active-aero-avlb')
+             26 BINARY_SUBSCR
+
+ 48          30 LOAD_FAST                1 (json_data)
+             32 LOAD_CONST               4 ('active-aero-dist')
+             34 BINARY_SUBSCR
+
+ 49          38 LOAD_FAST                1 (json_data)
+             40 LOAD_CONST               5 ('overtake-avlb')
+             42 BINARY_SUBSCR
+
+ 50          46 LOAD_FAST                1 (json_data)
+             48 LOAD_CONST               6 ('overtake-active')
+             50 BINARY_SUBSCR
+
+ 51          54 LOAD_FAST                1 (json_data)
+             56 LOAD_CONST               7 ('overtake-dist')
+             58 BINARY_SUBSCR
+
+ 52          62 LOAD_FAST                1 (json_data)
+             64 LOAD_CONST               8 ('harv-limit-j')
+             66 BINARY_SUBSCR
+
+ 44          70 KW_NAMES                 9 (('enabled', 'active_aero_mode', 'active_aero_avlb', 'active_aero_dist', 'overtake_avlb', 'overtake_active', 'overtake_dist', 'harv_limit_j'))
+             72 CALL                     8
+             80 RETURN_VALUE
+
+Disassembly of <code object HudOverlayData at 0x0000020DAEF0C8B0, file "apps\hud\ui\infra\hf_types\hud_overlay_data.py", line 55>:
+ 55           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('HudOverlayData')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+ 58          12 LOAD_NAME                3 (float)
+             14 LOAD_NAME                4 (__annotations__)
+             16 LOAD_CONST               1 ('throttle')
+             18 STORE_SUBSCR
+
+ 59          22 LOAD_NAME                3 (float)
+             24 LOAD_NAME                4 (__annotations__)
+             26 LOAD_CONST               2 ('brake')
+             28 STORE_SUBSCR
+
+ 60          32 LOAD_NAME                5 (int)
+             34 LOAD_NAME                4 (__annotations__)
+             36 LOAD_CONST               3 ('rev_lights_pct')
+             38 STORE_SUBSCR
+
+ 61          42 LOAD_NAME                5 (int)
+             44 LOAD_NAME                4 (__annotations__)
+             46 LOAD_CONST               4 ('rpm')
+             48 STORE_SUBSCR
+
+ 62          52 LOAD_NAME                5 (int)
+             54 LOAD_NAME                4 (__annotations__)
+             56 LOAD_CONST               5 ('gear')
+             58 STORE_SUBSCR
+
+ 63          62 LOAD_NAME                5 (int)
+             64 LOAD_NAME                4 (__annotations__)
+             66 LOAD_CONST               6 ('speed_kmph')
+             68 STORE_SUBSCR
+
+ 64          72 LOAD_NAME                6 (bool)
+             74 LOAD_NAME                4 (__annotations__)
+             76 LOAD_CONST               7 ('drs_enabled')
+             78 STORE_SUBSCR
+
+ 65          82 LOAD_NAME                6 (bool)
+             84 LOAD_NAME                4 (__annotations__)
+             86 LOAD_CONST               8 ('drs_available')
+             88 STORE_SUBSCR
+
+ 66          92 LOAD_NAME                5 (int)
+             94 LOAD_NAME                4 (__annotations__)
+             96 LOAD_CONST               9 ('drs_distance')
+             98 STORE_SUBSCR
+
+ 67         102 LOAD_NAME                3 (float)
+            104 LOAD_NAME                4 (__annotations__)
+            106 LOAD_CONST              10 ('ers_harv_mguk_j')
+            108 STORE_SUBSCR
+
+ 68         112 LOAD_NAME                3 (float)
+            114 LOAD_NAME                4 (__annotations__)
+            116 LOAD_CONST              11 ('ers_deployed_j')
+            118 STORE_SUBSCR
+
+ 69         122 LOAD_NAME                3 (float)
+            124 LOAD_NAME                4 (__annotations__)
+            126 LOAD_CONST              12 ('ers_rem_j')
+            128 STORE_SUBSCR
+
+ 70         132 LOAD_NAME                7 (str)
+            134 LOAD_NAME                4 (__annotations__)
+            136 LOAD_CONST              13 ('ers_mode')
+            138 STORE_SUBSCR
+
+ 71         142 LOAD_NAME                5 (int)
+            144 LOAD_NAME                4 (__annotations__)
+            146 LOAD_CONST              14 ('tl_warnings')
+            148 STORE_SUBSCR
+
+ 72         152 LOAD_NAME                3 (float)
+            154 LOAD_NAME                4 (__annotations__)
+            156 LOAD_CONST              15 ('circuit_pos_m')
+            158 STORE_SUBSCR
+
+ 73         162 LOAD_NAME                7 (str)
+            164 LOAD_NAME                4 (__annotations__)
+            166 LOAD_CONST              16 ('circuit')
+            168 STORE_SUBSCR
+
+ 74         172 LOAD_NAME                5 (int)
+            174 LOAD_NAME                4 (__annotations__)
+            176 LOAD_CONST              17 ('circuit_num')
+            178 STORE_SUBSCR
+
+ 75         182 LOAD_NAME                5 (int)
+            184 LOAD_NAME                4 (__annotations__)
+            186 LOAD_CONST              18 ('circuit_length')
+            188 STORE_SUBSCR
+
+ 76         192 LOAD_NAME                5 (int)
+            194 LOAD_NAME                4 (__annotations__)
+            196 LOAD_CONST              19 ('track_temp')
+            198 STORE_SUBSCR
+
+ 77         202 LOAD_NAME                5 (int)
+            204 LOAD_NAME                4 (__annotations__)
+            206 LOAD_CONST              20 ('air_temp')
+            208 STORE_SUBSCR
+
+ 78         212 LOAD_NAME                3 (float)
+            214 LOAD_NAME                4 (__annotations__)
+            216 LOAD_CONST              21 ('g_force_lat')
+            218 STORE_SUBSCR
+
+ 79         222 LOAD_NAME                3 (float)
+            224 LOAD_NAME                4 (__annotations__)
+            226 LOAD_CONST              22 ('g_force_long')
+            228 STORE_SUBSCR
+
+ 80         232 LOAD_NAME                3 (float)
+            234 LOAD_NAME                4 (__annotations__)
+            236 LOAD_CONST              23 ('g_force_vert')
+            238 STORE_SUBSCR
+
+ 81         242 LOAD_NAME                7 (str)
+            244 LOAD_NAME                4 (__annotations__)
+            246 LOAD_CONST              24 ('sector')
+            248 STORE_SUBSCR
+
+ 82         252 LOAD_NAME                8 (HudOverlayData26)
+            254 LOAD_NAME                4 (__annotations__)
+            256 LOAD_CONST              25 ('f1_26_data')
+            258 STORE_SUBSCR
+
+ 84         262 LOAD_CONST              26 ('return')
+            264 LOAD_NAME                6 (bool)
+            266 BUILD_TUPLE              2
+            268 LOAD_CONST              27 (<code object __bool__ at 0x0000020DAEB6DDD0, file "apps\hud\ui\infra\hf_types\hud_overlay_data.py", line 84>)
+            270 MAKE_FUNCTION            4 (annotations)
+            272 STORE_NAME               9 (__bool__)
+
+109         274 LOAD_NAME               10 (classmethod)
+
+110         276 LOAD_CONST              28 ('json_data')
+            278 LOAD_NAME               11 (dict)
+            280 LOAD_CONST              26 ('return')
+            282 LOAD_CONST               0 ('HudOverlayData')
+            284 BUILD_TUPLE              4
+            286 LOAD_CONST              29 (<code object from_json at 0x0000020DAEDF2910, file "apps\hud\ui\infra\hf_types\hud_overlay_data.py", line 109>)
+            288 MAKE_FUNCTION            4 (annotations)
+
+109         290 CALL                     0
+
+110         298 STORE_NAME              12 (from_json)
+
+142         300 LOAD_NAME               13 (property)
+
+143         302 LOAD_CONST              26 ('return')
+            304 LOAD_NAME                5 (int)
+            306 BUILD_TUPLE              2
+            308 LOAD_CONST              30 (<code object speed_mph at 0x0000020DAF2D1730, file "apps\hud\ui\infra\hf_types\hud_overlay_data.py", line 142>)
+            310 MAKE_FUNCTION            4 (annotations)
+
+142         312 CALL                     0
+
+143         320 STORE_NAME              14 (speed_mph)
+            322 RETURN_CONST            31 (None)
+
+Disassembly of <code object __bool__ at 0x0000020DAEB6DDD0, file "apps\hud\ui\infra\hf_types\hud_overlay_data.py", line 84>:
+ 84           0 RESUME                   0
+
+ 85           2 LOAD_CONST               0 (None)
+
+ 86           4 LOAD_FAST                0 (self)
+              6 LOAD_ATTR                0 (throttle)
+
+ 87          26 LOAD_FAST                0 (self)
+             28 LOAD_ATTR                2 (brake)
+
+ 88          48 LOAD_FAST                0 (self)
+             50 LOAD_ATTR                4 (rev_lights_pct)
+
+ 89          70 LOAD_FAST                0 (self)
+             72 LOAD_ATTR                6 (rpm)
+
+ 90          92 LOAD_FAST                0 (self)
+             94 LOAD_ATTR                8 (gear)
+
+ 91         114 LOAD_FAST                0 (self)
+            116 LOAD_ATTR               10 (speed_kmph)
+
+ 92         136 LOAD_FAST                0 (self)
+            138 LOAD_ATTR               12 (drs_enabled)
+
+ 93         158 LOAD_FAST                0 (self)
+            160 LOAD_ATTR               14 (drs_available)
+
+ 94         180 LOAD_FAST                0 (self)
+            182 LOAD_ATTR               16 (drs_distance)
+
+ 95         202 LOAD_FAST                0 (self)
+            204 LOAD_ATTR               18 (ers_harv_mguk_j)
+
+ 96         224 LOAD_FAST                0 (self)
+            226 LOAD_ATTR               20 (ers_deployed_j)
+
+ 97         246 LOAD_FAST                0 (self)
+            248 LOAD_ATTR               22 (ers_rem_j)
+
+ 98         268 LOAD_FAST                0 (self)
+            270 LOAD_ATTR               24 (ers_mode)
+
+ 99         290 LOAD_FAST                0 (self)
+            292 LOAD_ATTR               26 (tl_warnings)
+
+100         312 LOAD_FAST                0 (self)
+            314 LOAD_ATTR               28 (circuit_pos_m)
+
+101         334 LOAD_FAST                0 (self)
+            336 LOAD_ATTR               30 (circuit)
+
+102         356 LOAD_FAST                0 (self)
+            358 LOAD_ATTR               32 (circuit_num)
+
+103         378 LOAD_FAST                0 (self)
+            380 LOAD_ATTR               34 (circuit_length)
+
+104         400 LOAD_FAST                0 (self)
+            402 LOAD_ATTR               36 (track_temp)
+
+105         422 LOAD_FAST                0 (self)
+            424 LOAD_ATTR               38 (air_temp)
+
+ 85         444 BUILD_TUPLE             20
+            446 CONTAINS_OP              1
+            448 RETURN_VALUE
+
+Disassembly of <code object from_json at 0x0000020DAEDF2910, file "apps\hud\ui\infra\hf_types\hud_overlay_data.py", line 109>:
+109           0 RESUME                   0
+
+111           2 LOAD_FAST                1 (json_data)
+              4 LOAD_CONST               1 ('hud')
+              6 BINARY_SUBSCR
+             10 STORE_FAST               2 (hud_data)
+
+112          12 LOAD_FAST                1 (json_data)
+             14 LOAD_CONST               2 ('g-force')
+             16 BINARY_SUBSCR
+             20 STORE_FAST               3 (g_force_data)
+
+113          22 LOAD_FAST                1 (json_data)
+             24 LOAD_CONST               3 ('penalties-and-stats')
+             26 BINARY_SUBSCR
+             30 STORE_FAST               4 (pens_stats_data)
+
+114          32 PUSH_NULL
+             34 LOAD_FAST                0 (cls)
+             36 LOAD_CONST              49 (())
+             38 BUILD_MAP                0
+             40 LOAD_CONST               4 ('throttle')
+
+115          42 LOAD_FAST                2 (hud_data)
+             44 LOAD_CONST               4 ('throttle')
+             46 BINARY_SUBSCR
+             50 MAP_ADD                  1
+
+114          52 LOAD_CONST               5 ('brake')
+
+116          54 LOAD_FAST                2 (hud_data)
+             56 LOAD_CONST               5 ('brake')
+             58 BINARY_SUBSCR
+             62 MAP_ADD                  1
+
+114          64 LOAD_CONST               6 ('rev_lights_pct')
+
+117          66 LOAD_FAST                2 (hud_data)
+             68 LOAD_CONST               7 ('rev-lights')
+             70 BINARY_SUBSCR
+             74 MAP_ADD                  1
+
+114          76 LOAD_CONST               8 ('rpm')
+
+118          78 LOAD_FAST                2 (hud_data)
+             80 LOAD_CONST               8 ('rpm')
+             82 BINARY_SUBSCR
+             86 MAP_ADD                  1
+
+114          88 LOAD_CONST               9 ('gear')
+
+119          90 LOAD_FAST                2 (hud_data)
+             92 LOAD_CONST               9 ('gear')
+             94 BINARY_SUBSCR
+             98 MAP_ADD                  1
+
+114         100 LOAD_CONST              10 ('speed_kmph')
+
+120         102 LOAD_FAST                2 (hud_data)
+            104 LOAD_CONST              11 ('speed-kmph')
+            106 BINARY_SUBSCR
+            110 MAP_ADD                  1
+
+114         112 LOAD_CONST              12 ('drs_enabled')
+
+121         114 LOAD_FAST                2 (hud_data)
+            116 LOAD_CONST              13 ('drs-enabled')
+            118 BINARY_SUBSCR
+            122 MAP_ADD                  1
+
+114         124 LOAD_CONST              14 ('drs_available')
+
+122         126 LOAD_FAST                2 (hud_data)
+            128 LOAD_CONST              15 ('drs-available')
+            130 BINARY_SUBSCR
+            134 MAP_ADD                  1
+
+114         136 LOAD_CONST              16 ('drs_distance')
+
+123         138 LOAD_FAST                2 (hud_data)
+            140 LOAD_CONST              17 ('drs-distance')
+            142 BINARY_SUBSCR
+            146 MAP_ADD                  1
+
+114         148 LOAD_CONST              18 ('ers_harv_mguk_j')
+
+124         150 LOAD_FAST                2 (hud_data)
+            152 LOAD_CONST              19 ('ers-harv-mguk')
+            154 BINARY_SUBSCR
+            158 MAP_ADD                  1
+
+114         160 LOAD_CONST              20 ('ers_deployed_j')
+
+125         162 LOAD_FAST                2 (hud_data)
+            164 LOAD_CONST              21 ('ers-deployed')
+            166 BINARY_SUBSCR
+            170 MAP_ADD                  1
+
+114         172 LOAD_CONST              22 ('ers_rem_j')
+
+126         174 LOAD_FAST                2 (hud_data)
+            176 LOAD_CONST              23 ('ers-remaining')
+            178 BINARY_SUBSCR
+            182 MAP_ADD                  1
+
+114         184 LOAD_CONST              24 ('ers_mode')
+
+127         186 LOAD_FAST                2 (hud_data)
+            188 LOAD_CONST              25 ('ers-mode')
+            190 BINARY_SUBSCR
+            194 MAP_ADD                  1
+
+114         196 LOAD_CONST              26 ('tl_warnings')
+
+128         198 LOAD_FAST                4 (pens_stats_data)
+            200 LOAD_CONST              27 ('corner-cutting-warnings')
+            202 BINARY_SUBSCR
+            206 MAP_ADD                  1
+
+114         208 LOAD_CONST              28 ('circuit_pos_m')
+
+129         210 LOAD_FAST                2 (hud_data)
+            212 LOAD_CONST              29 ('circuit-position')
+            214 BINARY_SUBSCR
+            218 MAP_ADD                  1
+
+114         220 LOAD_CONST              30 ('circuit')
+
+130         222 LOAD_FAST                1 (json_data)
+            224 LOAD_CONST              31 ('circuit-enum-name')
+            226 BINARY_SUBSCR
+            230 MAP_ADD                  1
+
+114         232 LOAD_CONST              32 ('circuit_num')
+
+131         234 LOAD_FAST                1 (json_data)
+            236 LOAD_CONST              33 ('circuit-enum-value')
+            238 BINARY_SUBSCR
+            242 MAP_ADD                  1
+
+114         244 LOAD_CONST              34 ('circuit_length')
+
+132         246 LOAD_FAST                2 (hud_data)
+            248 LOAD_CONST              35 ('circuit-length')
+            250 BINARY_SUBSCR
+            254 MAP_ADD                  1
+
+114         256 LOAD_CONST              36 ('g_force_lat')
+
+133         258 LOAD_FAST                3 (g_force_data)
+            260 LOAD_CONST              37 ('lat')
+            262 BINARY_SUBSCR
+            266 MAP_ADD                  1
+
+114         268 LOAD_CONST              38 ('g_force_long')
+
+134         270 LOAD_FAST                3 (g_force_data)
+            272 LOAD_CONST              39 ('long')
+            274 BINARY_SUBSCR
+            278 MAP_ADD                  1
+
+114         280 LOAD_CONST              40 ('g_force_vert')
+
+135         282 LOAD_FAST                3 (g_force_data)
+            284 LOAD_CONST              41 ('vert')
+            286 BINARY_SUBSCR
+            290 MAP_ADD                  1
+
+114         292 LOAD_CONST              42 ('track_temp')
+
+136         294 LOAD_FAST                4 (pens_stats_data)
+            296 LOAD_CONST              43 ('track-temperature')
+            298 BINARY_SUBSCR
+            302 MAP_ADD                  1
+
+114         304 LOAD_CONST              44 ('air_temp')
+
+137         306 LOAD_FAST                4 (pens_stats_data)
+            308 LOAD_CONST              45 ('air-temperature')
+            310 BINARY_SUBSCR
+            314 MAP_ADD                  1
+
+114         316 LOAD_CONST              46 ('sector')
+
+138         318 LOAD_FAST                2 (hud_data)
+            320 LOAD_CONST              46 ('sector')
+            322 BINARY_SUBSCR
+            326 MAP_ADD                  1
+
+114         328 LOAD_CONST              47 ('f1_26_data')
+
+139         330 LOAD_GLOBAL              0 (HudOverlayData26)
+            340 LOAD_ATTR                3 (NULL|self + from_json)
+            360 LOAD_FAST                1 (json_data)
+            362 LOAD_CONST              48 ('2026-regs-info')
+            364 BINARY_SUBSCR
+            368 CALL                     1
+            376 MAP_ADD                  1
+
+114         378 CALL_FUNCTION_EX         1
+            380 RETURN_VALUE
+
+Disassembly of <code object speed_mph at 0x0000020DAF2D1730, file "apps\hud\ui\infra\hf_types\hud_overlay_data.py", line 142>:
+142           0 RESUME                   0
+
+144           2 LOAD_GLOBAL              1 (NULL + round)
+             12 LOAD_FAST                0 (self)
+             14 LOAD_ATTR                2 (speed_kmph)
+             34 LOAD_CONST               1 (0.621371)
+             36 BINARY_OP                5 (*)
+             40 CALL                     1
+             48 RETURN_VALUE

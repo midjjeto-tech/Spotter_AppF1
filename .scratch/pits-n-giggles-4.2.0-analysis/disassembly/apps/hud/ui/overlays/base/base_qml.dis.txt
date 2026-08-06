@@ -1,0 +1,2374 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('perf_counter_ns',))
+             26 IMPORT_NAME              3 (time)
+             28 IMPORT_FROM              4 (perf_counter_ns)
+             30 STORE_NAME               4 (perf_counter_ns)
+             32 POP_TOP
+
+ 28          34 LOAD_CONST               0 (0)
+             36 LOAD_CONST               4 (('Optional', 'TypeVar', 'final', 'override'))
+             38 IMPORT_NAME              5 (typing)
+             40 IMPORT_FROM              6 (Optional)
+             42 STORE_NAME               6 (Optional)
+             44 IMPORT_FROM              7 (TypeVar)
+             46 STORE_NAME               7 (TypeVar)
+             48 IMPORT_FROM              8 (final)
+             50 STORE_NAME               8 (final)
+             52 IMPORT_FROM              9 (override)
+             54 STORE_NAME               9 (override)
+             56 POP_TOP
+
+ 30          58 LOAD_CONST               0 (0)
+             60 LOAD_CONST               5 (('QEvent', 'QMetaObject', 'QObject', 'QPoint', 'QSize', 'QPropertyAnimation', 'Qt', 'QTimer', 'QUrl', 'Slot'))
+             62 IMPORT_NAME             10 (PySide6.QtCore)
+             64 IMPORT_FROM             11 (QEvent)
+             66 STORE_NAME              11 (QEvent)
+             68 IMPORT_FROM             12 (QMetaObject)
+             70 STORE_NAME              12 (QMetaObject)
+             72 IMPORT_FROM             13 (QObject)
+             74 STORE_NAME              13 (QObject)
+             76 IMPORT_FROM             14 (QPoint)
+             78 STORE_NAME              14 (QPoint)
+             80 IMPORT_FROM             15 (QSize)
+             82 STORE_NAME              15 (QSize)
+             84 IMPORT_FROM             16 (QPropertyAnimation)
+             86 STORE_NAME              16 (QPropertyAnimation)
+             88 IMPORT_FROM             17 (Qt)
+             90 STORE_NAME              17 (Qt)
+             92 IMPORT_FROM             18 (QTimer)
+             94 STORE_NAME              18 (QTimer)
+             96 IMPORT_FROM             19 (QUrl)
+             98 STORE_NAME              19 (QUrl)
+            100 IMPORT_FROM             20 (Slot)
+            102 STORE_NAME              20 (Slot)
+            104 POP_TOP
+
+ 32         106 LOAD_CONST               0 (0)
+            108 LOAD_CONST               6 (('Q_ARG',))
+            110 IMPORT_NAME             10 (PySide6.QtCore)
+            112 IMPORT_FROM             21 (Q_ARG)
+            114 STORE_NAME              21 (Q_ARG)
+            116 POP_TOP
+
+ 33         118 LOAD_CONST               0 (0)
+            120 LOAD_CONST               7 (('QCursor', 'QIcon', 'QMouseEvent'))
+            122 IMPORT_NAME             22 (PySide6.QtGui)
+            124 IMPORT_FROM             23 (QCursor)
+            126 STORE_NAME              23 (QCursor)
+            128 IMPORT_FROM             24 (QIcon)
+            130 STORE_NAME              24 (QIcon)
+            132 IMPORT_FROM             25 (QMouseEvent)
+            134 STORE_NAME              25 (QMouseEvent)
+            136 POP_TOP
+
+ 34         138 LOAD_CONST               0 (0)
+            140 LOAD_CONST               8 (('QQmlApplicationEngine', 'QQmlComponent'))
+            142 IMPORT_NAME             26 (PySide6.QtQml)
+            144 IMPORT_FROM             27 (QQmlApplicationEngine)
+            146 STORE_NAME              27 (QQmlApplicationEngine)
+            148 IMPORT_FROM             28 (QQmlComponent)
+            150 STORE_NAME              28 (QQmlComponent)
+            152 POP_TOP
+
+ 35         154 LOAD_CONST               0 (0)
+            156 LOAD_CONST               9 (('QQuickItem', 'QQuickWindow'))
+            158 IMPORT_NAME             29 (PySide6.QtQuick)
+            160 IMPORT_FROM             30 (QQuickItem)
+            162 STORE_NAME              30 (QQuickItem)
+            164 IMPORT_FROM             31 (QQuickWindow)
+            166 STORE_NAME              31 (QQuickWindow)
+            168 POP_TOP
+
+ 37         170 LOAD_CONST               0 (0)
+            172 LOAD_CONST              10 (('HighFreqBase',))
+            174 IMPORT_NAME             32 (apps.hud.ui.infra.hf_types)
+            176 IMPORT_FROM             33 (HighFreqBase)
+            178 STORE_NAME              33 (HighFreqBase)
+            180 POP_TOP
+
+ 38         182 LOAD_CONST               0 (0)
+            184 LOAD_CONST              11 (('OverlayPosition',))
+            186 IMPORT_NAME             34 (lib.config)
+            188 IMPORT_FROM             35 (OverlayPosition)
+            190 STORE_NAME              35 (OverlayPosition)
+            192 POP_TOP
+
+ 40         194 LOAD_CONST              12 (1)
+            196 LOAD_CONST              13 (('BaseOverlay',))
+            198 IMPORT_NAME             36 (base)
+            200 IMPORT_FROM             37 (BaseOverlay)
+            202 STORE_NAME              37 (BaseOverlay)
+            204 POP_TOP
+
+ 44         206 PUSH_NULL
+            208 LOAD_NAME                7 (TypeVar)
+            210 LOAD_CONST              14 ('HighFreqObjType')
+            212 LOAD_NAME               33 (HighFreqBase)
+            214 KW_NAMES                15 (('bound',))
+            216 CALL                     2
+            224 STORE_NAME              38 (HighFreqObjType)
+
+ 45         226 PUSH_NULL
+            228 LOAD_NAME               39 (object)
+            230 CALL                     0
+            238 STORE_NAME              40 (_UNSET)
+
+ 49         240 PUSH_NULL
+            242 LOAD_BUILD_CLASS
+            244 LOAD_CONST              16 (<code object BaseOverlayQML at 0x0000020DAEDA4A50, file "apps\hud\ui\overlays\base\base_qml.py", line 49>)
+            246 MAKE_FUNCTION            0
+            248 LOAD_CONST              17 ('BaseOverlayQML')
+            250 LOAD_NAME               37 (BaseOverlay)
+            252 LOAD_NAME               13 (QObject)
+            254 CALL                     4
+            262 STORE_NAME              41 (BaseOverlayQML)
+
+554         264 PUSH_NULL
+            266 LOAD_BUILD_CLASS
+            268 LOAD_CONST              18 (<code object QmlLogger at 0x0000020DAF18BB20, file "apps\hud\ui\overlays\base\base_qml.py", line 554>)
+            270 MAKE_FUNCTION            0
+            272 LOAD_CONST              19 ('QmlLogger')
+            274 LOAD_NAME               13 (QObject)
+            276 CALL                     3
+            284 STORE_NAME              42 (QmlLogger)
+            286 RETURN_CONST             1 (None)
+
+Disassembly of <code object BaseOverlayQML at 0x0000020DAEDA4A50, file "apps\hud\ui\overlays\base\base_qml.py", line 49>:
+              0 MAKE_CELL                0 (__class__)
+
+ 49           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('BaseOverlayQML')
+             10 STORE_NAME               2 (__qualname__)
+             12 SETUP_ANNOTATIONS
+
+ 50          14 LOAD_CONST               1 ('\n    Base class for all QML-based overlays.\n\n    This is the QML equivalent of BaseOverlayWidget. It satisfies the abstract\n    interface required by BaseOverlay and provides:\n\n    --------------------------------------------------------------------------\n    WHAT THIS CLASS IMPLEMENTS\n    --------------------------------------------------------------------------\n    - Loading QML from disk using QQmlApplicationEngine\n    - Ownership of the root QML window (QQuickWindow)\n    - Applying window flags (always-on-top, frameless, tool vs full window)\n    - Position & opacity management via QQuickWindow\n    - Fade-in/fade-out via QPropertyAnimation bound to QQuickWindow.opacity\n    - Rebuilding QML UI when scale factor changes\n    - Allowing locked/unlocked (click-through) behavior via flags\n    - Windowed Overlay Mode (OBS capture)\n\n    --------------------------------------------------------------------------\n    WHAT DERIVED CLASSES MUST PROVIDE\n    --------------------------------------------------------------------------\n    - A QML file path passed into constructor or via subclass default\n    - Optional extra integration with QML root object\n    - QML should expose a root Window {} or Item {} inside a Window {}\n    - QML should contain `property real scaleFactor`\n\n    This class does NOT assume anything about the UI structure. Derived classes\n    may communicate with QML using:\n        - findChild()\n        - setProperty()\n        - QML signals/slots\n        - Connections in QML to C++/Python slots\n    ')
+             16 STORE_NAME               3 (__doc__)
+
+ 84          18 LOAD_CONST               2 ('')
+             20 STORE_NAME               4 (QML_FILE)
+             22 LOAD_NAME                5 (Path)
+             24 LOAD_NAME                6 (__annotations__)
+             26 LOAD_CONST               3 ('QML_FILE')
+             28 STORE_SUBSCR
+
+ 86          32 LOAD_CONST               4 (0.1)
+             34 STORE_NAME               7 (_RESIZE_MIN_SCALE)
+
+ 87          36 LOAD_CONST               5 (50)
+             38 STORE_NAME               8 (_RESIZE_MIN_WIDTH)
+
+ 90          40 LOAD_NAME                9 (Qt)
+             42 LOAD_ATTR               20 (Corner)
+             62 LOAD_ATTR               22 (TopLeftCorner)
+             82 LOAD_NAME                9 (Qt)
+             84 LOAD_ATTR               24 (CursorShape)
+            104 LOAD_ATTR               26 (SizeFDiagCursor)
+
+ 91         124 LOAD_NAME                9 (Qt)
+            126 LOAD_ATTR               20 (Corner)
+            146 LOAD_ATTR               28 (TopRightCorner)
+            166 LOAD_NAME                9 (Qt)
+            168 LOAD_ATTR               24 (CursorShape)
+            188 LOAD_ATTR               30 (SizeBDiagCursor)
+
+ 92         208 LOAD_NAME                9 (Qt)
+            210 LOAD_ATTR               20 (Corner)
+            230 LOAD_ATTR               32 (BottomLeftCorner)
+            250 LOAD_NAME                9 (Qt)
+            252 LOAD_ATTR               24 (CursorShape)
+            272 LOAD_ATTR               30 (SizeBDiagCursor)
+
+ 93         292 LOAD_NAME                9 (Qt)
+            294 LOAD_ATTR               20 (Corner)
+            314 LOAD_ATTR               34 (BottomRightCorner)
+            334 LOAD_NAME                9 (Qt)
+            336 LOAD_ATTR               24 (CursorShape)
+            356 LOAD_ATTR               26 (SizeFDiagCursor)
+
+ 89         376 BUILD_MAP                4
+            378 STORE_NAME              18 (_CORNER_CURSORS)
+
+ 96         380 LOAD_CONST               6 ('config')
+
+ 98         382 LOAD_NAME               19 (OverlayPosition)
+
+ 96         384 LOAD_CONST               7 ('logger')
+
+ 99         386 LOAD_NAME               20 (logging)
+            388 LOAD_ATTR               42 (Logger)
+
+ 96         408 LOAD_CONST               8 ('locked')
+
+100         410 LOAD_NAME               22 (bool)
+
+ 96         412 LOAD_CONST               9 ('opacity')
+
+101         414 LOAD_NAME               23 (int)
+
+ 96         416 LOAD_CONST              10 ('scale_factor')
+
+102         418 LOAD_NAME               24 (float)
+
+ 96         420 LOAD_CONST              11 ('windowed_overlay')
+
+103         422 LOAD_NAME               22 (bool)
+
+ 96         424 LOAD_CONST              12 ('refresh_interval_ms')
+
+104         426 LOAD_NAME               25 (Optional)
+            428 LOAD_NAME               23 (int)
+            430 BINARY_SUBSCR
+
+ 96         434 BUILD_TUPLE             14
+            436 LOAD_CLOSURE             0 (__class__)
+            438 BUILD_TUPLE              1
+            440 LOAD_CONST              13 (<code object __init__ at 0x0000020DB0C520B0, file "apps\hud\ui\overlays\base\base_qml.py", line 96>)
+            442 MAKE_FUNCTION           12 (annotations, closure)
+            444 STORE_NAME              26 (__init__)
+
+156         446 LOAD_NAME               27 (property)
+
+157         448 LOAD_CONST              14 ('return')
+            450 LOAD_NAME               28 (QQmlApplicationEngine)
+            452 BUILD_TUPLE              2
+            454 LOAD_CONST              15 (<code object qml_engine at 0x0000020DAF2F17D0, file "apps\hud\ui\overlays\base\base_qml.py", line 156>)
+            456 MAKE_FUNCTION            4 (annotations)
+
+156         458 CALL                     0
+
+157         466 STORE_NAME              29 (qml_engine)
+
+164         468 LOAD_NAME               30 (override)
+
+165         470 LOAD_CLOSURE             0 (__class__)
+            472 BUILD_TUPLE              1
+            474 LOAD_CONST              16 (<code object _setup_window at 0x0000020DAEEA6860, file "apps\hud\ui\overlays\base\base_qml.py", line 164>)
+            476 MAKE_FUNCTION            8 (closure)
+
+164         478 CALL                     0
+
+165         486 STORE_NAME              31 (_setup_window)
+
+194         488 LOAD_NAME               32 (final)
+
+195         490 LOAD_CONST              17 (<code object build_ui at 0x0000020DB1039210, file "apps\hud\ui\overlays\base\base_qml.py", line 194>)
+            492 MAKE_FUNCTION            0
+
+194         494 CALL                     0
+
+195         502 STORE_NAME              33 (build_ui)
+
+201         504 LOAD_CONST              18 ('title')
+            506 LOAD_NAME               34 (str)
+            508 BUILD_TUPLE              2
+            510 LOAD_CONST              19 (<code object set_window_title at 0x0000020DAF2D1C30, file "apps\hud\ui\overlays\base\base_qml.py", line 201>)
+            512 MAKE_FUNCTION            4 (annotations)
+            514 STORE_NAME              35 (set_window_title)
+
+204         516 LOAD_CONST              20 ('icon')
+            518 LOAD_NAME               36 (QIcon)
+            520 BUILD_TUPLE              2
+            522 LOAD_CONST              21 (<code object set_window_icon at 0x0000020DAF2D1D30, file "apps\hud\ui\overlays\base\base_qml.py", line 204>)
+            524 MAKE_FUNCTION            4 (annotations)
+            526 STORE_NAME              37 (set_window_icon)
+
+207         528 LOAD_NAME               30 (override)
+
+208         530 LOAD_CONST              22 (<code object apply_config at 0x0000020DB10484E0, file "apps\hud\ui\overlays\base\base_qml.py", line 207>)
+            532 MAKE_FUNCTION            0
+
+207         534 CALL                     0
+
+208         542 STORE_NAME              38 (apply_config)
+
+212         544 LOAD_NAME               30 (override)
+
+213         546 LOAD_CONST              23 (<code object update_window_flags at 0x0000020DAEDE6350, file "apps\hud\ui\overlays\base\base_qml.py", line 212>)
+            548 MAKE_FUNCTION            0
+
+212         550 CALL                     0
+
+213         558 STORE_NAME              39 (update_window_flags)
+
+230         560 LOAD_CONST              24 (<code object _create_unlock_overlay at 0x0000020DB0C213F0, file "apps\hud\ui\overlays\base\base_qml.py", line 230>)
+            562 MAKE_FUNCTION            0
+            564 STORE_NAME              40 (_create_unlock_overlay)
+
+251         566 LOAD_CONST              25 (<code object _update_unlock_overlay at 0x0000020DAF2C22A0, file "apps\hud\ui\overlays\base\base_qml.py", line 251>)
+            568 MAKE_FUNCTION            0
+            570 STORE_NAME              41 (_update_unlock_overlay)
+
+257         572 LOAD_NAME               30 (override)
+
+258         574 LOAD_CONST               9 ('opacity')
+            576 LOAD_NAME               23 (int)
+            578 BUILD_TUPLE              2
+            580 LOAD_CONST              26 (<code object set_opacity at 0x0000020DAF2D1E30, file "apps\hud\ui\overlays\base\base_qml.py", line 257>)
+            582 MAKE_FUNCTION            4 (annotations)
+
+257         584 CALL                     0
+
+258         592 STORE_NAME              42 (set_opacity)
+
+261         594 LOAD_CONST              27 ('ui_scale')
+            596 LOAD_NAME               24 (float)
+            598 BUILD_TUPLE              2
+            600 LOAD_CONST              28 (<code object set_ui_scale at 0x0000020DAEDF3940, file "apps\hud\ui\overlays\base\base_qml.py", line 261>)
+            602 MAKE_FUNCTION            4 (annotations)
+            604 STORE_NAME              43 (set_ui_scale)
+
+286         606 LOAD_CONST              29 ('show')
+            608 LOAD_NAME               22 (bool)
+            610 BUILD_TUPLE              2
+            612 LOAD_CONST              30 (<code object animate_fade at 0x0000020DAEED1390, file "apps\hud\ui\overlays\base\base_qml.py", line 286>)
+            614 MAKE_FUNCTION            4 (annotations)
+            616 STORE_NAME              44 (animate_fade)
+
+305         618 LOAD_NAME               30 (override)
+
+306         620 LOAD_CONST              31 ('visible')
+            622 LOAD_NAME               22 (bool)
+            624 BUILD_TUPLE              2
+            626 LOAD_CONST              32 (<code object set_visibility at 0x0000020DAF2BF000, file "apps\hud\ui\overlays\base\base_qml.py", line 305>)
+            628 MAKE_FUNCTION            4 (annotations)
+
+305         630 CALL                     0
+
+306         638 STORE_NAME              45 (set_visibility)
+
+309         640 LOAD_NAME               30 (override)
+
+310         642 LOAD_CONST              14 ('return')
+            644 LOAD_NAME               19 (OverlayPosition)
+            646 BUILD_TUPLE              2
+            648 LOAD_CONST              33 (<code object get_window_info at 0x0000020DAF2F82F0, file "apps\hud\ui\overlays\base\base_qml.py", line 309>)
+            650 MAKE_FUNCTION            4 (annotations)
+
+309         652 CALL                     0
+
+310         660 STORE_NAME              46 (get_window_info)
+
+314         662 LOAD_NAME               30 (override)
+
+315         664 LOAD_CONST               6 ('config')
+            666 LOAD_NAME               19 (OverlayPosition)
+            668 BUILD_TUPLE              2
+            670 LOAD_CONST              34 (<code object set_window_position at 0x0000020DAF2ADA70, file "apps\hud\ui\overlays\base\base_qml.py", line 314>)
+            672 MAKE_FUNCTION            4 (annotations)
+
+314         674 CALL                     0
+
+315         682 STORE_NAME              47 (set_window_position)
+
+319         684 LOAD_NAME               30 (override)
+
+320         686 LOAD_CONST              14 ('return')
+            688 LOAD_NAME               22 (bool)
+            690 BUILD_TUPLE              2
+            692 LOAD_CONST              35 (<code object get_visibility at 0x0000020DAF2D2030, file "apps\hud\ui\overlays\base\base_qml.py", line 319>)
+            694 MAKE_FUNCTION            4 (annotations)
+
+319         696 CALL                     0
+
+320         704 STORE_NAME              48 (get_visibility)
+
+323         706 LOAD_CONST              14 ('return')
+            708 LOAD_NAME               23 (int)
+            710 BUILD_TUPLE              2
+            712 LOAD_CONST              36 (<code object _get_resize_corner_px at 0x0000020DAF2ADCF0, file "apps\hud\ui\overlays\base\base_qml.py", line 323>)
+            714 MAKE_FUNCTION            4 (annotations)
+            716 STORE_NAME              49 (_get_resize_corner_px)
+
+336         718 LOAD_CONST              37 ('local_pos')
+            720 LOAD_NAME               50 (QPoint)
+            722 LOAD_CONST              14 ('return')
+            724 LOAD_NAME               25 (Optional)
+            726 LOAD_NAME                9 (Qt)
+            728 LOAD_ATTR               20 (Corner)
+            748 BINARY_SUBSCR
+            752 BUILD_TUPLE              4
+            754 LOAD_CONST              38 (<code object _corner_at at 0x0000020DB0C10D30, file "apps\hud\ui\overlays\base\base_qml.py", line 336>)
+            756 MAKE_FUNCTION            4 (annotations)
+            758 STORE_NAME              51 (_corner_at)
+
+352         760 LOAD_CONST              39 ('event')
+            762 LOAD_NAME               52 (QMouseEvent)
+            764 LOAD_CONST              14 ('return')
+            766 LOAD_NAME               22 (bool)
+            768 BUILD_TUPLE              4
+            770 LOAD_CONST              40 (<code object _on_mouse_press at 0x0000020DB0C21750, file "apps\hud\ui\overlays\base\base_qml.py", line 352>)
+            772 MAKE_FUNCTION            4 (annotations)
+            774 STORE_NAME              53 (_on_mouse_press)
+
+369         776 LOAD_CONST              39 ('event')
+            778 LOAD_NAME               52 (QMouseEvent)
+            780 LOAD_CONST              14 ('return')
+            782 LOAD_NAME               22 (bool)
+            784 BUILD_TUPLE              4
+            786 LOAD_CONST              41 (<code object _on_mouse_move at 0x0000020DB0C25FB0, file "apps\hud\ui\overlays\base\base_qml.py", line 369>)
+            788 MAKE_FUNCTION            4 (annotations)
+            790 STORE_NAME              54 (_on_mouse_move)
+
+381         792 LOAD_CONST              42 ('global_pos')
+            794 LOAD_NAME               50 (QPoint)
+            796 LOAD_CONST              14 ('return')
+            798 LOAD_NAME               22 (bool)
+            800 BUILD_TUPLE              4
+            802 LOAD_CONST              43 (<code object _on_resize_drag at 0x0000020DB0C2EC50, file "apps\hud\ui\overlays\base\base_qml.py", line 381>)
+            804 MAKE_FUNCTION            4 (annotations)
+            806 STORE_NAME              55 (_on_resize_drag)
+
+427         808 LOAD_CONST              44 ('local')
+            810 LOAD_NAME               50 (QPoint)
+            812 LOAD_CONST              14 ('return')
+            814 LOAD_CONST              45 (None)
+            816 BUILD_TUPLE              4
+            818 LOAD_CONST              46 (<code object _on_hover_cursor at 0x0000020DB1048800, file "apps\hud\ui\overlays\base\base_qml.py", line 427>)
+            820 MAKE_FUNCTION            4 (annotations)
+            822 STORE_NAME              56 (_on_hover_cursor)
+
+434         824 LOAD_CONST              14 ('return')
+            826 LOAD_NAME               22 (bool)
+            828 BUILD_TUPLE              2
+            830 LOAD_CONST              47 (<code object _on_mouse_release at 0x0000020DAF2F1990, file "apps\hud\ui\overlays\base\base_qml.py", line 434>)
+            832 MAKE_FUNCTION            4 (annotations)
+            834 STORE_NAME              57 (_on_mouse_release)
+
+439         836 LOAD_CONST              48 ('obj')
+            838 LOAD_NAME               58 (QObject)
+            840 LOAD_CONST              39 ('event')
+            842 LOAD_NAME               59 (QEvent)
+            844 LOAD_CONST              14 ('return')
+            846 LOAD_NAME               22 (bool)
+            848 BUILD_TUPLE              6
+            850 LOAD_CLOSURE             0 (__class__)
+            852 BUILD_TUPLE              1
+            854 LOAD_CONST              49 (<code object eventFilter at 0x0000020DB0C28350, file "apps\hud\ui\overlays\base\base_qml.py", line 439>)
+            856 MAKE_FUNCTION           12 (annotations, closure)
+            858 STORE_NAME              60 (eventFilter)
+
+453         860 LOAD_CONST              50 (<code object _on_frame at 0x0000020DB0C3FA40, file "apps\hud\ui\overlays\base\base_qml.py", line 453>)
+            862 MAKE_FUNCTION            0
+            864 STORE_NAME              61 (_on_frame)
+
+480         866 LOAD_CONST              63 (('return', None))
+            868 LOAD_CONST              51 (<code object _reset_frame_timing at 0x0000020DAF2D2230, file "apps\hud\ui\overlays\base\base_qml.py", line 480>)
+            870 MAKE_FUNCTION            4 (annotations)
+            872 STORE_NAME              62 (_reset_frame_timing)
+
+484         874 LOAD_CONST              52 ('names')
+            876 LOAD_NAME               34 (str)
+            878 LOAD_CONST              14 ('return')
+            880 LOAD_CONST              45 (None)
+            882 BUILD_TUPLE              4
+            884 LOAD_CONST              53 (<code object invalidate_qml_cache at 0x0000020DAF2DF440, file "apps\hud\ui\overlays\base\base_qml.py", line 484>)
+            886 MAKE_FUNCTION            4 (annotations)
+            888 STORE_NAME              63 (invalidate_qml_cache)
+
+491         890 LOAD_CONST              54 ('name')
+            892 LOAD_NAME               34 (str)
+            894 LOAD_CONST              14 ('return')
+            896 LOAD_CONST              45 (None)
+            898 BUILD_TUPLE              4
+            900 LOAD_CONST              55 (<code object set_qml_property at 0x0000020DAF220BD0, file "apps\hud\ui\overlays\base\base_qml.py", line 491>)
+            902 MAKE_FUNCTION            4 (annotations)
+            904 STORE_NAME              64 (set_qml_property)
+
+508         906 LOAD_NAME               27 (property)
+
+509         908 LOAD_CONST              14 ('return')
+            910 LOAD_NAME               25 (Optional)
+            912 LOAD_NAME               65 (QQuickWindow)
+            914 BINARY_SUBSCR
+            918 BUILD_TUPLE              2
+            920 LOAD_CONST              56 (<code object root at 0x0000020DAF2F1B50, file "apps\hud\ui\overlays\base\base_qml.py", line 508>)
+            922 MAKE_FUNCTION            4 (annotations)
+
+508         924 CALL                     0
+
+509         932 STORE_NAME              66 (root)
+
+513         934 LOAD_CONST              64 ((True,))
+            936 LOAD_CONST              57 ('cmd_name')
+            938 LOAD_NAME               34 (str)
+            940 LOAD_CONST              58 ('requires_root')
+            942 LOAD_NAME               22 (bool)
+            944 BUILD_TUPLE              4
+            946 LOAD_CONST              59 (<code object on_event at 0x0000020DAF2F1C30, file "apps\hud\ui\overlays\base\base_qml.py", line 513>)
+            948 MAKE_FUNCTION            5 (defaults, annotations)
+            950 STORE_NAME              67 (on_event)
+
+536         952 LOAD_CONST              60 ('method')
+            954 LOAD_NAME               34 (str)
+            956 LOAD_CONST              14 ('return')
+            958 LOAD_CONST              45 (None)
+            960 BUILD_TUPLE              4
+            962 LOAD_CONST              61 (<code object invoke_qml_method at 0x0000020DAF09BAB0, file "apps\hud\ui\overlays\base\base_qml.py", line 536>)
+            964 MAKE_FUNCTION            4 (annotations)
+            966 STORE_NAME              68 (invoke_qml_method)
+
+550         968 LOAD_CONST              62 (<code object render_frame at 0x0000020DB1039480, file "apps\hud\ui\overlays\base\base_qml.py", line 550>)
+            970 MAKE_FUNCTION            0
+            972 STORE_NAME              69 (render_frame)
+            974 LOAD_CLOSURE             0 (__class__)
+            976 COPY                     1
+            978 STORE_NAME              70 (__classcell__)
+            980 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DB0C520B0, file "apps\hud\ui\overlays\base\base_qml.py", line 96>:
+              0 COPY_FREE_VARS           1
+
+ 96           2 RESUME                   0
+
+118           4 LOAD_FAST                0 (self)
+              6 LOAD_ATTR                0 (QML_FILE)
+             26 POP_JUMP_IF_TRUE         7 (to 42)
+             28 LOAD_ASSERTION_ERROR
+             30 LOAD_CONST               1 ('Derived classes must define QML_FILE')
+             32 CALL                     0
+             40 RAISE_VARARGS            1
+
+119     >>   42 LOAD_GLOBAL              3 (NULL + isinstance)
+             52 LOAD_FAST                0 (self)
+             54 LOAD_ATTR                0 (QML_FILE)
+             74 LOAD_GLOBAL              4 (Path)
+             84 CALL                     2
+             92 POP_JUMP_IF_TRUE         7 (to 108)
+             94 LOAD_ASSERTION_ERROR
+             96 LOAD_CONST               2 ('QML_FILE must be a pathlib.Path')
+             98 CALL                     0
+            106 RAISE_VARARGS            1
+
+120     >>  108 LOAD_FAST                0 (self)
+            110 LOAD_ATTR                0 (QML_FILE)
+            130 LOAD_ATTR                7 (NULL|self + is_file)
+            150 CALL                     0
+            158 POP_JUMP_IF_TRUE        20 (to 200)
+            160 LOAD_ASSERTION_ERROR
+            162 LOAD_CONST               3 ('QML_FILE does not exist or is not a file: ')
+            164 LOAD_FAST                0 (self)
+            166 LOAD_ATTR                0 (QML_FILE)
+            186 FORMAT_VALUE             0
+            188 BUILD_STRING             2
+            190 CALL                     0
+            198 RAISE_VARARGS            1
+
+122     >>  200 LOAD_GLOBAL              9 (NULL + QObject)
+            210 LOAD_ATTR               10 (__init__)
+            230 LOAD_FAST                0 (self)
+            232 CALL                     1
+            240 POP_TOP
+
+123         242 LOAD_GLOBAL             13 (NULL + QQmlApplicationEngine)
+            252 CALL                     0
+            260 LOAD_FAST                0 (self)
+            262 STORE_ATTR               7 (_engine)
+
+124         272 LOAD_CONST               4 (None)
+            274 LOAD_FAST                0 (self)
+            276 STORE_ATTR               8 (_root)
+
+125         286 LOAD_CONST               4 (None)
+            288 LOAD_FAST                0 (self)
+            290 STORE_ATTR               9 (_unlock_overlay)
+
+126         300 LOAD_CONST               4 (None)
+            302 LOAD_FAST                0 (self)
+            304 STORE_ATTR              10 (_fade_anim)
+
+127         314 LOAD_CONST               4 (None)
+            316 LOAD_FAST                0 (self)
+            318 STORE_ATTR              11 (_drag_pos)
+
+128         328 BUILD_MAP                0
+            330 LOAD_FAST                0 (self)
+            332 STORE_ATTR              12 (_qml_props)
+
+130         342 LOAD_FAST                7 (refresh_interval_ms)
+            344 LOAD_FAST                0 (self)
+            346 STORE_ATTR              13 (_refresh_interval_ms)
+
+131         356 LOAD_FAST                7 (refresh_interval_ms)
+            358 POP_JUMP_IF_FALSE       40 (to 440)
+
+132         360 LOAD_GLOBAL             29 (NULL + max)
+            370 LOAD_CONST               5 (1)
+            372 LOAD_GLOBAL             31 (NULL + round)
+            382 LOAD_CONST               6 (1000)
+            384 LOAD_FAST                0 (self)
+            386 LOAD_ATTR               26 (_refresh_interval_ms)
+            406 BINARY_OP               11 (/)
+            410 CALL                     1
+            418 CALL                     2
+            426 LOAD_FAST                0 (self)
+            428 STORE_ATTR              16 (_fps)
+            438 JUMP_FORWARD             7 (to 454)
+
+134     >>  440 LOAD_CONST               7 (0)
+            442 LOAD_FAST                0 (self)
+            444 STORE_ATTR              16 (_fps)
+
+135     >>  454 LOAD_GLOBAL             35 (NULL + QTimer)
+            464 LOAD_FAST                0 (self)
+            466 CALL                     1
+            474 LOAD_FAST                0 (self)
+            476 STORE_ATTR              18 (_frame_timer)
+
+136         486 LOAD_FAST                0 (self)
+            488 LOAD_ATTR               36 (_frame_timer)
+            508 LOAD_ATTR               39 (NULL|self + setTimerType)
+            528 LOAD_GLOBAL             40 (Qt)
+            538 LOAD_ATTR               42 (TimerType)
+            558 LOAD_ATTR               44 (PreciseTimer)
+            578 CALL                     1
+            586 POP_TOP
+
+137         588 LOAD_FAST                0 (self)
+            590 LOAD_ATTR               36 (_frame_timer)
+            610 LOAD_ATTR               46 (timeout)
+            630 LOAD_ATTR               49 (NULL|self + connect)
+            650 LOAD_FAST                0 (self)
+            652 LOAD_ATTR               50 (_on_frame)
+            672 CALL                     1
+            680 POP_TOP
+
+138         682 LOAD_CONST               8 (False)
+            684 LOAD_FAST                0 (self)
+            686 STORE_ATTR              26 (_frame_active)
+
+139         696 LOAD_CONST               4 (None)
+            698 LOAD_FAST                0 (self)
+            700 STORE_ATTR              27 (_resize_origin)
+
+140         710 LOAD_CONST               4 (None)
+            712 LOAD_FAST                0 (self)
+            714 STORE_ATTR              28 (_resize_origin_size)
+
+141         724 LOAD_CONST               4 (None)
+            726 LOAD_FAST                0 (self)
+            728 STORE_ATTR              29 (_resize_origin_pos)
+
+142         738 LOAD_CONST               4 (None)
+            740 LOAD_FAST                0 (self)
+            742 STORE_ATTR              30 (_resize_corner)
+
+143         752 LOAD_CONST               9 (1.0)
+            754 LOAD_FAST                0 (self)
+            756 STORE_ATTR              31 (_resize_origin_scale)
+
+145         766 LOAD_GLOBAL             64 (super)
+            776 LOAD_DEREF               8 (__class__)
+            778 LOAD_FAST                0 (self)
+            780 LOAD_SUPER_ATTR         21 (NULL|self + __init__)
+
+146         784 LOAD_FAST                1 (config)
+
+147         786 LOAD_FAST                2 (logger)
+
+148         788 LOAD_FAST                3 (locked)
+
+149         790 LOAD_FAST                4 (opacity)
+
+150         792 LOAD_FAST                5 (scale_factor)
+
+151         794 LOAD_FAST                6 (windowed_overlay)
+
+145         796 CALL                     6
+            804 POP_TOP
+
+153         806 LOAD_FAST                2 (logger)
+            808 LOAD_ATTR               67 (NULL|self + debug)
+            828 LOAD_CONST              10 ('%s initialized. Path=%s. exists=%s')
+
+154         830 LOAD_FAST                0 (self)
+            832 LOAD_ATTR               68 (OVERLAY_ID)
+            852 LOAD_FAST                0 (self)
+            854 LOAD_ATTR                0 (QML_FILE)
+            874 LOAD_FAST                0 (self)
+            876 LOAD_ATTR                0 (QML_FILE)
+            896 LOAD_ATTR                7 (NULL|self + is_file)
+            916 CALL                     0
+
+153         924 CALL                     4
+            932 POP_TOP
+            934 RETURN_CONST             4 (None)
+
+Disassembly of <code object qml_engine at 0x0000020DAF2F17D0, file "apps\hud\ui\overlays\base\base_qml.py", line 156>:
+156           0 RESUME                   0
+
+159           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_engine)
+             24 RETURN_VALUE
+
+Disassembly of <code object _setup_window at 0x0000020DAEEA6860, file "apps\hud\ui\overlays\base\base_qml.py", line 164>:
+              0 COPY_FREE_VARS           1
+
+164           2 RESUME                   0
+
+168           4 LOAD_GLOBAL              1 (NULL + QmlLogger)
+             14 LOAD_FAST                0 (self)
+             16 LOAD_ATTR                2 (logger)
+             36 LOAD_FAST                0 (self)
+             38 LOAD_ATTR                4 (OVERLAY_ID)
+             58 CALL                     2
+             66 STORE_FAST               1 (qml_logger)
+
+169          68 LOAD_FAST                0 (self)
+             70 LOAD_ATTR                6 (_engine)
+             90 LOAD_ATTR                9 (NULL|self + rootContext)
+            110 CALL                     0
+            118 LOAD_ATTR               11 (NULL|self + setContextProperty)
+            138 LOAD_CONST               1 ('Log')
+            140 LOAD_FAST                1 (qml_logger)
+            142 CALL                     2
+            150 POP_TOP
+
+171         152 LOAD_FAST                0 (self)
+            154 LOAD_ATTR               12 (QML_FILE)
+            174 LOAD_ATTR               15 (NULL|self + resolve)
+            194 CALL                     0
+            202 STORE_FAST               2 (qml_path)
+
+172         204 LOAD_FAST                0 (self)
+            206 LOAD_ATTR                6 (_engine)
+            226 LOAD_ATTR               17 (NULL|self + load)
+            246 LOAD_GLOBAL             19 (NULL + QUrl)
+            256 LOAD_ATTR               20 (fromLocalFile)
+            276 LOAD_GLOBAL             23 (NULL + str)
+            286 LOAD_FAST                2 (qml_path)
+            288 CALL                     1
+            296 CALL                     1
+            304 CALL                     1
+            312 POP_TOP
+
+174         314 LOAD_FAST                0 (self)
+            316 LOAD_ATTR                6 (_engine)
+            336 LOAD_ATTR               25 (NULL|self + rootObjects)
+            356 CALL                     0
+            364 POP_JUMP_IF_TRUE        14 (to 394)
+
+175         366 LOAD_GLOBAL             27 (NULL + RuntimeError)
+            376 LOAD_CONST               2 ('Failed to load QML file: ')
+            378 LOAD_FAST                2 (qml_path)
+            380 FORMAT_VALUE             0
+            382 BUILD_STRING             2
+            384 CALL                     1
+            392 RAISE_VARARGS            1
+
+177     >>  394 LOAD_FAST                0 (self)
+            396 LOAD_ATTR                6 (_engine)
+            416 LOAD_ATTR               25 (NULL|self + rootObjects)
+            436 CALL                     0
+            444 LOAD_CONST               3 (0)
+            446 BINARY_SUBSCR
+            450 STORE_FAST               3 (root)
+
+178         452 LOAD_GLOBAL             29 (NULL + isinstance)
+            462 LOAD_FAST                3 (root)
+            464 LOAD_GLOBAL             30 (QQuickWindow)
+            474 CALL                     2
+            482 POP_JUMP_IF_TRUE        33 (to 550)
+
+179         484 LOAD_GLOBAL             33 (NULL + TypeError)
+
+180         494 LOAD_CONST               4 ('Root QML object must be a Window; got ')
+            496 LOAD_GLOBAL             35 (NULL + type)
+            506 LOAD_FAST                3 (root)
+            508 CALL                     1
+            516 LOAD_ATTR               36 (__name__)
+            536 FORMAT_VALUE             0
+            538 BUILD_STRING             2
+
+179         540 CALL                     1
+            548 RAISE_VARARGS            1
+
+183     >>  550 LOAD_FAST                3 (root)
+            552 LOAD_FAST                0 (self)
+            554 STORE_ATTR              19 (_root)
+
+184         564 LOAD_FAST                0 (self)
+            566 LOAD_ATTR               38 (_root)
+            586 LOAD_ATTR               41 (NULL|self + installEventFilter)
+            606 LOAD_FAST                0 (self)
+            608 CALL                     1
+            616 POP_TOP
+
+185         618 LOAD_FAST                0 (self)
+            620 LOAD_ATTR               38 (_root)
+            640 LOAD_ATTR               43 (NULL|self + setProperty)
+            660 LOAD_CONST               5 ('scaleFactor')
+            662 LOAD_FAST                0 (self)
+            664 LOAD_ATTR               44 (scale_factor)
+            684 CALL                     2
+            692 POP_TOP
+
+187         694 LOAD_GLOBAL             46 (super)
+            704 LOAD_DEREF               4 (__class__)
+            706 LOAD_FAST                0 (self)
+            708 LOAD_SUPER_ATTR         97 (NULL|self + _setup_window)
+            712 CALL                     0
+            720 POP_TOP
+
+188         722 LOAD_FAST                0 (self)
+            724 LOAD_ATTR               51 (NULL|self + _create_unlock_overlay)
+            744 CALL                     0
+            752 POP_TOP
+
+189         754 LOAD_FAST                0 (self)
+            756 LOAD_ATTR               53 (NULL|self + update_window_flags)
+            776 CALL                     0
+            784 POP_TOP
+
+190         786 LOAD_FAST                0 (self)
+            788 LOAD_ATTR               38 (_root)
+            808 LOAD_ATTR               55 (NULL|self + setVisible)
+            828 LOAD_CONST               6 (True)
+            830 CALL                     1
+            838 POP_TOP
+
+191         840 LOAD_FAST                0 (self)
+            842 LOAD_ATTR               56 (_refresh_interval_ms)
+            862 POP_JUMP_IF_NONE        38 (to 940)
+
+192         864 LOAD_FAST                0 (self)
+            866 LOAD_ATTR               58 (_frame_timer)
+            886 LOAD_ATTR               61 (NULL|self + start)
+            906 LOAD_FAST                0 (self)
+            908 LOAD_ATTR               56 (_refresh_interval_ms)
+            928 CALL                     1
+            936 POP_TOP
+            938 RETURN_CONST             7 (None)
+
+191     >>  940 RETURN_CONST             7 (None)
+
+Disassembly of <code object build_ui at 0x0000020DB1039210, file "apps\hud\ui\overlays\base\base_qml.py", line 194>:
+194           0 RESUME                   0
+
+196           2 RETURN_CONST             0 (None)
+
+Disassembly of <code object set_window_title at 0x0000020DAF2D1C30, file "apps\hud\ui\overlays\base\base_qml.py", line 201>:
+201           0 RESUME                   0
+
+202           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_root)
+             24 LOAD_ATTR                3 (NULL|self + setTitle)
+             44 LOAD_FAST                1 (title)
+             46 CALL                     1
+             54 POP_TOP
+             56 RETURN_CONST             0 (None)
+
+Disassembly of <code object set_window_icon at 0x0000020DAF2D1D30, file "apps\hud\ui\overlays\base\base_qml.py", line 204>:
+204           0 RESUME                   0
+
+205           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_root)
+             24 LOAD_ATTR                3 (NULL|self + setIcon)
+             44 LOAD_FAST                1 (icon)
+             46 CALL                     1
+             54 POP_TOP
+             56 RETURN_CONST             0 (None)
+
+Disassembly of <code object apply_config at 0x0000020DB10484E0, file "apps\hud\ui\overlays\base\base_qml.py", line 207>:
+207           0 RESUME                   0
+
+209           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_root)
+             24 LOAD_ATTR                3 (NULL|self + setPosition)
+             44 LOAD_FAST                0 (self)
+             46 LOAD_ATTR                4 (config)
+             66 LOAD_ATTR                6 (x)
+             86 LOAD_FAST                0 (self)
+             88 LOAD_ATTR                4 (config)
+            108 LOAD_ATTR                8 (y)
+            128 CALL                     2
+            136 POP_TOP
+
+210         138 LOAD_FAST                0 (self)
+            140 LOAD_ATTR               11 (NULL|self + set_opacity)
+            160 LOAD_FAST                0 (self)
+            162 LOAD_ATTR               12 (opacity)
+            182 CALL                     1
+            190 POP_TOP
+            192 RETURN_CONST             0 (None)
+
+Disassembly of <code object update_window_flags at 0x0000020DAEDE6350, file "apps\hud\ui\overlays\base\base_qml.py", line 212>:
+212           0 RESUME                   0
+
+216           2 LOAD_GLOBAL              0 (Qt)
+             12 LOAD_ATTR                2 (WindowType)
+             32 LOAD_ATTR                4 (FramelessWindowHint)
+
+217          52 LOAD_GLOBAL              0 (Qt)
+             62 LOAD_ATTR                2 (WindowType)
+             82 LOAD_ATTR                6 (WindowStaysOnTopHint)
+
+216         102 BINARY_OP                7 (|)
+
+215         106 STORE_FAST               1 (flags)
+
+220         108 LOAD_FAST                0 (self)
+            110 LOAD_ATTR                8 (windowed_overlay)
+            130 POP_JUMP_IF_FALSE       30 (to 192)
+
+221         132 LOAD_FAST                1 (flags)
+            134 LOAD_GLOBAL              0 (Qt)
+            144 LOAD_ATTR                2 (WindowType)
+            164 LOAD_ATTR               10 (Window)
+            184 BINARY_OP               20 (|=)
+            188 STORE_FAST               1 (flags)
+            190 JUMP_FORWARD            70 (to 332)
+
+223     >>  192 LOAD_FAST                1 (flags)
+            194 LOAD_GLOBAL              0 (Qt)
+            204 LOAD_ATTR                2 (WindowType)
+            224 LOAD_ATTR               12 (Tool)
+            244 BINARY_OP               20 (|=)
+            248 STORE_FAST               1 (flags)
+
+224         250 LOAD_FAST                0 (self)
+            252 LOAD_ATTR               14 (locked)
+            272 POP_JUMP_IF_FALSE       29 (to 332)
+
+225         274 LOAD_FAST                1 (flags)
+            276 LOAD_GLOBAL              0 (Qt)
+            286 LOAD_ATTR                2 (WindowType)
+            306 LOAD_ATTR               16 (WindowTransparentForInput)
+            326 BINARY_OP               20 (|=)
+            330 STORE_FAST               1 (flags)
+
+227     >>  332 LOAD_FAST                0 (self)
+            334 LOAD_ATTR               18 (_root)
+            354 LOAD_ATTR               21 (NULL|self + setFlags)
+            374 LOAD_FAST                1 (flags)
+            376 CALL                     1
+            384 POP_TOP
+
+228         386 LOAD_FAST                0 (self)
+            388 LOAD_ATTR               23 (NULL|self + _update_unlock_overlay)
+            408 CALL                     0
+            416 POP_TOP
+            418 RETURN_CONST             0 (None)
+
+Disassembly of <code object _create_unlock_overlay at 0x0000020DB0C213F0, file "apps\hud\ui\overlays\base\base_qml.py", line 230>:
+230           0 RESUME                   0
+
+233           2 LOAD_GLOBAL              1 (NULL + Path)
+             12 LOAD_GLOBAL              2 (__file__)
+             22 CALL                     1
+             30 LOAD_ATTR                4 (parent)
+             50 LOAD_CONST               1 ('OverlayBorder.qml')
+             52 BINARY_OP               11 (/)
+             56 LOAD_ATTR                7 (NULL|self + resolve)
+             76 CALL                     0
+             84 STORE_FAST               1 (qml_path)
+
+234          86 LOAD_GLOBAL              9 (NULL + QQmlComponent)
+             96 LOAD_FAST                0 (self)
+             98 LOAD_ATTR               10 (_engine)
+            118 LOAD_GLOBAL             13 (NULL + QUrl)
+            128 LOAD_ATTR               14 (fromLocalFile)
+            148 LOAD_GLOBAL             17 (NULL + str)
+            158 LOAD_FAST                1 (qml_path)
+            160 CALL                     1
+            168 CALL                     1
+            176 CALL                     2
+            184 STORE_FAST               2 (component)
+
+235         186 LOAD_FAST                2 (component)
+            188 LOAD_ATTR               19 (NULL|self + create)
+            208 CALL                     0
+            216 STORE_FAST               3 (obj)
+
+236         218 LOAD_FAST                3 (obj)
+            220 POP_JUMP_IF_NOT_NONE    54 (to 330)
+
+237         222 LOAD_FAST                0 (self)
+            224 LOAD_ATTR               20 (logger)
+            244 LOAD_ATTR               23 (NULL|self + error)
+
+238         264 LOAD_CONST               3 ('%s | Failed to create UnlockOverlay: %s')
+
+239         266 LOAD_FAST                0 (self)
+            268 LOAD_ATTR               24 (OVERLAY_ID)
+            288 LOAD_FAST                2 (component)
+            290 LOAD_ATTR               27 (NULL|self + errorString)
+            310 CALL                     0
+
+237         318 CALL                     3
+            326 POP_TOP
+
+241         328 RETURN_CONST             2 (None)
+
+242     >>  330 LOAD_GLOBAL             29 (NULL + isinstance)
+            340 LOAD_FAST                3 (obj)
+            342 LOAD_GLOBAL             30 (QQuickItem)
+            352 CALL                     2
+            360 POP_JUMP_IF_TRUE        39 (to 440)
+
+243         362 LOAD_FAST                0 (self)
+            364 LOAD_ATTR               20 (logger)
+            384 LOAD_ATTR               23 (NULL|self + error)
+            404 LOAD_CONST               4 ('%s | UnlockOverlay root is not a QQuickItem')
+            406 LOAD_FAST                0 (self)
+            408 LOAD_ATTR               24 (OVERLAY_ID)
+            428 CALL                     2
+            436 POP_TOP
+
+244         438 RETURN_CONST             2 (None)
+
+245     >>  440 LOAD_FAST                3 (obj)
+            442 LOAD_ATTR               33 (NULL|self + setParent)
+            462 LOAD_FAST                0 (self)
+            464 LOAD_ATTR               34 (_root)
+            484 CALL                     1
+            492 POP_TOP
+
+246         494 LOAD_FAST                3 (obj)
+            496 LOAD_ATTR               37 (NULL|self + setParentItem)
+            516 LOAD_FAST                0 (self)
+            518 LOAD_ATTR               34 (_root)
+            538 LOAD_ATTR               39 (NULL|self + contentItem)
+            558 CALL                     0
+            566 CALL                     1
+            574 POP_TOP
+
+247         576 LOAD_FAST                3 (obj)
+            578 LOAD_ATTR               41 (NULL|self + setZ)
+            598 LOAD_CONST               5 (9999)
+            600 CALL                     1
+            608 POP_TOP
+
+248         610 LOAD_FAST                3 (obj)
+            612 LOAD_ATTR               43 (NULL|self + setVisible)
+            632 LOAD_CONST               6 (False)
+            634 CALL                     1
+            642 POP_TOP
+
+249         644 LOAD_FAST                3 (obj)
+            646 LOAD_FAST                0 (self)
+            648 STORE_ATTR              22 (_unlock_overlay)
+            658 RETURN_CONST             2 (None)
+
+Disassembly of <code object _update_unlock_overlay at 0x0000020DAF2C22A0, file "apps\hud\ui\overlays\base\base_qml.py", line 251>:
+251           0 RESUME                   0
+
+253           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_unlock_overlay)
+             24 POP_JUMP_IF_NOT_NONE     1 (to 28)
+
+254          26 RETURN_CONST             1 (None)
+
+255     >>   28 LOAD_FAST                0 (self)
+             30 LOAD_ATTR                0 (_unlock_overlay)
+             50 LOAD_ATTR                3 (NULL|self + setVisible)
+             70 LOAD_FAST                0 (self)
+             72 LOAD_ATTR                4 (locked)
+             92 UNARY_NOT
+             94 CALL                     1
+            102 POP_TOP
+            104 RETURN_CONST             1 (None)
+
+Disassembly of <code object set_opacity at 0x0000020DAF2D1E30, file "apps\hud\ui\overlays\base\base_qml.py", line 257>:
+257           0 RESUME                   0
+
+259           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_root)
+             24 LOAD_ATTR                3 (NULL|self + setOpacity)
+             44 LOAD_FAST                1 (opacity)
+             46 LOAD_CONST               1 (100.0)
+             48 BINARY_OP               11 (/)
+             52 CALL                     1
+             60 POP_TOP
+             62 RETURN_CONST             0 (None)
+
+Disassembly of <code object set_ui_scale at 0x0000020DAEDF3940, file "apps\hud\ui\overlays\base\base_qml.py", line 261>:
+261           0 RESUME                   0
+
+271           2 LOAD_FAST                1 (ui_scale)
+              4 LOAD_FAST                0 (self)
+              6 STORE_ATTR               0 (scale_factor)
+
+273          16 LOAD_FAST                0 (self)
+             18 LOAD_ATTR                2 (_root)
+             38 POP_JUMP_IF_FALSE      136 (to 312)
+
+275          40 LOAD_FAST                0 (self)
+             42 LOAD_ATTR                2 (_root)
+             62 LOAD_ATTR                5 (NULL|self + property)
+             82 LOAD_CONST               1 ('scaleFactor')
+             84 CALL                     1
+             92 POP_JUMP_IF_NONE        68 (to 230)
+
+276          94 LOAD_FAST                0 (self)
+             96 LOAD_ATTR                2 (_root)
+            116 LOAD_ATTR                7 (NULL|self + setProperty)
+            136 LOAD_CONST               1 ('scaleFactor')
+            138 LOAD_FAST                1 (ui_scale)
+            140 CALL                     2
+            148 POP_TOP
+
+277         150 LOAD_FAST                0 (self)
+            152 LOAD_ATTR                8 (logger)
+            172 LOAD_ATTR               11 (NULL|self + debug)
+            192 LOAD_CONST               3 ('%s | UI scale updated to %s')
+            194 LOAD_FAST                0 (self)
+            196 LOAD_ATTR               12 (OVERLAY_ID)
+            216 LOAD_FAST                1 (ui_scale)
+            218 CALL                     3
+            226 POP_TOP
+            228 RETURN_CONST             2 (None)
+
+279     >>  230 LOAD_FAST                0 (self)
+            232 LOAD_ATTR                8 (logger)
+            252 LOAD_ATTR               15 (NULL|self + warning)
+
+280         272 LOAD_FAST                0 (self)
+            274 LOAD_ATTR               12 (OVERLAY_ID)
+            294 FORMAT_VALUE             0
+            296 LOAD_CONST               4 (" | QML root does not have 'scaleFactor' property. Add 'property real scaleFactor: 1.0' to your QML Window.")
+            298 BUILD_STRING             2
+
+279         300 CALL                     1
+            308 POP_TOP
+            310 RETURN_CONST             2 (None)
+
+284     >>  312 LOAD_FAST                0 (self)
+            314 LOAD_ATTR                8 (logger)
+            334 LOAD_ATTR               15 (NULL|self + warning)
+            354 LOAD_CONST               5 ('%s | Cannot set UI scale - root window not initialized')
+            356 LOAD_FAST                0 (self)
+            358 LOAD_ATTR               12 (OVERLAY_ID)
+            378 CALL                     2
+            386 POP_TOP
+            388 RETURN_CONST             2 (None)
+
+Disassembly of <code object animate_fade at 0x0000020DAEED1390, file "apps\hud\ui\overlays\base\base_qml.py", line 286>:
+              0 MAKE_CELL                0 (self)
+
+286           2 RESUME                   0
+
+288           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                0 (opacity)
+             26 LOAD_CONST               1 (100.0)
+             28 BINARY_OP               11 (/)
+             32 STORE_FAST               2 (target_opacity)
+
+289          34 LOAD_FAST                1 (show)
+             36 POP_JUMP_IF_FALSE        4 (to 46)
+             38 LOAD_CONST               2 (0)
+             40 LOAD_FAST                2 (target_opacity)
+             42 BUILD_TUPLE              2
+             44 JUMP_FORWARD             3 (to 52)
+        >>   46 LOAD_FAST                2 (target_opacity)
+             48 LOAD_CONST               2 (0)
+             50 BUILD_TUPLE              2
+        >>   52 UNPACK_SEQUENCE          2
+             56 STORE_FAST               3 (start)
+             58 STORE_FAST               4 (end)
+
+291          60 LOAD_GLOBAL              3 (NULL + QPropertyAnimation)
+             70 LOAD_DEREF               0 (self)
+             72 LOAD_ATTR                4 (_root)
+             92 LOAD_CONST               3 (b'opacity')
+             94 CALL                     2
+            102 STORE_FAST               5 (anim)
+
+292         104 LOAD_FAST                5 (anim)
+            106 LOAD_ATTR                7 (NULL|self + setDuration)
+            126 LOAD_CONST               4 (250)
+            128 CALL                     1
+            136 POP_TOP
+
+293         138 LOAD_FAST                5 (anim)
+            140 LOAD_ATTR                9 (NULL|self + setStartValue)
+            160 LOAD_FAST                3 (start)
+            162 CALL                     1
+            170 POP_TOP
+
+294         172 LOAD_FAST                5 (anim)
+            174 LOAD_ATTR               11 (NULL|self + setEndValue)
+            194 LOAD_FAST                4 (end)
+            196 CALL                     1
+            204 POP_TOP
+
+296         206 LOAD_FAST                1 (show)
+            208 POP_JUMP_IF_TRUE        31 (to 272)
+
+297         210 LOAD_FAST                5 (anim)
+            212 LOAD_ATTR               12 (finished)
+            232 LOAD_ATTR               15 (NULL|self + connect)
+            252 LOAD_CLOSURE             0 (self)
+            254 BUILD_TUPLE              1
+            256 LOAD_CONST               5 (<code object <lambda> at 0x0000020DAF2D1F30, file "apps\hud\ui\overlays\base\base_qml.py", line 297>)
+            258 MAKE_FUNCTION            8 (closure)
+            260 CALL                     1
+            268 POP_TOP
+            270 JUMP_FORWARD            54 (to 380)
+
+299     >>  272 LOAD_DEREF               0 (self)
+            274 LOAD_ATTR                4 (_root)
+            294 LOAD_ATTR               17 (NULL|self + setOpacity)
+            314 LOAD_CONST               2 (0)
+            316 CALL                     1
+            324 POP_TOP
+
+300         326 LOAD_DEREF               0 (self)
+            328 LOAD_ATTR                4 (_root)
+            348 LOAD_ATTR               19 (NULL|self + setVisible)
+            368 LOAD_CONST               6 (True)
+            370 CALL                     1
+            378 POP_TOP
+
+302     >>  380 LOAD_FAST                5 (anim)
+            382 LOAD_DEREF               0 (self)
+            384 STORE_ATTR              10 (_fade_anim)
+
+303         394 LOAD_FAST                5 (anim)
+            396 LOAD_ATTR               23 (NULL|self + start)
+            416 CALL                     0
+            424 POP_TOP
+            426 RETURN_CONST             0 (None)
+
+Disassembly of <code object <lambda> at 0x0000020DAF2D1F30, file "apps\hud\ui\overlays\base\base_qml.py", line 297>:
+              0 COPY_FREE_VARS           1
+
+297           2 RESUME                   0
+              4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                0 (_root)
+             26 LOAD_ATTR                3 (NULL|self + setVisible)
+             46 LOAD_CONST               1 (False)
+             48 CALL                     1
+             56 RETURN_VALUE
+
+Disassembly of <code object set_visibility at 0x0000020DAF2BF000, file "apps\hud\ui\overlays\base\base_qml.py", line 305>:
+305           0 RESUME                   0
+
+307           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + animate_fade)
+             24 LOAD_FAST                1 (visible)
+             26 CALL                     1
+             34 POP_TOP
+             36 RETURN_CONST             0 (None)
+
+Disassembly of <code object get_window_info at 0x0000020DAF2F82F0, file "apps\hud\ui\overlays\base\base_qml.py", line 309>:
+309           0 RESUME                   0
+
+311           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_root)
+             24 LOAD_ATTR                3 (NULL|self + position)
+             44 CALL                     0
+             52 STORE_FAST               1 (pos)
+
+312          54 LOAD_GLOBAL              5 (NULL + OverlayPosition)
+             64 LOAD_FAST                1 (pos)
+             66 LOAD_ATTR                7 (NULL|self + x)
+             86 CALL                     0
+             94 LOAD_FAST                1 (pos)
+             96 LOAD_ATTR                9 (NULL|self + y)
+            116 CALL                     0
+            124 LOAD_FAST                0 (self)
+            126 LOAD_ATTR               10 (scale_factor)
+            146 KW_NAMES                 1 (('x', 'y', 'scale_factor'))
+            148 CALL                     3
+            156 RETURN_VALUE
+
+Disassembly of <code object set_window_position at 0x0000020DAF2ADA70, file "apps\hud\ui\overlays\base\base_qml.py", line 314>:
+314           0 RESUME                   0
+
+316           2 LOAD_FAST                1 (config)
+              4 LOAD_FAST                0 (self)
+              6 STORE_ATTR               0 (config)
+
+317          16 LOAD_FAST                0 (self)
+             18 LOAD_ATTR                2 (_root)
+             38 LOAD_ATTR                5 (NULL|self + setPosition)
+             58 LOAD_FAST                1 (config)
+             60 LOAD_ATTR                6 (x)
+             80 LOAD_FAST                1 (config)
+             82 LOAD_ATTR                8 (y)
+            102 CALL                     2
+            110 POP_TOP
+            112 RETURN_CONST             0 (None)
+
+Disassembly of <code object get_visibility at 0x0000020DAF2D2030, file "apps\hud\ui\overlays\base\base_qml.py", line 319>:
+319           0 RESUME                   0
+
+321           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_root)
+             24 LOAD_ATTR                3 (NULL|self + isVisible)
+             44 CALL                     0
+             52 RETURN_VALUE
+
+Disassembly of <code object _get_resize_corner_px at 0x0000020DAF2ADCF0, file "apps\hud\ui\overlays\base\base_qml.py", line 323>:
+323           0 RESUME                   0
+
+330           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_unlock_overlay)
+             24 POP_JUMP_IF_NONE        50 (to 126)
+
+331          26 LOAD_FAST                0 (self)
+             28 LOAD_ATTR                0 (_unlock_overlay)
+             48 LOAD_ATTR                3 (NULL|self + property)
+             68 LOAD_CONST               1 ('handleSize')
+             70 CALL                     1
+             78 STORE_FAST               1 (val)
+
+332          80 LOAD_GLOBAL              5 (NULL + isinstance)
+             90 LOAD_FAST                1 (val)
+             92 LOAD_GLOBAL              6 (int)
+            102 CALL                     2
+            110 POP_JUMP_IF_FALSE        7 (to 126)
+            112 LOAD_FAST                1 (val)
+            114 LOAD_CONST               2 (0)
+            116 COMPARE_OP              68 (>)
+            120 POP_JUMP_IF_FALSE        2 (to 126)
+
+333         122 LOAD_FAST                1 (val)
+            124 RETURN_VALUE
+
+334     >>  126 RETURN_CONST             3 (18)
+
+Disassembly of <code object _corner_at at 0x0000020DB0C10D30, file "apps\hud\ui\overlays\base\base_qml.py", line 336>:
+336           0 RESUME                   0
+
+338           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_root)
+             24 LOAD_ATTR                3 (NULL|self + width)
+             44 CALL                     0
+             52 STORE_FAST               2 (w)
+
+339          54 LOAD_FAST                0 (self)
+             56 LOAD_ATTR                0 (_root)
+             76 LOAD_ATTR                5 (NULL|self + height)
+             96 CALL                     0
+            104 STORE_FAST               3 (h)
+
+340         106 LOAD_FAST                0 (self)
+            108 LOAD_ATTR                7 (NULL|self + _get_resize_corner_px)
+            128 CALL                     0
+            136 STORE_FAST               4 (r)
+
+341         138 LOAD_FAST                1 (local_pos)
+            140 LOAD_ATTR                9 (NULL|self + x)
+            160 CALL                     0
+            168 LOAD_FAST                1 (local_pos)
+            170 LOAD_ATTR               11 (NULL|self + y)
+            190 CALL                     0
+            198 STORE_FAST               6 (y)
+            200 STORE_FAST               5 (x)
+
+342         202 LOAD_FAST                5 (x)
+            204 LOAD_FAST                4 (r)
+            206 COMPARE_OP              26 (<=)
+            210 POP_JUMP_IF_FALSE       31 (to 274)
+            212 LOAD_FAST                6 (y)
+            214 LOAD_FAST                4 (r)
+            216 COMPARE_OP              26 (<=)
+            220 POP_JUMP_IF_FALSE       26 (to 274)
+
+343         222 LOAD_GLOBAL             12 (Qt)
+            232 LOAD_ATTR               14 (Corner)
+            252 LOAD_ATTR               16 (TopLeftCorner)
+            272 RETURN_VALUE
+
+344     >>  274 LOAD_FAST                5 (x)
+            276 LOAD_FAST                2 (w)
+            278 LOAD_FAST                4 (r)
+            280 BINARY_OP               10 (-)
+            284 COMPARE_OP              92 (>=)
+            288 POP_JUMP_IF_FALSE       31 (to 352)
+            290 LOAD_FAST                6 (y)
+            292 LOAD_FAST                4 (r)
+            294 COMPARE_OP              26 (<=)
+            298 POP_JUMP_IF_FALSE       26 (to 352)
+
+345         300 LOAD_GLOBAL             12 (Qt)
+            310 LOAD_ATTR               14 (Corner)
+            330 LOAD_ATTR               18 (TopRightCorner)
+            350 RETURN_VALUE
+
+346     >>  352 LOAD_FAST                5 (x)
+            354 LOAD_FAST                4 (r)
+            356 COMPARE_OP              26 (<=)
+            360 POP_JUMP_IF_FALSE       34 (to 430)
+            362 LOAD_FAST                6 (y)
+            364 LOAD_FAST                3 (h)
+            366 LOAD_FAST                4 (r)
+            368 BINARY_OP               10 (-)
+            372 COMPARE_OP              92 (>=)
+            376 POP_JUMP_IF_FALSE       26 (to 430)
+
+347         378 LOAD_GLOBAL             12 (Qt)
+            388 LOAD_ATTR               14 (Corner)
+            408 LOAD_ATTR               20 (BottomLeftCorner)
+            428 RETURN_VALUE
+
+348     >>  430 LOAD_FAST                5 (x)
+            432 LOAD_FAST                2 (w)
+            434 LOAD_FAST                4 (r)
+            436 BINARY_OP               10 (-)
+            440 COMPARE_OP              92 (>=)
+            444 POP_JUMP_IF_FALSE       34 (to 514)
+            446 LOAD_FAST                6 (y)
+            448 LOAD_FAST                3 (h)
+            450 LOAD_FAST                4 (r)
+            452 BINARY_OP               10 (-)
+            456 COMPARE_OP              92 (>=)
+            460 POP_JUMP_IF_FALSE       26 (to 514)
+
+349         462 LOAD_GLOBAL             12 (Qt)
+            472 LOAD_ATTR               14 (Corner)
+            492 LOAD_ATTR               22 (BottomRightCorner)
+            512 RETURN_VALUE
+
+350     >>  514 RETURN_CONST             1 (None)
+
+Disassembly of <code object _on_mouse_press at 0x0000020DB0C21750, file "apps\hud\ui\overlays\base\base_qml.py", line 352>:
+352           0 RESUME                   0
+
+353           2 LOAD_FAST                1 (event)
+              4 LOAD_ATTR                1 (NULL|self + button)
+             24 CALL                     0
+             32 LOAD_GLOBAL              2 (Qt)
+             42 LOAD_ATTR                4 (MouseButton)
+             62 LOAD_ATTR                6 (LeftButton)
+             82 COMPARE_OP              55 (!=)
+             86 POP_JUMP_IF_FALSE        1 (to 90)
+
+354          88 RETURN_CONST             1 (False)
+
+355     >>   90 LOAD_FAST                1 (event)
+             92 LOAD_ATTR                9 (NULL|self + position)
+            112 CALL                     0
+            120 LOAD_ATTR               11 (NULL|self + toPoint)
+            140 CALL                     0
+            148 STORE_FAST               2 (local)
+
+356         150 LOAD_FAST                0 (self)
+            152 LOAD_ATTR               13 (NULL|self + _corner_at)
+            172 LOAD_FAST                2 (local)
+            174 CALL                     1
+            182 STORE_FAST               3 (corner)
+
+357         184 LOAD_FAST                3 (corner)
+            186 POP_JUMP_IF_NONE       163 (to 514)
+
+358         188 LOAD_FAST                1 (event)
+            190 LOAD_ATTR               15 (NULL|self + globalPosition)
+            210 CALL                     0
+            218 LOAD_ATTR               11 (NULL|self + toPoint)
+            238 CALL                     0
+            246 LOAD_FAST                0 (self)
+            248 STORE_ATTR               8 (_resize_origin)
+
+359         258 LOAD_GLOBAL             19 (NULL + QSize)
+            268 LOAD_FAST                0 (self)
+            270 LOAD_ATTR               20 (_root)
+            290 LOAD_ATTR               23 (NULL|self + width)
+            310 CALL                     0
+            318 LOAD_FAST                0 (self)
+            320 LOAD_ATTR               20 (_root)
+            340 LOAD_ATTR               25 (NULL|self + height)
+            360 CALL                     0
+            368 CALL                     2
+            376 LOAD_FAST                0 (self)
+            378 STORE_ATTR              13 (_resize_origin_size)
+
+360         388 LOAD_FAST                3 (corner)
+            390 LOAD_FAST                0 (self)
+            392 STORE_ATTR              14 (_resize_corner)
+
+361         402 LOAD_FAST                0 (self)
+            404 LOAD_ATTR               20 (_root)
+            424 LOAD_ATTR                9 (NULL|self + position)
+            444 CALL                     0
+            452 LOAD_FAST                0 (self)
+            454 STORE_ATTR              15 (_resize_origin_pos)
+
+362         464 LOAD_FAST                0 (self)
+            466 LOAD_ATTR               32 (scale_factor)
+            486 LOAD_FAST                0 (self)
+            488 STORE_ATTR              17 (_resize_origin_scale)
+
+363         498 LOAD_CONST               0 (None)
+            500 LOAD_FAST                0 (self)
+            502 STORE_ATTR              18 (_drag_pos)
+
+367         512 RETURN_CONST             2 (True)
+
+365     >>  514 LOAD_FAST                1 (event)
+            516 LOAD_ATTR               15 (NULL|self + globalPosition)
+            536 CALL                     0
+            544 LOAD_ATTR               11 (NULL|self + toPoint)
+            564 CALL                     0
+            572 LOAD_FAST                0 (self)
+            574 LOAD_ATTR               20 (_root)
+            594 LOAD_ATTR                9 (NULL|self + position)
+            614 CALL                     0
+            622 BINARY_OP               10 (-)
+            626 LOAD_FAST                0 (self)
+            628 STORE_ATTR              18 (_drag_pos)
+
+366         638 LOAD_CONST               0 (None)
+            640 LOAD_FAST                0 (self)
+            642 STORE_ATTR               8 (_resize_origin)
+
+367         652 RETURN_CONST             2 (True)
+
+Disassembly of <code object _on_mouse_move at 0x0000020DB0C25FB0, file "apps\hud\ui\overlays\base\base_qml.py", line 369>:
+369           0 RESUME                   0
+
+370           2 LOAD_FAST                1 (event)
+              4 LOAD_ATTR                1 (NULL|self + globalPosition)
+             24 CALL                     0
+             32 LOAD_ATTR                3 (NULL|self + toPoint)
+             52 CALL                     0
+             60 STORE_FAST               2 (global_pos)
+
+371          62 LOAD_FAST                1 (event)
+             64 LOAD_ATTR                5 (NULL|self + buttons)
+             84 CALL                     0
+             92 LOAD_GLOBAL              6 (Qt)
+            102 LOAD_ATTR                8 (MouseButton)
+            122 LOAD_ATTR               10 (LeftButton)
+            142 BINARY_OP                1 (&)
+            146 POP_JUMP_IF_FALSE       83 (to 314)
+
+372         148 LOAD_FAST                0 (self)
+            150 LOAD_ATTR               12 (_resize_origin)
+            170 POP_JUMP_IF_NONE        17 (to 206)
+
+373         172 LOAD_FAST                0 (self)
+            174 LOAD_ATTR               15 (NULL|self + _on_resize_drag)
+            194 LOAD_FAST                2 (global_pos)
+            196 CALL                     1
+            204 RETURN_VALUE
+
+374     >>  206 LOAD_FAST                0 (self)
+            208 LOAD_ATTR               16 (_drag_pos)
+            228 POP_JUMP_IF_NONE        41 (to 312)
+
+375         230 LOAD_FAST                0 (self)
+            232 LOAD_ATTR               18 (_root)
+            252 LOAD_ATTR               21 (NULL|self + setPosition)
+            272 LOAD_FAST                2 (global_pos)
+            274 LOAD_FAST                0 (self)
+            276 LOAD_ATTR               16 (_drag_pos)
+            296 BINARY_OP               10 (-)
+            300 CALL                     1
+            308 POP_TOP
+
+376         310 RETURN_CONST             1 (True)
+
+379     >>  312 RETURN_CONST             2 (False)
+
+378     >>  314 LOAD_FAST                0 (self)
+            316 LOAD_ATTR               23 (NULL|self + _on_hover_cursor)
+            336 LOAD_FAST                1 (event)
+            338 LOAD_ATTR               25 (NULL|self + position)
+            358 CALL                     0
+            366 LOAD_ATTR                3 (NULL|self + toPoint)
+            386 CALL                     0
+            394 CALL                     1
+            402 POP_TOP
+
+379         404 RETURN_CONST             2 (False)
+
+Disassembly of <code object _on_resize_drag at 0x0000020DB0C2EC50, file "apps\hud\ui\overlays\base\base_qml.py", line 381>:
+381           0 RESUME                   0
+
+382           2 LOAD_FAST                1 (global_pos)
+              4 LOAD_FAST                0 (self)
+              6 LOAD_ATTR                0 (_resize_origin)
+             26 BINARY_OP               10 (-)
+             30 STORE_FAST               2 (delta)
+
+383          32 LOAD_FAST                0 (self)
+             34 LOAD_ATTR                2 (_resize_origin_size)
+             54 LOAD_ATTR                5 (NULL|self + width)
+             74 CALL                     0
+             82 STORE_FAST               3 (orig_w)
+
+384          84 LOAD_FAST                3 (orig_w)
+             86 LOAD_CONST               1 (0)
+             88 COMPARE_OP              26 (<=)
+             92 POP_JUMP_IF_FALSE        1 (to 96)
+
+387          94 RETURN_CONST             2 (False)
+
+388     >>   96 LOAD_FAST                0 (self)
+             98 LOAD_ATTR                2 (_resize_origin_size)
+            118 LOAD_ATTR                7 (NULL|self + height)
+            138 CALL                     0
+            146 STORE_FAST               4 (orig_h)
+
+389         148 LOAD_FAST                0 (self)
+            150 LOAD_ATTR                8 (_resize_origin_pos)
+            170 STORE_FAST               5 (orig_pos)
+
+390         172 LOAD_FAST                0 (self)
+            174 LOAD_ATTR               10 (_resize_corner)
+            194 STORE_FAST               6 (corner)
+
+393         196 LOAD_FAST                6 (corner)
+            198 LOAD_GLOBAL             12 (Qt)
+            208 LOAD_ATTR               14 (Corner)
+            228 LOAD_ATTR               16 (TopLeftCorner)
+            248 LOAD_GLOBAL             12 (Qt)
+            258 LOAD_ATTR               14 (Corner)
+            278 LOAD_ATTR               18 (BottomLeftCorner)
+            298 BUILD_TUPLE              2
+            300 CONTAINS_OP              0
+            302 POP_JUMP_IF_FALSE       20 (to 344)
+
+394         304 LOAD_FAST                3 (orig_w)
+            306 LOAD_FAST                2 (delta)
+            308 LOAD_ATTR               21 (NULL|self + x)
+            328 CALL                     0
+            336 BINARY_OP               10 (-)
+            340 STORE_FAST               7 (raw_w)
+            342 JUMP_FORWARD            19 (to 382)
+
+396     >>  344 LOAD_FAST                3 (orig_w)
+            346 LOAD_FAST                2 (delta)
+            348 LOAD_ATTR               21 (NULL|self + x)
+            368 CALL                     0
+            376 BINARY_OP                0 (+)
+            380 STORE_FAST               7 (raw_w)
+
+398     >>  382 LOAD_GLOBAL             23 (NULL + max)
+
+399         392 LOAD_FAST                0 (self)
+            394 LOAD_ATTR               24 (_RESIZE_MIN_SCALE)
+
+400         414 LOAD_FAST                0 (self)
+            416 LOAD_ATTR               26 (_resize_origin_scale)
+            436 LOAD_GLOBAL             23 (NULL + max)
+            446 LOAD_FAST                0 (self)
+            448 LOAD_ATTR               28 (_RESIZE_MIN_WIDTH)
+            468 LOAD_FAST                7 (raw_w)
+            470 CALL                     2
+            478 LOAD_FAST                3 (orig_w)
+            480 BINARY_OP               11 (/)
+            484 BINARY_OP                5 (*)
+
+398         488 CALL                     2
+            496 STORE_FAST               8 (new_scale)
+
+402         498 LOAD_FAST                8 (new_scale)
+            500 LOAD_FAST                0 (self)
+            502 LOAD_ATTR               26 (_resize_origin_scale)
+            522 BINARY_OP               11 (/)
+            526 STORE_FAST               9 (scale_ratio)
+
+403         528 LOAD_GLOBAL             31 (NULL + round)
+            538 LOAD_FAST                3 (orig_w)
+            540 LOAD_FAST                9 (scale_ratio)
+            542 BINARY_OP                5 (*)
+            546 CALL                     1
+            554 STORE_FAST              10 (new_w)
+
+404         556 LOAD_GLOBAL             31 (NULL + round)
+            566 LOAD_FAST                4 (orig_h)
+            568 LOAD_FAST                9 (scale_ratio)
+            570 BINARY_OP                5 (*)
+            574 CALL                     1
+            582 STORE_FAST              11 (new_h)
+
+407         584 LOAD_FAST                6 (corner)
+            586 LOAD_GLOBAL             12 (Qt)
+            596 LOAD_ATTR               14 (Corner)
+            616 LOAD_ATTR               16 (TopLeftCorner)
+            636 COMPARE_OP              40 (==)
+            640 POP_JUMP_IF_FALSE       78 (to 798)
+
+408         642 LOAD_FAST                0 (self)
+            644 LOAD_ATTR               32 (_root)
+            664 LOAD_ATTR               35 (NULL|self + setPosition)
+            684 LOAD_GLOBAL             37 (NULL + QPoint)
+
+409         694 LOAD_FAST                5 (orig_pos)
+            696 LOAD_ATTR               21 (NULL|self + x)
+            716 CALL                     0
+            724 LOAD_FAST                3 (orig_w)
+            726 LOAD_FAST               10 (new_w)
+            728 BINARY_OP               10 (-)
+            732 BINARY_OP                0 (+)
+
+410         736 LOAD_FAST                5 (orig_pos)
+            738 LOAD_ATTR               39 (NULL|self + y)
+            758 CALL                     0
+            766 LOAD_FAST                4 (orig_h)
+            768 LOAD_FAST               11 (new_h)
+            770 BINARY_OP               10 (-)
+            774 BINARY_OP                0 (+)
+
+408         778 CALL                     2
+            786 CALL                     1
+            794 POP_TOP
+            796 JUMP_FORWARD           201 (to 1200)
+
+412     >>  798 LOAD_FAST                6 (corner)
+            800 LOAD_GLOBAL             12 (Qt)
+            810 LOAD_ATTR               14 (Corner)
+            830 LOAD_ATTR               40 (TopRightCorner)
+            850 COMPARE_OP              40 (==)
+            854 POP_JUMP_IF_FALSE       72 (to 1000)
+
+413         856 LOAD_FAST                0 (self)
+            858 LOAD_ATTR               32 (_root)
+            878 LOAD_ATTR               35 (NULL|self + setPosition)
+            898 LOAD_GLOBAL             37 (NULL + QPoint)
+
+414         908 LOAD_FAST                5 (orig_pos)
+            910 LOAD_ATTR               21 (NULL|self + x)
+            930 CALL                     0
+
+415         938 LOAD_FAST                5 (orig_pos)
+            940 LOAD_ATTR               39 (NULL|self + y)
+            960 CALL                     0
+            968 LOAD_FAST                4 (orig_h)
+            970 LOAD_FAST               11 (new_h)
+            972 BINARY_OP               10 (-)
+            976 BINARY_OP                0 (+)
+
+413         980 CALL                     2
+            988 CALL                     1
+            996 POP_TOP
+            998 JUMP_FORWARD           100 (to 1200)
+
+417     >> 1000 LOAD_FAST                6 (corner)
+           1002 LOAD_GLOBAL             12 (Qt)
+           1012 LOAD_ATTR               14 (Corner)
+           1032 LOAD_ATTR               18 (BottomLeftCorner)
+           1052 COMPARE_OP              40 (==)
+           1056 POP_JUMP_IF_FALSE       71 (to 1200)
+
+418        1058 LOAD_FAST                0 (self)
+           1060 LOAD_ATTR               32 (_root)
+           1080 LOAD_ATTR               35 (NULL|self + setPosition)
+           1100 LOAD_GLOBAL             37 (NULL + QPoint)
+
+419        1110 LOAD_FAST                5 (orig_pos)
+           1112 LOAD_ATTR               21 (NULL|self + x)
+           1132 CALL                     0
+           1140 LOAD_FAST                3 (orig_w)
+           1142 LOAD_FAST               10 (new_w)
+           1144 BINARY_OP               10 (-)
+           1148 BINARY_OP                0 (+)
+
+420        1152 LOAD_FAST                5 (orig_pos)
+           1154 LOAD_ATTR               39 (NULL|self + y)
+           1174 CALL                     0
+
+418        1182 CALL                     2
+           1190 CALL                     1
+           1198 POP_TOP
+
+424     >> 1200 LOAD_FAST                0 (self)
+           1202 LOAD_ATTR               43 (NULL|self + set_ui_scale)
+           1222 LOAD_FAST                8 (new_scale)
+           1224 CALL                     1
+           1232 POP_TOP
+
+425        1234 RETURN_CONST             3 (True)
+
+Disassembly of <code object _on_hover_cursor at 0x0000020DB1048800, file "apps\hud\ui\overlays\base\base_qml.py", line 427>:
+427           0 RESUME                   0
+
+428           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + _corner_at)
+             24 LOAD_FAST                1 (local)
+             26 CALL                     1
+             34 STORE_FAST               2 (corner)
+
+429          36 LOAD_FAST                2 (corner)
+             38 POP_JUMP_IF_NONE        50 (to 140)
+
+430          40 LOAD_FAST                0 (self)
+             42 LOAD_ATTR                2 (_root)
+             62 LOAD_ATTR                5 (NULL|self + setCursor)
+             82 LOAD_GLOBAL              7 (NULL + QCursor)
+             92 LOAD_FAST                0 (self)
+             94 LOAD_ATTR                8 (_CORNER_CURSORS)
+            114 LOAD_FAST                2 (corner)
+            116 BINARY_SUBSCR
+            120 CALL                     1
+            128 CALL                     1
+            136 POP_TOP
+            138 RETURN_CONST             0 (None)
+
+432     >>  140 LOAD_FAST                0 (self)
+            142 LOAD_ATTR                2 (_root)
+            162 LOAD_ATTR               11 (NULL|self + unsetCursor)
+            182 CALL                     0
+            190 POP_TOP
+            192 RETURN_CONST             0 (None)
+
+Disassembly of <code object _on_mouse_release at 0x0000020DAF2F1990, file "apps\hud\ui\overlays\base\base_qml.py", line 434>:
+434           0 RESUME                   0
+
+435           2 LOAD_CONST               0 (None)
+              4 LOAD_FAST                0 (self)
+              6 STORE_ATTR               0 (_drag_pos)
+
+436          16 LOAD_CONST               0 (None)
+             18 LOAD_FAST                0 (self)
+             20 STORE_ATTR               1 (_resize_origin)
+
+437          30 RETURN_CONST             1 (True)
+
+Disassembly of <code object eventFilter at 0x0000020DB0C28350, file "apps\hud\ui\overlays\base\base_qml.py", line 439>:
+              0 COPY_FREE_VARS           1
+
+439           2 RESUME                   0
+
+440           4 LOAD_FAST                1 (obj)
+              6 LOAD_FAST                0 (self)
+              8 LOAD_ATTR                0 (_root)
+             28 IS_OP                    0
+             30 POP_JUMP_IF_FALSE      165 (to 362)
+             32 LOAD_FAST                0 (self)
+             34 LOAD_ATTR                2 (locked)
+             54 POP_JUMP_IF_TRUE       153 (to 362)
+
+441          56 LOAD_FAST                2 (event)
+             58 LOAD_ATTR                5 (NULL|self + type)
+             78 CALL                     0
+             86 STORE_FAST               3 (t)
+
+442          88 LOAD_FAST                3 (t)
+             90 LOAD_GLOBAL              6 (QEvent)
+            100 LOAD_ATTR                8 (Type)
+            120 LOAD_ATTR               10 (MouseButtonPress)
+            140 COMPARE_OP              40 (==)
+            144 POP_JUMP_IF_FALSE       17 (to 180)
+
+443         146 LOAD_FAST                0 (self)
+            148 LOAD_ATTR               13 (NULL|self + _on_mouse_press)
+            168 LOAD_FAST                2 (event)
+            170 CALL                     1
+            178 RETURN_VALUE
+
+444     >>  180 LOAD_FAST                3 (t)
+            182 LOAD_GLOBAL              6 (QEvent)
+            192 LOAD_ATTR                8 (Type)
+            212 LOAD_ATTR               14 (MouseMove)
+            232 COMPARE_OP              40 (==)
+            236 POP_JUMP_IF_FALSE       17 (to 272)
+
+445         238 LOAD_FAST                0 (self)
+            240 LOAD_ATTR               17 (NULL|self + _on_mouse_move)
+            260 LOAD_FAST                2 (event)
+            262 CALL                     1
+            270 RETURN_VALUE
+
+446     >>  272 LOAD_FAST                3 (t)
+            274 LOAD_GLOBAL              6 (QEvent)
+            284 LOAD_ATTR                8 (Type)
+            304 LOAD_ATTR               18 (MouseButtonRelease)
+            324 COMPARE_OP              40 (==)
+            328 POP_JUMP_IF_FALSE       16 (to 362)
+
+447         330 LOAD_FAST                0 (self)
+            332 LOAD_ATTR               21 (NULL|self + _on_mouse_release)
+            352 CALL                     0
+            360 RETURN_VALUE
+
+448     >>  362 LOAD_GLOBAL             22 (super)
+            372 LOAD_DEREF               4 (__class__)
+            374 LOAD_FAST                0 (self)
+            376 LOAD_SUPER_ATTR         49 (NULL|self + eventFilter)
+            380 LOAD_FAST                1 (obj)
+            382 LOAD_FAST                2 (event)
+            384 CALL                     2
+            392 RETURN_VALUE
+
+Disassembly of <code object _on_frame at 0x0000020DB0C3FA40, file "apps\hud\ui\overlays\base\base_qml.py", line 453>:
+453           0 RESUME                   0
+
+458           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_root)
+             24 POP_JUMP_IF_TRUE        36 (to 98)
+
+459          26 LOAD_CONST               1 (False)
+             28 LOAD_FAST                0 (self)
+             30 STORE_ATTR               1 (_frame_active)
+
+460          40 LOAD_FAST                0 (self)
+             42 LOAD_ATTR                4 (_stats)
+             62 LOAD_ATTR                7 (NULL|self + track_event)
+             82 LOAD_CONST               2 ('__FRAMES__')
+             84 LOAD_CONST               3 ('__DROPPED_NO_ROOT__')
+             86 CALL                     2
+             94 POP_TOP
+
+461          96 RETURN_CONST             4 (None)
+
+463     >>   98 LOAD_FAST                0 (self)
+            100 LOAD_ATTR                9 (NULL|self + get_visibility)
+            120 CALL                     0
+            128 POP_JUMP_IF_TRUE        36 (to 202)
+
+464         130 LOAD_CONST               1 (False)
+            132 LOAD_FAST                0 (self)
+            134 STORE_ATTR               1 (_frame_active)
+
+465         144 LOAD_FAST                0 (self)
+            146 LOAD_ATTR                4 (_stats)
+            166 LOAD_ATTR                7 (NULL|self + track_event)
+            186 LOAD_CONST               2 ('__FRAMES__')
+            188 LOAD_CONST               5 ('__DROPPED_HIDDEN__')
+            190 CALL                     2
+            198 POP_TOP
+
+466         200 RETURN_CONST             4 (None)
+
+470     >>  202 LOAD_FAST                0 (self)
+            204 LOAD_ATTR                2 (_frame_active)
+            224 POP_JUMP_IF_TRUE        23 (to 272)
+
+471         226 LOAD_FAST                0 (self)
+            228 LOAD_ATTR               11 (NULL|self + _reset_frame_timing)
+            248 CALL                     0
+            256 POP_TOP
+
+472         258 LOAD_CONST               6 (True)
+            260 LOAD_FAST                0 (self)
+            262 STORE_ATTR               1 (_frame_active)
+
+474     >>  272 LOAD_FAST                0 (self)
+            274 LOAD_ATTR               13 (NULL|self + render_frame)
+            294 CALL                     0
+            302 POP_TOP
+
+475         304 LOAD_FAST                0 (self)
+            306 LOAD_ATTR               15 (NULL|self + _clear_hf_pending)
+            326 CALL                     0
+            334 POP_TOP
+
+476         336 LOAD_FAST                0 (self)
+            338 LOAD_ATTR               16 (_refresh_interval_ms)
+            358 POP_JUMP_IF_TRUE         2 (to 364)
+            360 LOAD_ASSERTION_ERROR
+            362 RAISE_VARARGS            1
+
+477     >>  364 LOAD_FAST                0 (self)
+            366 LOAD_ATTR               18 (_fps)
+            386 POP_JUMP_IF_TRUE         2 (to 392)
+            388 LOAD_ASSERTION_ERROR
+            390 RAISE_VARARGS            1
+
+478     >>  392 LOAD_FAST                0 (self)
+            394 LOAD_ATTR                4 (_stats)
+            414 LOAD_ATTR               21 (NULL|self + track_frame_render)
+            434 LOAD_CONST               2 ('__FRAMES__')
+            436 LOAD_CONST               7 ('__FRAME__')
+            438 LOAD_GLOBAL             23 (NULL + perf_counter_ns)
+            448 CALL                     0
+            456 LOAD_FAST                0 (self)
+            458 LOAD_ATTR               18 (_fps)
+            478 CALL                     4
+            486 POP_TOP
+            488 RETURN_CONST             4 (None)
+
+Disassembly of <code object _reset_frame_timing at 0x0000020DAF2D2230, file "apps\hud\ui\overlays\base\base_qml.py", line 480>:
+480           0 RESUME                   0
+
+482           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_stats)
+             24 LOAD_ATTR                3 (NULL|self + reset_frame_timing)
+             44 LOAD_CONST               1 ('__FRAMES__')
+             46 LOAD_CONST               2 ('__FRAME__')
+             48 CALL                     2
+             56 POP_TOP
+             58 RETURN_CONST             3 (None)
+
+Disassembly of <code object invalidate_qml_cache at 0x0000020DAF2DF440, file "apps\hud\ui\overlays\base\base_qml.py", line 484>:
+484           0 RESUME                   0
+
+488           2 LOAD_FAST                1 (names)
+              4 GET_ITER
+        >>    6 FOR_ITER                30 (to 70)
+             10 STORE_FAST               2 (name)
+
+489          12 LOAD_FAST                0 (self)
+             14 LOAD_ATTR                0 (_qml_props)
+             34 LOAD_ATTR                3 (NULL|self + pop)
+             54 LOAD_FAST                2 (name)
+             56 LOAD_CONST               1 (None)
+             58 CALL                     2
+             66 POP_TOP
+             68 JUMP_BACKWARD           32 (to 6)
+
+488     >>   70 END_FOR
+             72 RETURN_CONST             1 (None)
+
+Disassembly of <code object set_qml_property at 0x0000020DAF220BD0, file "apps\hud\ui\overlays\base\base_qml.py", line 491>:
+491           0 RESUME                   0
+
+499           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_root)
+             24 POP_JUMP_IF_NOT_NONE     1 (to 28)
+
+500          26 RETURN_CONST             1 (None)
+
+501     >>   28 LOAD_FAST                0 (self)
+             30 LOAD_ATTR                2 (_qml_props)
+             50 LOAD_ATTR                5 (NULL|self + get)
+             70 LOAD_FAST                1 (name)
+             72 LOAD_GLOBAL              6 (_UNSET)
+             82 CALL                     2
+             90 LOAD_FAST                2 (value)
+             92 COMPARE_OP              40 (==)
+             96 POP_JUMP_IF_FALSE       29 (to 156)
+
+502          98 LOAD_FAST                0 (self)
+            100 LOAD_ATTR                8 (_stats)
+            120 LOAD_ATTR               11 (NULL|self + track_event)
+            140 LOAD_CONST               2 ('__QML_PROPERTY_CACHE_HITS__')
+            142 LOAD_FAST                1 (name)
+            144 CALL                     2
+            152 POP_TOP
+
+503         154 RETURN_CONST             1 (None)
+
+504     >>  156 LOAD_FAST                2 (value)
+            158 LOAD_FAST                0 (self)
+            160 LOAD_ATTR                2 (_qml_props)
+            180 LOAD_FAST                1 (name)
+            182 STORE_SUBSCR
+
+505         186 LOAD_FAST                0 (self)
+            188 LOAD_ATTR                0 (_root)
+            208 LOAD_ATTR               13 (NULL|self + setProperty)
+            228 LOAD_FAST                1 (name)
+            230 LOAD_FAST                2 (value)
+            232 CALL                     2
+            240 POP_TOP
+
+506         242 LOAD_FAST                0 (self)
+            244 LOAD_ATTR                8 (_stats)
+            264 LOAD_ATTR               11 (NULL|self + track_event)
+            284 LOAD_CONST               3 ('__QML_PROPERTIES_PUSHES__')
+            286 LOAD_FAST                1 (name)
+            288 CALL                     2
+            296 POP_TOP
+            298 RETURN_CONST             1 (None)
+
+Disassembly of <code object root at 0x0000020DAF2F1B50, file "apps\hud\ui\overlays\base\base_qml.py", line 508>:
+508           0 RESUME                   0
+
+511           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_root)
+             24 RETURN_VALUE
+
+Disassembly of <code object on_event at 0x0000020DAF2F1C30, file "apps\hud\ui\overlays\base\base_qml.py", line 513>:
+              0 MAKE_CELL                0 (self)
+              2 MAKE_CELL                1 (cmd_name)
+              4 MAKE_CELL                2 (requires_root)
+
+513           6 RESUME                   0
+
+523           8 LOAD_CLOSURE             1 (cmd_name)
+             10 LOAD_CLOSURE             2 (requires_root)
+             12 LOAD_CLOSURE             0 (self)
+             14 BUILD_TUPLE              3
+             16 LOAD_CONST               1 (<code object decorator at 0x0000020DAF2D45D0, file "apps\hud\ui\overlays\base\base_qml.py", line 523>)
+             18 MAKE_FUNCTION            8 (closure)
+             20 STORE_FAST               3 (decorator)
+
+534          22 LOAD_FAST                3 (decorator)
+             24 RETURN_VALUE
+
+Disassembly of <code object decorator at 0x0000020DAF2D45D0, file "apps\hud\ui\overlays\base\base_qml.py", line 523>:
+              0 COPY_FREE_VARS           3
+              2 MAKE_CELL                0 (func)
+
+523           4 RESUME                   0
+
+524           6 LOAD_DEREF               3 (requires_root)
+              8 POP_JUMP_IF_FALSE       25 (to 60)
+
+525          10 LOAD_DEREF               2 (cmd_name)
+             12 BUILD_TUPLE              1
+             14 LOAD_CLOSURE             0 (func)
+             16 LOAD_CLOSURE             4 (self)
+             18 BUILD_TUPLE              2
+             20 LOAD_CONST               1 (<code object wrapper at 0x0000020DAF2C23D0, file "apps\hud\ui\overlays\base\base_qml.py", line 525>)
+             22 MAKE_FUNCTION            9 (defaults, closure)
+             24 STORE_FAST               1 (wrapper)
+
+530          26 LOAD_FAST                1 (wrapper)
+             28 LOAD_DEREF               4 (self)
+             30 LOAD_ATTR                0 (_command_handlers)
+             50 LOAD_DEREF               2 (cmd_name)
+             52 STORE_SUBSCR
+
+533          56 LOAD_DEREF               0 (func)
+             58 RETURN_VALUE
+
+532     >>   60 LOAD_DEREF               0 (func)
+             62 LOAD_DEREF               4 (self)
+             64 LOAD_ATTR                0 (_command_handlers)
+             84 LOAD_DEREF               2 (cmd_name)
+             86 STORE_SUBSCR
+
+533          90 LOAD_DEREF               0 (func)
+             92 RETURN_VALUE
+
+Disassembly of <code object wrapper at 0x0000020DAF2C23D0, file "apps\hud\ui\overlays\base\base_qml.py", line 525>:
+              0 COPY_FREE_VARS           2
+
+525           2 RESUME                   0
+
+526           4 LOAD_DEREF               3 (self)
+              6 LOAD_ATTR                0 (_root)
+             26 POP_JUMP_IF_TRUE        29 (to 86)
+
+527          28 LOAD_DEREF               3 (self)
+             30 LOAD_ATTR                2 (_stats)
+             50 LOAD_ATTR                5 (NULL|self + track_event)
+             70 LOAD_CONST               1 ('__DROPPED_NO_ROOT__')
+             72 LOAD_FAST                1 (_cmd)
+             74 CALL                     2
+             82 POP_TOP
+
+528          84 RETURN_CONST             0 (None)
+
+529     >>   86 PUSH_NULL
+             88 LOAD_DEREF               2 (func)
+             90 LOAD_FAST                0 (data)
+             92 CALL                     1
+            100 RETURN_VALUE
+
+Disassembly of <code object invoke_qml_method at 0x0000020DAF09BAB0, file "apps\hud\ui\overlays\base\base_qml.py", line 536>:
+536           0 RESUME                   0
+
+542           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_stats)
+             24 LOAD_ATTR                3 (NULL|self + track_event)
+             44 LOAD_CONST               1 ('__QML_METHOD_CALLS__')
+             46 LOAD_FAST                1 (method)
+             48 CALL                     2
+             56 POP_TOP
+
+543          58 LOAD_GLOBAL              5 (NULL + QMetaObject)
+             68 LOAD_ATTR                6 (invokeMethod)
+
+544          88 LOAD_FAST                0 (self)
+             90 LOAD_ATTR                8 (_root)
+
+545         110 LOAD_FAST                1 (method)
+
+546         112 LOAD_GLOBAL             10 (Qt)
+            122 LOAD_ATTR               12 (ConnectionType)
+            142 LOAD_ATTR               14 (AutoConnection)
+
+543         162 BUILD_LIST               3
+
+547         164 LOAD_CONST               2 (<code object <genexpr> at 0x0000020DAF2D2330, file "apps\hud\ui\overlays\base\base_qml.py", line 547>)
+            166 MAKE_FUNCTION            0
+            168 LOAD_FAST                2 (args)
+            170 GET_ITER
+            172 CALL                     0
+
+543         180 LIST_EXTEND              1
+            182 CALL_INTRINSIC_1         6 (INTRINSIC_LIST_TO_TUPLE)
+            184 CALL_FUNCTION_EX         0
+            186 POP_TOP
+            188 RETURN_CONST             3 (None)
+
+Disassembly of <code object <genexpr> at 0x0000020DAF2D2330, file "apps\hud\ui\overlays\base\base_qml.py", line 547>:
+547           0 RETURN_GENERATOR
+              2 POP_TOP
+              4 RESUME                   0
+              6 LOAD_FAST                0 (.0)
+        >>    8 FOR_ITER                16 (to 44)
+             12 STORE_FAST               1 (a)
+             14 LOAD_GLOBAL              1 (NULL + Q_ARG)
+             24 LOAD_CONST               0 ('QVariant')
+             26 LOAD_FAST                1 (a)
+             28 CALL                     2
+             36 YIELD_VALUE              1
+             38 RESUME                   1
+             40 POP_TOP
+             42 JUMP_BACKWARD           18 (to 8)
+        >>   44 END_FOR
+             46 RETURN_CONST             1 (None)
+        >>   48 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+             50 RERAISE                  1
+ExceptionTable:
+  4 to 46 -> 48 [0] lasti
+
+Disassembly of <code object render_frame at 0x0000020DB1039480, file "apps\hud\ui\overlays\base\base_qml.py", line 550>:
+550           0 RESUME                   0
+
+552           2 LOAD_GLOBAL              0 (NotImplementedError)
+             12 RAISE_VARARGS            1
+
+Disassembly of <code object QmlLogger at 0x0000020DAF18BB20, file "apps\hud\ui\overlays\base\base_qml.py", line 554>:
+              0 MAKE_CELL                0 (__class__)
+
+554           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('QmlLogger')
+             10 STORE_NAME               2 (__qualname__)
+
+555          12 LOAD_CONST               1 ('logger')
+             14 LOAD_NAME                3 (logging)
+             16 LOAD_ATTR                8 (Logger)
+             36 LOAD_CONST               2 ('oid')
+             38 LOAD_NAME                5 (str)
+             40 BUILD_TUPLE              4
+             42 LOAD_CLOSURE             0 (__class__)
+             44 BUILD_TUPLE              1
+             46 LOAD_CONST               3 (<code object __init__ at 0x0000020DAF2D2430, file "apps\hud\ui\overlays\base\base_qml.py", line 555>)
+             48 MAKE_FUNCTION           12 (annotations, closure)
+             50 STORE_NAME               6 (__init__)
+
+560          52 PUSH_NULL
+             54 LOAD_NAME                7 (Slot)
+             56 LOAD_NAME                5 (str)
+             58 CALL                     1
+
+561          66 LOAD_CONST               4 (<code object debug at 0x0000020DAF2D4930, file "apps\hud\ui\overlays\base\base_qml.py", line 560>)
+             68 MAKE_FUNCTION            0
+
+560          70 CALL                     0
+
+561          78 STORE_NAME               8 (debug)
+
+564          80 PUSH_NULL
+             82 LOAD_NAME                7 (Slot)
+             84 LOAD_NAME                5 (str)
+             86 CALL                     1
+
+565          94 LOAD_CONST               5 (<code object info at 0x0000020DAF2D4810, file "apps\hud\ui\overlays\base\base_qml.py", line 564>)
+             96 MAKE_FUNCTION            0
+
+564          98 CALL                     0
+
+565         106 STORE_NAME               9 (info)
+
+568         108 PUSH_NULL
+            110 LOAD_NAME                7 (Slot)
+            112 LOAD_NAME                5 (str)
+            114 CALL                     1
+
+569         122 LOAD_CONST               6 (<code object warn at 0x0000020DAF2D4A50, file "apps\hud\ui\overlays\base\base_qml.py", line 568>)
+            124 MAKE_FUNCTION            0
+
+568         126 CALL                     0
+
+569         134 STORE_NAME              10 (warn)
+
+572         136 PUSH_NULL
+            138 LOAD_NAME                7 (Slot)
+            140 LOAD_NAME                5 (str)
+            142 CALL                     1
+
+573         150 LOAD_CONST               7 (<code object error at 0x0000020DAF2D4DB0, file "apps\hud\ui\overlays\base\base_qml.py", line 572>)
+            152 MAKE_FUNCTION            0
+
+572         154 CALL                     0
+
+573         162 STORE_NAME              11 (error)
+            164 LOAD_CLOSURE             0 (__class__)
+            166 COPY                     1
+            168 STORE_NAME              12 (__classcell__)
+            170 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF2D2430, file "apps\hud\ui\overlays\base\base_qml.py", line 555>:
+              0 COPY_FREE_VARS           1
+
+555           2 RESUME                   0
+
+556           4 LOAD_GLOBAL              0 (super)
+             14 LOAD_DEREF               3 (__class__)
+             16 LOAD_FAST                0 (self)
+             18 LOAD_SUPER_ATTR          5 (NULL|self + __init__)
+             22 CALL                     0
+             30 POP_TOP
+
+557          32 LOAD_FAST                1 (logger)
+             34 LOAD_FAST                0 (self)
+             36 STORE_ATTR               2 (_logger)
+
+558          46 LOAD_FAST                2 (oid)
+             48 LOAD_FAST                0 (self)
+             50 STORE_ATTR               3 (_oid)
+             60 RETURN_CONST             0 (None)
+
+Disassembly of <code object debug at 0x0000020DAF2D4930, file "apps\hud\ui\overlays\base\base_qml.py", line 560>:
+560           0 RESUME                   0
+
+562           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_logger)
+             24 LOAD_ATTR                3 (NULL|self + debug)
+             44 LOAD_CONST               1 ('%s | %s')
+             46 LOAD_FAST                0 (self)
+             48 LOAD_ATTR                4 (_oid)
+             68 LOAD_FAST                1 (msg)
+             70 CALL                     3
+             78 POP_TOP
+             80 RETURN_CONST             0 (None)
+
+Disassembly of <code object info at 0x0000020DAF2D4810, file "apps\hud\ui\overlays\base\base_qml.py", line 564>:
+564           0 RESUME                   0
+
+566           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_logger)
+             24 LOAD_ATTR                3 (NULL|self + info)
+             44 LOAD_CONST               1 ('%s | %s')
+             46 LOAD_FAST                0 (self)
+             48 LOAD_ATTR                4 (_oid)
+             68 LOAD_FAST                1 (msg)
+             70 CALL                     3
+             78 POP_TOP
+             80 RETURN_CONST             0 (None)
+
+Disassembly of <code object warn at 0x0000020DAF2D4A50, file "apps\hud\ui\overlays\base\base_qml.py", line 568>:
+568           0 RESUME                   0
+
+570           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_logger)
+             24 LOAD_ATTR                3 (NULL|self + warning)
+             44 LOAD_CONST               1 ('%s | %s')
+             46 LOAD_FAST                0 (self)
+             48 LOAD_ATTR                4 (_oid)
+             68 LOAD_FAST                1 (msg)
+             70 CALL                     3
+             78 POP_TOP
+             80 RETURN_CONST             0 (None)
+
+Disassembly of <code object error at 0x0000020DAF2D4DB0, file "apps\hud\ui\overlays\base\base_qml.py", line 572>:
+572           0 RESUME                   0
+
+574           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_logger)
+             24 LOAD_ATTR                3 (NULL|self + error)
+             44 LOAD_CONST               1 ('%s | %s')
+             46 LOAD_FAST                0 (self)
+             48 LOAD_ATTR                4 (_oid)
+             68 LOAD_FAST                1 (msg)
+             70 CALL                     3
+             78 POP_TOP
+             80 RETURN_CONST             0 (None)

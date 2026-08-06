@@ -1,0 +1,1089 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('TYPE_CHECKING', 'Any', 'Dict', 'List', 'Optional'))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (TYPE_CHECKING)
+             30 STORE_NAME               4 (TYPE_CHECKING)
+             32 IMPORT_FROM              5 (Any)
+             34 STORE_NAME               5 (Any)
+             36 IMPORT_FROM              6 (Dict)
+             38 STORE_NAME               6 (Dict)
+             40 IMPORT_FROM              7 (List)
+             42 STORE_NAME               7 (List)
+             44 IMPORT_FROM              8 (Optional)
+             46 STORE_NAME               8 (Optional)
+             48 POP_TOP
+
+ 29          50 LOAD_CONST               0 (0)
+             52 LOAD_CONST               4 (('get_ref_row',))
+             54 IMPORT_NAME              9 (apps.hud.common)
+             56 IMPORT_FROM             10 (get_ref_row)
+             58 STORE_NAME              10 (get_ref_row)
+             60 POP_TOP
+
+ 30          62 LOAD_CONST               0 (0)
+             64 LOAD_CONST               5 (('MfdPageBase',))
+             66 IMPORT_NAME             11 (apps.hud.ui.overlays.mfd.pages.base_page)
+             68 IMPORT_FROM             12 (MfdPageBase)
+             70 STORE_NAME              12 (MfdPageBase)
+             72 POP_TOP
+
+ 31          74 LOAD_CONST               0 (0)
+             76 LOAD_CONST               6 (('MfdPageId', 'MfdTyreWearRateType'))
+             78 IMPORT_NAME             13 (lib.config)
+             80 IMPORT_FROM             14 (MfdPageId)
+             82 STORE_NAME              14 (MfdPageId)
+             84 IMPORT_FROM             15 (MfdTyreWearRateType)
+             86 STORE_NAME              15 (MfdTyreWearRateType)
+             88 POP_TOP
+
+ 33          90 LOAD_NAME                4 (TYPE_CHECKING)
+             92 POP_JUMP_IF_FALSE        6 (to 106)
+
+ 34          94 LOAD_CONST               0 (0)
+             96 LOAD_CONST               7 (('MfdOverlay',))
+             98 IMPORT_NAME             16 (apps.hud.ui.overlays.mfd.mfd)
+            100 IMPORT_FROM             17 (MfdOverlay)
+            102 STORE_NAME              17 (MfdOverlay)
+            104 POP_TOP
+
+ 38     >>  106 PUSH_NULL
+            108 LOAD_BUILD_CLASS
+            110 LOAD_CONST               8 (<code object TyreInfoPage at 0x0000020DAEED4590, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 38>)
+            112 MAKE_FUNCTION            0
+            114 LOAD_CONST               9 ('TyreInfoPage')
+            116 LOAD_NAME               12 (MfdPageBase)
+            118 CALL                     3
+            126 STORE_NAME              18 (TyreInfoPage)
+            128 RETURN_CONST             1 (None)
+
+Disassembly of <code object TyreInfoPage at 0x0000020DAEED4590, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 38>:
+              0 MAKE_CELL                0 (__class__)
+
+ 38           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('TyreInfoPage')
+             10 STORE_NAME               2 (__qualname__)
+             12 SETUP_ANNOTATIONS
+
+ 40          14 LOAD_NAME                3 (MfdPageId)
+             16 LOAD_ATTR                8 (TYRE_INFO)
+             36 STORE_NAME               5 (KEY)
+
+ 41          38 PUSH_NULL
+             40 LOAD_NAME                6 (Path)
+             42 LOAD_NAME                7 (__file__)
+             44 CALL                     1
+             52 LOAD_ATTR               16 (parent)
+             72 LOAD_CONST               1 ('tyre_wear_page.qml')
+             74 BINARY_OP               11 (/)
+             78 STORE_NAME               9 (QML_FILE)
+             80 LOAD_NAME                6 (Path)
+             82 LOAD_NAME               10 (__annotations__)
+             84 LOAD_CONST               2 ('QML_FILE')
+             86 STORE_SUBSCR
+
+ 43          90 LOAD_CONST               3 (2)
+             92 STORE_NAME              11 (NUM_DECIMAL_PLACES)
+
+ 46          94 LOAD_CONST               4 ('FL')
+
+ 47          96 LOAD_CONST               5 ('FR')
+
+ 48          98 LOAD_CONST               6 ('RL')
+
+ 49         100 LOAD_CONST               7 ('RR')
+
+ 45         102 LOAD_CONST               8 (('front-left', 'front-right', 'rear-left', 'rear-right'))
+            104 BUILD_CONST_KEY_MAP      4
+            106 STORE_NAME              12 (KEY_LABELS)
+
+ 56         108 LOAD_NAME               13 (MfdTyreWearRateType)
+            110 LOAD_ATTR               28 (MAX)
+
+ 52         130 BUILD_TUPLE              1
+            132 LOAD_CONST               9 ('overlay')
+
+ 53         134 LOAD_CONST              10 ('MfdOverlay')
+
+ 52         136 LOAD_CONST              11 ('logger')
+
+ 54         138 LOAD_NAME               15 (logging)
+            140 LOAD_ATTR               32 (Logger)
+
+ 52         160 LOAD_CONST              12 ('tyre_wear_threshold')
+
+ 55         162 LOAD_NAME               17 (int)
+
+ 52         164 LOAD_CONST              13 ('tyre_wear_rate_type')
+
+ 56         166 LOAD_NAME               13 (MfdTyreWearRateType)
+
+ 52         168 BUILD_TUPLE              8
+            170 LOAD_CLOSURE             0 (__class__)
+            172 BUILD_TUPLE              1
+            174 LOAD_CONST              14 (<code object __init__ at 0x0000020DAF2C1F10, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 52>)
+            176 MAKE_FUNCTION           13 (defaults, annotations, closure)
+            178 STORE_NAME              18 (__init__)
+
+ 63         180 LOAD_CONST              15 (<code object _init_event_handlers at 0x0000020DAEC770A0, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 63>)
+            182 MAKE_FUNCTION            0
+            184 STORE_NAME              19 (_init_event_handlers)
+
+136         186 LOAD_CONST              16 ('tyre_sets')
+            188 LOAD_NAME               20 (List)
+            190 LOAD_NAME               21 (Dict)
+            192 LOAD_NAME               22 (str)
+            194 LOAD_NAME               23 (Any)
+            196 BUILD_TUPLE              2
+            198 BINARY_SUBSCR
+            202 BINARY_SUBSCR
+            206 LOAD_CONST              17 ('return')
+            208 LOAD_NAME               21 (Dict)
+            210 LOAD_NAME               22 (str)
+            212 LOAD_NAME               21 (Dict)
+            214 LOAD_NAME               22 (str)
+            216 LOAD_NAME               23 (Any)
+            218 BUILD_TUPLE              2
+            220 BINARY_SUBSCR
+            224 BUILD_TUPLE              2
+            226 BINARY_SUBSCR
+            230 BUILD_TUPLE              4
+            232 LOAD_CONST              18 (<code object _get_tyres_grouping_by_vis_comp at 0x0000020DAF2C2170, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 136>)
+            234 MAKE_FUNCTION            4 (annotations)
+            236 STORE_NAME              24 (_get_tyres_grouping_by_vis_comp)
+
+156         238 LOAD_CONST              19 ('groupings_by_comp')
+            240 LOAD_NAME               21 (Dict)
+            242 LOAD_NAME               22 (str)
+            244 LOAD_NAME               21 (Dict)
+            246 LOAD_NAME               22 (str)
+            248 LOAD_NAME               23 (Any)
+            250 BUILD_TUPLE              2
+            252 BINARY_SUBSCR
+            256 BUILD_TUPLE              2
+            258 BINARY_SUBSCR
+            262 LOAD_CONST              17 ('return')
+            264 LOAD_CONST              20 (None)
+            266 BUILD_TUPLE              4
+            268 LOAD_CONST              21 (<code object _update_available_tyres_display at 0x0000020DAF2B9A70, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 156>)
+            270 MAKE_FUNCTION            4 (annotations)
+            272 STORE_NAME              25 (_update_available_tyres_display)
+
+180         274 LOAD_CONST              22 ('curr_wear')
+            276 LOAD_NAME               21 (Dict)
+            278 LOAD_NAME               22 (str)
+            280 LOAD_NAME               26 (float)
+            282 BUILD_TUPLE              2
+            284 BINARY_SUBSCR
+            288 LOAD_CONST              23 ('curr_lap')
+            290 LOAD_NAME               17 (int)
+            292 LOAD_CONST              24 ('predictions')
+
+181         294 LOAD_NAME               27 (Optional)
+            296 LOAD_NAME               20 (List)
+            298 LOAD_NAME               21 (Dict)
+            300 BINARY_SUBSCR
+            304 BINARY_SUBSCR
+
+180         308 LOAD_CONST              25 ('pit_lap')
+
+181         310 LOAD_NAME               27 (Optional)
+            312 LOAD_NAME               17 (int)
+            314 BINARY_SUBSCR
+
+180         318 LOAD_CONST              17 ('return')
+
+181         320 LOAD_CONST              20 (None)
+
+180         322 BUILD_TUPLE             10
+            324 LOAD_CONST              26 (<code object _update_wear_table at 0x0000020DAEAD2840, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 180>)
+            326 MAKE_FUNCTION            4 (annotations)
+            328 STORE_NAME              28 (_update_wear_table)
+
+237         330 LOAD_CONST              24 ('predictions')
+            332 LOAD_NAME               20 (List)
+            334 LOAD_NAME               21 (Dict)
+            336 BINARY_SUBSCR
+            340 LOAD_CONST              27 ('target_lap')
+            342 LOAD_NAME               17 (int)
+            344 LOAD_CONST              17 ('return')
+            346 LOAD_NAME               27 (Optional)
+            348 LOAD_NAME               21 (Dict)
+            350 BINARY_SUBSCR
+            354 BUILD_TUPLE              6
+            356 LOAD_CONST              28 (<code object _find_closest_prediction at 0x0000020DAF2BF1E0, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 237>)
+            358 MAKE_FUNCTION            4 (annotations)
+            360 STORE_NAME              29 (_find_closest_prediction)
+
+243         362 LOAD_CONST              24 ('predictions')
+            364 LOAD_NAME               20 (List)
+            366 LOAD_NAME               21 (Dict)
+            368 LOAD_NAME               22 (str)
+            370 LOAD_NAME               23 (Any)
+            372 BUILD_TUPLE              2
+            374 BINARY_SUBSCR
+            378 BINARY_SUBSCR
+            382 LOAD_CONST              17 ('return')
+            384 LOAD_NAME               17 (int)
+            386 BUILD_TUPLE              4
+            388 LOAD_CONST              29 (<code object _select_end_lap at 0x0000020DAF202550, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 243>)
+            390 MAKE_FUNCTION            4 (annotations)
+            392 STORE_NAME              30 (_select_end_lap)
+
+263         394 LOAD_CONST              30 ('data')
+            396 LOAD_NAME               21 (Dict)
+            398 LOAD_NAME               22 (str)
+            400 LOAD_NAME               23 (Any)
+            402 BUILD_TUPLE              2
+            404 BINARY_SUBSCR
+            408 LOAD_CONST              17 ('return')
+            410 LOAD_NAME               31 (bool)
+            412 BUILD_TUPLE              4
+            414 LOAD_CONST              31 (<code object _is_wear_prediction_supported at 0x0000020DAF2D1D30, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 263>)
+            416 MAKE_FUNCTION            4 (annotations)
+            418 STORE_NAME              32 (_is_wear_prediction_supported)
+            420 LOAD_CLOSURE             0 (__class__)
+            422 COPY                     1
+            424 STORE_NAME              33 (__classcell__)
+            426 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF2C1F10, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 52>:
+              0 COPY_FREE_VARS           1
+
+ 52           2 RESUME                   0
+
+ 58           4 LOAD_FAST                3 (tyre_wear_threshold)
+              6 LOAD_FAST                0 (self)
+              8 STORE_ATTR               0 (tyre_wear_threshold)
+
+ 59          18 LOAD_FAST                4 (tyre_wear_rate_type)
+             20 LOAD_FAST                0 (self)
+             22 STORE_ATTR               1 (tyre_wear_rate_type)
+
+ 60          32 LOAD_GLOBAL              4 (super)
+             42 LOAD_DEREF               5 (__class__)
+             44 LOAD_FAST                0 (self)
+             46 LOAD_SUPER_ATTR         13 (NULL|self + __init__)
+             50 LOAD_FAST                1 (overlay)
+             52 LOAD_FAST                2 (logger)
+             54 CALL                     2
+             62 POP_TOP
+
+ 61          64 LOAD_FAST                0 (self)
+             66 LOAD_ATTR                9 (NULL|self + _init_event_handlers)
+             86 CALL                     0
+             94 POP_TOP
+             96 RETURN_CONST             0 (None)
+
+Disassembly of <code object _init_event_handlers at 0x0000020DAEC770A0, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 63>:
+              0 MAKE_CELL                0 (self)
+
+ 63           2 RESUME                   0
+
+ 65           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('race_table_update')
+             28 CALL                     1
+
+ 66          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (Dict)
+             48 LOAD_GLOBAL              4 (str)
+             58 LOAD_GLOBAL              6 (Any)
+             68 BUILD_TUPLE              2
+             70 BINARY_SUBSCR
+             74 LOAD_CONST               3 ('return')
+             76 LOAD_CONST               4 (None)
+             78 BUILD_TUPLE              4
+             80 LOAD_CLOSURE             0 (self)
+             82 BUILD_TUPLE              1
+             84 LOAD_CONST               5 (<code object _handle_race_table_update at 0x0000020DAEEA6860, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 65>)
+             86 MAKE_FUNCTION           12 (annotations, closure)
+
+ 65          88 CALL                     0
+
+ 66          96 STORE_FAST               1 (_handle_race_table_update)
+
+121          98 LOAD_DEREF               0 (self)
+            100 LOAD_ATTR                1 (NULL|self + on_event)
+            120 LOAD_CONST               6 ('stream_overlay_update')
+            122 CALL                     1
+
+122         130 LOAD_CONST               2 ('data')
+            132 LOAD_GLOBAL              2 (Dict)
+            142 LOAD_GLOBAL              4 (str)
+            152 LOAD_GLOBAL              6 (Any)
+            162 BUILD_TUPLE              2
+            164 BINARY_SUBSCR
+            168 LOAD_CONST               3 ('return')
+            170 LOAD_CONST               4 (None)
+            172 BUILD_TUPLE              4
+            174 LOAD_CLOSURE             0 (self)
+            176 BUILD_TUPLE              1
+            178 LOAD_CONST               7 (<code object _handle_stream_overlay_update at 0x0000020DAF18BB20, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 121>)
+            180 MAKE_FUNCTION           12 (annotations, closure)
+
+121         182 CALL                     0
+
+122         190 STORE_FAST               2 (_handle_stream_overlay_update)
+            192 RETURN_CONST             4 (None)
+
+Disassembly of <code object _handle_race_table_update at 0x0000020DAEEA6860, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 65>:
+              0 COPY_FREE_VARS           1
+
+ 65           2 RESUME                   0
+
+ 68           4 LOAD_GLOBAL              1 (NULL + get_ref_row)
+             14 LOAD_FAST                0 (data)
+             16 CALL                     1
+             24 STORE_FAST               1 (ref_row)
+
+ 69          26 LOAD_FAST                1 (ref_row)
+             28 POP_JUMP_IF_TRUE         1 (to 32)
+
+ 70          30 RETURN_CONST             1 (None)
+
+ 72     >>   32 LOAD_FAST                1 (ref_row)
+             34 LOAD_CONST               2 ('tyre-info')
+             36 BINARY_SUBSCR
+             40 STORE_FAST               2 (tyre_info)
+
+ 73          42 LOAD_FAST                2 (tyre_info)
+             44 LOAD_CONST               3 ('current-wear')
+             46 BINARY_SUBSCR
+             50 STORE_FAST               3 (curr_wear)
+
+ 74          52 LOAD_FAST                2 (tyre_info)
+             54 LOAD_CONST               4 ('tyre-age')
+             56 BINARY_SUBSCR
+             60 STORE_FAST               4 (tyre_age)
+
+ 75          62 LOAD_FAST                2 (tyre_info)
+             64 LOAD_CONST               5 ('visual-tyre-compound')
+             66 BINARY_SUBSCR
+             70 STORE_FAST               5 (visual_tyre_comp)
+
+ 76          72 LOAD_FAST                2 (tyre_info)
+             74 LOAD_CONST               6 ('actual-tyre-compound')
+             76 BINARY_SUBSCR
+             80 STORE_FAST               6 (actual_tyre_comp)
+
+ 78          82 LOAD_FAST                1 (ref_row)
+             84 LOAD_CONST               7 ('driver-info')
+             86 BINARY_SUBSCR
+             90 LOAD_CONST               8 ('telemetry-setting')
+             92 BINARY_SUBSCR
+             96 STORE_FAST               7 (telemetry_settings)
+
+ 81          98 LOAD_DEREF              15 (self)
+            100 LOAD_ATTR                3 (NULL|self + set_page_property)
+            120 LOAD_CONST               9 ('currentCompound')
+            122 LOAD_FAST                6 (actual_tyre_comp)
+            124 CALL                     2
+            132 POP_TOP
+
+ 82         134 LOAD_DEREF              15 (self)
+            136 LOAD_ATTR                3 (NULL|self + set_page_property)
+            156 LOAD_CONST              10 ('currentCompoundVisual')
+            158 LOAD_FAST                5 (visual_tyre_comp)
+            160 CALL                     2
+            168 POP_TOP
+
+ 85         170 LOAD_DEREF              15 (self)
+            172 LOAD_ATTR                3 (NULL|self + set_page_property)
+            192 LOAD_CONST              11 ('tyreAge')
+            194 LOAD_FAST                4 (tyre_age)
+            196 CALL                     2
+            204 POP_TOP
+
+ 88         206 LOAD_FAST                2 (tyre_info)
+            208 LOAD_ATTR                5 (NULL|self + get)
+            228 LOAD_CONST              12 ('wear-prediction')
+            230 BUILD_MAP                0
+            232 CALL                     2
+            240 LOAD_ATTR                5 (NULL|self + get)
+            260 LOAD_CONST              13 ('rate')
+            262 BUILD_MAP                0
+            264 CALL                     2
+            272 STORE_FAST               8 (tyre_wear_rates)
+
+ 89         274 LOAD_FAST                8 (tyre_wear_rates)
+            276 POP_JUMP_IF_FALSE      192 (to 662)
+
+ 91         278 LOAD_DEREF              15 (self)
+            280 LOAD_ATTR                6 (tyre_wear_rate_type)
+            300 LOAD_GLOBAL              8 (MfdTyreWearRateType)
+            310 LOAD_ATTR               10 (AVERAGE)
+            330 COMPARE_OP              40 (==)
+            334 POP_JUMP_IF_FALSE       74 (to 484)
+
+ 92         336 LOAD_GLOBAL             13 (NULL + sum)
+            346 LOAD_FAST                8 (tyre_wear_rates)
+            348 LOAD_ATTR               15 (NULL|self + values)
+            368 CALL                     0
+            376 CALL                     1
+            384 LOAD_GLOBAL             17 (NULL + len)
+            394 LOAD_FAST                8 (tyre_wear_rates)
+            396 CALL                     1
+            404 BINARY_OP               11 (/)
+            408 STORE_FAST               9 (rate)
+
+ 93         410 LOAD_DEREF              15 (self)
+            412 LOAD_ATTR                3 (NULL|self + set_page_property)
+            432 LOAD_CONST              14 ('wearRate')
+            434 LOAD_FAST                9 (rate)
+            436 CALL                     2
+            444 POP_TOP
+
+ 94         446 LOAD_DEREF              15 (self)
+            448 LOAD_ATTR                3 (NULL|self + set_page_property)
+            468 LOAD_CONST              15 ('wearRateTyre')
+            470 LOAD_CONST              16 ('Avg')
+            472 CALL                     2
+            480 POP_TOP
+            482 JUMP_FORWARD           125 (to 734)
+
+ 96     >>  484 LOAD_GLOBAL             19 (NULL + max)
+            494 LOAD_FAST                8 (tyre_wear_rates)
+            496 LOAD_FAST                8 (tyre_wear_rates)
+            498 LOAD_ATTR               20 (__getitem__)
+            518 KW_NAMES                17 (('key',))
+            520 CALL                     2
+            528 STORE_FAST              10 (max_key)
+
+ 97         530 LOAD_DEREF              15 (self)
+            532 LOAD_ATTR                3 (NULL|self + set_page_property)
+            552 LOAD_CONST              14 ('wearRate')
+            554 LOAD_FAST                8 (tyre_wear_rates)
+            556 LOAD_FAST               10 (max_key)
+            558 BINARY_SUBSCR
+            562 CALL                     2
+            570 POP_TOP
+
+ 98         572 LOAD_DEREF              15 (self)
+            574 LOAD_ATTR                3 (NULL|self + set_page_property)
+            594 LOAD_CONST              15 ('wearRateTyre')
+            596 LOAD_DEREF              15 (self)
+            598 LOAD_ATTR               22 (KEY_LABELS)
+            618 LOAD_ATTR                5 (NULL|self + get)
+            638 LOAD_FAST               10 (max_key)
+            640 LOAD_CONST              18 ('')
+            642 CALL                     2
+            650 CALL                     2
+            658 POP_TOP
+            660 JUMP_FORWARD            36 (to 734)
+
+100     >>  662 LOAD_DEREF              15 (self)
+            664 LOAD_ATTR                3 (NULL|self + set_page_property)
+            684 LOAD_CONST              14 ('wearRate')
+            686 LOAD_CONST              19 (0.0)
+            688 CALL                     2
+            696 POP_TOP
+
+101         698 LOAD_DEREF              15 (self)
+            700 LOAD_ATTR                3 (NULL|self + set_page_property)
+            720 LOAD_CONST              15 ('wearRateTyre')
+            722 LOAD_CONST              18 ('')
+            724 CALL                     2
+            732 POP_TOP
+
+103     >>  734 LOAD_FAST                7 (telemetry_settings)
+            736 LOAD_CONST              20 ('Public')
+            738 COMPARE_OP              55 (!=)
+            742 POP_JUMP_IF_FALSE       19 (to 782)
+
+104         744 LOAD_DEREF              15 (self)
+            746 LOAD_ATTR                3 (NULL|self + set_page_property)
+            766 LOAD_CONST              21 ('telemetryDisabled')
+            768 LOAD_CONST              22 (True)
+            770 CALL                     2
+            778 POP_TOP
+
+105         780 RETURN_CONST             1 (None)
+
+107     >>  782 LOAD_DEREF              15 (self)
+            784 LOAD_ATTR                3 (NULL|self + set_page_property)
+            804 LOAD_CONST              21 ('telemetryDisabled')
+            806 LOAD_CONST              23 (False)
+            808 CALL                     2
+            816 POP_TOP
+
+110         818 LOAD_FAST                1 (ref_row)
+            820 LOAD_CONST              24 ('lap-info')
+            822 BINARY_SUBSCR
+            826 LOAD_CONST              25 ('current-lap')
+            828 BINARY_SUBSCR
+            832 STORE_FAST              11 (curr_lap_num)
+
+111         834 LOAD_FAST                2 (tyre_info)
+            836 LOAD_CONST              12 ('wear-prediction')
+            838 BINARY_SUBSCR
+            842 STORE_FAST              12 (wear_prediction)
+
+112         844 LOAD_CONST               1 (None)
+            846 STORE_FAST              13 (predictions)
+
+113         848 LOAD_CONST               1 (None)
+            850 STORE_FAST              14 (pit_lap)
+
+115         852 LOAD_DEREF              15 (self)
+            854 LOAD_ATTR               25 (NULL|self + _is_wear_prediction_supported)
+            874 LOAD_FAST                0 (data)
+            876 CALL                     1
+            884 POP_JUMP_IF_FALSE       10 (to 906)
+
+116         886 LOAD_FAST               12 (wear_prediction)
+            888 LOAD_CONST              26 ('selected-pit-stop-lap')
+            890 BINARY_SUBSCR
+            894 STORE_FAST              14 (pit_lap)
+
+117         896 LOAD_FAST               12 (wear_prediction)
+            898 LOAD_CONST              27 ('predictions')
+            900 BINARY_SUBSCR
+            904 STORE_FAST              13 (predictions)
+
+119     >>  906 LOAD_DEREF              15 (self)
+            908 LOAD_ATTR               27 (NULL|self + _update_wear_table)
+            928 LOAD_FAST                3 (curr_wear)
+            930 LOAD_FAST               11 (curr_lap_num)
+            932 LOAD_FAST               13 (predictions)
+            934 LOAD_FAST               14 (pit_lap)
+            936 CALL                     4
+            944 POP_TOP
+            946 RETURN_CONST             1 (None)
+
+Disassembly of <code object _handle_stream_overlay_update at 0x0000020DAF18BB20, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 121>:
+              0 COPY_FREE_VARS           1
+
+121           2 RESUME                   0
+
+124           4 LOAD_FAST                0 (data)
+              6 LOAD_CONST               1 ('tyre-sets')
+              8 BINARY_SUBSCR
+             12 STORE_FAST               1 (tyre_sets_info)
+
+125          14 LOAD_FAST                1 (tyre_sets_info)
+             16 POP_JUMP_IF_TRUE         1 (to 20)
+
+126          18 RETURN_CONST             2 (None)
+
+130     >>   20 LOAD_FAST                1 (tyre_sets_info)
+             22 LOAD_CONST               3 ('tyre-set-data')
+             24 BINARY_SUBSCR
+             28 GET_ITER
+
+128          30 LOAD_FAST_AND_CLEAR      2 (tyre_set)
+             32 SWAP                     2
+             34 BUILD_LIST               0
+             36 SWAP                     2
+
+130     >>   38 FOR_ITER                22 (to 86)
+             42 STORE_FAST               2 (tyre_set)
+
+131          44 LOAD_FAST                2 (tyre_set)
+             46 LOAD_CONST               4 ('available')
+             48 BINARY_SUBSCR
+             52 POP_JUMP_IF_FALSE       15 (to 84)
+             54 LOAD_FAST                2 (tyre_set)
+             56 LOAD_CONST               5 ('fitted')
+             58 BINARY_SUBSCR
+             62 POP_JUMP_IF_TRUE        10 (to 84)
+             64 LOAD_FAST                2 (tyre_set)
+             66 LOAD_CONST               6 ('wear')
+             68 BINARY_SUBSCR
+             72 LOAD_CONST               7 (0)
+             74 COMPARE_OP              40 (==)
+             78 POP_JUMP_IF_FALSE        2 (to 84)
+
+129          80 LOAD_FAST                2 (tyre_set)
+             82 LIST_APPEND              2
+        >>   84 JUMP_BACKWARD           24 (to 38)
+
+130     >>   86 END_FOR
+
+128          88 STORE_FAST               3 (fresh_avlb_tyre_sets)
+             90 STORE_FAST               2 (tyre_set)
+
+133          92 LOAD_DEREF               5 (self)
+             94 LOAD_ATTR                1 (NULL|self + _get_tyres_grouping_by_vis_comp)
+            114 LOAD_FAST                3 (fresh_avlb_tyre_sets)
+            116 CALL                     1
+            124 STORE_FAST               4 (groupings_by_comp)
+
+134         126 LOAD_DEREF               5 (self)
+            128 LOAD_ATTR                3 (NULL|self + _update_available_tyres_display)
+            148 LOAD_FAST                4 (groupings_by_comp)
+            150 CALL                     1
+            158 POP_TOP
+            160 RETURN_CONST             2 (None)
+        >>  162 SWAP                     2
+            164 POP_TOP
+
+128         166 SWAP                     2
+            168 STORE_FAST               2 (tyre_set)
+            170 RERAISE                  0
+ExceptionTable:
+  34 to 86 -> 162 [2]
+
+Disassembly of <code object _get_tyres_grouping_by_vis_comp at 0x0000020DAF2C2170, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 136>:
+136           0 RESUME                   0
+
+145           2 BUILD_MAP                0
+              4 STORE_FAST               2 (groupings_by_comp)
+
+146           6 LOAD_FAST                1 (tyre_sets)
+              8 GET_ITER
+        >>   10 FOR_ITER                46 (to 106)
+             14 STORE_FAST               3 (ts)
+
+147          16 LOAD_FAST                3 (ts)
+             18 LOAD_CONST               1 ('visual-tyre-compound')
+             20 BINARY_SUBSCR
+             24 STORE_FAST               4 (vis)
+
+148          26 LOAD_FAST                3 (ts)
+             28 LOAD_CONST               2 ('actual-tyre-compound')
+             30 BINARY_SUBSCR
+             34 STORE_FAST               5 (act)
+
+150          36 LOAD_FAST                2 (groupings_by_comp)
+             38 LOAD_ATTR                1 (NULL|self + setdefault)
+
+151          58 LOAD_FAST                4 (vis)
+             60 LOAD_FAST                5 (act)
+             62 LOAD_CONST               3 (0)
+             64 LOAD_CONST               4 (('actual-tyre-compound', 'count'))
+             66 BUILD_CONST_KEY_MAP      2
+
+150          68 CALL                     2
+             76 STORE_FAST               6 (stats)
+
+153          78 LOAD_FAST                6 (stats)
+             80 LOAD_CONST               5 ('count')
+             82 COPY                     2
+             84 COPY                     2
+             86 BINARY_SUBSCR
+             90 LOAD_CONST               6 (1)
+             92 BINARY_OP               13 (+=)
+             96 SWAP                     3
+             98 SWAP                     2
+            100 STORE_SUBSCR
+            104 JUMP_BACKWARD           48 (to 10)
+
+146     >>  106 END_FOR
+
+154         108 LOAD_FAST                2 (groupings_by_comp)
+            110 RETURN_VALUE
+
+Disassembly of <code object _update_available_tyres_display at 0x0000020DAF2B9A70, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 156>:
+156           0 RESUME                   0
+
+164           2 LOAD_CONST               1 (0)
+
+165           4 LOAD_CONST               1 (0)
+
+166           6 LOAD_CONST               1 (0)
+
+167           8 LOAD_CONST               1 (0)
+
+168          10 LOAD_CONST               1 (0)
+
+169          12 LOAD_CONST               1 (0)
+
+163          14 LOAD_CONST               2 (('Soft', 'Medium', 'Hard', 'Super Soft', 'Inters', 'Wet'))
+             16 BUILD_CONST_KEY_MAP      6
+             18 STORE_FAST               2 (tyre_counts)
+
+173          20 LOAD_FAST                1 (groupings_by_comp)
+             22 LOAD_ATTR                1 (NULL|self + items)
+             42 CALL                     0
+             50 GET_ITER
+        >>   52 FOR_ITER                20 (to 96)
+             56 UNPACK_SEQUENCE          2
+             60 STORE_FAST               3 (visual_compound)
+             62 STORE_FAST               4 (stats)
+
+174          64 LOAD_FAST                4 (stats)
+             66 LOAD_CONST               3 ('count')
+             68 BINARY_SUBSCR
+             72 STORE_FAST               5 (count)
+
+175          74 LOAD_FAST                3 (visual_compound)
+             76 LOAD_FAST                2 (tyre_counts)
+             78 CONTAINS_OP              0
+             80 POP_JUMP_IF_TRUE         1 (to 84)
+             82 JUMP_BACKWARD           16 (to 52)
+
+176     >>   84 LOAD_FAST                5 (count)
+             86 LOAD_FAST                2 (tyre_counts)
+             88 LOAD_FAST                3 (visual_compound)
+             90 STORE_SUBSCR
+             94 JUMP_BACKWARD           22 (to 52)
+
+173     >>   96 END_FOR
+
+178          98 LOAD_FAST                0 (self)
+            100 LOAD_ATTR                3 (NULL|self + set_page_property)
+            120 LOAD_CONST               4 ('tyreCounts')
+            122 LOAD_FAST                2 (tyre_counts)
+            124 CALL                     2
+            132 POP_TOP
+            134 RETURN_CONST             5 (None)
+
+Disassembly of <code object _update_wear_table at 0x0000020DAEAD2840, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 180>:
+180           0 RESUME                   0
+
+184           2 LOAD_CONST               1 ('curr')
+
+185           4 LOAD_FAST                1 (curr_wear)
+              6 LOAD_ATTR                1 (NULL|self + get)
+             26 LOAD_CONST               2 ('front-left-wear')
+             28 LOAD_CONST               3 (0.0)
+             30 CALL                     2
+
+186          38 LOAD_FAST                1 (curr_wear)
+             40 LOAD_ATTR                1 (NULL|self + get)
+             60 LOAD_CONST               4 ('front-right-wear')
+             62 LOAD_CONST               3 (0.0)
+             64 CALL                     2
+
+187          72 LOAD_FAST                1 (curr_wear)
+             74 LOAD_ATTR                1 (NULL|self + get)
+             94 LOAD_CONST               5 ('rear-left-wear')
+             96 LOAD_CONST               3 (0.0)
+             98 CALL                     2
+
+188         106 LOAD_FAST                1 (curr_wear)
+            108 LOAD_ATTR                1 (NULL|self + get)
+            128 LOAD_CONST               6 ('rear-right-wear')
+            130 LOAD_CONST               3 (0.0)
+            132 CALL                     2
+
+183         140 LOAD_CONST               7 (('label', 'fl', 'fr', 'rl', 'rr'))
+            142 BUILD_CONST_KEY_MAP      5
+            144 BUILD_LIST               1
+            146 STORE_FAST               5 (rows_data)
+
+192         148 LOAD_FAST                3 (predictions)
+            150 POP_JUMP_IF_FALSE      195 (to 542)
+            152 LOAD_GLOBAL              3 (NULL + len)
+            162 LOAD_FAST                3 (predictions)
+            164 CALL                     1
+            172 LOAD_CONST               8 (0)
+            174 COMPARE_OP              68 (>)
+            178 POP_JUMP_IF_FALSE      181 (to 542)
+
+193         180 LOAD_FAST                0 (self)
+            182 LOAD_ATTR                5 (NULL|self + _select_end_lap)
+            202 LOAD_FAST                3 (predictions)
+            204 CALL                     1
+            212 STORE_FAST               6 (end_lap)
+
+195         214 LOAD_FAST                4 (pit_lap)
+            216 POP_JUMP_IF_FALSE        6 (to 230)
+
+196         218 LOAD_FAST                2 (curr_lap)
+            220 LOAD_FAST                4 (pit_lap)
+            222 LOAD_FAST                6 (end_lap)
+            224 BUILD_LIST               3
+            226 STORE_FAST               7 (lap_sequence)
+            228 JUMP_FORWARD            16 (to 262)
+
+198     >>  230 LOAD_FAST                2 (curr_lap)
+            232 LOAD_FAST                6 (end_lap)
+            234 LOAD_FAST                2 (curr_lap)
+            236 BINARY_OP               10 (-)
+            240 LOAD_CONST               9 (2)
+            242 BINARY_OP                2 (//)
+            246 BINARY_OP                0 (+)
+            250 STORE_FAST               8 (mid_lap)
+
+199         252 LOAD_FAST                2 (curr_lap)
+            254 LOAD_FAST                8 (mid_lap)
+            256 LOAD_FAST                6 (end_lap)
+            258 BUILD_LIST               3
+            260 STORE_FAST               7 (lap_sequence)
+
+202     >>  262 LOAD_FAST                7 (lap_sequence)
+            264 LOAD_CONST              10 (1)
+            266 LOAD_CONST              11 (None)
+            268 BINARY_SLICE
+            270 GET_ITER
+        >>  272 FOR_ITER               132 (to 540)
+            276 STORE_FAST               9 (lap)
+
+203         278 LOAD_FAST                0 (self)
+            280 LOAD_ATTR                7 (NULL|self + _find_closest_prediction)
+            300 LOAD_FAST                3 (predictions)
+            302 LOAD_FAST                9 (lap)
+            304 CALL                     2
+            312 STORE_FAST              10 (pred)
+
+204         314 LOAD_FAST               10 (pred)
+            316 POP_JUMP_IF_TRUE         1 (to 320)
+
+205         318 JUMP_BACKWARD           24 (to 272)
+
+207     >>  320 LOAD_FAST               10 (pred)
+            322 LOAD_CONST              12 ('lap-number')
+            324 BINARY_SUBSCR
+            328 FORMAT_VALUE             0
+            330 STORE_FAST              11 (label)
+
+208         332 LOAD_FAST                4 (pit_lap)
+            334 POP_JUMP_IF_FALSE       10 (to 356)
+            336 LOAD_FAST                9 (lap)
+            338 LOAD_FAST                4 (pit_lap)
+            340 COMPARE_OP              40 (==)
+            344 POP_JUMP_IF_FALSE        5 (to 356)
+
+209         346 LOAD_FAST               11 (label)
+            348 LOAD_CONST              13 (' (Pit)')
+            350 BINARY_OP               13 (+=)
+            354 STORE_FAST              11 (label)
+
+211     >>  356 LOAD_FAST                5 (rows_data)
+            358 LOAD_ATTR                9 (NULL|self + append)
+
+212         378 LOAD_FAST               11 (label)
+
+213         380 LOAD_FAST               10 (pred)
+            382 LOAD_CONST              12 ('lap-number')
+            384 BINARY_SUBSCR
+
+214         388 LOAD_FAST               10 (pred)
+            390 LOAD_ATTR                1 (NULL|self + get)
+            410 LOAD_CONST               2 ('front-left-wear')
+            412 LOAD_CONST               3 (0.0)
+            414 CALL                     2
+
+215         422 LOAD_FAST               10 (pred)
+            424 LOAD_ATTR                1 (NULL|self + get)
+            444 LOAD_CONST               4 ('front-right-wear')
+            446 LOAD_CONST               3 (0.0)
+            448 CALL                     2
+
+216         456 LOAD_FAST               10 (pred)
+            458 LOAD_ATTR                1 (NULL|self + get)
+            478 LOAD_CONST               5 ('rear-left-wear')
+            480 LOAD_CONST               3 (0.0)
+            482 CALL                     2
+
+217         490 LOAD_FAST               10 (pred)
+            492 LOAD_ATTR                1 (NULL|self + get)
+            512 LOAD_CONST               6 ('rear-right-wear')
+            514 LOAD_CONST               3 (0.0)
+            516 CALL                     2
+
+211         524 LOAD_CONST              14 (('label', 'lap_num', 'fl', 'fr', 'rl', 'rr'))
+            526 BUILD_CONST_KEY_MAP      6
+            528 CALL                     1
+            536 POP_TOP
+            538 JUMP_BACKWARD          134 (to 272)
+
+202     >>  540 END_FOR
+
+222     >>  542 LOAD_FAST                5 (rows_data)
+            544 LOAD_CONST              11 (None)
+            546 LOAD_CONST              10 (1)
+            548 BINARY_SLICE
+            550 LOAD_GLOBAL             11 (NULL + sorted)
+            560 LOAD_FAST                5 (rows_data)
+            562 LOAD_CONST              10 (1)
+            564 LOAD_CONST              11 (None)
+            566 BINARY_SLICE
+            568 LOAD_CONST              15 (<code object <lambda> at 0x0000020DAEC3DE30, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 222>)
+            570 MAKE_FUNCTION            0
+            572 KW_NAMES                16 (('key',))
+            574 CALL                     2
+            582 BINARY_OP                0 (+)
+            586 STORE_FAST               5 (rows_data)
+
+225         588 LOAD_GLOBAL              3 (NULL + len)
+            598 LOAD_FAST                5 (rows_data)
+            600 CALL                     1
+            608 LOAD_CONST              17 (3)
+            610 COMPARE_OP               2 (<)
+            614 POP_JUMP_IF_FALSE       74 (to 764)
+
+226     >>  616 LOAD_FAST                5 (rows_data)
+            618 LOAD_ATTR                9 (NULL|self + append)
+
+227         638 LOAD_CONST              18 ('')
+
+228         640 LOAD_GLOBAL             13 (NULL + float)
+            650 LOAD_CONST              19 ('-inf')
+            652 CALL                     1
+
+229         660 LOAD_GLOBAL             13 (NULL + float)
+            670 LOAD_CONST              19 ('-inf')
+            672 CALL                     1
+
+230         680 LOAD_GLOBAL             13 (NULL + float)
+            690 LOAD_CONST              19 ('-inf')
+            692 CALL                     1
+
+231         700 LOAD_GLOBAL             13 (NULL + float)
+            710 LOAD_CONST              19 ('-inf')
+            712 CALL                     1
+
+226         720 LOAD_CONST               7 (('label', 'fl', 'fr', 'rl', 'rr'))
+            722 BUILD_CONST_KEY_MAP      5
+            724 CALL                     1
+            732 POP_TOP
+
+225         734 LOAD_GLOBAL              3 (NULL + len)
+            744 LOAD_FAST                5 (rows_data)
+            746 CALL                     1
+            754 LOAD_CONST              17 (3)
+            756 COMPARE_OP               2 (<)
+            760 POP_JUMP_IF_FALSE        1 (to 764)
+            762 JUMP_BACKWARD           74 (to 616)
+
+235     >>  764 LOAD_FAST                0 (self)
+            766 LOAD_ATTR               15 (NULL|self + set_page_property)
+            786 LOAD_CONST              20 ('wearTableData')
+            788 LOAD_FAST                5 (rows_data)
+            790 LOAD_CONST              11 (None)
+            792 LOAD_CONST              17 (3)
+            794 BINARY_SLICE
+            796 CALL                     2
+            804 POP_TOP
+            806 RETURN_CONST            11 (None)
+
+Disassembly of <code object <lambda> at 0x0000020DAEC3DE30, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 222>:
+222           0 RESUME                   0
+              2 LOAD_FAST                0 (r)
+              4 LOAD_ATTR                1 (NULL|self + get)
+             24 LOAD_CONST               1 ('lap_num')
+             26 LOAD_GLOBAL              3 (NULL + float)
+             36 LOAD_CONST               2 ('inf')
+             38 CALL                     1
+             46 CALL                     2
+             54 RETURN_VALUE
+
+Disassembly of <code object _find_closest_prediction at 0x0000020DAF2BF1E0, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 237>:
+              0 MAKE_CELL                2 (target_lap)
+
+237           2 RESUME                   0
+
+239           4 LOAD_FAST                1 (predictions)
+              6 POP_JUMP_IF_TRUE         1 (to 10)
+
+240           8 RETURN_CONST             1 (None)
+
+241     >>   10 LOAD_GLOBAL              1 (NULL + min)
+             20 LOAD_FAST                1 (predictions)
+             22 LOAD_CLOSURE             2 (target_lap)
+             24 BUILD_TUPLE              1
+             26 LOAD_CONST               2 (<code object <lambda> at 0x0000020DAECADA70, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 241>)
+             28 MAKE_FUNCTION            8 (closure)
+             30 KW_NAMES                 3 (('key',))
+             32 CALL                     2
+             40 RETURN_VALUE
+
+Disassembly of <code object <lambda> at 0x0000020DAECADA70, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 241>:
+              0 COPY_FREE_VARS           1
+
+241           2 RESUME                   0
+              4 LOAD_GLOBAL              1 (NULL + abs)
+             14 LOAD_FAST                0 (p)
+             16 LOAD_CONST               1 ('lap-number')
+             18 BINARY_SUBSCR
+             22 LOAD_DEREF               1 (target_lap)
+             24 BINARY_OP               10 (-)
+             28 CALL                     1
+             36 RETURN_VALUE
+
+Disassembly of <code object _select_end_lap at 0x0000020DAF202550, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 243>:
+243           0 RESUME                   0
+
+249           2 LOAD_FAST                1 (predictions)
+              4 GET_ITER
+        >>    6 FOR_ITER               102 (to 214)
+             10 STORE_FAST               2 (pred)
+
+250          12 LOAD_GLOBAL              1 (NULL + max)
+
+251          22 LOAD_FAST                2 (pred)
+             24 LOAD_ATTR                3 (NULL|self + get)
+             44 LOAD_CONST               1 ('front-left-wear')
+             46 LOAD_CONST               2 (0.0)
+             48 CALL                     2
+
+252          56 LOAD_FAST                2 (pred)
+             58 LOAD_ATTR                3 (NULL|self + get)
+             78 LOAD_CONST               3 ('front-right-wear')
+             80 LOAD_CONST               2 (0.0)
+             82 CALL                     2
+
+253          90 LOAD_FAST                2 (pred)
+             92 LOAD_ATTR                3 (NULL|self + get)
+            112 LOAD_CONST               4 ('rear-left-wear')
+            114 LOAD_CONST               2 (0.0)
+            116 CALL                     2
+
+254         124 LOAD_FAST                2 (pred)
+            126 LOAD_ATTR                3 (NULL|self + get)
+            146 LOAD_CONST               5 ('rear-right-wear')
+            148 LOAD_CONST               2 (0.0)
+            150 CALL                     2
+
+250         158 CALL                     4
+            166 STORE_FAST               3 (max_wear)
+
+257         168 LOAD_FAST                3 (max_wear)
+            170 LOAD_FAST                0 (self)
+            172 LOAD_ATTR                4 (tyre_wear_threshold)
+            192 COMPARE_OP              92 (>=)
+            196 POP_JUMP_IF_TRUE         1 (to 200)
+            198 JUMP_BACKWARD           97 (to 6)
+
+258     >>  200 LOAD_FAST                2 (pred)
+            202 LOAD_CONST               6 ('lap-number')
+            204 BINARY_SUBSCR
+            208 SWAP                     2
+            210 POP_TOP
+            212 RETURN_VALUE
+
+249     >>  214 END_FOR
+
+260         216 LOAD_FAST                1 (predictions)
+            218 LOAD_CONST               7 (-1)
+            220 BINARY_SUBSCR
+            224 LOAD_CONST               6 ('lap-number')
+            226 BINARY_SUBSCR
+            230 RETURN_VALUE
+
+Disassembly of <code object _is_wear_prediction_supported at 0x0000020DAF2D1D30, file "apps\hud\ui\overlays\mfd\pages\tyre_wear\tyre_wear_page.py", line 263>:
+263           0 RESUME                   0
+
+265           2 LOAD_FAST                1 (data)
+              4 LOAD_ATTR                1 (NULL|self + get)
+             24 LOAD_CONST               1 ('event-type')
+             26 LOAD_CONST               2 ('')
+             28 CALL                     2
+             36 STORE_FAST               2 (event_type)
+
+266          38 LOAD_FAST                2 (event_type)
+             40 COPY                     1
+             42 POP_JUMP_IF_FALSE        4 (to 52)
+             44 POP_TOP
+             46 LOAD_CONST               3 ('Race')
+             48 LOAD_FAST                2 (event_type)
+             50 CONTAINS_OP              0
+        >>   52 RETURN_VALUE

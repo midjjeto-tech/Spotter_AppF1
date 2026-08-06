@@ -1,0 +1,787 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('TYPE_CHECKING', 'Any', 'Dict', 'List', 'Optional', 'Tuple', 'final'))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (TYPE_CHECKING)
+             30 STORE_NAME               4 (TYPE_CHECKING)
+             32 IMPORT_FROM              5 (Any)
+             34 STORE_NAME               5 (Any)
+             36 IMPORT_FROM              6 (Dict)
+             38 STORE_NAME               6 (Dict)
+             40 IMPORT_FROM              7 (List)
+             42 STORE_NAME               7 (List)
+             44 IMPORT_FROM              8 (Optional)
+             46 STORE_NAME               8 (Optional)
+             48 IMPORT_FROM              9 (Tuple)
+             50 STORE_NAME               9 (Tuple)
+             52 IMPORT_FROM             10 (final)
+             54 STORE_NAME              10 (final)
+             56 POP_TOP
+
+ 29          58 LOAD_CONST               0 (0)
+             60 LOAD_CONST               4 (('get_ers_mode_color', 'get_ref_row_index'))
+             62 IMPORT_NAME             11 (apps.hud.common)
+             64 IMPORT_FROM             12 (get_ers_mode_color)
+             66 STORE_NAME              12 (get_ers_mode_color)
+             68 IMPORT_FROM             13 (get_ref_row_index)
+             70 STORE_NAME              13 (get_ref_row_index)
+             72 POP_TOP
+
+ 30          74 LOAD_CONST               0 (0)
+             76 LOAD_CONST               5 (('MfdPageBase',))
+             78 IMPORT_NAME             14 (apps.hud.ui.overlays.mfd.pages.base_page)
+             80 IMPORT_FROM             15 (MfdPageBase)
+             82 STORE_NAME              15 (MfdPageBase)
+             84 POP_TOP
+
+ 31          86 LOAD_CONST               0 (0)
+             88 LOAD_CONST               6 (('MfdPageId',))
+             90 IMPORT_NAME             16 (lib.config)
+             92 IMPORT_FROM             17 (MfdPageId)
+             94 STORE_NAME              17 (MfdPageId)
+             96 POP_TOP
+
+ 32          98 LOAD_CONST               0 (0)
+            100 LOAD_CONST               7 (('TrackSegmentsDatabase',))
+            102 IMPORT_NAME             18 (lib.track_segment_info)
+            104 IMPORT_FROM             19 (TrackSegmentsDatabase)
+            106 STORE_NAME              19 (TrackSegmentsDatabase)
+            108 POP_TOP
+
+ 34         110 LOAD_CONST               8 (1)
+            112 LOAD_CONST               9 (('get_traffic_window', 'resolve_location', 'sort_by_rel_distance'))
+            114 IMPORT_NAME             20 (utils)
+            116 IMPORT_FROM             21 (get_traffic_window)
+            118 STORE_NAME              21 (get_traffic_window)
+            120 IMPORT_FROM             22 (resolve_location)
+            122 STORE_NAME              22 (resolve_location)
+            124 IMPORT_FROM             23 (sort_by_rel_distance)
+            126 STORE_NAME              23 (sort_by_rel_distance)
+            128 POP_TOP
+
+ 36         130 LOAD_NAME                4 (TYPE_CHECKING)
+            132 POP_JUMP_IF_FALSE        6 (to 146)
+
+ 37         134 LOAD_CONST               0 (0)
+            136 LOAD_CONST              10 (('MfdOverlay',))
+            138 IMPORT_NAME             24 (apps.hud.ui.overlays.mfd.mfd)
+            140 IMPORT_FROM             25 (MfdOverlay)
+            142 STORE_NAME              25 (MfdOverlay)
+            144 POP_TOP
+
+ 41     >>  146 LOAD_CONST              11 ('IN_GARAGE')
+            148 STORE_NAME              26 (_DRIVER_STATUS_IN_GARAGE)
+
+ 45         150 PUSH_NULL
+            152 LOAD_BUILD_CLASS
+            154 LOAD_CONST              12 (<code object TrafficMonitorPage at 0x0000020DAF29EA30, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 45>)
+            156 MAKE_FUNCTION            0
+            158 LOAD_CONST              13 ('TrafficMonitorPage')
+            160 LOAD_NAME               15 (MfdPageBase)
+            162 CALL                     3
+            170 STORE_NAME              27 (TrafficMonitorPage)
+            172 RETURN_CONST             1 (None)
+
+Disassembly of <code object TrafficMonitorPage at 0x0000020DAF29EA30, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 45>:
+              0 MAKE_CELL                0 (__class__)
+
+ 45           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('TrafficMonitorPage')
+             10 STORE_NAME               2 (__qualname__)
+             12 SETUP_ANNOTATIONS
+
+ 46          14 LOAD_CONST               1 ('Traffic Monitor MFD Page — nearest 5 cars behind sorted by lap distance.')
+             16 STORE_NAME               3 (__doc__)
+
+ 47          18 LOAD_NAME                4 (MfdPageId)
+             20 LOAD_ATTR               10 (TRAFFIC_MONITOR)
+             40 STORE_NAME               6 (KEY)
+
+ 48          42 PUSH_NULL
+             44 LOAD_NAME                7 (Path)
+             46 LOAD_NAME                8 (__file__)
+             48 CALL                     1
+             56 LOAD_ATTR               18 (parent)
+             76 LOAD_CONST               2 ('traffic_monitor_page.qml')
+             78 BINARY_OP               11 (/)
+             82 STORE_NAME              10 (QML_FILE)
+             84 LOAD_NAME                7 (Path)
+             86 LOAD_NAME               11 (__annotations__)
+             88 LOAD_CONST               3 ('QML_FILE')
+             90 STORE_SUBSCR
+
+ 50          94 LOAD_CONST               4 (5)
+             96 STORE_NAME              12 (NUM_BEHIND)
+
+ 52          98 LOAD_CONST               5 ('overlay')
+            100 LOAD_CONST               6 ('MfdOverlay')
+            102 LOAD_CONST               7 ('logger')
+            104 LOAD_NAME               13 (logging)
+            106 LOAD_ATTR               28 (Logger)
+            126 BUILD_TUPLE              4
+            128 LOAD_CLOSURE             0 (__class__)
+            130 BUILD_TUPLE              1
+            132 LOAD_CONST               8 (<code object __init__ at 0x0000020DAF2F85B0, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 52>)
+            134 MAKE_FUNCTION           12 (annotations, closure)
+            136 STORE_NAME              15 (__init__)
+
+ 57         138 LOAD_NAME               16 (final)
+
+ 58         140 LOAD_CONST               9 (<code object on_page_activated at 0x0000020DB10393B0, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 57>)
+            142 MAKE_FUNCTION            0
+
+ 57         144 CALL                     0
+
+ 58         152 STORE_NAME              17 (on_page_activated)
+
+ 61         154 LOAD_CONST              10 (<code object _init_event_handlers at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 61>)
+            156 MAKE_FUNCTION            0
+            158 STORE_NAME              18 (_init_event_handlers)
+
+113         160 LOAD_CONST              21 (('return', None))
+            162 LOAD_CONST              12 (<code object _show_empty at 0x0000020DAF2DF330, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 113>)
+            164 MAKE_FUNCTION            4 (annotations)
+            166 STORE_NAME              19 (_show_empty)
+
+117         168 LOAD_CONST              21 (('return', None))
+            170 LOAD_CONST              13 (<code object _show_in_garage at 0x0000020DAF2DF770, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 117>)
+            172 MAKE_FUNCTION            4 (annotations)
+            174 STORE_NAME              20 (_show_in_garage)
+
+123         176 LOAD_CONST              14 ('window')
+
+125         178 LOAD_NAME               21 (List)
+            180 LOAD_NAME               22 (Tuple)
+            182 LOAD_NAME               23 (float)
+            184 LOAD_NAME               24 (Dict)
+            186 LOAD_NAME               25 (str)
+            188 LOAD_NAME               26 (Any)
+            190 BUILD_TUPLE              2
+            192 BINARY_SUBSCR
+            196 BUILD_TUPLE              2
+            198 BINARY_SUBSCR
+            202 BINARY_SUBSCR
+
+123         206 LOAD_CONST              15 ('ref_index')
+
+126         208 LOAD_NAME               27 (int)
+
+123         210 LOAD_CONST              16 ('circuit_num')
+
+127         212 LOAD_NAME               28 (Optional)
+            214 LOAD_NAME               27 (int)
+            216 BINARY_SUBSCR
+
+123         220 LOAD_CONST              11 ('return')
+
+128         222 LOAD_NAME               21 (List)
+            224 LOAD_NAME               24 (Dict)
+            226 LOAD_NAME               25 (str)
+            228 LOAD_NAME               26 (Any)
+            230 BUILD_TUPLE              2
+            232 BINARY_SUBSCR
+            236 BINARY_SUBSCR
+
+123         240 BUILD_TUPLE              8
+            242 LOAD_CONST              17 (<code object _build_rows at 0x0000020DAF19FBD0, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 123>)
+            244 MAKE_FUNCTION            4 (annotations)
+            246 STORE_NAME              29 (_build_rows)
+
+131         248 LOAD_CONST              18 ('rel_dist_m')
+
+133         250 LOAD_NAME               23 (float)
+
+131         252 LOAD_CONST              19 ('row')
+
+134         254 LOAD_NAME               24 (Dict)
+            256 LOAD_NAME               25 (str)
+            258 LOAD_NAME               26 (Any)
+            260 BUILD_TUPLE              2
+            262 BINARY_SUBSCR
+
+131         266 LOAD_CONST              15 ('ref_index')
+
+135         268 LOAD_NAME               27 (int)
+
+131         270 LOAD_CONST              16 ('circuit_num')
+
+136         272 LOAD_NAME               28 (Optional)
+            274 LOAD_NAME               27 (int)
+            276 BINARY_SUBSCR
+
+131         280 LOAD_CONST              11 ('return')
+
+137         282 LOAD_NAME               24 (Dict)
+            284 LOAD_NAME               25 (str)
+            286 LOAD_NAME               26 (Any)
+            288 BUILD_TUPLE              2
+            290 BINARY_SUBSCR
+
+131         294 BUILD_TUPLE             10
+            296 LOAD_CONST              20 (<code object _build_row at 0x0000020DAEE405B0, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 131>)
+            298 MAKE_FUNCTION            4 (annotations)
+            300 STORE_NAME              30 (_build_row)
+            302 LOAD_CLOSURE             0 (__class__)
+            304 COPY                     1
+            306 STORE_NAME              31 (__classcell__)
+            308 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF2F85B0, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 52>:
+              0 COPY_FREE_VARS           1
+
+ 52           2 RESUME                   0
+
+ 53           4 LOAD_GLOBAL              1 (NULL + TrackSegmentsDatabase)
+             14 LOAD_GLOBAL              3 (NULL + Path)
+             24 LOAD_GLOBAL              4 (__file__)
+             34 CALL                     1
+             42 LOAD_ATTR                6 (parents)
+             62 LOAD_CONST               1 (7)
+             64 BINARY_SUBSCR
+             68 LOAD_CONST               2 ('assets/track-segments')
+             70 BINARY_OP               11 (/)
+             74 CALL                     1
+             82 LOAD_FAST                0 (self)
+             84 STORE_ATTR               4 (tracks_db)
+
+ 54          94 LOAD_GLOBAL             10 (super)
+            104 LOAD_DEREF               3 (__class__)
+            106 LOAD_FAST                0 (self)
+            108 LOAD_SUPER_ATTR         25 (NULL|self + __init__)
+            112 LOAD_FAST                1 (overlay)
+            114 LOAD_FAST                2 (logger)
+            116 CALL                     2
+            124 POP_TOP
+
+ 55         126 LOAD_FAST                0 (self)
+            128 LOAD_ATTR               15 (NULL|self + _init_event_handlers)
+            148 CALL                     0
+            156 POP_TOP
+            158 RETURN_CONST             0 (None)
+
+Disassembly of <code object on_page_activated at 0x0000020DB10393B0, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 57>:
+ 57           0 RESUME                   0
+
+ 59           2 RETURN_CONST             0 (None)
+
+Disassembly of <code object _init_event_handlers at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 61>:
+              0 MAKE_CELL                0 (self)
+
+ 61           2 RESUME                   0
+
+ 62           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('race_table_update')
+             28 CALL                     1
+
+ 63          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (Dict)
+             48 LOAD_GLOBAL              4 (str)
+             58 LOAD_GLOBAL              6 (Any)
+             68 BUILD_TUPLE              2
+             70 BINARY_SUBSCR
+             74 LOAD_CONST               3 ('return')
+             76 LOAD_CONST               0 (None)
+             78 BUILD_TUPLE              4
+             80 LOAD_CLOSURE             0 (self)
+             82 BUILD_TUPLE              1
+             84 LOAD_CONST               4 (<code object _handle_race_table_update at 0x0000020DAEB8E470, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 62>)
+             86 MAKE_FUNCTION           12 (annotations, closure)
+
+ 62          88 CALL                     0
+
+ 63          96 STORE_FAST               1 (_handle_race_table_update)
+             98 RETURN_CONST             0 (None)
+
+Disassembly of <code object _handle_race_table_update at 0x0000020DAEB8E470, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 62>:
+              0 COPY_FREE_VARS           1
+              2 MAKE_CELL               13 (ref_index)
+
+ 62           4 RESUME                   0
+
+ 64           6 LOAD_FAST                0 (data)
+              8 LOAD_ATTR                1 (NULL|self + get)
+             28 LOAD_CONST               1 ('table-entries')
+             30 CALL                     1
+             38 STORE_FAST               1 (table_entries)
+
+ 65          40 LOAD_FAST                0 (data)
+             42 LOAD_ATTR                1 (NULL|self + get)
+             62 LOAD_CONST               2 ('circuit-len')
+             64 CALL                     1
+             72 STORE_FAST               2 (circuit_len)
+
+ 66          74 LOAD_FAST                0 (data)
+             76 LOAD_ATTR                1 (NULL|self + get)
+             96 LOAD_CONST               3 ('circuit-enum-value')
+             98 CALL                     1
+            106 STORE_FAST               3 (circuit_num)
+
+ 68         108 LOAD_FAST                1 (table_entries)
+            110 POP_JUMP_IF_FALSE        2 (to 116)
+            112 LOAD_FAST                2 (circuit_len)
+            114 POP_JUMP_IF_TRUE        17 (to 150)
+
+ 69     >>  116 LOAD_DEREF              14 (self)
+            118 LOAD_ATTR                3 (NULL|self + _show_empty)
+            138 CALL                     0
+            146 POP_TOP
+
+ 70         148 RETURN_CONST             0 (None)
+
+ 72     >>  150 LOAD_GLOBAL              5 (NULL + get_ref_row_index)
+            160 LOAD_FAST                0 (data)
+            162 CALL                     1
+            170 STORE_FAST               4 (ref_arr_index)
+
+ 73         172 LOAD_FAST                4 (ref_arr_index)
+            174 POP_JUMP_IF_NOT_NONE    17 (to 210)
+
+ 74         176 LOAD_DEREF              14 (self)
+            178 LOAD_ATTR                3 (NULL|self + _show_empty)
+            198 CALL                     0
+            206 POP_TOP
+
+ 75         208 RETURN_CONST             0 (None)
+
+ 77     >>  210 LOAD_FAST                1 (table_entries)
+            212 LOAD_FAST                4 (ref_arr_index)
+            214 BINARY_SUBSCR
+            218 STORE_FAST               5 (ref_row)
+
+ 78         220 LOAD_FAST                5 (ref_row)
+            222 LOAD_CONST               4 ('driver-info')
+            224 BINARY_SUBSCR
+            228 LOAD_CONST               5 ('index')
+            230 BINARY_SUBSCR
+            234 STORE_DEREF             13 (ref_index)
+
+ 79         236 LOAD_DEREF              13 (ref_index)
+            238 POP_JUMP_IF_NOT_NONE     2 (to 244)
+            240 LOAD_ASSERTION_ERROR
+            242 RAISE_VARARGS            1
+
+ 81     >>  244 LOAD_FAST                5 (ref_row)
+            246 LOAD_ATTR                1 (NULL|self + get)
+            266 LOAD_CONST               6 ('lap-info')
+            268 BUILD_MAP                0
+            270 CALL                     2
+            278 LOAD_ATTR                1 (NULL|self + get)
+            298 LOAD_CONST               7 ('curr-lap')
+            300 BUILD_MAP                0
+            302 CALL                     2
+            310 LOAD_ATTR                1 (NULL|self + get)
+            330 LOAD_CONST               8 ('driver-status')
+            332 CALL                     1
+            340 STORE_FAST               6 (ref_status)
+
+ 82         342 LOAD_FAST                6 (ref_status)
+            344 LOAD_GLOBAL              6 (_DRIVER_STATUS_IN_GARAGE)
+            354 COMPARE_OP              40 (==)
+            358 POP_JUMP_IF_FALSE       17 (to 394)
+
+ 83         360 LOAD_DEREF              14 (self)
+            362 LOAD_ATTR                9 (NULL|self + _show_in_garage)
+            382 CALL                     0
+            390 POP_TOP
+
+ 84         392 RETURN_CONST             0 (None)
+
+ 86     >>  394 LOAD_FAST                5 (ref_row)
+            396 LOAD_ATTR                1 (NULL|self + get)
+            416 LOAD_CONST               6 ('lap-info')
+            418 BUILD_MAP                0
+            420 CALL                     2
+            428 LOAD_ATTR                1 (NULL|self + get)
+            448 LOAD_CONST               9 ('lap-distance')
+            450 CALL                     1
+            458 STORE_FAST               7 (ref_lap_dist)
+
+ 87         460 LOAD_FAST                7 (ref_lap_dist)
+            462 POP_JUMP_IF_NOT_NONE    17 (to 498)
+
+ 88         464 LOAD_DEREF              14 (self)
+            466 LOAD_ATTR                3 (NULL|self + _show_empty)
+            486 CALL                     0
+            494 POP_TOP
+
+ 89         496 RETURN_CONST             0 (None)
+
+ 92     >>  498 LOAD_FAST                1 (table_entries)
+            500 GET_ITER
+
+ 91         502 LOAD_FAST_AND_CLEAR      8 (e)
+            504 SWAP                     2
+            506 BUILD_LIST               0
+            508 SWAP                     2
+
+ 92     >>  510 FOR_ITER                60 (to 634)
+            514 STORE_FAST               8 (e)
+
+ 93         516 LOAD_FAST                8 (e)
+            518 LOAD_ATTR                1 (NULL|self + get)
+            538 LOAD_CONST               6 ('lap-info')
+            540 BUILD_MAP                0
+            542 CALL                     2
+            550 LOAD_ATTR                1 (NULL|self + get)
+            570 LOAD_CONST               7 ('curr-lap')
+            572 BUILD_MAP                0
+            574 CALL                     2
+            582 LOAD_ATTR                1 (NULL|self + get)
+            602 LOAD_CONST               8 ('driver-status')
+            604 CALL                     1
+            612 LOAD_GLOBAL              6 (_DRIVER_STATUS_IN_GARAGE)
+            622 COMPARE_OP              55 (!=)
+            626 POP_JUMP_IF_FALSE        2 (to 632)
+
+ 92         628 LOAD_FAST                8 (e)
+            630 LIST_APPEND              2
+        >>  632 JUMP_BACKWARD           62 (to 510)
+        >>  634 END_FOR
+
+ 91         636 STORE_FAST               9 (active_entries)
+            638 STORE_FAST               8 (e)
+
+ 96         640 LOAD_GLOBAL             11 (NULL + sort_by_rel_distance)
+            650 LOAD_FAST                9 (active_entries)
+            652 LOAD_FAST                7 (ref_lap_dist)
+            654 LOAD_FAST                2 (circuit_len)
+            656 CALL                     3
+            664 STORE_FAST              10 (sorted_entries)
+
+ 97         666 LOAD_FAST               10 (sorted_entries)
+            668 POP_JUMP_IF_TRUE        17 (to 704)
+
+ 98         670 LOAD_DEREF              14 (self)
+            672 LOAD_ATTR                3 (NULL|self + _show_empty)
+            692 CALL                     0
+            700 POP_TOP
+
+ 99         702 RETURN_CONST             0 (None)
+
+101     >>  704 LOAD_GLOBAL             13 (NULL + next)
+
+102         714 LOAD_CLOSURE            13 (ref_index)
+            716 BUILD_TUPLE              1
+            718 LOAD_CONST              10 (<code object <genexpr> at 0x0000020DAF2DF660, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 102>)
+            720 MAKE_FUNCTION            8 (closure)
+            722 LOAD_GLOBAL             15 (NULL + enumerate)
+            732 LOAD_FAST               10 (sorted_entries)
+            734 CALL                     1
+            742 GET_ITER
+            744 CALL                     0
+
+103         752 LOAD_CONST               0 (None)
+
+101         754 CALL                     2
+            762 STORE_FAST              11 (ref_pos)
+
+105         764 LOAD_FAST               11 (ref_pos)
+            766 POP_JUMP_IF_NOT_NONE    17 (to 802)
+
+106         768 LOAD_DEREF              14 (self)
+            770 LOAD_ATTR                3 (NULL|self + _show_empty)
+            790 CALL                     0
+            798 POP_TOP
+
+107         800 RETURN_CONST             0 (None)
+
+109     >>  802 LOAD_GLOBAL             17 (NULL + get_traffic_window)
+            812 LOAD_FAST               10 (sorted_entries)
+            814 LOAD_FAST               11 (ref_pos)
+            816 LOAD_DEREF              14 (self)
+            818 LOAD_ATTR               18 (NUM_BEHIND)
+            838 CALL                     3
+            846 STORE_FAST              12 (window)
+
+110         848 LOAD_DEREF              14 (self)
+            850 LOAD_ATTR               21 (NULL|self + set_page_property)
+            870 LOAD_CONST              11 ('tableData')
+            872 LOAD_DEREF              14 (self)
+            874 LOAD_ATTR               23 (NULL|self + _build_rows)
+            894 LOAD_FAST               12 (window)
+            896 LOAD_DEREF              13 (ref_index)
+            898 LOAD_FAST                3 (circuit_num)
+            900 CALL                     3
+            908 CALL                     2
+            916 POP_TOP
+
+111         918 LOAD_DEREF              14 (self)
+            920 LOAD_ATTR               21 (NULL|self + set_page_property)
+            940 LOAD_CONST              12 ('viewState')
+            942 LOAD_CONST              13 ('table')
+            944 CALL                     2
+            952 POP_TOP
+            954 RETURN_CONST             0 (None)
+        >>  956 SWAP                     2
+            958 POP_TOP
+
+ 91         960 SWAP                     2
+            962 STORE_FAST               8 (e)
+            964 RERAISE                  0
+ExceptionTable:
+  506 to 634 -> 956 [2]
+
+Disassembly of <code object <genexpr> at 0x0000020DAF2DF660, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 102>:
+              0 COPY_FREE_VARS           1
+
+102           2 RETURN_GENERATOR
+              4 POP_TOP
+              6 RESUME                   0
+              8 LOAD_FAST                0 (.0)
+        >>   10 FOR_ITER                24 (to 62)
+             14 UNPACK_SEQUENCE          2
+             18 STORE_FAST               1 (i)
+             20 UNPACK_SEQUENCE          2
+             24 STORE_FAST               2 (_)
+             26 STORE_FAST               3 (row)
+             28 LOAD_FAST                3 (row)
+             30 LOAD_CONST               0 ('driver-info')
+             32 BINARY_SUBSCR
+             36 LOAD_CONST               1 ('index')
+             38 BINARY_SUBSCR
+             42 LOAD_DEREF               4 (ref_index)
+             44 COMPARE_OP              40 (==)
+             48 POP_JUMP_IF_TRUE         1 (to 52)
+             50 JUMP_BACKWARD           21 (to 10)
+        >>   52 LOAD_FAST                1 (i)
+             54 YIELD_VALUE              1
+             56 RESUME                   1
+             58 POP_TOP
+             60 JUMP_BACKWARD           26 (to 10)
+        >>   62 END_FOR
+             64 RETURN_CONST             2 (None)
+        >>   66 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+             68 RERAISE                  1
+ExceptionTable:
+  6 to 48 -> 66 [0] lasti
+  52 to 64 -> 66 [0] lasti
+
+Disassembly of <code object _show_empty at 0x0000020DAF2DF330, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 113>:
+113           0 RESUME                   0
+
+114           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_page_property)
+             24 LOAD_CONST               1 ('tableData')
+             26 BUILD_LIST               0
+             28 CALL                     2
+             36 POP_TOP
+
+115          38 LOAD_FAST                0 (self)
+             40 LOAD_ATTR                1 (NULL|self + set_page_property)
+             60 LOAD_CONST               2 ('viewState')
+             62 LOAD_CONST               3 ('empty')
+             64 CALL                     2
+             72 POP_TOP
+             74 RETURN_CONST             0 (None)
+
+Disassembly of <code object _show_in_garage at 0x0000020DAF2DF770, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 117>:
+117           0 RESUME                   0
+
+118           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_page_property)
+             24 LOAD_CONST               1 ('tableData')
+             26 BUILD_LIST               0
+             28 CALL                     2
+             36 POP_TOP
+
+119          38 LOAD_FAST                0 (self)
+             40 LOAD_ATTR                1 (NULL|self + set_page_property)
+             60 LOAD_CONST               2 ('viewState')
+             62 LOAD_CONST               3 ('inGarage')
+             64 CALL                     2
+             72 POP_TOP
+             74 RETURN_CONST             0 (None)
+
+Disassembly of <code object _build_rows at 0x0000020DAF19FBD0, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 123>:
+123           0 RESUME                   0
+
+129           2 LOAD_FAST                1 (window)
+              4 GET_ITER
+              6 LOAD_FAST_AND_CLEAR      4 (rel_dist_m)
+              8 LOAD_FAST_AND_CLEAR      5 (row)
+             10 SWAP                     3
+             12 BUILD_LIST               0
+             14 SWAP                     2
+        >>   16 FOR_ITER                25 (to 70)
+             20 UNPACK_SEQUENCE          2
+             24 STORE_FAST               4 (rel_dist_m)
+             26 STORE_FAST               5 (row)
+             28 LOAD_FAST                0 (self)
+             30 LOAD_ATTR                1 (NULL|self + _build_row)
+             50 LOAD_FAST                4 (rel_dist_m)
+             52 LOAD_FAST                5 (row)
+             54 LOAD_FAST                2 (ref_index)
+             56 LOAD_FAST                3 (circuit_num)
+             58 CALL                     4
+             66 LIST_APPEND              2
+             68 JUMP_BACKWARD           27 (to 16)
+        >>   70 END_FOR
+             72 SWAP                     3
+             74 STORE_FAST               5 (row)
+             76 STORE_FAST               4 (rel_dist_m)
+             78 RETURN_VALUE
+        >>   80 SWAP                     2
+             82 POP_TOP
+             84 SWAP                     3
+             86 STORE_FAST               5 (row)
+             88 STORE_FAST               4 (rel_dist_m)
+             90 RERAISE                  0
+ExceptionTable:
+  12 to 70 -> 80 [3]
+
+Disassembly of <code object _build_row at 0x0000020DAEE405B0, file "apps\hud\ui\overlays\mfd\pages\traffic_monitor\traffic_monitor_page.py", line 131>:
+131           0 RESUME                   0
+
+138           2 LOAD_FAST                2 (row)
+              4 LOAD_ATTR                1 (NULL|self + get)
+             24 LOAD_CONST               1 ('driver-info')
+             26 BUILD_MAP                0
+             28 CALL                     2
+             36 STORE_FAST               5 (driver_info)
+
+139          38 LOAD_FAST                2 (row)
+             40 LOAD_ATTR                1 (NULL|self + get)
+             60 LOAD_CONST               2 ('ers-info')
+             62 BUILD_MAP                0
+             64 CALL                     2
+             72 STORE_FAST               6 (ers_info)
+
+140          74 LOAD_FAST                2 (row)
+             76 LOAD_ATTR                1 (NULL|self + get)
+             96 LOAD_CONST               3 ('lap-info')
+             98 BUILD_MAP                0
+            100 CALL                     2
+            108 STORE_FAST               7 (lap_info)
+
+141         110 LOAD_FAST                7 (lap_info)
+            112 LOAD_ATTR                1 (NULL|self + get)
+            132 LOAD_CONST               4 ('curr-lap')
+            134 BUILD_MAP                0
+            136 CALL                     2
+            144 STORE_FAST               8 (curr_lap_info)
+
+143         146 LOAD_FAST                5 (driver_info)
+            148 LOAD_ATTR                1 (NULL|self + get)
+            168 LOAD_CONST               5 ('index')
+            170 LOAD_CONST               6 (-1)
+            172 CALL                     2
+            180 LOAD_FAST                3 (ref_index)
+            182 COMPARE_OP              40 (==)
+            186 STORE_FAST               9 (is_ref)
+
+144         188 LOAD_FAST                6 (ers_info)
+            190 LOAD_ATTR                1 (NULL|self + get)
+            210 LOAD_CONST               7 ('ers-mode')
+            212 CALL                     1
+            220 COPY                     1
+            222 POP_JUMP_IF_TRUE         2 (to 228)
+            224 POP_TOP
+            226 LOAD_CONST               8 ('None')
+        >>  228 STORE_FAST              10 (ers_mode)
+
+147         230 LOAD_FAST                5 (driver_info)
+            232 LOAD_ATTR                1 (NULL|self + get)
+            252 LOAD_CONST               9 ('team')
+            254 LOAD_CONST              10 ('')
+            256 CALL                     2
+
+148         264 LOAD_FAST                5 (driver_info)
+            266 LOAD_ATTR                1 (NULL|self + get)
+            286 LOAD_CONST              11 ('name')
+            288 LOAD_CONST              10 ('')
+            290 CALL                     2
+
+149         298 LOAD_GLOBAL              3 (NULL + get_ers_mode_color)
+            308 LOAD_FAST               10 (ers_mode)
+            310 LOAD_FAST                2 (row)
+            312 LOAD_ATTR                1 (NULL|self + get)
+            332 LOAD_CONST              12 ('2026-regs-info')
+            334 BUILD_MAP                0
+            336 CALL                     2
+            344 LOAD_ATTR                1 (NULL|self + get)
+            364 LOAD_CONST              13 ('2026-regs-enabled')
+            366 LOAD_CONST              14 (False)
+            368 CALL                     2
+            376 LOAD_FAST                2 (row)
+            378 LOAD_ATTR                1 (NULL|self + get)
+            398 LOAD_CONST              12 ('2026-regs-info')
+            400 BUILD_MAP                0
+            402 CALL                     2
+            410 LOAD_ATTR                1 (NULL|self + get)
+            430 LOAD_CONST              15 ('overtake-active')
+            432 LOAD_CONST              14 (False)
+            434 CALL                     2
+            442 CALL                     3
+
+150         450 LOAD_FAST                6 (ers_info)
+            452 LOAD_ATTR                1 (NULL|self + get)
+            472 LOAD_CONST              16 ('ers-percent-float')
+            474 LOAD_CONST              17 (0.0)
+            476 CALL                     2
+            484 COPY                     1
+            486 POP_JUMP_IF_TRUE         2 (to 492)
+            488 POP_TOP
+            490 LOAD_CONST              17 (0.0)
+        >>  492 LOAD_CONST              18 ('.0f')
+            494 FORMAT_VALUE             4 (with format)
+            496 LOAD_CONST              19 ('%')
+            498 BUILD_STRING             2
+
+151         500 LOAD_FAST                5 (driver_info)
+            502 LOAD_ATTR                1 (NULL|self + get)
+            522 LOAD_CONST              20 ('drs-activated')
+            524 LOAD_CONST              14 (False)
+            526 CALL                     2
+            534 COPY                     1
+            536 POP_JUMP_IF_TRUE         2 (to 542)
+            538 POP_TOP
+            540 LOAD_CONST              14 (False)
+
+152     >>  542 LOAD_CONST              21 ('+')
+            544 LOAD_FAST                1 (rel_dist_m)
+            546 LOAD_CONST              18 ('.0f')
+            548 FORMAT_VALUE             4 (with format)
+            550 LOAD_CONST              22 ('m')
+            552 BUILD_STRING             3
+
+153         554 LOAD_CONST              23 ('#44FF44')
+
+154         556 LOAD_FAST                9 (is_ref)
+
+155         558 LOAD_GLOBAL              5 (NULL + resolve_location)
+
+156         568 LOAD_FAST                0 (self)
+            570 LOAD_ATTR                6 (tracks_db)
+            590 LOAD_FAST                4 (circuit_num)
+
+157         592 LOAD_FAST                7 (lap_info)
+            594 LOAD_ATTR                1 (NULL|self + get)
+            614 LOAD_CONST              24 ('lap-distance')
+            616 CALL                     1
+
+158         624 LOAD_FAST                8 (curr_lap_info)
+            626 LOAD_ATTR                1 (NULL|self + get)
+            646 LOAD_CONST              25 ('sector')
+            648 CALL                     1
+
+155         656 CALL                     4
+
+146         664 LOAD_CONST              26 (('team', 'name', 'ersColor', 'ersPercent', 'drs', 'relDist', 'relDistColor', 'isRef', 'location'))
+            666 BUILD_CONST_KEY_MAP      9
+            668 RETURN_VALUE

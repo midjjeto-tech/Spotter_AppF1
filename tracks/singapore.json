@@ -1,0 +1,21 @@
+{
+  "name": "Singapore",
+  "length_m": 4940,
+  "corners": [
+    {"id":1,  "fraction":0.025,"type":"slow",   "direction":"right"},
+    {"id":2,  "fraction":0.054,"type":"medium", "direction":"right"},
+    {"id":3,  "fraction":0.099,"type":"medium", "direction":"left"},
+    {"id":5,  "fraction":0.159,"type":"slow",   "direction":"right"},
+    {"id":7,  "fraction":0.229,"type":"hairpin","direction":"left"},
+    {"id":8,  "fraction":0.267,"type":"medium", "direction":"right"},
+    {"id":10, "fraction":0.355,"type":"medium", "direction":"right"},
+    {"id":11, "fraction":0.387,"type":"medium", "direction":"left"},
+    {"id":13, "fraction":0.460,"type":"medium", "direction":"left"},
+    {"id":14, "fraction":0.490,"type":"medium", "direction":"right"},
+    {"id":16, "fraction":0.592,"type":"slow",   "direction":"left"},
+    {"id":18, "fraction":0.679,"type":"medium", "direction":"right"},
+    {"id":20, "fraction":0.750,"type":"slow",   "direction":"left"},
+    {"id":22, "fraction":0.822,"type":"slow",   "direction":"right"},
+    {"id":23, "fraction":0.903,"type":"medium", "direction":"left"}
+  ]
+}

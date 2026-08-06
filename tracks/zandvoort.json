@@ -1,0 +1,20 @@
+{
+  "name": "Zandvoort",
+  "length_m": 4259,
+  "corners": [
+    {"id":1,  "name":"Tarzanbocht",   "fraction":0.034,"type":"hairpin","direction":"right"},
+    {"id":2,  "fraction":0.080,"type":"medium", "direction":"left"},
+    {"id":3,  "name":"Hugenholtz",    "fraction":0.148,"type":"fast",   "direction":"right"},
+    {"id":4,  "fraction":0.187,"type":"medium", "direction":"left"},
+    {"id":5,  "fraction":0.238,"type":"medium", "direction":"right"},
+    {"id":6,  "name":"Hunzerug",      "fraction":0.323,"type":"slow",   "direction":"left"},
+    {"id":7,  "fraction":0.364,"type":"medium", "direction":"right"},
+    {"id":8,  "name":"Audi S",        "fraction":0.448,"type":"medium", "direction":"left"},
+    {"id":9,  "fraction":0.477,"type":"medium", "direction":"right"},
+    {"id":10, "fraction":0.550,"type":"medium", "direction":"left"},
+    {"id":11, "fraction":0.620,"type":"medium", "direction":"right"},
+    {"id":12, "fraction":0.657,"type":"medium", "direction":"left"},
+    {"id":13, "name":"Scheivlak",     "fraction":0.732,"type":"fast",   "direction":"right"},
+    {"id":14, "name":"Arie Luyendyk", "fraction":0.837,"type":"fast",   "direction":"right"}
+  ]
+}

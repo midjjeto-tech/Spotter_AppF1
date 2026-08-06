@@ -1,0 +1,339 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (argparse)
+              8 STORE_NAME               0 (argparse)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               1 (None)
+             14 IMPORT_NAME              1 (ctypes)
+             16 STORE_NAME               1 (ctypes)
+
+ 27          18 LOAD_CONST               0 (0)
+             20 LOAD_CONST               1 (None)
+             22 IMPORT_NAME              2 (logging)
+             24 STORE_NAME               2 (logging)
+
+ 28          26 LOAD_CONST               0 (0)
+             28 LOAD_CONST               1 (None)
+             30 IMPORT_NAME              3 (sys)
+             32 STORE_NAME               3 (sys)
+
+ 30          34 LOAD_CONST               0 (0)
+             36 LOAD_CONST               2 (('report_pid_from_child',))
+             38 IMPORT_NAME              4 (lib.child_proc_mgmt)
+             40 IMPORT_FROM              5 (report_pid_from_child)
+             42 STORE_NAME               5 (report_pid_from_child)
+             44 POP_TOP
+
+ 31          46 LOAD_CONST               0 (0)
+             48 LOAD_CONST               3 (('PngSettings', 'load_config_from_json'))
+             50 IMPORT_NAME              6 (lib.config)
+             52 IMPORT_FROM              7 (PngSettings)
+             54 STORE_NAME               7 (PngSettings)
+             56 IMPORT_FROM              8 (load_config_from_json)
+             58 STORE_NAME               8 (load_config_from_json)
+             60 POP_TOP
+
+ 32          62 LOAD_CONST               0 (0)
+             64 LOAD_CONST               4 (('PNG_ERROR_CODE_UNSUPPORTED_OS',))
+             66 IMPORT_NAME              9 (lib.error_status)
+             68 IMPORT_FROM             10 (PNG_ERROR_CODE_UNSUPPORTED_OS)
+             70 STORE_NAME              10 (PNG_ERROR_CODE_UNSUPPORTED_OS)
+             72 POP_TOP
+
+ 33          74 LOAD_CONST               0 (0)
+             76 LOAD_CONST               5 (('get_logger',))
+             78 IMPORT_NAME             11 (lib.logger)
+             80 IMPORT_FROM             12 (get_logger)
+             82 STORE_NAME              12 (get_logger)
+             84 POP_TOP
+
+ 34          86 LOAD_CONST               0 (0)
+             88 LOAD_CONST               6 (('APP_NAME',))
+             90 IMPORT_NAME             13 (meta.meta)
+             92 IMPORT_FROM             14 (APP_NAME)
+             94 STORE_NAME              14 (APP_NAME)
+             96 POP_TOP
+
+ 36          98 LOAD_CONST               7 (1)
+            100 LOAD_CONST               8 (('run_ipc_task',))
+            102 IMPORT_NAME             15 (ipc)
+            104 IMPORT_FROM             16 (run_ipc_task)
+            106 STORE_NAME              16 (run_ipc_task)
+            108 POP_TOP
+
+ 37         110 LOAD_CONST               7 (1)
+            112 LOAD_CONST               9 (('run_hud_update_threads',))
+            114 IMPORT_NAME             17 (listener.task)
+            116 IMPORT_FROM             18 (run_hud_update_threads)
+            118 STORE_NAME              18 (run_hud_update_threads)
+            120 POP_TOP
+
+ 38         122 LOAD_CONST               7 (1)
+            124 LOAD_CONST              10 (('OverlaysMgr',))
+            126 IMPORT_NAME             19 (ui.infra)
+            128 IMPORT_FROM             20 (OverlaysMgr)
+            130 STORE_NAME              20 (OverlaysMgr)
+            132 POP_TOP
+
+ 42         134 LOAD_CONST              11 ('return')
+            136 LOAD_NAME                0 (argparse)
+            138 LOAD_ATTR               42 (Namespace)
+            158 BUILD_TUPLE              2
+            160 LOAD_CONST              12 (<code object parseArgs at 0x0000020DAF18BC90, file "apps\hud\hud.py", line 42>)
+            162 MAKE_FUNCTION            4 (annotations)
+            164 STORE_NAME              22 (parseArgs)
+
+ 59         166 LOAD_CONST              13 ('logger')
+            168 LOAD_NAME                2 (logging)
+            170 LOAD_ATTR               46 (Logger)
+            190 LOAD_CONST              14 ('config')
+            192 LOAD_NAME                7 (PngSettings)
+            194 LOAD_CONST              15 ('debug_mode')
+            196 LOAD_NAME               24 (bool)
+            198 LOAD_CONST              11 ('return')
+            200 LOAD_CONST               1 (None)
+            202 BUILD_TUPLE              8
+            204 LOAD_CONST              16 (<code object main at 0x0000020DAF16B290, file "apps\hud\hud.py", line 59>)
+            206 MAKE_FUNCTION            4 (annotations)
+            208 STORE_NAME              25 (main)
+
+ 85         210 LOAD_CONST              17 (<code object entry_point at 0x0000020DAEF87390, file "apps\hud\hud.py", line 85>)
+            212 MAKE_FUNCTION            0
+            214 STORE_NAME              26 (entry_point)
+            216 RETURN_CONST             1 (None)
+
+Disassembly of <code object parseArgs at 0x0000020DAF18BC90, file "apps\hud\hud.py", line 42>:
+ 42           0 RESUME                   0
+
+ 50           2 LOAD_GLOBAL              1 (NULL + argparse)
+             12 LOAD_ATTR                2 (ArgumentParser)
+             32 LOAD_GLOBAL              4 (APP_NAME)
+             42 FORMAT_VALUE             0
+             44 LOAD_CONST               1 (' HUD')
+             46 BUILD_STRING             2
+             48 KW_NAMES                 2 (('description',))
+             50 CALL                     1
+             58 STORE_FAST               0 (parser)
+
+ 53          60 LOAD_FAST                0 (parser)
+             62 LOAD_ATTR                7 (NULL|self + add_argument)
+             82 LOAD_CONST               3 ('--config-file')
+             84 LOAD_CONST               4 ('?')
+             86 LOAD_CONST               5 ('png_config.json')
+             88 LOAD_CONST               6 ('Configuration file name (optional)')
+             90 KW_NAMES                 7 (('nargs', 'default', 'help'))
+             92 CALL                     4
+            100 POP_TOP
+
+ 54         102 LOAD_FAST                0 (parser)
+            104 LOAD_ATTR                7 (NULL|self + add_argument)
+            124 LOAD_CONST               8 ('--debug')
+            126 LOAD_CONST               9 ('store_true')
+            128 LOAD_CONST              10 ('Enable debug mode')
+            130 KW_NAMES                11 (('action', 'help'))
+            132 CALL                     3
+            140 POP_TOP
+
+ 57         142 LOAD_FAST                0 (parser)
+            144 LOAD_ATTR                9 (NULL|self + parse_args)
+            164 CALL                     0
+            172 RETURN_VALUE
+
+Disassembly of <code object main at 0x0000020DAF16B290, file "apps\hud\hud.py", line 59>:
+ 59           0 RESUME                   0
+
+ 68           2 LOAD_GLOBAL              1 (NULL + OverlaysMgr)
+             12 LOAD_FAST                0 (logger)
+             14 LOAD_FAST                1 (config)
+             16 LOAD_FAST                2 (debug_mode)
+             18 KW_NAMES                 1 (('debug',))
+             20 CALL                     3
+             28 STORE_FAST               3 (overlays_mgr)
+
+ 70          30 LOAD_GLOBAL              3 (NULL + run_hud_update_threads)
+
+ 71          40 LOAD_FAST                0 (logger)
+
+ 72          42 LOAD_FAST                3 (overlays_mgr)
+
+ 73          44 LOAD_FAST                1 (config)
+             46 LOAD_ATTR                4 (Network)
+             66 LOAD_ATTR                6 (broker_router_port)
+
+ 74          86 LOAD_FAST                1 (config)
+             88 LOAD_ATTR                4 (Network)
+            108 LOAD_ATTR                8 (broker_xpub_port)
+
+ 70         128 KW_NAMES                 2 (('logger', 'overlays_mgr', 'router_port', 'xpub_port'))
+            130 CALL                     4
+            138 UNPACK_SEQUENCE          2
+            142 STORE_FAST               4 (dealer_client)
+            144 STORE_FAST               5 (ipc_sub)
+
+ 76         146 LOAD_GLOBAL             11 (NULL + run_ipc_task)
+
+ 77         156 LOAD_FAST                0 (logger)
+
+ 78         158 LOAD_FAST                3 (overlays_mgr)
+
+ 79         160 LOAD_FAST                4 (dealer_client)
+
+ 80         162 LOAD_FAST                5 (ipc_sub)
+
+ 76         164 KW_NAMES                 3 (('logger', 'overlays_mgr', 'dealer_client', 'ipc_sub'))
+            166 CALL                     4
+            174 POP_TOP
+
+ 82         176 LOAD_FAST                3 (overlays_mgr)
+            178 LOAD_ATTR               13 (NULL|self + run)
+            198 CALL                     0
+            206 POP_TOP
+            208 RETURN_CONST             4 (None)
+
+Disassembly of <code object entry_point at 0x0000020DAEF87390, file "apps\hud\hud.py", line 85>:
+ 85           0 RESUME                   0
+
+ 87           2 LOAD_GLOBAL              0 (sys)
+             12 LOAD_ATTR                2 (platform)
+             32 LOAD_CONST               1 ('win32')
+             34 COMPARE_OP              55 (!=)
+             38 POP_JUMP_IF_FALSE       25 (to 90)
+
+ 88          40 LOAD_GLOBAL              1 (NULL + sys)
+             50 LOAD_ATTR                4 (exit)
+             70 LOAD_GLOBAL              6 (PNG_ERROR_CODE_UNSUPPORTED_OS)
+             80 CALL                     1
+             88 POP_TOP
+
+ 92     >>   90 LOAD_GLOBAL              8 (ctypes)
+            100 LOAD_ATTR               10 (windll)
+            120 LOAD_ATTR               12 (winmm)
+            140 STORE_FAST               0 (winmm)
+
+ 93         142 LOAD_FAST                0 (winmm)
+            144 LOAD_ATTR               15 (NULL|self + timeBeginPeriod)
+            164 LOAD_CONST               2 (1)
+            166 CALL                     1
+            174 POP_TOP
+
+ 95         176 LOAD_GLOBAL             17 (NULL + report_pid_from_child)
+            186 CALL                     0
+            194 POP_TOP
+
+ 96         196 LOAD_GLOBAL             19 (NULL + parseArgs)
+            206 CALL                     0
+            214 STORE_FAST               1 (args)
+
+ 97         216 LOAD_GLOBAL             21 (NULL + get_logger)
+            226 LOAD_CONST               3 ('hud')
+            228 LOAD_FAST                1 (args)
+            230 LOAD_ATTR               22 (debug)
+            250 LOAD_CONST               4 (True)
+            252 KW_NAMES                 5 (('jsonl',))
+            254 CALL                     3
+            262 STORE_FAST               2 (png_logger)
+
+ 98         264 LOAD_GLOBAL             25 (NULL + load_config_from_json)
+            274 LOAD_FAST                1 (args)
+            276 LOAD_ATTR               26 (config_file)
+            296 LOAD_FAST                2 (png_logger)
+            298 CALL                     2
+            306 STORE_FAST               3 (configs)
+
+ 99         308 NOP
+
+100         310 LOAD_GLOBAL             29 (NULL + main)
+
+101         320 LOAD_FAST                2 (png_logger)
+
+102         322 LOAD_FAST                3 (configs)
+
+103         324 LOAD_FAST                1 (args)
+            326 LOAD_ATTR               22 (debug)
+
+100         346 KW_NAMES                 6 (('logger', 'config', 'debug_mode'))
+            348 CALL                     3
+            356 POP_TOP
+
+110     >>  358 LOAD_FAST                0 (winmm)
+            360 LOAD_ATTR               39 (NULL|self + timeEndPeriod)
+            380 LOAD_CONST               2 (1)
+            382 CALL                     1
+            390 POP_TOP
+
+112         392 LOAD_FAST                2 (png_logger)
+            394 LOAD_ATTR               33 (NULL|self + info)
+            414 LOAD_CONST              10 ('HUD application exiting normally.')
+            416 CALL                     1
+            424 POP_TOP
+            426 RETURN_CONST             9 (None)
+        >>  428 PUSH_EXC_INFO
+
+104         430 LOAD_GLOBAL             30 (KeyboardInterrupt)
+            440 CHECK_EXC_MATCH
+            442 POP_JUMP_IF_FALSE       20 (to 484)
+            444 POP_TOP
+
+105         446 LOAD_FAST                2 (png_logger)
+            448 LOAD_ATTR               33 (NULL|self + info)
+            468 LOAD_CONST               7 ('Program interrupted by user.')
+            470 CALL                     1
+            478 POP_TOP
+            480 POP_EXCEPT
+            482 JUMP_BACKWARD           63 (to 358)
+
+106     >>  484 LOAD_GLOBAL             34 (Exception)
+            494 CHECK_EXC_MATCH
+            496 POP_JUMP_IF_FALSE       49 (to 596)
+            498 STORE_FAST               4 (e)
+
+107         500 LOAD_FAST                2 (png_logger)
+            502 LOAD_ATTR               37 (NULL|self + exception)
+            522 LOAD_CONST               8 ('Error in main: %s')
+            524 LOAD_FAST                4 (e)
+            526 CALL                     2
+            534 POP_TOP
+
+108         536 LOAD_GLOBAL              1 (NULL + sys)
+            546 LOAD_ATTR                4 (exit)
+            566 LOAD_CONST               2 (1)
+            568 CALL                     1
+            576 POP_TOP
+            578 POP_EXCEPT
+            580 LOAD_CONST               9 (None)
+            582 STORE_FAST               4 (e)
+            584 DELETE_FAST              4 (e)
+            586 JUMP_BACKWARD          115 (to 358)
+        >>  588 LOAD_CONST               9 (None)
+            590 STORE_FAST               4 (e)
+            592 DELETE_FAST              4 (e)
+            594 RERAISE                  1
+
+106     >>  596 RERAISE                  0
+        >>  598 COPY                     3
+            600 POP_EXCEPT
+            602 RERAISE                  1
+        >>  604 PUSH_EXC_INFO
+
+110         606 LOAD_FAST                0 (winmm)
+            608 LOAD_ATTR               39 (NULL|self + timeEndPeriod)
+            628 LOAD_CONST               2 (1)
+            630 CALL                     1
+            638 POP_TOP
+            640 RERAISE                  0
+        >>  642 COPY                     3
+            644 POP_EXCEPT
+            646 RERAISE                  1
+ExceptionTable:
+  310 to 356 -> 428 [0]
+  428 to 478 -> 598 [1] lasti
+  480 to 482 -> 604 [0]
+  484 to 498 -> 598 [1] lasti
+  500 to 576 -> 588 [1] lasti
+  578 to 586 -> 604 [0]
+  588 to 596 -> 598 [1] lasti
+  598 to 602 -> 604 [0]
+  604 to 640 -> 642 [1] lasti

@@ -1,0 +1,370 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('Optional',))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (Optional)
+             30 STORE_NAME               4 (Optional)
+             32 POP_TOP
+
+ 29          34 LOAD_CONST               0 (0)
+             36 LOAD_CONST               4 (('get_ers_mode_color',))
+             38 IMPORT_NAME              5 (apps.hud.common)
+             40 IMPORT_FROM              6 (get_ers_mode_color)
+             42 STORE_NAME               6 (get_ers_mode_color)
+             44 POP_TOP
+
+ 30          46 LOAD_CONST               0 (0)
+             48 LOAD_CONST               5 (('BaseOverlayQML',))
+             50 IMPORT_NAME              7 (apps.hud.ui.overlays.base)
+             52 IMPORT_FROM              8 (BaseOverlayQML)
+             54 STORE_NAME               8 (BaseOverlayQML)
+             56 POP_TOP
+
+ 31          58 LOAD_CONST               0 (0)
+             60 LOAD_CONST               6 (('OverlayId', 'OverlayPosition'))
+             62 IMPORT_NAME              9 (lib.config)
+             64 IMPORT_FROM             10 (OverlayId)
+             66 STORE_NAME              10 (OverlayId)
+             68 IMPORT_FROM             11 (OverlayPosition)
+             70 STORE_NAME              11 (OverlayPosition)
+             72 POP_TOP
+
+ 35          74 PUSH_NULL
+             76 LOAD_BUILD_CLASS
+             78 LOAD_CONST               7 (<code object PuOverlay at 0x0000020DAF18BB20, file "apps\hud\ui\overlays\pu\pu.py", line 35>)
+             80 MAKE_FUNCTION            0
+             82 LOAD_CONST               8 ('PuOverlay')
+             84 LOAD_NAME                8 (BaseOverlayQML)
+             86 CALL                     3
+             94 STORE_NAME              12 (PuOverlay)
+             96 RETURN_CONST             1 (None)
+
+Disassembly of <code object PuOverlay at 0x0000020DAF18BB20, file "apps\hud\ui\overlays\pu\pu.py", line 35>:
+              0 MAKE_CELL                0 (__class__)
+
+ 35           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('PuOverlay')
+             10 STORE_NAME               2 (__qualname__)
+
+ 38          12 PUSH_NULL
+             14 LOAD_NAME                3 (Path)
+             16 LOAD_NAME                4 (__file__)
+             18 CALL                     1
+             26 LOAD_ATTR               10 (parent)
+             46 LOAD_CONST               1 ('pu.qml')
+             48 BINARY_OP               11 (/)
+             52 STORE_NAME               6 (QML_FILE)
+
+ 39          54 LOAD_NAME                7 (OverlayId)
+             56 LOAD_ATTR               16 (PU)
+             76 STORE_NAME               9 (OVERLAY_ID)
+
+ 49          78 NOP
+
+ 41          80 LOAD_CONST              13 ((None,))
+             82 LOAD_CONST               3 ('config')
+
+ 43          84 LOAD_NAME               10 (OverlayPosition)
+
+ 41          86 LOAD_CONST               4 ('logger')
+
+ 44          88 LOAD_NAME               11 (logging)
+             90 LOAD_ATTR               24 (Logger)
+
+ 41         110 LOAD_CONST               5 ('locked')
+
+ 45         112 LOAD_NAME               13 (bool)
+
+ 41         114 LOAD_CONST               6 ('opacity')
+
+ 46         116 LOAD_NAME               14 (int)
+
+ 41         118 LOAD_CONST               7 ('scale_factor')
+
+ 47         120 LOAD_NAME               15 (float)
+
+ 41         122 LOAD_CONST               8 ('windowed_overlay')
+
+ 48         124 LOAD_NAME               13 (bool)
+
+ 41         126 LOAD_CONST               9 ('refresh_interval_ms')
+
+ 49         128 LOAD_NAME               16 (Optional)
+            130 LOAD_NAME               14 (int)
+            132 BINARY_SUBSCR
+
+ 41         136 LOAD_CONST              10 ('return')
+
+ 50         138 LOAD_CONST               2 (None)
+
+ 41         140 BUILD_TUPLE             16
+            142 LOAD_CLOSURE             0 (__class__)
+            144 BUILD_TUPLE              1
+            146 LOAD_CONST              11 (<code object __init__ at 0x0000020DAF19FBD0, file "apps\hud\ui\overlays\pu\pu.py", line 41>)
+            148 MAKE_FUNCTION           13 (defaults, annotations, closure)
+            150 STORE_NAME              17 (__init__)
+
+ 64         152 LOAD_CONST              12 (<code object _register_event_handlers at 0x0000020DAF2DF550, file "apps\hud\ui\overlays\pu\pu.py", line 64>)
+            154 MAKE_FUNCTION            0
+            156 STORE_NAME              18 (_register_event_handlers)
+            158 LOAD_CLOSURE             0 (__class__)
+            160 COPY                     1
+            162 STORE_NAME              19 (__classcell__)
+            164 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF19FBD0, file "apps\hud\ui\overlays\pu\pu.py", line 41>:
+              0 COPY_FREE_VARS           1
+
+ 41           2 RESUME                   0
+
+ 52           4 LOAD_GLOBAL              0 (super)
+             14 LOAD_DEREF               8 (__class__)
+             16 LOAD_FAST                0 (self)
+             18 LOAD_SUPER_ATTR          5 (NULL|self + __init__)
+
+ 53          22 LOAD_FAST                1 (config)
+
+ 54          24 LOAD_FAST                2 (logger)
+
+ 55          26 LOAD_FAST                3 (locked)
+
+ 56          28 LOAD_FAST                4 (opacity)
+
+ 57          30 LOAD_FAST                5 (scale_factor)
+
+ 58          32 LOAD_FAST                6 (windowed_overlay)
+
+ 59          34 LOAD_FAST                7 (refresh_interval_ms)
+
+ 52          36 KW_NAMES                 1 (('config', 'logger', 'locked', 'opacity', 'scale_factor', 'windowed_overlay', 'refresh_interval_ms'))
+             38 CALL                     7
+             46 POP_TOP
+
+ 62          48 LOAD_FAST                0 (self)
+             50 LOAD_ATTR                5 (NULL|self + _register_event_handlers)
+             70 CALL                     0
+             78 POP_TOP
+             80 RETURN_CONST             0 (None)
+
+Disassembly of <code object _register_event_handlers at 0x0000020DAF2DF550, file "apps\hud\ui\overlays\pu\pu.py", line 64>:
+              0 MAKE_CELL                0 (self)
+
+ 64           2 RESUME                   0
+
+ 66           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('stream_overlay_update')
+             28 CALL                     1
+
+ 67          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (dict)
+             48 BUILD_TUPLE              2
+             50 LOAD_CLOSURE             0 (self)
+             52 BUILD_TUPLE              1
+             54 LOAD_CONST               3 (<code object _handle_stream_overlay_update at 0x0000020DAEF876E0, file "apps\hud\ui\overlays\pu\pu.py", line 66>)
+             56 MAKE_FUNCTION           12 (annotations, closure)
+
+ 66          58 CALL                     0
+
+ 67          66 STORE_FAST               1 (_handle_stream_overlay_update)
+             68 RETURN_CONST             0 (None)
+
+Disassembly of <code object _handle_stream_overlay_update at 0x0000020DAEF876E0, file "apps\hud\ui\overlays\pu\pu.py", line 66>:
+              0 COPY_FREE_VARS           1
+
+ 66           2 RESUME                   0
+
+ 68           4 LOAD_FAST                0 (data)
+              6 LOAD_CONST               1 ('hud')
+              8 BINARY_SUBSCR
+             12 STORE_FAST               1 (hud_data)
+
+ 69          14 LOAD_FAST                0 (data)
+             16 LOAD_CONST               2 ('power-unit')
+             18 BINARY_SUBSCR
+             22 STORE_FAST               2 (pu_data)
+
+ 70          24 LOAD_FAST                0 (data)
+             26 LOAD_CONST               3 ('2026-regs-info')
+             28 BINARY_SUBSCR
+             32 STORE_FAST               3 (f1_26_data)
+
+ 73          34 LOAD_FAST                3 (f1_26_data)
+             36 LOAD_CONST               4 ('2026-regs-enabled')
+             38 BINARY_SUBSCR
+             42 STORE_FAST               4 (is_f1_26)
+
+ 74          44 LOAD_FAST                1 (hud_data)
+             46 LOAD_CONST               5 ('ers-mode')
+             48 BINARY_SUBSCR
+             52 STORE_FAST               5 (ers_mode)
+
+ 75          54 LOAD_FAST                3 (f1_26_data)
+             56 LOAD_CONST               6 ('overtake-active')
+             58 BINARY_SUBSCR
+             62 STORE_FAST               6 (ot_active)
+
+ 76          64 LOAD_GLOBAL              1 (NULL + get_ers_mode_color)
+             74 LOAD_FAST                5 (ers_mode)
+             76 LOAD_FAST                4 (is_f1_26)
+             78 LOAD_FAST                6 (ot_active)
+             80 CALL                     3
+             88 STORE_FAST               7 (ers_color)
+
+ 77          90 LOAD_FAST                5 (ers_mode)
+             92 POP_JUMP_IF_FALSE       27 (to 148)
+
+ 78          94 LOAD_FAST                5 (ers_mode)
+             96 LOAD_ATTR                3 (NULL|self + upper)
+            116 CALL                     0
+            124 STORE_FAST               5 (ers_mode)
+
+ 80         126 LOAD_FAST                4 (is_f1_26)
+            128 POP_JUMP_IF_FALSE        9 (to 148)
+            130 LOAD_FAST                5 (ers_mode)
+            132 LOAD_CONST               7 ('OVERTAKE')
+            134 COMPARE_OP              40 (==)
+            138 POP_JUMP_IF_FALSE        4 (to 148)
+            140 LOAD_FAST                6 (ot_active)
+            142 POP_JUMP_IF_TRUE         2 (to 148)
+
+ 81         144 LOAD_CONST               8 ('BOOST')
+            146 STORE_FAST               5 (ers_mode)
+
+ 84     >>  148 LOAD_FAST                2 (pu_data)
+            150 LOAD_CONST               9 ('ice-power-output-w')
+            152 BINARY_SUBSCR
+            156 STORE_FAST               8 (ice_w)
+
+ 85         158 LOAD_FAST                2 (pu_data)
+            160 LOAD_CONST              10 ('mguk-power-output-w')
+            162 BINARY_SUBSCR
+            166 STORE_FAST               9 (mguk_w)
+
+ 86         168 LOAD_FAST                2 (pu_data)
+            170 LOAD_CONST              11 ('ice-temp-c')
+            172 BINARY_SUBSCR
+            176 STORE_FAST              10 (ice_temp_c)
+
+ 89         178 LOAD_FAST                8 (ice_w)
+            180 LOAD_FAST                9 (mguk_w)
+            182 BINARY_OP                0 (+)
+            186 STORE_FAST              11 (total_w)
+
+ 90         188 LOAD_FAST               11 (total_w)
+            190 LOAD_CONST              12 (1000.0)
+            192 BINARY_OP               11 (/)
+            196 STORE_FAST              12 (total_kw)
+
+ 91         198 LOAD_FAST               11 (total_w)
+            200 LOAD_CONST              13 (0)
+            202 COMPARE_OP              68 (>)
+            206 POP_JUMP_IF_FALSE        5 (to 218)
+            208 LOAD_FAST                8 (ice_w)
+            210 LOAD_FAST               11 (total_w)
+            212 BINARY_OP               11 (/)
+            216 JUMP_FORWARD             1 (to 220)
+        >>  218 LOAD_CONST              14 (0.0)
+        >>  220 STORE_FAST              13 (ice_frac)
+
+ 92         222 LOAD_FAST               11 (total_w)
+            224 LOAD_CONST              13 (0)
+            226 COMPARE_OP              68 (>)
+            230 POP_JUMP_IF_FALSE        5 (to 242)
+            232 LOAD_FAST                9 (mguk_w)
+            234 LOAD_FAST               11 (total_w)
+            236 BINARY_OP               11 (/)
+            240 JUMP_FORWARD             1 (to 244)
+        >>  242 LOAD_CONST              14 (0.0)
+        >>  244 STORE_FAST              14 (mguk_frac)
+
+ 95         246 LOAD_DEREF              15 (self)
+            248 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            268 LOAD_CONST              15 ('totalPowerKw')
+            270 LOAD_GLOBAL              7 (NULL + round)
+            280 LOAD_FAST               12 (total_kw)
+            282 LOAD_CONST              16 (1)
+            284 CALL                     2
+            292 CALL                     2
+            300 POP_TOP
+
+ 96         302 LOAD_DEREF              15 (self)
+            304 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            324 LOAD_CONST              17 ('icePowerKw')
+            326 LOAD_GLOBAL              7 (NULL + round)
+            336 LOAD_FAST                8 (ice_w)
+            338 LOAD_CONST              12 (1000.0)
+            340 BINARY_OP               11 (/)
+            344 LOAD_CONST              16 (1)
+            346 CALL                     2
+            354 CALL                     2
+            362 POP_TOP
+
+ 97         364 LOAD_DEREF              15 (self)
+            366 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            386 LOAD_CONST              18 ('mgukPowerKw')
+            388 LOAD_GLOBAL              7 (NULL + round)
+            398 LOAD_FAST                9 (mguk_w)
+            400 LOAD_CONST              12 (1000.0)
+            402 BINARY_OP               11 (/)
+            406 LOAD_CONST              16 (1)
+            408 CALL                     2
+            416 CALL                     2
+            424 POP_TOP
+
+ 98         426 LOAD_DEREF              15 (self)
+            428 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            448 LOAD_CONST              19 ('iceFraction')
+            450 LOAD_GLOBAL              7 (NULL + round)
+            460 LOAD_FAST               13 (ice_frac)
+            462 LOAD_CONST              20 (2)
+            464 CALL                     2
+            472 CALL                     2
+            480 POP_TOP
+
+ 99         482 LOAD_DEREF              15 (self)
+            484 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            504 LOAD_CONST              21 ('mgukFraction')
+            506 LOAD_GLOBAL              7 (NULL + round)
+            516 LOAD_FAST               14 (mguk_frac)
+            518 LOAD_CONST              20 (2)
+            520 CALL                     2
+            528 CALL                     2
+            536 POP_TOP
+
+100         538 LOAD_DEREF              15 (self)
+            540 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            560 LOAD_CONST              22 ('iceTempC')
+            562 LOAD_FAST               10 (ice_temp_c)
+            564 CALL                     2
+            572 POP_TOP
+
+101         574 LOAD_DEREF              15 (self)
+            576 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            596 LOAD_CONST              23 ('ersMode')
+            598 LOAD_FAST                5 (ers_mode)
+            600 CALL                     2
+            608 POP_TOP
+
+102         610 LOAD_DEREF              15 (self)
+            612 LOAD_ATTR                5 (NULL|self + set_qml_property)
+            632 LOAD_CONST              24 ('ersColor')
+            634 LOAD_FAST                7 (ers_color)
+            636 CALL                     2
+            644 POP_TOP
+            646 RETURN_CONST             0 (None)

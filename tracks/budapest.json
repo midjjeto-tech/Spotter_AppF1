@@ -1,0 +1,20 @@
+{
+  "name": "Budapest",
+  "length_m": 4381,
+  "corners": [
+    {"id":1,  "fraction":0.033,"type":"medium", "direction":"right"},
+    {"id":2,  "fraction":0.065,"type":"medium", "direction":"left"},
+    {"id":3,  "fraction":0.099,"type":"medium", "direction":"right"},
+    {"id":4,  "fraction":0.158,"type":"hairpin","direction":"left"},
+    {"id":5,  "fraction":0.192,"type":"medium", "direction":"right"},
+    {"id":6,  "fraction":0.255,"type":"medium", "direction":"left"},
+    {"id":7,  "fraction":0.294,"type":"medium", "direction":"right"},
+    {"id":8,  "fraction":0.370,"type":"medium", "direction":"left"},
+    {"id":9,  "fraction":0.450,"type":"medium", "direction":"right"},
+    {"id":10, "fraction":0.500,"type":"medium", "direction":"left"},
+    {"id":11, "fraction":0.569,"type":"hairpin","direction":"right"},
+    {"id":12, "fraction":0.610,"type":"medium", "direction":"left"},
+    {"id":13, "fraction":0.685,"type":"medium", "direction":"right"},
+    {"id":14, "fraction":0.773,"type":"medium", "direction":"left"}
+  ]
+}

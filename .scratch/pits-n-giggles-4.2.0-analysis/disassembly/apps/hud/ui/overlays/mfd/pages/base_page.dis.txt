@@ -1,0 +1,585 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('TYPE_CHECKING', 'Any', 'Callable', 'Dict'))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (TYPE_CHECKING)
+             30 STORE_NAME               4 (TYPE_CHECKING)
+             32 IMPORT_FROM              5 (Any)
+             34 STORE_NAME               5 (Any)
+             36 IMPORT_FROM              6 (Callable)
+             38 STORE_NAME               6 (Callable)
+             40 IMPORT_FROM              7 (Dict)
+             42 STORE_NAME               7 (Dict)
+             44 POP_TOP
+
+ 29          46 LOAD_CONST               0 (0)
+             48 LOAD_CONST               4 (('QQuickItem',))
+             50 IMPORT_NAME              8 (PySide6.QtQuick)
+             52 IMPORT_FROM              9 (QQuickItem)
+             54 STORE_NAME               9 (QQuickItem)
+             56 POP_TOP
+
+ 31          58 LOAD_CONST               0 (0)
+             60 LOAD_CONST               5 (('EventCounter',))
+             62 IMPORT_NAME             10 (lib.event_counter)
+             64 IMPORT_FROM             11 (EventCounter)
+             66 STORE_NAME              11 (EventCounter)
+             68 POP_TOP
+
+ 33          70 LOAD_NAME                4 (TYPE_CHECKING)
+             72 POP_JUMP_IF_FALSE        6 (to 86)
+
+ 34          74 LOAD_CONST               0 (0)
+             76 LOAD_CONST               6 (('MfdOverlay',))
+             78 IMPORT_NAME             12 (apps.hud.ui.overlays.mfd)
+             80 IMPORT_FROM             13 (MfdOverlay)
+             82 STORE_NAME              13 (MfdOverlay)
+             84 POP_TOP
+
+ 38     >>   86 LOAD_NAME                6 (Callable)
+             88 LOAD_NAME                7 (Dict)
+             90 LOAD_NAME               14 (str)
+             92 LOAD_NAME                5 (Any)
+             94 BUILD_TUPLE              2
+             96 BINARY_SUBSCR
+            100 BUILD_LIST               1
+            102 LOAD_CONST               1 (None)
+            104 BUILD_TUPLE              2
+            106 BINARY_SUBSCR
+            110 STORE_NAME              15 (EventCommandHandler)
+
+ 40         112 PUSH_NULL
+            114 LOAD_NAME               16 (object)
+            116 CALL                     0
+            124 STORE_NAME              17 (_UNSET)
+
+ 44         126 PUSH_NULL
+            128 LOAD_BUILD_CLASS
+            130 LOAD_CONST               7 (<code object MfdPageBase at 0x0000020DAF202550, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 44>)
+            132 MAKE_FUNCTION            0
+            134 LOAD_CONST               8 ('MfdPageBase')
+            136 CALL                     2
+            144 STORE_NAME              18 (MfdPageBase)
+            146 RETURN_CONST             1 (None)
+
+Disassembly of <code object MfdPageBase at 0x0000020DAF202550, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 44>:
+ 44           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('MfdPageBase')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+ 45          12 LOAD_CONST               1 ('')
+             14 STORE_NAME               3 (KEY)
+             16 LOAD_NAME                4 (str)
+             18 LOAD_NAME                5 (__annotations__)
+             20 LOAD_CONST               2 ('KEY')
+             22 STORE_SUBSCR
+
+ 46          26 LOAD_CONST               1 ('')
+             28 STORE_NAME               6 (QML_FILE)
+             30 LOAD_NAME                7 (Path)
+             32 LOAD_NAME                5 (__annotations__)
+             34 LOAD_CONST               3 ('QML_FILE')
+             36 STORE_SUBSCR
+
+ 48          40 LOAD_CONST               4 ('overlay')
+             42 LOAD_CONST               5 ('MfdOverlay')
+             44 LOAD_CONST               6 ('logger')
+             46 LOAD_NAME                8 (logging)
+             48 LOAD_ATTR               18 (Logger)
+             68 BUILD_TUPLE              4
+             70 LOAD_CONST               7 (<code object __init__ at 0x0000020DAEE163C0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 48>)
+             72 MAKE_FUNCTION            4 (annotations)
+             74 STORE_NAME              10 (__init__)
+
+ 61          76 LOAD_CONST              26 ((True,))
+             78 LOAD_CONST               8 ('event_type')
+             80 LOAD_NAME                4 (str)
+             82 LOAD_CONST               9 ('requires_page_item')
+             84 LOAD_NAME               11 (bool)
+             86 BUILD_TUPLE              4
+             88 LOAD_CONST              10 (<code object on_event at 0x0000020DAF2F1990, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 61>)
+             90 MAKE_FUNCTION            5 (defaults, annotations)
+             92 STORE_NAME              12 (on_event)
+
+ 81          94 LOAD_CONST              11 ('return')
+             96 LOAD_NAME               13 (set)
+             98 BUILD_TUPLE              2
+            100 LOAD_CONST              12 (<code object get_handled_event_types at 0x0000020DAF2DF660, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 81>)
+            102 MAKE_FUNCTION            4 (annotations)
+            104 STORE_NAME              14 (get_handled_event_types)
+
+ 85         106 LOAD_CONST               8 ('event_type')
+            108 LOAD_NAME                4 (str)
+            110 LOAD_CONST              11 ('return')
+            112 LOAD_NAME               11 (bool)
+            114 BUILD_TUPLE              4
+            116 LOAD_CONST              13 (<code object handles_event at 0x0000020DAF2F1DF0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 85>)
+            118 MAKE_FUNCTION            4 (annotations)
+            120 STORE_NAME              15 (handles_event)
+
+ 89         122 LOAD_CONST               8 ('event_type')
+            124 LOAD_NAME                4 (str)
+            126 LOAD_CONST              14 ('data')
+            128 LOAD_NAME               16 (Dict)
+            130 LOAD_NAME                4 (str)
+            132 LOAD_NAME               17 (Any)
+            134 BUILD_TUPLE              2
+            136 BINARY_SUBSCR
+            140 BUILD_TUPLE              4
+            142 LOAD_CONST              15 (<code object handle_event at 0x0000020DAEC770A0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 89>)
+            144 MAKE_FUNCTION            4 (annotations)
+            146 STORE_NAME              18 (handle_event)
+
+ 99         148 LOAD_CONST              11 ('return')
+            150 LOAD_NAME               19 (dict)
+            152 BUILD_TUPLE              2
+            154 LOAD_CONST              16 (<code object get_stats at 0x0000020DAF2D1C30, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 99>)
+            156 MAKE_FUNCTION            4 (annotations)
+            158 STORE_NAME              20 (get_stats)
+
+103         160 LOAD_CONST               8 ('event_type')
+            162 LOAD_NAME                4 (str)
+            164 LOAD_CONST              11 ('return')
+            166 LOAD_CONST              17 (None)
+            168 BUILD_TUPLE              4
+            170 LOAD_CONST              18 (<code object _track_event at 0x0000020DAF2AD930, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 103>)
+            172 MAKE_FUNCTION            4 (annotations)
+            174 STORE_NAME              21 (_track_event)
+
+107         176 LOAD_CONST              19 ('name')
+            178 LOAD_NAME                4 (str)
+            180 LOAD_CONST              11 ('return')
+            182 LOAD_CONST              17 (None)
+            184 BUILD_TUPLE              4
+            186 LOAD_CONST              20 (<code object set_page_property at 0x0000020DAEEAFCC0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 107>)
+            188 MAKE_FUNCTION            4 (annotations)
+            190 STORE_NAME              22 (set_page_property)
+
+123         192 LOAD_CONST              21 ('item')
+            194 LOAD_NAME               23 (QQuickItem)
+            196 BUILD_TUPLE              2
+            198 LOAD_CONST              22 (<code object _on_page_activated at 0x0000020DAF2021F0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 123>)
+            200 MAKE_FUNCTION            4 (annotations)
+            202 STORE_NAME              24 (_on_page_activated)
+
+131         204 LOAD_CONST              23 (<code object on_page_activated at 0x0000020DB1039210, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 131>)
+            206 MAKE_FUNCTION            0
+            208 STORE_NAME              25 (on_page_activated)
+
+134         210 LOAD_CONST              24 (<code object on_page_deactivated at 0x0000020DAF2F82F0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 134>)
+            212 MAKE_FUNCTION            0
+            214 STORE_NAME              26 (on_page_deactivated)
+
+140         216 LOAD_NAME               27 (property)
+
+141         218 LOAD_CONST              11 ('return')
+            220 LOAD_NAME               11 (bool)
+            222 BUILD_TUPLE              2
+            224 LOAD_CONST              25 (<code object is_active at 0x0000020DAF2F18B0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 140>)
+            226 MAKE_FUNCTION            4 (annotations)
+
+140         228 CALL                     0
+
+141         236 STORE_NAME              28 (is_active)
+            238 RETURN_CONST            17 (None)
+
+Disassembly of <code object __init__ at 0x0000020DAEE163C0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 48>:
+ 48           0 RESUME                   0
+
+ 49           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (KEY)
+             24 POP_JUMP_IF_TRUE         7 (to 40)
+             26 LOAD_ASSERTION_ERROR
+             28 LOAD_CONST               1 ('KEY must be set in subclass')
+             30 CALL                     0
+             38 RAISE_VARARGS            1
+
+ 50     >>   40 LOAD_FAST                0 (self)
+             42 LOAD_ATTR                2 (QML_FILE)
+             62 POP_JUMP_IF_TRUE         7 (to 78)
+             64 LOAD_ASSERTION_ERROR
+             66 LOAD_CONST               2 ('Derived classes must define QML_FILE')
+             68 CALL                     0
+             76 RAISE_VARARGS            1
+
+ 51     >>   78 LOAD_GLOBAL              5 (NULL + isinstance)
+             88 LOAD_FAST                0 (self)
+             90 LOAD_ATTR                2 (QML_FILE)
+            110 LOAD_GLOBAL              6 (Path)
+            120 CALL                     2
+            128 POP_JUMP_IF_TRUE         7 (to 144)
+            130 LOAD_ASSERTION_ERROR
+            132 LOAD_CONST               3 ('QML_FILE must be a pathlib.Path')
+            134 CALL                     0
+            142 RAISE_VARARGS            1
+
+ 52     >>  144 LOAD_FAST                0 (self)
+            146 LOAD_ATTR                2 (QML_FILE)
+            166 LOAD_ATTR                9 (NULL|self + is_file)
+            186 CALL                     0
+            194 POP_JUMP_IF_TRUE        20 (to 236)
+            196 LOAD_ASSERTION_ERROR
+            198 LOAD_CONST               4 ('QML_FILE does not exist or is not a file: ')
+            200 LOAD_FAST                0 (self)
+            202 LOAD_ATTR                2 (QML_FILE)
+            222 FORMAT_VALUE             0
+            224 BUILD_STRING             2
+            226 CALL                     0
+            234 RAISE_VARARGS            1
+
+ 54     >>  236 LOAD_FAST                1 (overlay)
+            238 LOAD_FAST                0 (self)
+            240 STORE_ATTR               5 (overlay)
+
+ 55         250 LOAD_CONST               0 (None)
+            252 LOAD_FAST                0 (self)
+            254 STORE_ATTR               6 (_page_item)
+
+ 56         264 LOAD_FAST                2 (logger)
+            266 LOAD_FAST                0 (self)
+            268 STORE_ATTR               7 (logger)
+
+ 57         278 BUILD_MAP                0
+            280 LOAD_FAST                0 (self)
+            282 STORE_ATTR               8 (_handlers)
+
+ 58         292 LOAD_GLOBAL             19 (NULL + EventCounter)
+            302 CALL                     0
+            310 LOAD_FAST                0 (self)
+            312 STORE_ATTR              10 (_stats)
+
+ 59         322 BUILD_MAP                0
+            324 LOAD_FAST                0 (self)
+            326 STORE_ATTR              11 (_page_props)
+            336 RETURN_CONST             0 (None)
+
+Disassembly of <code object on_event at 0x0000020DAF2F1990, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 61>:
+              0 MAKE_CELL                0 (self)
+              2 MAKE_CELL                1 (event_type)
+              4 MAKE_CELL                2 (requires_page_item)
+
+ 61           6 RESUME                   0
+
+ 68           8 LOAD_CLOSURE             1 (event_type)
+             10 LOAD_CLOSURE             2 (requires_page_item)
+             12 LOAD_CLOSURE             0 (self)
+             14 BUILD_TUPLE              3
+             16 LOAD_CONST               1 (<code object decorator at 0x0000020DAF2D4B70, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 68>)
+             18 MAKE_FUNCTION            8 (closure)
+             20 STORE_FAST               3 (decorator)
+
+ 79          22 LOAD_FAST                3 (decorator)
+             24 RETURN_VALUE
+
+Disassembly of <code object decorator at 0x0000020DAF2D4B70, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 68>:
+              0 COPY_FREE_VARS           3
+              2 MAKE_CELL                0 (fn)
+
+ 68           4 RESUME                   0
+
+ 69           6 LOAD_DEREF               3 (requires_page_item)
+              8 POP_JUMP_IF_FALSE       25 (to 60)
+
+ 70          10 LOAD_DEREF               2 (event_type)
+             12 BUILD_TUPLE              1
+             14 LOAD_CLOSURE             0 (fn)
+             16 LOAD_CLOSURE             4 (self)
+             18 BUILD_TUPLE              2
+             20 LOAD_CONST               1 (<code object wrapper at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 70>)
+             22 MAKE_FUNCTION            9 (defaults, closure)
+             24 STORE_FAST               1 (wrapper)
+
+ 75          26 LOAD_FAST                1 (wrapper)
+             28 LOAD_DEREF               4 (self)
+             30 LOAD_ATTR                0 (_handlers)
+             50 LOAD_DEREF               2 (event_type)
+             52 STORE_SUBSCR
+
+ 78          56 LOAD_DEREF               0 (fn)
+             58 RETURN_VALUE
+
+ 77     >>   60 LOAD_DEREF               0 (fn)
+             62 LOAD_DEREF               4 (self)
+             64 LOAD_ATTR                0 (_handlers)
+             84 LOAD_DEREF               2 (event_type)
+             86 STORE_SUBSCR
+
+ 78          90 LOAD_DEREF               0 (fn)
+             92 RETURN_VALUE
+
+Disassembly of <code object wrapper at 0x0000020DAF19B5A0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 70>:
+              0 COPY_FREE_VARS           2
+
+ 70           2 RESUME                   0
+
+ 71           4 LOAD_DEREF               3 (self)
+              6 LOAD_ATTR                0 (_page_item)
+             26 POP_JUMP_IF_TRUE        29 (to 86)
+
+ 72          28 LOAD_DEREF               3 (self)
+             30 LOAD_ATTR                2 (_stats)
+             50 LOAD_ATTR                5 (NULL|self + track_event)
+             70 LOAD_CONST               1 ('__DROPPED_NO_PAGE__')
+             72 LOAD_FAST                1 (_event_type)
+             74 CALL                     2
+             82 POP_TOP
+
+ 73          84 RETURN_CONST             0 (None)
+
+ 74     >>   86 PUSH_NULL
+             88 LOAD_DEREF               2 (fn)
+             90 LOAD_FAST                0 (data)
+             92 CALL                     1
+            100 RETURN_VALUE
+
+Disassembly of <code object get_handled_event_types at 0x0000020DAF2DF660, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 81>:
+ 81           0 RESUME                   0
+
+ 83           2 LOAD_GLOBAL              1 (NULL + set)
+             12 LOAD_FAST                0 (self)
+             14 LOAD_ATTR                2 (_handlers)
+             34 LOAD_ATTR                5 (NULL|self + keys)
+             54 CALL                     0
+             62 CALL                     1
+             70 RETURN_VALUE
+
+Disassembly of <code object handles_event at 0x0000020DAF2F1DF0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 85>:
+ 85           0 RESUME                   0
+
+ 87           2 LOAD_FAST                1 (event_type)
+              4 LOAD_FAST                0 (self)
+              6 LOAD_ATTR                0 (_handlers)
+             26 CONTAINS_OP              0
+             28 RETURN_VALUE
+
+Disassembly of <code object handle_event at 0x0000020DAEC770A0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 89>:
+ 89           0 RESUME                   0
+
+ 91           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_handlers)
+             24 LOAD_ATTR                3 (NULL|self + get)
+             44 LOAD_FAST                1 (event_type)
+             46 CALL                     1
+             54 COPY                     1
+             56 STORE_FAST               3 (handler)
+             58 POP_JUMP_IF_FALSE       27 (to 114)
+
+ 92          60 LOAD_FAST                0 (self)
+             62 LOAD_ATTR                5 (NULL|self + _track_event)
+             82 LOAD_FAST                1 (event_type)
+             84 CALL                     1
+             92 POP_TOP
+
+ 93          94 NOP
+
+ 94          96 PUSH_NULL
+             98 LOAD_FAST                3 (handler)
+            100 LOAD_FAST                2 (data)
+            102 CALL                     1
+            110 POP_TOP
+            112 RETURN_CONST             2 (None)
+
+ 91     >>  114 RETURN_CONST             2 (None)
+        >>  116 PUSH_EXC_INFO
+
+ 95         118 LOAD_GLOBAL              6 (Exception)
+            128 CHECK_EXC_MATCH
+            130 POP_JUMP_IF_FALSE       30 (to 192)
+            132 POP_TOP
+
+ 96         134 LOAD_FAST                0 (self)
+            136 LOAD_ATTR                8 (_stats)
+            156 LOAD_ATTR               11 (NULL|self + track_event)
+            176 LOAD_CONST               1 ('__EXCEPTION__')
+            178 LOAD_FAST                1 (event_type)
+            180 CALL                     2
+            188 POP_TOP
+
+ 97         190 RAISE_VARARGS            0
+
+ 95     >>  192 RERAISE                  0
+        >>  194 COPY                     3
+            196 POP_EXCEPT
+            198 RERAISE                  1
+ExceptionTable:
+  96 to 110 -> 116 [0]
+  116 to 192 -> 194 [1] lasti
+
+Disassembly of <code object get_stats at 0x0000020DAF2D1C30, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 99>:
+ 99           0 RESUME                   0
+
+101           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_stats)
+             24 LOAD_ATTR                3 (NULL|self + get_stats)
+             44 CALL                     0
+             52 RETURN_VALUE
+
+Disassembly of <code object _track_event at 0x0000020DAF2AD930, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 103>:
+103           0 RESUME                   0
+
+104           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_stats)
+             24 LOAD_ATTR                3 (NULL|self + track_event)
+             44 LOAD_CONST               1 ('__EVENTS__')
+             46 LOAD_CONST               2 ('__TOTAL__')
+             48 CALL                     2
+             56 POP_TOP
+
+105          58 LOAD_FAST                0 (self)
+             60 LOAD_ATTR                0 (_stats)
+             80 LOAD_ATTR                3 (NULL|self + track_event)
+            100 LOAD_CONST               1 ('__EVENTS__')
+            102 LOAD_FAST                1 (event_type)
+            104 CALL                     2
+            112 POP_TOP
+            114 RETURN_CONST             0 (None)
+
+Disassembly of <code object set_page_property at 0x0000020DAEEAFCC0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 107>:
+107           0 RESUME                   0
+
+113           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_page_item)
+             24 POP_JUMP_IF_NOT_NONE    29 (to 84)
+
+114          26 LOAD_FAST                0 (self)
+             28 LOAD_ATTR                2 (_stats)
+             48 LOAD_ATTR                5 (NULL|self + track_event)
+             68 LOAD_CONST               2 ('__PROPS_NO_PAGE__')
+             70 LOAD_FAST                1 (name)
+             72 CALL                     2
+             80 POP_TOP
+
+115          82 RETURN_CONST             1 (None)
+
+116     >>   84 LOAD_FAST                0 (self)
+             86 LOAD_ATTR                6 (_page_props)
+            106 LOAD_ATTR                9 (NULL|self + get)
+            126 LOAD_FAST                1 (name)
+            128 LOAD_GLOBAL             10 (_UNSET)
+            138 CALL                     2
+            146 LOAD_FAST                2 (value)
+            148 COMPARE_OP              40 (==)
+            152 POP_JUMP_IF_FALSE       29 (to 212)
+
+117         154 LOAD_FAST                0 (self)
+            156 LOAD_ATTR                2 (_stats)
+            176 LOAD_ATTR                5 (NULL|self + track_event)
+            196 LOAD_CONST               3 ('__PROPS_CACHED__')
+            198 LOAD_FAST                1 (name)
+            200 CALL                     2
+            208 POP_TOP
+
+118         210 RETURN_CONST             1 (None)
+
+119     >>  212 LOAD_FAST                2 (value)
+            214 LOAD_FAST                0 (self)
+            216 LOAD_ATTR                6 (_page_props)
+            236 LOAD_FAST                1 (name)
+            238 STORE_SUBSCR
+
+120         242 LOAD_FAST                0 (self)
+            244 LOAD_ATTR                0 (_page_item)
+            264 LOAD_ATTR               13 (NULL|self + setProperty)
+            284 LOAD_FAST                1 (name)
+            286 LOAD_FAST                2 (value)
+            288 CALL                     2
+            296 POP_TOP
+
+121         298 LOAD_FAST                0 (self)
+            300 LOAD_ATTR                2 (_stats)
+            320 LOAD_ATTR                5 (NULL|self + track_event)
+            340 LOAD_CONST               4 ('__PROPS__')
+            342 LOAD_FAST                1 (name)
+            344 CALL                     2
+            352 POP_TOP
+            354 RETURN_CONST             1 (None)
+
+Disassembly of <code object _on_page_activated at 0x0000020DAF2021F0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 123>:
+123           0 RESUME                   0
+
+125           2 LOAD_FAST                1 (item)
+              4 LOAD_FAST                0 (self)
+              6 STORE_ATTR               0 (_page_item)
+
+126          16 LOAD_FAST                0 (self)
+             18 LOAD_ATTR                2 (_page_props)
+             38 LOAD_ATTR                5 (NULL|self + clear)
+             58 CALL                     0
+             66 POP_TOP
+
+127          68 LOAD_FAST                0 (self)
+             70 LOAD_ATTR                6 (_stats)
+             90 LOAD_ATTR                9 (NULL|self + track_event)
+            110 LOAD_CONST               1 ('__LIFECYCLE__')
+            112 LOAD_CONST               2 ('activated')
+            114 CALL                     2
+            122 POP_TOP
+
+128         124 LOAD_FAST                0 (self)
+            126 LOAD_ATTR               10 (logger)
+            146 LOAD_ATTR               13 (NULL|self + debug)
+            166 LOAD_CONST               3 ('%s | Page activated')
+            168 LOAD_FAST                0 (self)
+            170 LOAD_ATTR               14 (KEY)
+            190 CALL                     2
+            198 POP_TOP
+
+129         200 LOAD_FAST                0 (self)
+            202 LOAD_ATTR               17 (NULL|self + on_page_activated)
+            222 CALL                     0
+            230 POP_TOP
+            232 RETURN_CONST             4 (None)
+
+Disassembly of <code object on_page_activated at 0x0000020DB1039210, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 131>:
+131           0 RESUME                   0
+              2 RETURN_CONST             1 (None)
+
+Disassembly of <code object on_page_deactivated at 0x0000020DAF2F82F0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 134>:
+134           0 RESUME                   0
+
+136           2 LOAD_CONST               1 (None)
+              4 LOAD_FAST                0 (self)
+              6 STORE_ATTR               0 (_page_item)
+
+137          16 LOAD_FAST                0 (self)
+             18 LOAD_ATTR                2 (_stats)
+             38 LOAD_ATTR                5 (NULL|self + track_event)
+             58 LOAD_CONST               2 ('__LIFECYCLE__')
+             60 LOAD_CONST               3 ('deactivated')
+             62 CALL                     2
+             70 POP_TOP
+
+138          72 LOAD_FAST                0 (self)
+             74 LOAD_ATTR                6 (logger)
+             94 LOAD_ATTR                9 (NULL|self + debug)
+            114 LOAD_CONST               4 ('%s | Page deactivated')
+            116 LOAD_FAST                0 (self)
+            118 LOAD_ATTR               10 (KEY)
+            138 CALL                     2
+            146 POP_TOP
+            148 RETURN_CONST             1 (None)
+
+Disassembly of <code object is_active at 0x0000020DAF2F18B0, file "apps\hud\ui\overlays\mfd\pages\base_page.py", line 140>:
+140           0 RESUME                   0
+
+142           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_page_item)
+             24 LOAD_CONST               0 (None)
+             26 IS_OP                    1
+             28 RETURN_VALUE

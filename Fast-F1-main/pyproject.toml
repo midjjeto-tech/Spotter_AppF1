@@ -1,0 +1,137 @@
+[project]
+dynamic = ["version"]
+
+name = "fastf1"
+authors = [
+  {email = "oehrly@mailbox.org"},
+  {name = "Philipp Schaefer"}
+]
+description = "Python package for accessing and analyzing Formula 1 results, schedules, timing data and telemetry."
+readme = "README.md"
+
+license = { file = "LICENSE" }
+
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
+
+# minimum python version additionally needs to be changed in the test matrix
+requires-python = ">=3.10"
+# minimum package versions additionally need to be changed in requirements/minver.txt
+dependencies = [
+  "cryptography",
+  "matplotlib>=3.8.0,<4.0.0",
+  "numpy>=1.26.0,<3.0.0",
+  "pandas>=2.1.1,<3.0.0",
+  "platformdirs",
+  "pydantic",
+  "pyjwt",
+  "python-dateutil",
+  "requests>=2.30.0",
+  "requests-cache>=1.0.0",
+  "scipy>=1.11.0,<2.0.0",
+  "signalrcore",
+  "rapidfuzz",
+  "timple>=0.1.6",
+  "websockets>=10.3"
+]
+
+[project.urls]
+"Source Code" = "https://github.com/theOehrly/Fast-F1"
+"Documentation" = "https://docs.fastf1.dev"
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.wheel]
+ignore-vcs = true
+include = [
+  "fastf1/**",
+]
+exclude = [
+  "fastf1/tests/**",
+  "fastf1/testing/**",
+]
+
+[tool.hatch.build.targets.sdist]
+ignore-vcs = true
+include = [
+  "fastf1/**",
+  "requirements/**",
+  "examples/**"
+]
+exclude = [
+  "fastf1/tests/**",
+  "fastf1/testing/**",
+]
+
+[tool.hatch.build.hooks.vcs]
+version-file = "fastf1/_version.py"
+
+[tool.hatch.version.raw-options]
+# configures setuptools_scm within the hatchling build backend
+version_scheme = "release-branch-semver"
+local_scheme = "no-local-version"  # needed for PyPI support for dev releases; hatch-vcs ignores setuptools_scm overrides through env vars
+fallback_version = "0.0+UNKNOWN"
+
+[tool.ruff]
+line-length = 79
+exclude = [
+  "scripts",
+  "fastf1/tests",
+  "fastf1/testing",
+  "fastf1/legacy.py",
+]
+
+[tool.ruff.lint]
+select = [
+#    "D", TODO: select and fix docstrings
+    "B",
+    "E",
+    "F",
+    "ISC",
+    "W",
+    "UP",
+    "NPY201",
+    "C4",
+    "PIE",
+    "SIM",
+    "RET",
+    "A",
+    "PERF",
+    "ARG",
+    "RUF100",
+]
+
+ignore = [
+    "B028",    # no-explicit-stacklevel — too noisy for warnings.warn
+    "A002",    # public method parameter names require proper deprecation
+    "PERF203", # necessary for API response parsing
+]
+
+[tool.ruff.lint.per-file-ignores]
+"fastf1/_api.py" = ["E501"]
+
+[tool.isort]
+skip = ["docs/**"]
+multi_line_output = 3
+force_grid_wrap = 2
+lines_after_imports = 2
+
+[tool.codespell]
+builtin = "clear,rare,informal"
+ignore-regex = "ALO|[Ss]argeant"
+skip = "./venv/*, ./fastf1/testing/reference_data/*, ./fastf1/legacy.py"
+quiet-level = 3

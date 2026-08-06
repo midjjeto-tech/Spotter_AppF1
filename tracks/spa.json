@@ -1,0 +1,16 @@
+{
+  "name": "Spa",
+  "length_m": 7004,
+  "corners": [
+    {"id":1, "name":"La Source",  "fraction":0.051,"type":"hairpin","direction":"right"},
+    {"id":2, "name":"Eau Rouge",  "fraction":0.123,"type":"fast",   "direction":"left"},
+    {"id":3, "name":"Les Combes", "fraction":0.295,"type":"chicane","direction":"right"},
+    {"id":4, "name":"Rivage",     "fraction":0.375,"type":"slow",   "direction":"right"},
+    {"id":5, "name":"Pouhon",     "fraction":0.469,"type":"fast",   "direction":"left"},
+    {"id":6, "name":"Fagnes",     "fraction":0.544,"type":"chicane","direction":"right"},
+    {"id":7, "name":"Stavelot",   "fraction":0.613,"type":"medium", "direction":"right"},
+    {"id":8, "name":"Paul Frere", "fraction":0.666,"type":"fast",   "direction":"right"},
+    {"id":9, "name":"Blanchimont","fraction":0.770,"type":"fast",   "direction":"left"},
+    {"id":10,"name":"Bus Stop",   "fraction":0.865,"type":"chicane","direction":"right"}
+  ]
+}

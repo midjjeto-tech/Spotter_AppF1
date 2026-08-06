@@ -1,0 +1,694 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('dataclass', 'field'))
+             14 IMPORT_NAME              1 (dataclasses)
+             16 IMPORT_FROM              2 (dataclass)
+             18 STORE_NAME               2 (dataclass)
+             20 IMPORT_FROM              3 (field)
+             22 STORE_NAME               3 (field)
+             24 POP_TOP
+
+ 27          26 LOAD_CONST               0 (0)
+             28 LOAD_CONST               3 (('Path',))
+             30 IMPORT_NAME              4 (pathlib)
+             32 IMPORT_FROM              5 (Path)
+             34 STORE_NAME               5 (Path)
+             36 POP_TOP
+
+ 28          38 LOAD_CONST               0 (0)
+             40 LOAD_CONST               4 (('TYPE_CHECKING', 'Any', 'Dict', 'List', 'Optional', 'Tuple', 'final'))
+             42 IMPORT_NAME              6 (typing)
+             44 IMPORT_FROM              7 (TYPE_CHECKING)
+             46 STORE_NAME               7 (TYPE_CHECKING)
+             48 IMPORT_FROM              8 (Any)
+             50 STORE_NAME               8 (Any)
+             52 IMPORT_FROM              9 (Dict)
+             54 STORE_NAME               9 (Dict)
+             56 IMPORT_FROM             10 (List)
+             58 STORE_NAME              10 (List)
+             60 IMPORT_FROM             11 (Optional)
+             62 STORE_NAME              11 (Optional)
+             64 IMPORT_FROM             12 (Tuple)
+             66 STORE_NAME              12 (Tuple)
+             68 IMPORT_FROM             13 (final)
+             70 STORE_NAME              13 (final)
+             72 POP_TOP
+
+ 30          74 LOAD_CONST               0 (0)
+             76 LOAD_CONST               5 (('QTimer',))
+             78 IMPORT_NAME             14 (PySide6.QtCore)
+             80 IMPORT_FROM             15 (QTimer)
+             82 STORE_NAME              15 (QTimer)
+             84 POP_TOP
+
+ 32          86 LOAD_CONST               0 (0)
+             88 LOAD_CONST               6 (('MfdPageBase',))
+             90 IMPORT_NAME             16 (apps.hud.ui.overlays.mfd.pages.base_page)
+             92 IMPORT_FROM             17 (MfdPageBase)
+             94 STORE_NAME              17 (MfdPageBase)
+             96 POP_TOP
+
+ 33          98 LOAD_CONST               0 (0)
+            100 LOAD_CONST               7 (('MfdPageId',))
+            102 IMPORT_NAME             18 (lib.config)
+            104 IMPORT_FROM             19 (MfdPageId)
+            106 STORE_NAME              19 (MfdPageId)
+            108 POP_TOP
+
+ 35         110 LOAD_NAME                7 (TYPE_CHECKING)
+            112 POP_JUMP_IF_FALSE        6 (to 126)
+
+ 36         114 LOAD_CONST               0 (0)
+            116 LOAD_CONST               8 (('MfdOverlay',))
+            118 IMPORT_NAME             20 (apps.hud.ui.overlays.mfd.mfd)
+            120 IMPORT_FROM             21 (MfdOverlay)
+            122 STORE_NAME              21 (MfdOverlay)
+            124 POP_TOP
+
+ 40     >>  126 LOAD_NAME                2 (dataclass)
+
+ 41         128 PUSH_NULL
+            130 LOAD_BUILD_CLASS
+            132 LOAD_CONST               9 (<code object SessionGroup at 0x0000020DAF2DF550, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 40>)
+            134 MAKE_FUNCTION            0
+            136 LOAD_CONST              10 ('SessionGroup')
+            138 CALL                     2
+
+ 40         146 CALL                     0
+
+ 41         154 STORE_NAME              22 (SessionGroup)
+
+ 45         156 PUSH_NULL
+            158 LOAD_BUILD_CLASS
+            160 LOAD_CONST              11 (<code object WeatherForecastPage at 0x0000020DAF29EA30, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 45>)
+            162 MAKE_FUNCTION            0
+            164 LOAD_CONST              12 ('WeatherForecastPage')
+            166 LOAD_NAME               17 (MfdPageBase)
+            168 CALL                     3
+            176 STORE_NAME              23 (WeatherForecastPage)
+            178 RETURN_CONST             1 (None)
+
+Disassembly of <code object SessionGroup at 0x0000020DAF2DF550, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 40>:
+ 40           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('SessionGroup')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+ 42          12 LOAD_NAME                3 (str)
+             14 LOAD_NAME                4 (__annotations__)
+             16 LOAD_CONST               1 ('session_type')
+             18 STORE_SUBSCR
+
+ 43          22 PUSH_NULL
+             24 LOAD_NAME                5 (field)
+             26 LOAD_NAME                6 (list)
+             28 KW_NAMES                 2 (('default_factory',))
+             30 CALL                     1
+             38 STORE_NAME               7 (items)
+             40 LOAD_NAME                8 (List)
+             42 LOAD_NAME                9 (Dict)
+             44 LOAD_NAME                3 (str)
+             46 LOAD_NAME               10 (Any)
+             48 BUILD_TUPLE              2
+             50 BINARY_SUBSCR
+             54 BINARY_SUBSCR
+             58 LOAD_NAME                4 (__annotations__)
+             60 LOAD_CONST               3 ('items')
+             62 STORE_SUBSCR
+             66 RETURN_CONST             4 (None)
+
+Disassembly of <code object WeatherForecastPage at 0x0000020DAF29EA30, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 45>:
+              0 MAKE_CELL                0 (__class__)
+
+ 45           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('WeatherForecastPage')
+             10 STORE_NAME               2 (__qualname__)
+             12 SETUP_ANNOTATIONS
+
+ 47          14 LOAD_NAME                3 (MfdPageId)
+             16 LOAD_ATTR                8 (WEATHER_FORECAST)
+             36 STORE_NAME               5 (KEY)
+
+ 48          38 PUSH_NULL
+             40 LOAD_NAME                6 (Path)
+             42 LOAD_NAME                7 (__file__)
+             44 CALL                     1
+             52 LOAD_ATTR               16 (parent)
+             72 LOAD_CONST               1 ('weather_page.qml')
+             74 BINARY_OP               11 (/)
+             78 STORE_NAME               9 (QML_FILE)
+             80 LOAD_NAME                6 (Path)
+             82 LOAD_NAME               10 (__annotations__)
+             84 LOAD_CONST               2 ('QML_FILE')
+             86 STORE_SUBSCR
+
+ 50          90 LOAD_CONST               3 (5)
+             92 STORE_NAME              11 (MAX_SAMPLES)
+
+ 52          94 LOAD_CONST               4 ('overlay')
+             96 LOAD_CONST               5 ('MfdOverlay')
+             98 LOAD_CONST               6 ('logger')
+            100 LOAD_NAME               12 (logging)
+            102 LOAD_ATTR               26 (Logger)
+            122 LOAD_CONST               7 ('graph_based_ui')
+            124 LOAD_NAME               14 (bool)
+            126 BUILD_TUPLE              6
+            128 LOAD_CLOSURE             0 (__class__)
+            130 BUILD_TUPLE              1
+            132 LOAD_CONST               8 (<code object __init__ at 0x0000020DAF2B9E60, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 52>)
+            134 MAKE_FUNCTION           12 (annotations, closure)
+            136 STORE_NAME              15 (__init__)
+
+ 61         138 LOAD_CONST               9 (<code object _init_event_handlers at 0x0000020DB1048350, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 61>)
+            140 MAKE_FUNCTION            0
+            142 STORE_NAME              16 (_init_event_handlers)
+
+ 95         144 LOAD_NAME               17 (final)
+
+ 96         146 LOAD_CONST              10 (<code object on_page_activated at 0x0000020DAF2ADA70, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 95>)
+            148 MAKE_FUNCTION            0
+
+ 95         150 CALL                     0
+
+ 96         158 STORE_NAME              18 (on_page_activated)
+
+101         160 LOAD_CONST              11 (<code object _invalidate_cache at 0x0000020DAF2F17D0, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 101>)
+            162 MAKE_FUNCTION            0
+            164 STORE_NAME              19 (_invalidate_cache)
+
+104         166 LOAD_CONST              12 ('data')
+            168 LOAD_NAME               20 (List)
+            170 LOAD_NAME               21 (Dict)
+            172 LOAD_NAME               22 (str)
+            174 LOAD_NAME               23 (Any)
+            176 BUILD_TUPLE              2
+            178 BINARY_SUBSCR
+            182 BINARY_SUBSCR
+            186 LOAD_CONST              13 ('return')
+            188 LOAD_NAME               20 (List)
+            190 LOAD_NAME               24 (SessionGroup)
+            192 BINARY_SUBSCR
+            196 BUILD_TUPLE              4
+            198 LOAD_CONST              14 (<code object _group_by_session_type at 0x0000020DB10484E0, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 104>)
+            200 MAKE_FUNCTION            4 (annotations)
+            202 STORE_NAME              25 (_group_by_session_type)
+
+118         204 LOAD_CONST              12 ('data')
+            206 LOAD_NAME               20 (List)
+            208 LOAD_NAME               21 (Dict)
+            210 LOAD_NAME               22 (str)
+            212 LOAD_NAME               23 (Any)
+            214 BUILD_TUPLE              2
+            216 BINARY_SUBSCR
+            220 BINARY_SUBSCR
+            224 LOAD_CONST              13 ('return')
+            226 LOAD_NAME               26 (Tuple)
+            228 LOAD_NAME               27 (Optional)
+            230 LOAD_NAME               22 (str)
+            232 BINARY_SUBSCR
+            236 LOAD_NAME               27 (Optional)
+            238 LOAD_NAME               20 (List)
+            240 LOAD_NAME               21 (Dict)
+            242 LOAD_NAME               22 (str)
+            244 LOAD_NAME               23 (Any)
+            246 BUILD_TUPLE              2
+            248 BINARY_SUBSCR
+            252 BINARY_SUBSCR
+            256 BINARY_SUBSCR
+            260 BUILD_TUPLE              2
+            262 BINARY_SUBSCR
+            266 BUILD_TUPLE              4
+            268 LOAD_CONST              15 (<code object _get_session_info at 0x0000020DB0C285B0, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 118>)
+            270 MAKE_FUNCTION            4 (annotations)
+            272 STORE_NAME              28 (_get_session_info)
+
+149         274 LOAD_CONST              16 (<code object _clear at 0x0000020DAF2BF000, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 149>)
+            276 MAKE_FUNCTION            0
+            278 STORE_NAME              29 (_clear)
+
+154         280 LOAD_CONST              17 ('forecast_data_flat')
+            282 LOAD_NAME               20 (List)
+            284 LOAD_NAME               21 (Dict)
+            286 LOAD_NAME               22 (str)
+            288 LOAD_NAME               23 (Any)
+            290 BUILD_TUPLE              2
+            292 BINARY_SUBSCR
+            296 BINARY_SUBSCR
+            300 LOAD_CONST              13 ('return')
+            302 LOAD_CONST              18 (None)
+            304 BUILD_TUPLE              4
+            306 LOAD_CONST              19 (<code object _display_weather_data at 0x0000020DAF18BC90, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 154>)
+            308 MAKE_FUNCTION            4 (annotations)
+            310 STORE_NAME              30 (_display_weather_data)
+            312 LOAD_CLOSURE             0 (__class__)
+            314 COPY                     1
+            316 STORE_NAME              31 (__classcell__)
+            318 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF2B9E60, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 52>:
+              0 COPY_FREE_VARS           1
+
+ 52           2 RESUME                   0
+
+ 53           4 BUILD_LIST               0
+              6 LOAD_FAST                0 (self)
+              8 STORE_ATTR               0 (_last_processed_samples)
+
+ 54          18 LOAD_CONST               1 (0)
+             20 LOAD_FAST                0 (self)
+             22 STORE_ATTR               1 (session_index)
+
+ 55          32 LOAD_CONST               1 (0)
+             34 LOAD_FAST                0 (self)
+             36 STORE_ATTR               2 (num_sessions)
+
+ 56          46 LOAD_CONST               1 (0)
+             48 LOAD_FAST                0 (self)
+             50 STORE_ATTR               3 (session_uid)
+
+ 57          60 LOAD_FAST                3 (graph_based_ui)
+             62 LOAD_FAST                0 (self)
+             64 STORE_ATTR               4 (graph_based_ui)
+
+ 58          74 LOAD_GLOBAL             10 (super)
+             84 LOAD_DEREF               4 (__class__)
+             86 LOAD_FAST                0 (self)
+             88 LOAD_SUPER_ATTR         25 (NULL|self + __init__)
+             92 LOAD_FAST                1 (overlay)
+             94 LOAD_FAST                2 (logger)
+             96 CALL                     2
+            104 POP_TOP
+
+ 59         106 LOAD_FAST                0 (self)
+            108 LOAD_ATTR               15 (NULL|self + _init_event_handlers)
+            128 CALL                     0
+            136 POP_TOP
+            138 RETURN_CONST             0 (None)
+
+Disassembly of <code object _init_event_handlers at 0x0000020DB1048350, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 61>:
+              0 MAKE_CELL                0 (self)
+
+ 61           2 RESUME                   0
+
+ 63           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('race_table_update')
+             28 CALL                     1
+
+ 64          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (Dict)
+             48 LOAD_GLOBAL              4 (str)
+             58 LOAD_GLOBAL              6 (Any)
+             68 BUILD_TUPLE              2
+             70 BINARY_SUBSCR
+             74 LOAD_CONST               3 ('return')
+             76 LOAD_CONST               4 (None)
+             78 BUILD_TUPLE              4
+             80 LOAD_CLOSURE             0 (self)
+             82 BUILD_TUPLE              1
+             84 LOAD_CONST               5 (<code object race_table_update at 0x0000020DAEC770A0, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 63>)
+             86 MAKE_FUNCTION           12 (annotations, closure)
+
+ 63          88 CALL                     0
+
+ 64          96 STORE_FAST               1 (race_table_update)
+
+ 81          98 LOAD_DEREF               0 (self)
+            100 LOAD_ATTR                1 (NULL|self + on_event)
+            120 LOAD_CONST               6 ('mfd_interact')
+            122 CALL                     1
+
+ 82         130 LOAD_CONST               2 ('data')
+            132 LOAD_GLOBAL              2 (Dict)
+            142 LOAD_GLOBAL              4 (str)
+            152 LOAD_GLOBAL              6 (Any)
+            162 BUILD_TUPLE              2
+            164 BINARY_SUBSCR
+            168 LOAD_CONST               3 ('return')
+            170 LOAD_CONST               4 (None)
+            172 BUILD_TUPLE              4
+            174 LOAD_CLOSURE             0 (self)
+            176 BUILD_TUPLE              1
+            178 LOAD_CONST               7 (<code object mfd_interact at 0x0000020DAEEAFCC0, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 81>)
+            180 MAKE_FUNCTION           12 (annotations, closure)
+
+ 81         182 CALL                     0
+
+ 82         190 STORE_FAST               2 (mfd_interact)
+            192 RETURN_CONST             4 (None)
+
+Disassembly of <code object race_table_update at 0x0000020DAEC770A0, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 63>:
+              0 COPY_FREE_VARS           1
+
+ 63           2 RESUME                   0
+
+ 65           4 LOAD_FAST                0 (data)
+              6 LOAD_ATTR                1 (NULL|self + get)
+             26 LOAD_CONST               1 ('weather-forecast-samples')
+             28 BUILD_LIST               0
+             30 CALL                     2
+             38 STORE_FAST               1 (forecast_data_flat)
+
+ 66          40 LOAD_FAST                1 (forecast_data_flat)
+             42 POP_JUMP_IF_TRUE         1 (to 46)
+
+ 67          44 RETURN_CONST             0 (None)
+
+ 70     >>   46 LOAD_FAST                0 (data)
+             48 LOAD_CONST               2 ('session-uid')
+             50 BINARY_SUBSCR
+             54 STORE_FAST               2 (incoming_session_uid)
+
+ 71          56 LOAD_FAST                2 (incoming_session_uid)
+             58 LOAD_DEREF               3 (self)
+             60 LOAD_ATTR                2 (session_uid)
+             80 COMPARE_OP              55 (!=)
+             84 POP_JUMP_IF_FALSE       23 (to 132)
+
+ 72          86 LOAD_DEREF               3 (self)
+             88 LOAD_ATTR                5 (NULL|self + _clear)
+            108 CALL                     0
+            116 POP_TOP
+
+ 73         118 LOAD_FAST                2 (incoming_session_uid)
+            120 LOAD_DEREF               3 (self)
+            122 STORE_ATTR               1 (session_uid)
+
+ 76     >>  132 LOAD_FAST                1 (forecast_data_flat)
+            134 LOAD_DEREF               3 (self)
+            136 LOAD_ATTR                6 (_last_processed_samples)
+            156 COMPARE_OP              40 (==)
+            160 POP_JUMP_IF_FALSE        1 (to 164)
+
+ 77         162 RETURN_CONST             0 (None)
+
+ 79     >>  164 LOAD_DEREF               3 (self)
+            166 LOAD_ATTR                9 (NULL|self + _display_weather_data)
+            186 LOAD_FAST                1 (forecast_data_flat)
+            188 CALL                     1
+            196 POP_TOP
+            198 RETURN_CONST             0 (None)
+
+Disassembly of <code object mfd_interact at 0x0000020DAEEAFCC0, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 81>:
+              0 COPY_FREE_VARS           1
+
+ 81           2 RESUME                   0
+
+ 83           4 LOAD_DEREF               2 (self)
+              6 LOAD_ATTR                0 (logger)
+             26 LOAD_ATTR                3 (NULL|self + debug)
+             46 LOAD_CONST               1 ('%s | Received mfd_interact command. args: %s')
+             48 LOAD_DEREF               2 (self)
+             50 LOAD_ATTR                4 (KEY)
+             70 LOAD_FAST                0 (data)
+             72 CALL                     3
+             80 POP_TOP
+
+ 84          82 LOAD_DEREF               2 (self)
+             84 LOAD_ATTR                6 (num_sessions)
+            104 POP_JUMP_IF_TRUE        39 (to 184)
+
+ 85         106 LOAD_DEREF               2 (self)
+            108 LOAD_ATTR                0 (logger)
+            128 LOAD_ATTR                3 (NULL|self + debug)
+            148 LOAD_CONST               2 ('%s | No sessions available. Ignoring mfd_interact command.')
+            150 LOAD_DEREF               2 (self)
+            152 LOAD_ATTR                4 (KEY)
+            172 CALL                     2
+            180 POP_TOP
+
+ 86         182 RETURN_CONST             0 (None)
+
+ 89     >>  184 LOAD_DEREF               2 (self)
+            186 LOAD_ATTR                8 (session_index)
+            206 LOAD_CONST               3 (1)
+            208 BINARY_OP                0 (+)
+            212 LOAD_DEREF               2 (self)
+            214 LOAD_ATTR                6 (num_sessions)
+            234 BINARY_OP                6 (%)
+            238 LOAD_DEREF               2 (self)
+            240 STORE_ATTR               4 (session_index)
+
+ 90         250 LOAD_DEREF               2 (self)
+            252 LOAD_ATTR               10 (_last_processed_samples)
+            272 STORE_FAST               1 (last_data)
+
+ 91         274 LOAD_DEREF               2 (self)
+            276 LOAD_ATTR               13 (NULL|self + _invalidate_cache)
+            296 CALL                     0
+            304 POP_TOP
+
+ 92         306 LOAD_FAST                1 (last_data)
+            308 POP_JUMP_IF_FALSE       18 (to 346)
+
+ 93         310 LOAD_DEREF               2 (self)
+            312 LOAD_ATTR               15 (NULL|self + _display_weather_data)
+            332 LOAD_FAST                1 (last_data)
+            334 CALL                     1
+            342 POP_TOP
+            344 RETURN_CONST             0 (None)
+
+ 92     >>  346 RETURN_CONST             0 (None)
+
+Disassembly of <code object on_page_activated at 0x0000020DAF2ADA70, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 95>:
+ 95           0 RESUME                   0
+
+ 97           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_page_property)
+             24 LOAD_CONST               1 ('graphBasedUI')
+             26 LOAD_FAST                0 (self)
+             28 LOAD_ATTR                2 (graph_based_ui)
+             48 CALL                     2
+             56 POP_TOP
+
+ 99          58 LOAD_GLOBAL              5 (NULL + QTimer)
+             68 LOAD_ATTR                6 (singleShot)
+             88 LOAD_CONST               2 (1000)
+             90 LOAD_FAST                0 (self)
+             92 LOAD_ATTR                8 (_invalidate_cache)
+            112 CALL                     2
+            120 POP_TOP
+            122 RETURN_CONST             0 (None)
+
+Disassembly of <code object _invalidate_cache at 0x0000020DAF2F17D0, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 101>:
+101           0 RESUME                   0
+
+102           2 BUILD_LIST               0
+              4 LOAD_FAST                0 (self)
+              6 STORE_ATTR               0 (_last_processed_samples)
+             16 RETURN_CONST             0 (None)
+
+Disassembly of <code object _group_by_session_type at 0x0000020DB10484E0, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 104>:
+104           0 RESUME                   0
+
+106           2 BUILD_LIST               0
+              4 STORE_FAST               2 (groups)
+
+107           6 BUILD_MAP                0
+              8 STORE_FAST               3 (index)
+
+109          10 LOAD_FAST                1 (data)
+             12 GET_ITER
+        >>   14 FOR_ITER                85 (to 188)
+             18 STORE_FAST               4 (item)
+
+110          20 LOAD_FAST                4 (item)
+             22 LOAD_CONST               1 ('session-type')
+             24 BINARY_SUBSCR
+             28 STORE_FAST               5 (session)
+
+111          30 LOAD_FAST                5 (session)
+             32 LOAD_FAST                3 (index)
+             34 CONTAINS_OP              1
+             36 POP_JUMP_IF_FALSE       41 (to 120)
+
+112          38 LOAD_GLOBAL              1 (NULL + len)
+             48 LOAD_FAST                2 (groups)
+             50 CALL                     1
+             58 LOAD_FAST                3 (index)
+             60 LOAD_FAST                5 (session)
+             62 STORE_SUBSCR
+
+113          66 LOAD_FAST                2 (groups)
+             68 LOAD_ATTR                3 (NULL|self + append)
+             88 LOAD_GLOBAL              5 (NULL + SessionGroup)
+             98 LOAD_FAST                5 (session)
+            100 KW_NAMES                 2 (('session_type',))
+            102 CALL                     1
+            110 CALL                     1
+            118 POP_TOP
+
+114     >>  120 LOAD_FAST                2 (groups)
+            122 LOAD_FAST                3 (index)
+            124 LOAD_FAST                5 (session)
+            126 BINARY_SUBSCR
+            130 BINARY_SUBSCR
+            134 LOAD_ATTR                6 (items)
+            154 LOAD_ATTR                3 (NULL|self + append)
+            174 LOAD_FAST                4 (item)
+            176 CALL                     1
+            184 POP_TOP
+            186 JUMP_BACKWARD           87 (to 14)
+
+109     >>  188 END_FOR
+
+116         190 LOAD_FAST                2 (groups)
+            192 RETURN_VALUE
+
+Disassembly of <code object _get_session_info at 0x0000020DB0C285B0, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 118>:
+118           0 RESUME                   0
+
+128           2 LOAD_FAST                1 (data)
+              4 POP_JUMP_IF_TRUE         1 (to 8)
+
+129           6 RETURN_CONST             1 ((None, None))
+
+131     >>    8 LOAD_FAST                0 (self)
+             10 LOAD_ATTR                1 (NULL|self + _group_by_session_type)
+             30 LOAD_FAST                1 (data)
+             32 CALL                     1
+             40 STORE_FAST               2 (groups)
+
+132          42 LOAD_GLOBAL              3 (NULL + len)
+             52 LOAD_FAST                2 (groups)
+             54 CALL                     1
+             62 STORE_FAST               3 (total)
+
+134          64 LOAD_CONST               2 (0)
+             66 LOAD_FAST                0 (self)
+             68 LOAD_ATTR                4 (session_index)
+             88 SWAP                     2
+             90 COPY                     2
+             92 COMPARE_OP              26 (<=)
+             96 POP_JUMP_IF_FALSE        5 (to 108)
+             98 LOAD_FAST                3 (total)
+            100 COMPARE_OP               2 (<)
+            104 POP_JUMP_IF_TRUE        58 (to 222)
+            106 JUMP_FORWARD             1 (to 110)
+        >>  108 POP_TOP
+
+135     >>  110 LOAD_FAST                0 (self)
+            112 LOAD_ATTR                6 (logger)
+            132 LOAD_ATTR                9 (NULL|self + warning)
+            152 LOAD_CONST               3 ('%s | Invalid session index %s. Resetting it to 0')
+            154 LOAD_FAST                0 (self)
+            156 LOAD_ATTR               10 (KEY)
+            176 LOAD_FAST                0 (self)
+            178 LOAD_ATTR                4 (session_index)
+            198 CALL                     3
+            206 POP_TOP
+
+136         208 LOAD_CONST               2 (0)
+            210 LOAD_FAST                0 (self)
+            212 STORE_ATTR               2 (session_index)
+
+138     >>  222 LOAD_FAST                2 (groups)
+            224 LOAD_FAST                0 (self)
+            226 LOAD_ATTR                4 (session_index)
+            246 BINARY_SUBSCR
+            250 STORE_FAST               4 (session)
+
+140         252 LOAD_FAST                3 (total)
+            254 LOAD_CONST               4 (1)
+            256 COMPARE_OP              68 (>)
+            260 POP_JUMP_IF_FALSE       35 (to 332)
+
+141         262 LOAD_FAST                4 (session)
+            264 LOAD_ATTR               12 (session_type)
+            284 FORMAT_VALUE             0
+            286 LOAD_CONST               5 (' (')
+            288 LOAD_FAST                0 (self)
+            290 LOAD_ATTR                4 (session_index)
+            310 LOAD_CONST               4 (1)
+            312 BINARY_OP                0 (+)
+            316 FORMAT_VALUE             0
+            318 LOAD_CONST               6 ('/')
+            320 LOAD_FAST                3 (total)
+            322 FORMAT_VALUE             0
+            324 LOAD_CONST               7 (')')
+            326 BUILD_STRING             6
+            328 STORE_FAST               5 (title)
+            330 JUMP_FORWARD            12 (to 356)
+
+143     >>  332 LOAD_FAST                4 (session)
+            334 LOAD_ATTR               12 (session_type)
+            354 STORE_FAST               5 (title)
+
+145     >>  356 LOAD_FAST                3 (total)
+            358 LOAD_FAST                0 (self)
+            360 STORE_ATTR               7 (num_sessions)
+
+147         370 LOAD_FAST                5 (title)
+            372 LOAD_FAST                4 (session)
+            374 LOAD_ATTR               16 (items)
+            394 BUILD_TUPLE              2
+            396 RETURN_VALUE
+
+Disassembly of <code object _clear at 0x0000020DAF2BF000, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 149>:
+149           0 RESUME                   0
+
+150           2 BUILD_LIST               0
+              4 LOAD_FAST                0 (self)
+              6 STORE_ATTR               0 (_last_processed_samples)
+
+151          16 LOAD_CONST               1 (0)
+             18 LOAD_FAST                0 (self)
+             20 STORE_ATTR               1 (session_index)
+
+152          30 LOAD_CONST               1 (0)
+             32 LOAD_FAST                0 (self)
+             34 STORE_ATTR               2 (num_sessions)
+             44 RETURN_CONST             0 (None)
+
+Disassembly of <code object _display_weather_data at 0x0000020DAF18BC90, file "apps\hud\ui\overlays\mfd\pages\weather\weather.py", line 154>:
+154           0 RESUME                   0
+
+160           2 LOAD_FAST                1 (forecast_data_flat)
+              4 POP_JUMP_IF_TRUE         2 (to 10)
+              6 LOAD_ASSERTION_ERROR
+              8 RAISE_VARARGS            1
+
+162     >>   10 LOAD_FAST                0 (self)
+             12 LOAD_ATTR                1 (NULL|self + _get_session_info)
+             32 LOAD_FAST                1 (forecast_data_flat)
+             34 CALL                     1
+             42 UNPACK_SEQUENCE          2
+             46 STORE_FAST               2 (session_title)
+             48 STORE_FAST               3 (session_forecast)
+
+164          50 LOAD_FAST                0 (self)
+             52 LOAD_ATTR                3 (NULL|self + set_page_property)
+             72 LOAD_CONST               1 ('forecastData')
+             74 LOAD_FAST                3 (session_forecast)
+             76 LOAD_CONST               2 (None)
+             78 LOAD_FAST                0 (self)
+             80 LOAD_ATTR                4 (MAX_SAMPLES)
+            100 BINARY_SLICE
+            102 CALL                     2
+            110 POP_TOP
+
+165         112 LOAD_FAST                0 (self)
+            114 LOAD_ATTR                3 (NULL|self + set_page_property)
+            134 LOAD_CONST               3 ('sessionTitle')
+            136 LOAD_FAST                2 (session_title)
+            138 COPY                     1
+            140 POP_JUMP_IF_TRUE         2 (to 146)
+            142 POP_TOP
+            144 LOAD_CONST               4 ('')
+        >>  146 CALL                     2
+            154 POP_TOP
+
+167         156 LOAD_FAST                1 (forecast_data_flat)
+            158 LOAD_FAST                0 (self)
+            160 STORE_ATTR               3 (_last_processed_samples)
+            170 RETURN_CONST             2 (None)

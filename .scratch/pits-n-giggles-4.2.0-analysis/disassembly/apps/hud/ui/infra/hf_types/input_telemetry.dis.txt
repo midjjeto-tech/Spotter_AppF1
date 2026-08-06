@@ -1,0 +1,109 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (('dataclass',))
+              6 IMPORT_NAME              0 (dataclasses)
+              8 IMPORT_FROM              1 (dataclass)
+             10 STORE_NAME               1 (dataclass)
+             12 POP_TOP
+
+ 26          14 LOAD_CONST               2 (1)
+             16 LOAD_CONST               3 (('HighFreqBase',))
+             18 IMPORT_NAME              2 (base)
+             20 IMPORT_FROM              3 (HighFreqBase)
+             22 STORE_NAME               3 (HighFreqBase)
+             24 POP_TOP
+
+ 30          26 PUSH_NULL
+             28 LOAD_NAME                1 (dataclass)
+             30 LOAD_CONST               4 (True)
+             32 LOAD_CONST               4 (True)
+             34 KW_NAMES                 5 (('slots', 'frozen'))
+             36 CALL                     2
+
+ 31          44 PUSH_NULL
+             46 LOAD_BUILD_CLASS
+             48 LOAD_CONST               6 (<code object InputTelemetryData at 0x0000020DAF2DF440, file "apps\hud\ui\infra\hf_types\input_telemetry.py", line 30>)
+             50 MAKE_FUNCTION            0
+             52 LOAD_CONST               7 ('InputTelemetryData')
+             54 LOAD_NAME                3 (HighFreqBase)
+             56 CALL                     3
+
+ 30          64 CALL                     0
+
+ 31          72 STORE_NAME               4 (InputTelemetryData)
+             74 RETURN_CONST             8 (None)
+
+Disassembly of <code object InputTelemetryData at 0x0000020DAF2DF440, file "apps\hud\ui\infra\hf_types\input_telemetry.py", line 30>:
+ 30           0 RESUME                   0
+              2 LOAD_NAME                0 (__name__)
+              4 STORE_NAME               1 (__module__)
+              6 LOAD_CONST               0 ('InputTelemetryData')
+              8 STORE_NAME               2 (__qualname__)
+             10 SETUP_ANNOTATIONS
+
+ 32          12 LOAD_NAME                3 (float)
+             14 LOAD_NAME                4 (__annotations__)
+             16 LOAD_CONST               1 ('throttle')
+             18 STORE_SUBSCR
+
+ 33          22 LOAD_NAME                3 (float)
+             24 LOAD_NAME                4 (__annotations__)
+             26 LOAD_CONST               2 ('brake')
+             28 STORE_SUBSCR
+
+ 34          32 LOAD_NAME                3 (float)
+             34 LOAD_NAME                4 (__annotations__)
+             36 LOAD_CONST               3 ('steering')
+             38 STORE_SUBSCR
+
+ 35          42 LOAD_NAME                3 (float)
+             44 LOAD_NAME                4 (__annotations__)
+             46 LOAD_CONST               4 ('rev_pct')
+             48 STORE_SUBSCR
+
+ 37          52 LOAD_NAME                5 (classmethod)
+
+ 38          54 LOAD_CONST               5 ('json_data')
+             56 LOAD_NAME                6 (dict)
+             58 LOAD_CONST               6 ('return')
+             60 LOAD_CONST               0 ('InputTelemetryData')
+             62 BUILD_TUPLE              4
+             64 LOAD_CONST               7 (<code object from_json at 0x0000020DAF2D1630, file "apps\hud\ui\infra\hf_types\input_telemetry.py", line 37>)
+             66 MAKE_FUNCTION            4 (annotations)
+
+ 37          68 CALL                     0
+
+ 38          76 STORE_NAME               7 (from_json)
+             78 RETURN_CONST             8 (None)
+
+Disassembly of <code object from_json at 0x0000020DAF2D1630, file "apps\hud\ui\infra\hf_types\input_telemetry.py", line 37>:
+ 37           0 RESUME                   0
+
+ 39           2 LOAD_FAST                1 (json_data)
+              4 LOAD_CONST               1 ('car-telemetry')
+              6 BINARY_SUBSCR
+             10 STORE_FAST               2 (car_telemetry)
+
+ 40          12 PUSH_NULL
+             14 LOAD_FAST                0 (cls)
+
+ 41          16 LOAD_FAST                2 (car_telemetry)
+             18 LOAD_CONST               2 ('throttle')
+             20 BINARY_SUBSCR
+
+ 42          24 LOAD_FAST                2 (car_telemetry)
+             26 LOAD_CONST               3 ('brake')
+             28 BINARY_SUBSCR
+
+ 43          32 LOAD_FAST                2 (car_telemetry)
+             34 LOAD_CONST               4 ('steering')
+             36 BINARY_SUBSCR
+
+ 44          40 LOAD_FAST                2 (car_telemetry)
+             42 LOAD_CONST               5 ('rev-lights-percent')
+             44 BINARY_SUBSCR
+
+ 40          48 KW_NAMES                 6 (('throttle', 'brake', 'steering', 'rev_pct'))
+             50 CALL                     4
+             58 RETURN_VALUE

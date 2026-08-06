@@ -1,0 +1,965 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               1 (None)
+             14 IMPORT_NAME              1 (math)
+             16 STORE_NAME               1 (math)
+
+ 27          18 LOAD_CONST               0 (0)
+             20 LOAD_CONST               2 (('Path',))
+             22 IMPORT_NAME              2 (pathlib)
+             24 IMPORT_FROM              3 (Path)
+             26 STORE_NAME               3 (Path)
+             28 POP_TOP
+
+ 28          30 LOAD_CONST               0 (0)
+             32 LOAD_CONST               3 (('Any', 'Dict', 'Optional', 'final'))
+             34 IMPORT_NAME              4 (typing)
+             36 IMPORT_FROM              5 (Any)
+             38 STORE_NAME               5 (Any)
+             40 IMPORT_FROM              6 (Dict)
+             42 STORE_NAME               6 (Dict)
+             44 IMPORT_FROM              7 (Optional)
+             46 STORE_NAME               7 (Optional)
+             48 IMPORT_FROM              8 (final)
+             50 STORE_NAME               8 (final)
+             52 POP_TOP
+
+ 30          54 LOAD_CONST               0 (0)
+             56 LOAD_CONST               4 (('DriverMotionInfo', 'LiveSessionMotionInfo'))
+             58 IMPORT_NAME              9 (apps.hud.ui.infra.hf_types)
+             60 IMPORT_FROM             10 (DriverMotionInfo)
+             62 STORE_NAME              10 (DriverMotionInfo)
+             64 IMPORT_FROM             11 (LiveSessionMotionInfo)
+             66 STORE_NAME              11 (LiveSessionMotionInfo)
+             68 POP_TOP
+
+ 31          70 LOAD_CONST               0 (0)
+             72 LOAD_CONST               5 (('BaseOverlayQML',))
+             74 IMPORT_NAME             12 (apps.hud.ui.overlays.base)
+             76 IMPORT_FROM             13 (BaseOverlayQML)
+             78 STORE_NAME              13 (BaseOverlayQML)
+             80 POP_TOP
+
+ 32          82 LOAD_CONST               0 (0)
+             84 LOAD_CONST               6 (('OverlayId', 'OverlayPosition'))
+             86 IMPORT_NAME             14 (lib.config)
+             88 IMPORT_FROM             15 (OverlayId)
+             90 STORE_NAME              15 (OverlayId)
+             92 IMPORT_FROM             16 (OverlayPosition)
+             94 STORE_NAME              16 (OverlayPosition)
+             96 POP_TOP
+
+ 34          98 LOAD_CONST               7 (1)
+            100 LOAD_CONST               8 (('RadarGlowImageProvider',))
+            102 IMPORT_NAME             17 (_glow_provider)
+            104 IMPORT_FROM             18 (RadarGlowImageProvider)
+            106 STORE_NAME              18 (RadarGlowImageProvider)
+            108 POP_TOP
+
+ 35         110 LOAD_CONST               7 (1)
+            112 LOAD_CONST               9 (('_RADAR_AREA_RATIO', '_RADAR_RANGE_M', 'car_px', 'to_radar_coords'))
+            114 IMPORT_NAME             19 (_radar_math)
+            116 IMPORT_FROM             20 (_RADAR_AREA_RATIO)
+            118 STORE_NAME              20 (_RADAR_AREA_RATIO)
+            120 IMPORT_FROM             21 (_RADAR_RANGE_M)
+            122 STORE_NAME              21 (_RADAR_RANGE_M)
+            124 IMPORT_FROM             22 (car_px)
+            126 STORE_NAME              22 (car_px)
+            128 IMPORT_FROM             23 (to_radar_coords)
+            130 STORE_NAME              23 (to_radar_coords)
+            132 POP_TOP
+
+ 39         134 PUSH_NULL
+            136 LOAD_BUILD_CLASS
+            138 LOAD_CONST              10 (<code object TrackRadarOverlay at 0x0000020DAEED1390, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 39>)
+            140 MAKE_FUNCTION            0
+            142 LOAD_CONST              11 ('TrackRadarOverlay')
+            144 LOAD_NAME               13 (BaseOverlayQML)
+            146 CALL                     3
+            154 STORE_NAME              24 (TrackRadarOverlay)
+            156 RETURN_CONST             1 (None)
+
+Disassembly of <code object TrackRadarOverlay at 0x0000020DAEED1390, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 39>:
+              0 MAKE_CELL                0 (__class__)
+
+ 39           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('TrackRadarOverlay')
+             10 STORE_NAME               2 (__qualname__)
+
+ 40          12 LOAD_CONST               1 ('\n    Track radar overlay that displays all cars relative to the reference driver.\n\n    - Centers the radar on the reference driver\n    - Shows all other cars with their relative positions and headings\n    - Updates in real-time with motion data\n    ')
+             14 STORE_NAME               3 (__doc__)
+
+ 48          16 PUSH_NULL
+             18 LOAD_NAME                4 (Path)
+             20 LOAD_NAME                5 (__file__)
+             22 CALL                     1
+             30 LOAD_ATTR               12 (parent)
+             50 LOAD_CONST               2 ('track_radar.qml')
+             52 BINARY_OP               11 (/)
+             56 STORE_NAME               7 (QML_FILE)
+
+ 49          58 LOAD_NAME                8 (OverlayId)
+             60 LOAD_ATTR               18 (TRACK_RADAR)
+             80 STORE_NAME              10 (OVERLAY_ID)
+
+ 51          82 LOAD_CONST               3 ('config')
+
+ 52          84 LOAD_NAME               11 (OverlayPosition)
+
+ 51          86 LOAD_CONST               4 ('logger')
+
+ 53          88 LOAD_NAME               12 (logging)
+             90 LOAD_ATTR               26 (Logger)
+
+ 51         110 LOAD_CONST               5 ('locked')
+
+ 54         112 LOAD_NAME               14 (bool)
+
+ 51         114 LOAD_CONST               6 ('opacity')
+
+ 55         116 LOAD_NAME               15 (int)
+
+ 51         118 LOAD_CONST               7 ('scale_factor')
+
+ 56         120 LOAD_NAME               16 (float)
+
+ 51         122 LOAD_CONST               8 ('windowed_overlay')
+
+ 57         124 LOAD_NAME               14 (bool)
+
+ 51         126 LOAD_CONST               9 ('refresh_interval_ms')
+
+ 58         128 LOAD_NAME               15 (int)
+
+ 51         130 LOAD_CONST              10 ('idle_opacity')
+
+ 59         132 LOAD_NAME               15 (int)
+
+ 51         134 BUILD_TUPLE             16
+            136 LOAD_CLOSURE             0 (__class__)
+            138 BUILD_TUPLE              1
+            140 LOAD_CONST              11 (<code object __init__ at 0x0000020DAF2B9E60, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 51>)
+            142 MAKE_FUNCTION           12 (annotations, closure)
+            144 STORE_NAME              17 (__init__)
+
+ 67         146 LOAD_NAME               18 (final)
+
+ 68         148 LOAD_CONST              12 (<code object pre_setup at 0x0000020DAF2C2890, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 67>)
+            150 MAKE_FUNCTION            0
+
+ 67         152 CALL                     0
+
+ 68         160 STORE_NAME              19 (pre_setup)
+
+ 73         162 LOAD_NAME               18 (final)
+
+ 74         164 LOAD_CONST              13 (<code object post_setup at 0x0000020DAF2F85B0, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 73>)
+            166 MAKE_FUNCTION            0
+
+ 73         168 CALL                     0
+
+ 74         176 STORE_NAME              20 (post_setup)
+
+ 80         178 LOAD_NAME               18 (final)
+
+ 81         180 LOAD_CONST               6 ('opacity')
+            182 LOAD_NAME               15 (int)
+            184 BUILD_TUPLE              2
+            186 LOAD_CLOSURE             0 (__class__)
+            188 BUILD_TUPLE              1
+            190 LOAD_CONST              14 (<code object set_opacity at 0x0000020DAF2F82F0, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 80>)
+            192 MAKE_FUNCTION           12 (annotations, closure)
+
+ 80         194 CALL                     0
+
+ 81         202 STORE_NAME              21 (set_opacity)
+
+ 87         204 LOAD_NAME               18 (final)
+
+ 88         206 LOAD_CONST               5 ('locked')
+            208 LOAD_NAME               14 (bool)
+            210 BUILD_TUPLE              2
+            212 LOAD_CLOSURE             0 (__class__)
+            214 BUILD_TUPLE              1
+            216 LOAD_CONST              15 (<code object set_locked_state at 0x0000020DAF2F8B30, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 87>)
+            218 MAKE_FUNCTION           12 (annotations, closure)
+
+ 87         220 CALL                     0
+
+ 88         228 STORE_NAME              22 (set_locked_state)
+
+ 94         230 LOAD_CONST              16 (<code object _register_handlers at 0x0000020DAF2D4B70, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 94>)
+            232 MAKE_FUNCTION            0
+            234 STORE_NAME              23 (_register_handlers)
+
+103         236 LOAD_NAME               18 (final)
+
+104         238 LOAD_CONST              17 (<code object render_frame at 0x0000020DAEB70A00, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 103>)
+            240 MAKE_FUNCTION            0
+
+103         242 CALL                     0
+
+104         250 STORE_NAME              24 (render_frame)
+
+126         252 LOAD_CONST              18 ('driver_list')
+            254 LOAD_NAME               25 (list)
+            256 LOAD_CONST              19 ('return')
+            258 LOAD_NAME               26 (tuple)
+            260 LOAD_NAME               14 (bool)
+            262 LOAD_NAME               14 (bool)
+            264 LOAD_NAME               14 (bool)
+            266 LOAD_NAME               25 (list)
+            268 BUILD_TUPLE              4
+            270 BINARY_SUBSCR
+            274 BUILD_TUPLE              4
+            276 LOAD_CONST              20 (<code object _compute_radar_frame at 0x0000020DAF29EA30, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 126>)
+            278 MAKE_FUNCTION            4 (annotations)
+            280 STORE_NAME              27 (_compute_radar_frame)
+
+154         282 LOAD_NAME               28 (staticmethod)
+
+155         284 LOAD_CONST              21 ('rel_x')
+            286 LOAD_NAME               16 (float)
+            288 LOAD_CONST              22 ('rel_z')
+            290 LOAD_NAME               16 (float)
+            292 LOAD_CONST              19 ('return')
+            294 LOAD_NAME               14 (bool)
+            296 BUILD_TUPLE              6
+            298 LOAD_CONST              23 (<code object _is_car_on_left at 0x0000020DAF2DF550, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 154>)
+            300 MAKE_FUNCTION            4 (annotations)
+
+154         302 CALL                     0
+
+155         310 STORE_NAME              29 (_is_car_on_left)
+
+158         312 LOAD_NAME               28 (staticmethod)
+
+159         314 LOAD_CONST              21 ('rel_x')
+            316 LOAD_NAME               16 (float)
+            318 LOAD_CONST              22 ('rel_z')
+            320 LOAD_NAME               16 (float)
+            322 LOAD_CONST              19 ('return')
+            324 LOAD_NAME               14 (bool)
+            326 BUILD_TUPLE              6
+            328 LOAD_CONST              24 (<code object _is_car_on_right at 0x0000020DAF2DF440, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 158>)
+            330 MAKE_FUNCTION            4 (annotations)
+
+158         332 CALL                     0
+
+159         340 STORE_NAME              30 (_is_car_on_right)
+
+162         342 LOAD_CONST              25 ('session')
+            344 LOAD_NAME               31 (LiveSessionMotionInfo)
+            346 LOAD_CONST              19 ('return')
+            348 LOAD_NAME               32 (Optional)
+            350 LOAD_NAME               33 (DriverMotionInfo)
+            352 BINARY_SUBSCR
+            356 BUILD_TUPLE              4
+            358 LOAD_CONST              26 (<code object _get_reference_driver at 0x0000020DAF2D1C30, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 162>)
+            360 MAKE_FUNCTION            4 (annotations)
+            362 STORE_NAME              34 (_get_reference_driver)
+
+169         364 LOAD_CONST              25 ('session')
+
+170         366 LOAD_NAME               31 (LiveSessionMotionInfo)
+
+169         368 LOAD_CONST              27 ('ref_driver')
+
+171         370 LOAD_NAME               33 (DriverMotionInfo)
+
+169         372 LOAD_CONST              19 ('return')
+
+171         374 LOAD_NAME               25 (list)
+            376 LOAD_NAME               35 (dict)
+            378 BINARY_SUBSCR
+
+169         382 BUILD_TUPLE              6
+            384 LOAD_CONST              28 (<code object _calculate_relative_positions at 0x0000020DB0C1A780, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 169>)
+            386 MAKE_FUNCTION            4 (annotations)
+            388 STORE_NAME              36 (_calculate_relative_positions)
+
+214         390 LOAD_CONST               6 ('opacity')
+            392 LOAD_NAME               15 (int)
+            394 BUILD_TUPLE              2
+            396 LOAD_CONST              29 (<code object _set_base_opacity_property at 0x0000020DAECADA70, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 214>)
+            398 MAKE_FUNCTION            4 (annotations)
+            400 STORE_NAME              37 (_set_base_opacity_property)
+
+217         402 LOAD_CONST               6 ('opacity')
+            404 LOAD_NAME               15 (int)
+            406 BUILD_TUPLE              2
+            408 LOAD_CONST              30 (<code object _set_idle_opacity_property at 0x0000020DAF2BF2D0, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 217>)
+            410 MAKE_FUNCTION            4 (annotations)
+            412 STORE_NAME              38 (_set_idle_opacity_property)
+
+220         414 LOAD_CONST               5 ('locked')
+            416 LOAD_NAME               14 (bool)
+            418 BUILD_TUPLE              2
+            420 LOAD_CONST              31 (<code object _set_locked_property at 0x0000020DAF2BF1E0, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 220>)
+            422 MAKE_FUNCTION            4 (annotations)
+            424 STORE_NAME              39 (_set_locked_property)
+            426 LOAD_CLOSURE             0 (__class__)
+            428 COPY                     1
+            430 STORE_NAME              40 (__classcell__)
+            432 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF2B9E60, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 51>:
+              0 COPY_FREE_VARS           1
+
+ 51           2 RESUME                   0
+
+ 61           4 LOAD_FAST                7 (refresh_interval_ms)
+              6 POP_JUMP_IF_TRUE         2 (to 12)
+              8 LOAD_ASSERTION_ERROR
+             10 RAISE_VARARGS            1
+
+ 62     >>   12 LOAD_FAST                8 (idle_opacity)
+             14 LOAD_FAST                0 (self)
+             16 STORE_ATTR               0 (idle_opacity)
+
+ 63          26 LOAD_GLOBAL              2 (super)
+             36 LOAD_DEREF               9 (__class__)
+             38 LOAD_FAST                0 (self)
+             40 LOAD_SUPER_ATTR          9 (NULL|self + __init__)
+             44 LOAD_FAST                1 (config)
+             46 LOAD_FAST                2 (logger)
+             48 LOAD_FAST                3 (locked)
+             50 LOAD_FAST                4 (opacity)
+             52 LOAD_FAST                5 (scale_factor)
+             54 LOAD_FAST                6 (windowed_overlay)
+             56 LOAD_FAST                7 (refresh_interval_ms)
+             58 CALL                     7
+             66 POP_TOP
+
+ 64          68 LOAD_FAST                0 (self)
+             70 LOAD_ATTR                7 (NULL|self + subscribe_hf)
+             90 LOAD_GLOBAL              8 (LiveSessionMotionInfo)
+            100 CALL                     1
+            108 POP_TOP
+
+ 65         110 LOAD_FAST                0 (self)
+            112 LOAD_ATTR               11 (NULL|self + _register_handlers)
+            132 CALL                     0
+            140 POP_TOP
+            142 RETURN_CONST             0 (None)
+
+Disassembly of <code object pre_setup at 0x0000020DAF2C2890, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 67>:
+ 67           0 RESUME                   0
+
+ 70           2 LOAD_GLOBAL              1 (NULL + car_px)
+             12 LOAD_CONST               1 ('F1 Modern')
+             14 CALL                     1
+             22 UNPACK_SEQUENCE          2
+             26 STORE_FAST               1 (car_w_px)
+             28 STORE_FAST               2 (car_l_px)
+
+ 71          30 LOAD_FAST                0 (self)
+             32 LOAD_ATTR                2 (qml_engine)
+             52 LOAD_ATTR                5 (NULL|self + addImageProvider)
+             72 LOAD_CONST               2 ('radar')
+             74 LOAD_GLOBAL              7 (NULL + RadarGlowImageProvider)
+             84 LOAD_FAST                1 (car_w_px)
+             86 LOAD_FAST                2 (car_l_px)
+             88 CALL                     2
+             96 CALL                     2
+            104 POP_TOP
+            106 RETURN_CONST             3 (None)
+
+Disassembly of <code object post_setup at 0x0000020DAF2F85B0, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 73>:
+ 73           0 RESUME                   0
+
+ 76           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + _set_base_opacity_property)
+             24 LOAD_FAST                0 (self)
+             26 LOAD_ATTR                2 (opacity)
+             46 CALL                     1
+             54 POP_TOP
+
+ 77          56 LOAD_FAST                0 (self)
+             58 LOAD_ATTR                5 (NULL|self + _set_idle_opacity_property)
+             78 LOAD_FAST                0 (self)
+             80 LOAD_ATTR                6 (idle_opacity)
+            100 CALL                     1
+            108 POP_TOP
+
+ 78         110 LOAD_FAST                0 (self)
+            112 LOAD_ATTR                9 (NULL|self + set_qml_property)
+            132 LOAD_CONST               1 ('radarAreaRatio')
+            134 LOAD_GLOBAL             10 (_RADAR_AREA_RATIO)
+            144 CALL                     2
+            152 POP_TOP
+            154 RETURN_CONST             2 (None)
+
+Disassembly of <code object set_opacity at 0x0000020DAF2F82F0, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 80>:
+              0 COPY_FREE_VARS           1
+
+ 80           2 RESUME                   0
+
+ 83           4 LOAD_FAST                0 (self)
+              6 LOAD_ATTR                0 (logger)
+             26 LOAD_ATTR                3 (NULL|self + debug)
+             46 LOAD_CONST               1 ('%s | [OVERRIDDEN HANDLER] Setting opacity to %s')
+             48 LOAD_FAST                0 (self)
+             50 LOAD_ATTR                4 (OVERLAY_ID)
+             70 LOAD_FAST                1 (opacity)
+             72 CALL                     3
+             80 POP_TOP
+
+ 84          82 LOAD_GLOBAL              6 (super)
+             92 LOAD_DEREF               2 (__class__)
+             94 LOAD_FAST                0 (self)
+             96 LOAD_SUPER_ATTR         17 (NULL|self + set_opacity)
+            100 LOAD_FAST                1 (opacity)
+            102 CALL                     1
+            110 POP_TOP
+
+ 85         112 LOAD_FAST                0 (self)
+            114 LOAD_ATTR               11 (NULL|self + _set_base_opacity_property)
+            134 LOAD_FAST                1 (opacity)
+            136 CALL                     1
+            144 POP_TOP
+            146 RETURN_CONST             2 (None)
+
+Disassembly of <code object set_locked_state at 0x0000020DAF2F8B30, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 87>:
+              0 COPY_FREE_VARS           1
+
+ 87           2 RESUME                   0
+
+ 90           4 LOAD_FAST                0 (self)
+              6 LOAD_ATTR                0 (logger)
+             26 LOAD_ATTR                3 (NULL|self + debug)
+             46 LOAD_CONST               1 ('%s | [OVERRIDDEN HANDLER] Setting locked state to %s')
+             48 LOAD_FAST                0 (self)
+             50 LOAD_ATTR                4 (OVERLAY_ID)
+             70 LOAD_FAST                1 (locked)
+             72 CALL                     3
+             80 POP_TOP
+
+ 91          82 LOAD_GLOBAL              6 (super)
+             92 LOAD_DEREF               2 (__class__)
+             94 LOAD_FAST                0 (self)
+             96 LOAD_SUPER_ATTR         17 (NULL|self + set_locked_state)
+            100 LOAD_FAST                1 (locked)
+            102 CALL                     1
+            110 POP_TOP
+
+ 92         112 LOAD_FAST                0 (self)
+            114 LOAD_ATTR               11 (NULL|self + _set_locked_property)
+            134 LOAD_FAST                1 (locked)
+            136 CALL                     1
+            144 POP_TOP
+            146 RETURN_CONST             2 (None)
+
+Disassembly of <code object _register_handlers at 0x0000020DAF2D4B70, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 94>:
+              0 MAKE_CELL                0 (self)
+
+ 94           2 RESUME                   0
+
+ 95           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('set_track_radar_idle_opacity')
+             28 CALL                     1
+
+ 96          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (Dict)
+             48 LOAD_GLOBAL              4 (str)
+             58 LOAD_GLOBAL              6 (Any)
+             68 BUILD_TUPLE              2
+             70 BINARY_SUBSCR
+             74 BUILD_TUPLE              2
+             76 LOAD_CLOSURE             0 (self)
+             78 BUILD_TUPLE              1
+             80 LOAD_CONST               3 (<code object _handle_set_track_radar_idle_opacity at 0x0000020DAF2B9A70, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 95>)
+             82 MAKE_FUNCTION           12 (annotations, closure)
+
+ 95          84 CALL                     0
+
+ 96          92 STORE_FAST               1 (_handle_set_track_radar_idle_opacity)
+             94 RETURN_CONST             0 (None)
+
+Disassembly of <code object _handle_set_track_radar_idle_opacity at 0x0000020DAF2B9A70, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 95>:
+              0 COPY_FREE_VARS           1
+
+ 95           2 RESUME                   0
+
+ 98           4 LOAD_DEREF               2 (self)
+              6 LOAD_ATTR                0 (logger)
+             26 LOAD_ATTR                3 (NULL|self + debug)
+             46 LOAD_CONST               1 ('%s | Received "set_track_radar_idle_opacity" event. Opacity: %s')
+             48 LOAD_DEREF               2 (self)
+             50 LOAD_ATTR                4 (OVERLAY_ID)
+             70 LOAD_FAST                0 (data)
+             72 CALL                     3
+             80 POP_TOP
+
+ 99          82 LOAD_FAST                0 (data)
+             84 LOAD_CONST               2 ('opacity')
+             86 BINARY_SUBSCR
+             90 STORE_FAST               1 (opacity)
+
+100          92 LOAD_FAST                1 (opacity)
+             94 LOAD_DEREF               2 (self)
+             96 STORE_ATTR               3 (idle_opacity)
+
+101         106 LOAD_DEREF               2 (self)
+            108 LOAD_ATTR                9 (NULL|self + _set_idle_opacity_property)
+            128 LOAD_FAST                1 (opacity)
+            130 CALL                     1
+            138 POP_TOP
+            140 RETURN_CONST             3 (None)
+
+Disassembly of <code object render_frame at 0x0000020DAEB70A00, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 103>:
+103           0 RESUME                   0
+
+106           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + get_latest_hf_data)
+             24 LOAD_GLOBAL              2 (LiveSessionMotionInfo)
+             34 CALL                     1
+             42 STORE_FAST               1 (data)
+
+107          44 LOAD_FAST                1 (data)
+             46 POP_JUMP_IF_TRUE         1 (to 50)
+
+108          48 RETURN_CONST             1 (None)
+
+110     >>   50 LOAD_FAST                0 (self)
+             52 LOAD_ATTR                5 (NULL|self + _get_reference_driver)
+             72 LOAD_FAST                1 (data)
+             74 CALL                     1
+             82 STORE_FAST               2 (ref_driver)
+
+111          84 LOAD_FAST                2 (ref_driver)
+             86 POP_JUMP_IF_FALSE       12 (to 112)
+             88 LOAD_FAST                2 (ref_driver)
+             90 LOAD_ATTR                6 (car_motion)
+            110 POP_JUMP_IF_TRUE         1 (to 114)
+
+112     >>  112 RETURN_CONST             1 (None)
+
+114     >>  114 LOAD_GLOBAL              9 (NULL + car_px)
+            124 LOAD_FAST                1 (data)
+            126 LOAD_ATTR               10 (formula_type)
+            146 CALL                     1
+            154 UNPACK_SEQUENCE          2
+            158 STORE_FAST               3 (car_w_px)
+            160 STORE_FAST               4 (car_l_px)
+
+115         162 LOAD_FAST                0 (self)
+            164 LOAD_ATTR               13 (NULL|self + set_qml_property)
+            184 LOAD_CONST               2 ('carWidthPx')
+            186 LOAD_FAST                3 (car_w_px)
+            188 CALL                     2
+            196 POP_TOP
+
+116         198 LOAD_FAST                0 (self)
+            200 LOAD_ATTR               13 (NULL|self + set_qml_property)
+            220 LOAD_CONST               3 ('carLengthPx')
+            222 LOAD_FAST                4 (car_l_px)
+            224 CALL                     2
+            232 POP_TOP
+
+118         234 LOAD_FAST                0 (self)
+            236 LOAD_ATTR               15 (NULL|self + _calculate_relative_positions)
+            256 LOAD_FAST                1 (data)
+            258 LOAD_FAST                2 (ref_driver)
+            260 CALL                     2
+            268 STORE_FAST               5 (driver_list)
+
+119         270 LOAD_FAST                0 (self)
+            272 LOAD_ATTR               17 (NULL|self + _compute_radar_frame)
+            292 LOAD_FAST                5 (driver_list)
+            294 CALL                     1
+            302 UNPACK_SEQUENCE          4
+            306 STORE_FAST               6 (cars_nearby)
+            308 STORE_FAST               7 (car_on_left)
+            310 STORE_FAST               8 (car_on_right)
+            312 STORE_FAST               9 (car_data)
+
+121         314 LOAD_FAST                0 (self)
+            316 LOAD_ATTR               13 (NULL|self + set_qml_property)
+            336 LOAD_CONST               4 ('carsNearby')
+            338 LOAD_FAST                6 (cars_nearby)
+            340 CALL                     2
+            348 POP_TOP
+
+122         350 LOAD_FAST                0 (self)
+            352 LOAD_ATTR               13 (NULL|self + set_qml_property)
+            372 LOAD_CONST               5 ('carOnLeft')
+            374 LOAD_FAST                7 (car_on_left)
+            376 CALL                     2
+            384 POP_TOP
+
+123         386 LOAD_FAST                0 (self)
+            388 LOAD_ATTR               13 (NULL|self + set_qml_property)
+            408 LOAD_CONST               6 ('carOnRight')
+            410 LOAD_FAST                8 (car_on_right)
+            412 CALL                     2
+            420 POP_TOP
+
+124         422 LOAD_FAST                0 (self)
+            424 LOAD_ATTR               13 (NULL|self + set_qml_property)
+            444 LOAD_CONST               7 ('carData')
+            446 LOAD_FAST                9 (car_data)
+            448 CALL                     2
+            456 POP_TOP
+            458 RETURN_CONST             1 (None)
+
+Disassembly of <code object _compute_radar_frame at 0x0000020DAF29EA30, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 126>:
+126           0 RESUME                   0
+
+128           2 LOAD_CONST               1 (False)
+              4 STORE_FAST               2 (cars_nearby)
+
+129           6 LOAD_CONST               1 (False)
+              8 STORE_FAST               3 (car_on_left)
+
+130          10 LOAD_CONST               1 (False)
+             12 STORE_FAST               4 (car_on_right)
+
+131          14 BUILD_LIST               0
+             16 STORE_FAST               5 (car_data)
+
+133          18 LOAD_FAST                1 (driver_list)
+             20 GET_ITER
+        >>   22 FOR_ITER               138 (to 302)
+             26 STORE_FAST               6 (d)
+
+134          28 LOAD_FAST                6 (d)
+             30 LOAD_CONST               2 ('is_ref')
+             32 BINARY_SUBSCR
+             36 POP_JUMP_IF_FALSE        1 (to 40)
+
+135          38 JUMP_BACKWARD            9 (to 22)
+
+136     >>   40 LOAD_FAST                6 (d)
+             42 LOAD_CONST               3 ('relX')
+             44 BINARY_SUBSCR
+             48 STORE_FAST               7 (rel_x)
+
+137          50 LOAD_FAST                6 (d)
+             52 LOAD_CONST               4 ('relZ')
+             54 BINARY_SUBSCR
+             58 STORE_FAST               8 (rel_z)
+
+138          60 LOAD_GLOBAL              1 (NULL + math)
+             70 LOAD_ATTR                2 (hypot)
+             90 LOAD_FAST                7 (rel_x)
+             92 LOAD_FAST                8 (rel_z)
+             94 CALL                     2
+            102 STORE_FAST               9 (dist)
+
+140         104 LOAD_FAST                9 (dist)
+            106 LOAD_GLOBAL              4 (_RADAR_RANGE_M)
+            116 COMPARE_OP              26 (<=)
+            120 POP_JUMP_IF_FALSE        2 (to 126)
+
+141         122 LOAD_CONST               5 (True)
+            124 STORE_FAST               2 (cars_nearby)
+
+142     >>  126 LOAD_FAST                0 (self)
+            128 LOAD_ATTR                7 (NULL|self + _is_car_on_left)
+            148 LOAD_FAST                7 (rel_x)
+            150 LOAD_FAST                8 (rel_z)
+            152 CALL                     2
+            160 POP_JUMP_IF_FALSE        2 (to 166)
+
+143         162 LOAD_CONST               5 (True)
+            164 STORE_FAST               3 (car_on_left)
+
+144     >>  166 LOAD_FAST                0 (self)
+            168 LOAD_ATTR                9 (NULL|self + _is_car_on_right)
+            188 LOAD_FAST                7 (rel_x)
+            190 LOAD_FAST                8 (rel_z)
+            192 CALL                     2
+            200 POP_JUMP_IF_FALSE        2 (to 206)
+
+145         202 LOAD_CONST               5 (True)
+            204 STORE_FAST               4 (car_on_right)
+
+147     >>  206 LOAD_GLOBAL             11 (NULL + to_radar_coords)
+            216 LOAD_FAST                7 (rel_x)
+            218 LOAD_FAST                8 (rel_z)
+            220 CALL                     2
+            228 UNPACK_SEQUENCE          2
+            232 STORE_FAST              10 (radar_x)
+            234 STORE_FAST              11 (radar_y)
+
+150         236 LOAD_FAST                5 (car_data)
+            238 LOAD_ATTR               13 (NULL|self + extend)
+            258 LOAD_FAST               10 (radar_x)
+            260 LOAD_FAST               11 (radar_y)
+            262 LOAD_FAST                6 (d)
+            264 LOAD_CONST               6 ('heading')
+            266 BINARY_SUBSCR
+            270 UNARY_NEGATIVE
+            272 LOAD_FAST                9 (dist)
+            274 LOAD_GLOBAL              4 (_RADAR_RANGE_M)
+            284 COMPARE_OP              26 (<=)
+            288 BUILD_LIST               4
+            290 CALL                     1
+            298 POP_TOP
+            300 JUMP_BACKWARD          140 (to 22)
+
+133     >>  302 END_FOR
+
+152         304 LOAD_FAST                2 (cars_nearby)
+            306 LOAD_FAST                3 (car_on_left)
+            308 LOAD_FAST                4 (car_on_right)
+            310 LOAD_FAST                5 (car_data)
+            312 BUILD_TUPLE              4
+            314 RETURN_VALUE
+
+Disassembly of <code object _is_car_on_left at 0x0000020DAF2DF550, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 154>:
+154           0 RESUME                   0
+
+156           2 LOAD_CONST               1 (-4.0)
+              4 LOAD_FAST                0 (rel_x)
+              6 SWAP                     2
+              8 COPY                     2
+             10 COMPARE_OP               2 (<)
+             14 COPY                     1
+             16 POP_JUMP_IF_FALSE        5 (to 28)
+             18 POP_TOP
+             20 LOAD_CONST               2 (-1.5)
+             22 COMPARE_OP               2 (<)
+             26 JUMP_FORWARD             2 (to 32)
+        >>   28 SWAP                     2
+             30 POP_TOP
+        >>   32 COPY                     1
+             34 POP_JUMP_IF_FALSE       14 (to 64)
+             36 POP_TOP
+             38 LOAD_GLOBAL              1 (NULL + abs)
+             48 LOAD_FAST                1 (rel_z)
+             50 CALL                     1
+             58 LOAD_CONST               3 (8.0)
+             60 COMPARE_OP               2 (<)
+        >>   64 RETURN_VALUE
+
+Disassembly of <code object _is_car_on_right at 0x0000020DAF2DF440, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 158>:
+158           0 RESUME                   0
+
+160           2 LOAD_CONST               1 (1.5)
+              4 LOAD_FAST                0 (rel_x)
+              6 SWAP                     2
+              8 COPY                     2
+             10 COMPARE_OP               2 (<)
+             14 COPY                     1
+             16 POP_JUMP_IF_FALSE        5 (to 28)
+             18 POP_TOP
+             20 LOAD_CONST               2 (4.0)
+             22 COMPARE_OP               2 (<)
+             26 JUMP_FORWARD             2 (to 32)
+        >>   28 SWAP                     2
+             30 POP_TOP
+        >>   32 COPY                     1
+             34 POP_JUMP_IF_FALSE       14 (to 64)
+             36 POP_TOP
+             38 LOAD_GLOBAL              1 (NULL + abs)
+             48 LOAD_FAST                1 (rel_z)
+             50 CALL                     1
+             58 LOAD_CONST               3 (8.0)
+             60 COMPARE_OP               2 (<)
+        >>   64 RETURN_VALUE
+
+Disassembly of <code object _get_reference_driver at 0x0000020DAF2D1C30, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 162>:
+162           0 RESUME                   0
+
+164           2 LOAD_GLOBAL              1 (NULL + next)
+
+165          12 LOAD_CONST               1 (<code object <genexpr> at 0x0000020DAF2D1D30, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 165>)
+             14 MAKE_FUNCTION            0
+             16 LOAD_FAST                1 (session)
+             18 LOAD_ATTR                2 (motion_data)
+             38 GET_ITER
+             40 CALL                     0
+
+166          48 LOAD_CONST               2 (None)
+
+164          50 CALL                     2
+             58 RETURN_VALUE
+
+Disassembly of <code object <genexpr> at 0x0000020DAF2D1D30, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 165>:
+165           0 RETURN_GENERATOR
+              2 POP_TOP
+              4 RESUME                   0
+              6 LOAD_FAST                0 (.0)
+        >>    8 FOR_ITER                19 (to 50)
+             12 STORE_FAST               1 (driver)
+             14 LOAD_FAST                1 (driver)
+             16 LOAD_ATTR                0 (is_ref)
+             36 POP_JUMP_IF_TRUE         1 (to 40)
+             38 JUMP_BACKWARD           16 (to 8)
+        >>   40 LOAD_FAST                1 (driver)
+             42 YIELD_VALUE              1
+             44 RESUME                   1
+             46 POP_TOP
+             48 JUMP_BACKWARD           21 (to 8)
+        >>   50 END_FOR
+             52 RETURN_CONST             0 (None)
+        >>   54 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+             56 RERAISE                  1
+ExceptionTable:
+  4 to 36 -> 54 [0] lasti
+  40 to 52 -> 54 [0] lasti
+
+Disassembly of <code object _calculate_relative_positions at 0x0000020DB0C1A780, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 169>:
+169           0 RESUME                   0
+
+181           2 BUILD_LIST               0
+              4 STORE_FAST               3 (driver_list)
+
+183           6 LOAD_FAST                2 (ref_driver)
+              8 LOAD_ATTR                0 (car_motion)
+             28 LOAD_ATTR                2 (world_position)
+             48 STORE_FAST               4 (ref_pos)
+
+184          50 LOAD_FAST                2 (ref_driver)
+             52 LOAD_ATTR                0 (car_motion)
+             72 LOAD_ATTR                4 (orientation)
+             92 LOAD_ATTR                6 (yaw)
+            112 STORE_FAST               5 (ref_yaw)
+
+186         114 LOAD_GLOBAL              9 (NULL + math)
+            124 LOAD_ATTR               10 (cos)
+            144 LOAD_FAST                5 (ref_yaw)
+            146 UNARY_NEGATIVE
+            148 CALL                     1
+            156 STORE_FAST               6 (cos_yaw)
+
+187         158 LOAD_GLOBAL              9 (NULL + math)
+            168 LOAD_ATTR               12 (sin)
+            188 LOAD_FAST                5 (ref_yaw)
+            190 UNARY_NEGATIVE
+            192 CALL                     1
+            200 STORE_FAST               7 (sin_yaw)
+
+189         202 LOAD_FAST                1 (session)
+            204 LOAD_ATTR               14 (motion_data)
+            224 GET_ITER
+        >>  226 FOR_ITER               197 (to 624)
+            230 STORE_FAST               8 (driver)
+
+190         232 LOAD_FAST                8 (driver)
+            234 LOAD_ATTR                0 (car_motion)
+            254 POP_JUMP_IF_TRUE         1 (to 258)
+
+192         256 JUMP_BACKWARD           16 (to 226)
+
+193     >>  258 LOAD_FAST                8 (driver)
+            260 LOAD_ATTR                0 (car_motion)
+            280 LOAD_ATTR                2 (world_position)
+            300 STORE_FAST               9 (pos)
+
+195         302 LOAD_FAST                9 (pos)
+            304 LOAD_ATTR               16 (x)
+            324 LOAD_FAST                4 (ref_pos)
+            326 LOAD_ATTR               16 (x)
+            346 BINARY_OP               10 (-)
+            350 STORE_FAST              10 (dx)
+
+196         352 LOAD_FAST                9 (pos)
+            354 LOAD_ATTR               18 (z)
+            374 LOAD_FAST                4 (ref_pos)
+            376 LOAD_ATTR               18 (z)
+            396 BINARY_OP               10 (-)
+            400 STORE_FAST              11 (dz)
+
+199         402 LOAD_FAST               11 (dz)
+            404 LOAD_FAST                7 (sin_yaw)
+            406 BINARY_OP                5 (*)
+            410 LOAD_FAST               10 (dx)
+            412 LOAD_FAST                6 (cos_yaw)
+            414 BINARY_OP                5 (*)
+            418 BINARY_OP                0 (+)
+            422 STORE_FAST              12 (rel_x)
+
+200         424 LOAD_FAST               11 (dz)
+            426 LOAD_FAST                6 (cos_yaw)
+            428 BINARY_OP                5 (*)
+            432 LOAD_FAST               10 (dx)
+            434 LOAD_FAST                7 (sin_yaw)
+            436 BINARY_OP                5 (*)
+            440 BINARY_OP               10 (-)
+            444 STORE_FAST              13 (rel_z)
+
+202         446 LOAD_FAST                8 (driver)
+            448 LOAD_ATTR                0 (car_motion)
+            468 LOAD_ATTR                4 (orientation)
+            488 LOAD_ATTR                6 (yaw)
+            508 STORE_FAST              14 (driver_yaw)
+
+203         510 LOAD_GLOBAL              9 (NULL + math)
+            520 LOAD_ATTR               20 (degrees)
+            540 LOAD_FAST               14 (driver_yaw)
+            542 LOAD_FAST                5 (ref_yaw)
+            544 BINARY_OP               10 (-)
+            548 CALL                     1
+            556 STORE_FAST              15 (rel_heading)
+
+205         558 LOAD_FAST                3 (driver_list)
+            560 LOAD_ATTR               23 (NULL|self + append)
+
+206         580 LOAD_FAST                8 (driver)
+            582 LOAD_ATTR               24 (is_ref)
+
+207         602 LOAD_FAST               12 (rel_x)
+
+208         604 LOAD_FAST               13 (rel_z)
+
+209         606 LOAD_FAST               15 (rel_heading)
+
+205         608 LOAD_CONST               1 (('is_ref', 'relX', 'relZ', 'heading'))
+            610 BUILD_CONST_KEY_MAP      4
+            612 CALL                     1
+            620 POP_TOP
+            622 JUMP_BACKWARD          199 (to 226)
+
+189     >>  624 END_FOR
+
+212         626 LOAD_FAST                3 (driver_list)
+            628 RETURN_VALUE
+
+Disassembly of <code object _set_base_opacity_property at 0x0000020DAECADA70, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 214>:
+214           0 RESUME                   0
+
+215           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             24 LOAD_CONST               1 ('baseOpacity')
+             26 LOAD_FAST                1 (opacity)
+             28 LOAD_CONST               2 (100.0)
+             30 BINARY_OP               11 (/)
+             34 CALL                     2
+             42 POP_TOP
+             44 RETURN_CONST             0 (None)
+
+Disassembly of <code object _set_idle_opacity_property at 0x0000020DAF2BF2D0, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 217>:
+217           0 RESUME                   0
+
+218           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             24 LOAD_CONST               1 ('idleOpacity')
+             26 LOAD_FAST                1 (opacity)
+             28 LOAD_CONST               2 (100.0)
+             30 BINARY_OP               11 (/)
+             34 CALL                     2
+             42 POP_TOP
+             44 RETURN_CONST             0 (None)
+
+Disassembly of <code object _set_locked_property at 0x0000020DAF2BF1E0, file "apps\hud\ui\overlays\track_radar\track_radar.py", line 220>:
+220           0 RESUME                   0
+
+221           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             24 LOAD_CONST               1 ('lockedMode')
+             26 LOAD_FAST                1 (locked)
+             28 CALL                     2
+             36 POP_TOP
+             38 RETURN_CONST             0 (None)

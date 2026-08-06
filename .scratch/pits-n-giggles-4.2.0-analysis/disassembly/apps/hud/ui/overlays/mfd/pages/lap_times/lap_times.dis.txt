@@ -1,0 +1,669 @@
+  0           0 RESUME                   0
+
+ 25           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 26          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('Path',))
+             14 IMPORT_NAME              1 (pathlib)
+             16 IMPORT_FROM              2 (Path)
+             18 STORE_NAME               2 (Path)
+             20 POP_TOP
+
+ 27          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('TYPE_CHECKING', 'Any', 'Dict', 'List', 'final'))
+             26 IMPORT_NAME              3 (typing)
+             28 IMPORT_FROM              4 (TYPE_CHECKING)
+             30 STORE_NAME               4 (TYPE_CHECKING)
+             32 IMPORT_FROM              5 (Any)
+             34 STORE_NAME               5 (Any)
+             36 IMPORT_FROM              6 (Dict)
+             38 STORE_NAME               6 (Dict)
+             40 IMPORT_FROM              7 (List)
+             42 STORE_NAME               7 (List)
+             44 IMPORT_FROM              8 (final)
+             46 STORE_NAME               8 (final)
+             48 POP_TOP
+
+ 29          50 LOAD_CONST               0 (0)
+             52 LOAD_CONST               4 (('MfdPageBase',))
+             54 IMPORT_NAME              9 (apps.hud.ui.overlays.mfd.pages.base_page)
+             56 IMPORT_FROM             10 (MfdPageBase)
+             58 STORE_NAME              10 (MfdPageBase)
+             60 POP_TOP
+
+ 30          62 LOAD_CONST               0 (0)
+             64 LOAD_CONST               5 (('MfdPageId',))
+             66 IMPORT_NAME             11 (lib.config)
+             68 IMPORT_FROM             12 (MfdPageId)
+             70 STORE_NAME              12 (MfdPageId)
+             72 POP_TOP
+
+ 32          74 LOAD_NAME                4 (TYPE_CHECKING)
+             76 POP_JUMP_IF_FALSE        6 (to 90)
+
+ 33          78 LOAD_CONST               0 (0)
+             80 LOAD_CONST               6 (('MfdOverlay',))
+             82 IMPORT_NAME             13 (apps.hud.ui.overlays.mfd.mfd)
+             84 IMPORT_FROM             14 (MfdOverlay)
+             86 STORE_NAME              14 (MfdOverlay)
+             88 POP_TOP
+
+ 37     >>   90 PUSH_NULL
+             92 LOAD_BUILD_CLASS
+             94 LOAD_CONST               7 (<code object LapTimesPage at 0x0000020DAF225DF0, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 37>)
+             96 MAKE_FUNCTION            0
+             98 LOAD_CONST               8 ('LapTimesPage')
+            100 LOAD_NAME               10 (MfdPageBase)
+            102 CALL                     3
+            110 STORE_NAME              15 (LapTimesPage)
+            112 RETURN_CONST             1 (None)
+
+Disassembly of <code object LapTimesPage at 0x0000020DAF225DF0, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 37>:
+              0 MAKE_CELL                0 (__class__)
+
+ 37           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('LapTimesPage')
+             10 STORE_NAME               2 (__qualname__)
+             12 SETUP_ANNOTATIONS
+
+ 38          14 LOAD_CONST               1 ('Lap Times MFD Page.')
+             16 STORE_NAME               3 (__doc__)
+
+ 39          18 LOAD_NAME                4 (MfdPageId)
+             20 LOAD_ATTR               10 (LAP_TIMES)
+             40 STORE_NAME               6 (KEY)
+
+ 40          42 PUSH_NULL
+             44 LOAD_NAME                7 (Path)
+             46 LOAD_NAME                8 (__file__)
+             48 CALL                     1
+             56 LOAD_ATTR               18 (parent)
+             76 LOAD_CONST               2 ('lap_times_page.qml')
+             78 BINARY_OP               11 (/)
+             82 STORE_NAME              10 (QML_FILE)
+             84 LOAD_NAME                7 (Path)
+             86 LOAD_NAME               11 (__annotations__)
+             88 LOAD_CONST               3 ('QML_FILE')
+             90 STORE_SUBSCR
+
+ 42          94 LOAD_CONST               4 (5)
+             96 STORE_NAME              12 (NUM_ROWS)
+
+ 44          98 LOAD_CONST               5 (1)
+            100 STORE_NAME              13 (LAP_VALID_MASK)
+
+ 45         102 LOAD_CONST               6 (2)
+            104 STORE_NAME              14 (S1_VALID_MASK)
+
+ 46         106 LOAD_CONST               7 (4)
+            108 STORE_NAME              15 (S2_VALID_MASK)
+
+ 47         110 LOAD_CONST               8 (8)
+            112 STORE_NAME              16 (S3_VALID_MASK)
+
+ 49         114 LOAD_CONST               9 ('overlay')
+            116 LOAD_CONST              10 ('MfdOverlay')
+            118 LOAD_CONST              11 ('logger')
+            120 LOAD_NAME               17 (logging)
+            122 LOAD_ATTR               36 (Logger)
+            142 BUILD_TUPLE              4
+            144 LOAD_CLOSURE             0 (__class__)
+            146 BUILD_TUPLE              1
+            148 LOAD_CONST              12 (<code object __init__ at 0x0000020DAF2D4B70, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 49>)
+            150 MAKE_FUNCTION           12 (annotations, closure)
+            152 STORE_NAME              19 (__init__)
+
+ 54         154 LOAD_NAME               20 (final)
+
+ 55         156 LOAD_CONST              13 (<code object on_page_activated at 0x0000020DAF2F1DF0, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 54>)
+            158 MAKE_FUNCTION            0
+
+ 54         160 CALL                     0
+
+ 55         168 STORE_NAME              21 (on_page_activated)
+
+ 59         170 LOAD_CONST              14 (<code object _init_event_handlers at 0x0000020DAF2D4030, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 59>)
+            172 MAKE_FUNCTION            0
+            174 STORE_NAME              22 (_init_event_handlers)
+
+151         176 LOAD_CONST              15 ('lap_num')
+            178 LOAD_NAME               23 (int)
+            180 LOAD_CONST              16 ('time_ms')
+            182 LOAD_NAME               23 (int)
+            184 LOAD_CONST              17 ('global_best_time_ms')
+            186 LOAD_NAME               23 (int)
+            188 LOAD_CONST              18 ('pb_lap_num')
+
+152         190 LOAD_NAME               23 (int)
+
+151         192 LOAD_CONST              19 ('isValid')
+
+152         194 LOAD_NAME               24 (bool)
+
+151         196 LOAD_CONST              20 ('return')
+
+152         198 LOAD_NAME               25 (str)
+
+151         200 BUILD_TUPLE             12
+            202 LOAD_CONST              21 (<code object _get_cell_text_colour at 0x0000020DAECADC50, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 151>)
+            204 MAKE_FUNCTION            4 (annotations)
+            206 STORE_NAME              26 (_get_cell_text_colour)
+
+162         208 LOAD_CONST              15 ('lap_num')
+            210 LOAD_NAME               23 (int)
+            212 LOAD_CONST              16 ('time_ms')
+            214 LOAD_NAME               23 (int)
+            216 LOAD_CONST              17 ('global_best_time_ms')
+            218 LOAD_NAME               23 (int)
+            220 LOAD_CONST              18 ('pb_lap_num')
+
+163         222 LOAD_NAME               23 (int)
+
+162         224 LOAD_CONST              19 ('isValid')
+
+163         226 LOAD_NAME               24 (bool)
+
+162         228 LOAD_CONST              20 ('return')
+
+163         230 LOAD_NAME               27 (SyntaxError)
+
+162         232 BUILD_TUPLE             12
+            234 LOAD_CONST              22 (<code object _get_cell_text_colour at 0x0000020DAECADA70, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 162>)
+            236 MAKE_FUNCTION            4 (annotations)
+            238 STORE_NAME              26 (_get_cell_text_colour)
+            240 LOAD_CLOSURE             0 (__class__)
+            242 COPY                     1
+            244 STORE_NAME              28 (__classcell__)
+            246 RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x0000020DAF2D4B70, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 49>:
+              0 COPY_FREE_VARS           1
+
+ 49           2 RESUME                   0
+
+ 50           4 BUILD_LIST               0
+              6 LOAD_FAST                0 (self)
+              8 STORE_ATTR               0 (_last_processed_data)
+
+ 51          18 LOAD_GLOBAL              2 (super)
+             28 LOAD_DEREF               3 (__class__)
+             30 LOAD_FAST                0 (self)
+             32 LOAD_SUPER_ATTR          9 (NULL|self + __init__)
+             36 LOAD_FAST                1 (overlay)
+             38 LOAD_FAST                2 (logger)
+             40 CALL                     2
+             48 POP_TOP
+
+ 52          50 LOAD_FAST                0 (self)
+             52 LOAD_ATTR                7 (NULL|self + _init_event_handlers)
+             72 CALL                     0
+             80 POP_TOP
+             82 RETURN_CONST             0 (None)
+
+Disassembly of <code object on_page_activated at 0x0000020DAF2F1DF0, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 54>:
+ 54           0 RESUME                   0
+
+ 57           2 BUILD_LIST               0
+              4 LOAD_FAST                0 (self)
+              6 STORE_ATTR               0 (_last_processed_data)
+             16 RETURN_CONST             0 (None)
+
+Disassembly of <code object _init_event_handlers at 0x0000020DAF2D4030, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 59>:
+              0 MAKE_CELL                0 (self)
+
+ 59           2 RESUME                   0
+
+ 61           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('stream_overlay_update')
+             28 CALL                     1
+
+ 62          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (Dict)
+             48 LOAD_GLOBAL              4 (str)
+             58 LOAD_GLOBAL              6 (Any)
+             68 BUILD_TUPLE              2
+             70 BINARY_SUBSCR
+             74 BUILD_TUPLE              2
+             76 LOAD_CLOSURE             0 (self)
+             78 BUILD_TUPLE              1
+             80 LOAD_CONST               3 (<code object _handle_stream_overlay_update at 0x0000020DB0C520B0, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 61>)
+             82 MAKE_FUNCTION           12 (annotations, closure)
+
+ 61          84 CALL                     0
+
+ 62          92 STORE_FAST               1 (_handle_stream_overlay_update)
+             94 RETURN_CONST             4 (None)
+
+Disassembly of <code object _handle_stream_overlay_update at 0x0000020DB0C520B0, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 61>:
+              0 COPY_FREE_VARS           1
+
+ 61           2 RESUME                   0
+
+ 64           4 LOAD_FAST                0 (data)
+              6 LOAD_ATTR                1 (NULL|self + get)
+             26 LOAD_CONST               1 ('lap-time-history')
+             28 BUILD_MAP                0
+             30 CALL                     2
+             38 STORE_FAST               1 (lap_time_history)
+
+ 65          40 LOAD_FAST                1 (lap_time_history)
+             42 POP_JUMP_IF_TRUE         1 (to 46)
+
+ 66          44 RETURN_CONST             2 (None)
+
+ 68     >>   46 LOAD_DEREF              38 (self)
+             48 LOAD_ATTR                2 (_last_processed_data)
+             68 LOAD_FAST                1 (lap_time_history)
+             70 COMPARE_OP              40 (==)
+             74 POP_JUMP_IF_FALSE        1 (to 78)
+
+ 69          76 RETURN_CONST             2 (None)
+
+ 71     >>   78 LOAD_FAST                1 (lap_time_history)
+             80 LOAD_ATTR                1 (NULL|self + get)
+            100 LOAD_CONST               3 ('lap-time-history-data')
+            102 BUILD_LIST               0
+            104 CALL                     2
+            112 STORE_FAST               2 (history_data)
+
+ 72         114 LOAD_FAST                2 (history_data)
+            116 POP_JUMP_IF_TRUE         1 (to 120)
+
+ 73         118 RETURN_CONST             2 (None)
+
+ 76     >>  120 LOAD_FAST                2 (history_data)
+            122 LOAD_DEREF              38 (self)
+            124 LOAD_ATTR                4 (NUM_ROWS)
+            144 UNARY_NEGATIVE
+            146 LOAD_CONST               2 (None)
+            148 BINARY_SLICE
+            150 STORE_FAST               3 (recent_laps)
+
+ 77         152 LOAD_FAST                3 (recent_laps)
+            154 POP_JUMP_IF_TRUE         1 (to 158)
+
+ 78         156 RETURN_CONST             2 (None)
+
+ 80     >>  158 LOAD_FAST                1 (lap_time_history)
+            160 LOAD_CONST               4 ('fastest-lap-number')
+            162 BINARY_SUBSCR
+            166 STORE_FAST               4 (pb_lap_num)
+
+ 81         168 LOAD_FAST                1 (lap_time_history)
+            170 LOAD_CONST               5 ('fastest-s1-lap-number')
+            172 BINARY_SUBSCR
+            176 STORE_FAST               5 (pb_s1_lap_num)
+
+ 82         178 LOAD_FAST                1 (lap_time_history)
+            180 LOAD_CONST               6 ('fastest-s2-lap-number')
+            182 BINARY_SUBSCR
+            186 STORE_FAST               6 (pb_s2_lap_num)
+
+ 83         188 LOAD_FAST                1 (lap_time_history)
+            190 LOAD_CONST               7 ('fastest-s3-lap-number')
+            192 BINARY_SUBSCR
+            196 STORE_FAST               7 (pb_s3_lap_num)
+
+ 84         198 LOAD_FAST                1 (lap_time_history)
+            200 LOAD_CONST               8 ('global-fastest-lap-ms')
+            202 BINARY_SUBSCR
+            206 STORE_FAST               8 (glob_best_lap_ms)
+
+ 85         208 LOAD_FAST                1 (lap_time_history)
+            210 LOAD_CONST               9 ('global-fastest-s1-ms')
+            212 BINARY_SUBSCR
+            216 STORE_FAST               9 (glob_best_s1_ms)
+
+ 86         218 LOAD_FAST                1 (lap_time_history)
+            220 LOAD_CONST              10 ('global-fastest-s2-ms')
+            222 BINARY_SUBSCR
+            226 STORE_FAST              10 (glob_best_s2_ms)
+
+ 87         228 LOAD_FAST                1 (lap_time_history)
+            230 LOAD_CONST              11 ('global-fastest-s3-ms')
+            232 BINARY_SUBSCR
+            236 STORE_FAST              11 (glob_best_s3_ms)
+
+ 90         238 BUILD_LIST               0
+            240 STORE_FAST              12 (all_rows)
+
+ 91         242 LOAD_GLOBAL              7 (NULL + reversed)
+            252 LOAD_FAST                3 (recent_laps)
+            254 CALL                     1
+            262 GET_ITER
+        >>  264 EXTENDED_ARG             1
+            266 FOR_ITER               315 (to 900)
+            270 STORE_FAST              13 (lap_info)
+
+ 92         272 LOAD_FAST               13 (lap_info)
+            274 LOAD_CONST              12 ('lap-number')
+            276 BINARY_SUBSCR
+            280 STORE_FAST              14 (lap_num)
+
+ 94         282 LOAD_FAST               13 (lap_info)
+            284 LOAD_CONST              13 ('sector-1-time-in-ms')
+            286 BINARY_SUBSCR
+            290 STORE_FAST              15 (s1_time_ms)
+
+ 95         292 LOAD_FAST               13 (lap_info)
+            294 LOAD_CONST              14 ('sector-2-time-in-ms')
+            296 BINARY_SUBSCR
+            300 STORE_FAST              16 (s2_time_ms)
+
+ 96         302 LOAD_FAST               13 (lap_info)
+            304 LOAD_CONST              15 ('sector-3-time-in-ms')
+            306 BINARY_SUBSCR
+            310 STORE_FAST              17 (s3_time_ms)
+
+ 97         312 LOAD_FAST               13 (lap_info)
+            314 LOAD_CONST              16 ('lap-time-in-ms')
+            316 BINARY_SUBSCR
+            320 STORE_FAST              18 (lap_time_ms)
+
+ 99         322 LOAD_FAST               13 (lap_info)
+            324 LOAD_CONST              17 ('sector-1-time-str')
+            326 BINARY_SUBSCR
+            330 STORE_FAST              19 (s1_str)
+
+100         332 LOAD_FAST               13 (lap_info)
+            334 LOAD_CONST              18 ('sector-2-time-str')
+            336 BINARY_SUBSCR
+            340 STORE_FAST              20 (s2_str)
+
+101         342 LOAD_FAST               13 (lap_info)
+            344 LOAD_CONST              19 ('sector-3-time-str')
+            346 BINARY_SUBSCR
+            350 STORE_FAST              21 (s3_str)
+
+102         352 LOAD_FAST               13 (lap_info)
+            354 LOAD_CONST              20 ('lap-time-str')
+            356 BINARY_SUBSCR
+            360 STORE_FAST              22 (lap_str)
+
+104         362 LOAD_FAST               13 (lap_info)
+            364 LOAD_CONST              21 ('lap-valid-bit-flags')
+            366 BINARY_SUBSCR
+            370 STORE_FAST              23 (validFlags)
+
+106         372 LOAD_GLOBAL              9 (NULL + bool)
+            382 LOAD_FAST               23 (validFlags)
+            384 LOAD_DEREF              38 (self)
+            386 LOAD_ATTR               10 (S1_VALID_MASK)
+            406 BINARY_OP                1 (&)
+            410 CALL                     1
+            418 STORE_FAST              24 (s1_valid)
+
+107         420 LOAD_GLOBAL              9 (NULL + bool)
+            430 LOAD_FAST               23 (validFlags)
+            432 LOAD_DEREF              38 (self)
+            434 LOAD_ATTR               12 (S2_VALID_MASK)
+            454 BINARY_OP                1 (&)
+            458 CALL                     1
+            466 STORE_FAST              25 (s2_valid)
+
+108         468 LOAD_GLOBAL              9 (NULL + bool)
+            478 LOAD_FAST               23 (validFlags)
+            480 LOAD_DEREF              38 (self)
+            482 LOAD_ATTR               14 (S3_VALID_MASK)
+            502 BINARY_OP                1 (&)
+            506 CALL                     1
+            514 STORE_FAST              26 (s3_valid)
+
+109         516 LOAD_GLOBAL              9 (NULL + bool)
+            526 LOAD_FAST               23 (validFlags)
+            528 LOAD_DEREF              38 (self)
+            530 LOAD_ATTR               16 (LAP_VALID_MASK)
+            550 BINARY_OP                1 (&)
+            554 CALL                     1
+            562 STORE_FAST              27 (lap_valid)
+
+112         564 LOAD_FAST               19 (s1_str)
+            566 LOAD_CONST              22 (('0.000', '00:00.000'))
+            568 CONTAINS_OP              1
+            570 POP_JUMP_IF_FALSE        2 (to 576)
+            572 LOAD_FAST               19 (s1_str)
+            574 JUMP_FORWARD             1 (to 578)
+        >>  576 LOAD_CONST              23 ('---')
+        >>  578 STORE_FAST              28 (s1_disp)
+
+113         580 LOAD_FAST               20 (s2_str)
+            582 LOAD_CONST              22 (('0.000', '00:00.000'))
+            584 CONTAINS_OP              1
+            586 POP_JUMP_IF_FALSE        2 (to 592)
+            588 LOAD_FAST               20 (s2_str)
+            590 JUMP_FORWARD             1 (to 594)
+        >>  592 LOAD_CONST              23 ('---')
+        >>  594 STORE_FAST              29 (s2_disp)
+
+114         596 LOAD_FAST               21 (s3_str)
+            598 LOAD_CONST              22 (('0.000', '00:00.000'))
+            600 CONTAINS_OP              1
+            602 POP_JUMP_IF_FALSE        2 (to 608)
+            604 LOAD_FAST               21 (s3_str)
+            606 JUMP_FORWARD             1 (to 610)
+        >>  608 LOAD_CONST              23 ('---')
+        >>  610 STORE_FAST              30 (s3_disp)
+
+115         612 LOAD_FAST               22 (lap_str)
+            614 LOAD_CONST              22 (('0.000', '00:00.000'))
+            616 CONTAINS_OP              1
+            618 POP_JUMP_IF_FALSE        2 (to 624)
+            620 LOAD_FAST               22 (lap_str)
+            622 JUMP_FORWARD             1 (to 626)
+        >>  624 LOAD_CONST              23 ('---')
+        >>  626 STORE_FAST              31 (lap_disp)
+
+117         628 LOAD_CONST              24 ('#e0e0e0')
+            630 STORE_FAST              32 (lap_num_col)
+
+118         632 LOAD_DEREF              38 (self)
+            634 LOAD_ATTR               19 (NULL|self + _get_cell_text_colour)
+
+119         654 LOAD_FAST               14 (lap_num)
+            656 LOAD_FAST               15 (s1_time_ms)
+            658 LOAD_FAST                9 (glob_best_s1_ms)
+            660 LOAD_FAST                5 (pb_s1_lap_num)
+            662 LOAD_FAST               24 (s1_valid)
+
+118         664 CALL                     5
+            672 STORE_FAST              33 (s1_col)
+
+120         674 LOAD_DEREF              38 (self)
+            676 LOAD_ATTR               19 (NULL|self + _get_cell_text_colour)
+
+121         696 LOAD_FAST               14 (lap_num)
+            698 LOAD_FAST               16 (s2_time_ms)
+            700 LOAD_FAST               10 (glob_best_s2_ms)
+            702 LOAD_FAST                6 (pb_s2_lap_num)
+            704 LOAD_FAST               25 (s2_valid)
+
+120         706 CALL                     5
+            714 STORE_FAST              34 (s2_col)
+
+122         716 LOAD_DEREF              38 (self)
+            718 LOAD_ATTR               19 (NULL|self + _get_cell_text_colour)
+
+123         738 LOAD_FAST               14 (lap_num)
+            740 LOAD_FAST               17 (s3_time_ms)
+            742 LOAD_FAST               11 (glob_best_s3_ms)
+            744 LOAD_FAST                7 (pb_s3_lap_num)
+            746 LOAD_FAST               26 (s3_valid)
+
+122         748 CALL                     5
+            756 STORE_FAST              35 (s3_col)
+
+124         758 LOAD_DEREF              38 (self)
+            760 LOAD_ATTR               19 (NULL|self + _get_cell_text_colour)
+
+125         780 LOAD_FAST               14 (lap_num)
+            782 LOAD_FAST               18 (lap_time_ms)
+            784 LOAD_FAST                8 (glob_best_lap_ms)
+            786 LOAD_FAST                4 (pb_lap_num)
+            788 LOAD_FAST               27 (lap_valid)
+
+124         790 CALL                     5
+            798 STORE_FAST              36 (lap_time_col)
+
+128         800 LOAD_GLOBAL             21 (NULL + str)
+            810 LOAD_FAST               14 (lap_num)
+            812 CALL                     1
+            820 LOAD_FAST               32 (lap_num_col)
+            822 LOAD_CONST              25 (('text', 'color'))
+            824 BUILD_CONST_KEY_MAP      2
+
+129         826 LOAD_FAST               28 (s1_disp)
+            828 LOAD_FAST               33 (s1_col)
+            830 LOAD_CONST              25 (('text', 'color'))
+            832 BUILD_CONST_KEY_MAP      2
+
+130         834 LOAD_FAST               29 (s2_disp)
+            836 LOAD_FAST               34 (s2_col)
+            838 LOAD_CONST              25 (('text', 'color'))
+            840 BUILD_CONST_KEY_MAP      2
+
+131         842 LOAD_FAST               30 (s3_disp)
+            844 LOAD_FAST               35 (s3_col)
+            846 LOAD_CONST              25 (('text', 'color'))
+            848 BUILD_CONST_KEY_MAP      2
+
+132         850 LOAD_FAST               31 (lap_disp)
+            852 LOAD_FAST               36 (lap_time_col)
+            854 LOAD_CONST              25 (('text', 'color'))
+            856 BUILD_CONST_KEY_MAP      2
+
+127         858 BUILD_LIST               5
+            860 STORE_FAST              37 (row)
+
+134         862 LOAD_FAST               12 (all_rows)
+            864 LOAD_ATTR               23 (NULL|self + append)
+            884 LOAD_FAST               37 (row)
+            886 CALL                     1
+            894 POP_TOP
+            896 EXTENDED_ARG             1
+            898 JUMP_BACKWARD          318 (to 264)
+
+ 91     >>  900 END_FOR
+
+137         902 LOAD_GLOBAL             25 (NULL + len)
+            912 LOAD_FAST               12 (all_rows)
+            914 CALL                     1
+            922 LOAD_DEREF              38 (self)
+            924 LOAD_ATTR                4 (NUM_ROWS)
+            944 COMPARE_OP               2 (<)
+            948 POP_JUMP_IF_FALSE       63 (to 1076)
+
+138     >>  950 LOAD_FAST               12 (all_rows)
+            952 LOAD_ATTR               27 (NULL|self + insert)
+            972 LOAD_CONST              26 (0)
+
+139         974 LOAD_CONST              23 ('---')
+            976 LOAD_CONST              27 ('#808080')
+            978 LOAD_CONST              25 (('text', 'color'))
+            980 BUILD_CONST_KEY_MAP      2
+
+140         982 LOAD_CONST              23 ('---')
+            984 LOAD_CONST              27 ('#808080')
+            986 LOAD_CONST              25 (('text', 'color'))
+            988 BUILD_CONST_KEY_MAP      2
+
+141         990 LOAD_CONST              23 ('---')
+            992 LOAD_CONST              27 ('#808080')
+            994 LOAD_CONST              25 (('text', 'color'))
+            996 BUILD_CONST_KEY_MAP      2
+
+142         998 LOAD_CONST              23 ('---')
+           1000 LOAD_CONST              27 ('#808080')
+           1002 LOAD_CONST              25 (('text', 'color'))
+           1004 BUILD_CONST_KEY_MAP      2
+
+143        1006 LOAD_CONST              23 ('---')
+           1008 LOAD_CONST              27 ('#808080')
+           1010 LOAD_CONST              25 (('text', 'color'))
+           1012 BUILD_CONST_KEY_MAP      2
+
+138        1014 BUILD_LIST               5
+           1016 CALL                     2
+           1024 POP_TOP
+
+137        1026 LOAD_GLOBAL             25 (NULL + len)
+           1036 LOAD_FAST               12 (all_rows)
+           1038 CALL                     1
+           1046 LOAD_DEREF              38 (self)
+           1048 LOAD_ATTR                4 (NUM_ROWS)
+           1068 COMPARE_OP               2 (<)
+           1072 POP_JUMP_IF_FALSE        1 (to 1076)
+           1074 JUMP_BACKWARD           63 (to 950)
+
+146     >> 1076 LOAD_DEREF              38 (self)
+           1078 LOAD_ATTR               29 (NULL|self + set_page_property)
+           1098 LOAD_CONST              28 ('rows')
+           1100 LOAD_FAST               12 (all_rows)
+           1102 CALL                     2
+           1110 POP_TOP
+
+149        1112 LOAD_FAST                1 (lap_time_history)
+           1114 LOAD_DEREF              38 (self)
+           1116 STORE_ATTR               1 (_last_processed_data)
+           1126 RETURN_CONST             2 (None)
+
+Disassembly of <code object _get_cell_text_colour at 0x0000020DAECADC50, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 151>:
+151           0 RESUME                   0
+
+154           2 LOAD_FAST                3 (global_best_time_ms)
+              4 POP_JUMP_IF_FALSE        6 (to 18)
+              6 LOAD_FAST                2 (time_ms)
+              8 LOAD_FAST                3 (global_best_time_ms)
+             10 COMPARE_OP              40 (==)
+             14 POP_JUMP_IF_FALSE        1 (to 18)
+
+155          16 RETURN_CONST             1 ('magenta')
+
+156     >>   18 LOAD_FAST                4 (pb_lap_num)
+             20 POP_JUMP_IF_FALSE        6 (to 34)
+             22 LOAD_FAST                1 (lap_num)
+             24 LOAD_FAST                4 (pb_lap_num)
+             26 COMPARE_OP              40 (==)
+             30 POP_JUMP_IF_FALSE        1 (to 34)
+
+157          32 RETURN_CONST             2 ('lime')
+
+158     >>   34 LOAD_FAST                5 (isValid)
+             36 POP_JUMP_IF_TRUE         1 (to 40)
+
+159          38 RETURN_CONST             3 ('red')
+
+160     >>   40 RETURN_CONST             4 ('#e0e0e0')
+
+Disassembly of <code object _get_cell_text_colour at 0x0000020DAECADA70, file "apps\hud\ui\overlays\mfd\pages\lap_times\lap_times.py", line 162>:
+162           0 RESUME                   0
+
+165           2 LOAD_FAST                3 (global_best_time_ms)
+              4 POP_JUMP_IF_FALSE        6 (to 18)
+              6 LOAD_FAST                2 (time_ms)
+              8 LOAD_FAST                3 (global_best_time_ms)
+             10 COMPARE_OP              40 (==)
+             14 POP_JUMP_IF_FALSE        1 (to 18)
+
+166          16 RETURN_CONST             1 ('magenta')
+
+167     >>   18 LOAD_FAST                4 (pb_lap_num)
+             20 POP_JUMP_IF_FALSE        6 (to 34)
+             22 LOAD_FAST                1 (lap_num)
+             24 LOAD_FAST                4 (pb_lap_num)
+             26 COMPARE_OP              40 (==)
+             30 POP_JUMP_IF_FALSE        1 (to 34)
+
+168          32 RETURN_CONST             2 ('lime')
+
+169     >>   34 LOAD_FAST                5 (isValid)
+             36 POP_JUMP_IF_TRUE         1 (to 40)
+
+170          38 RETURN_CONST             3 ('red')
+
+171     >>   40 RETURN_CONST             4 ('#e0e0e0')

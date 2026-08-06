@@ -1,0 +1,522 @@
+  0           0 RESUME                   0
+
+ 27           2 LOAD_CONST               0 (0)
+              4 LOAD_CONST               1 (None)
+              6 IMPORT_NAME              0 (logging)
+              8 STORE_NAME               0 (logging)
+
+ 28          10 LOAD_CONST               0 (0)
+             12 LOAD_CONST               2 (('defaultdict',))
+             14 IMPORT_NAME              1 (collections)
+             16 IMPORT_FROM              2 (defaultdict)
+             18 STORE_NAME               2 (defaultdict)
+             20 POP_TOP
+
+ 29          22 LOAD_CONST               0 (0)
+             24 LOAD_CONST               3 (('Path',))
+             26 IMPORT_NAME              3 (pathlib)
+             28 IMPORT_FROM              4 (Path)
+             30 STORE_NAME               4 (Path)
+             32 POP_TOP
+
+ 30          34 LOAD_CONST               0 (0)
+             36 LOAD_CONST               4 (('Any', 'Dict', 'Optional'))
+             38 IMPORT_NAME              5 (typing)
+             40 IMPORT_FROM              6 (Any)
+             42 STORE_NAME               6 (Any)
+             44 IMPORT_FROM              7 (Dict)
+             46 STORE_NAME               7 (Dict)
+             48 IMPORT_FROM              8 (Optional)
+             50 STORE_NAME               8 (Optional)
+             52 POP_TOP
+
+ 32          54 LOAD_CONST               0 (0)
+             56 LOAD_CONST               5 (('BaseOverlayQML',))
+             58 IMPORT_NAME              9 (apps.hud.ui.overlays.base)
+             60 IMPORT_FROM             10 (BaseOverlayQML)
+             62 STORE_NAME              10 (BaseOverlayQML)
+             64 POP_TOP
+
+ 33          66 LOAD_CONST               0 (0)
+             68 LOAD_CONST               6 (('OverlayId', 'OverlayPosition'))
+             70 IMPORT_NAME             11 (lib.config)
+             72 IMPORT_FROM             12 (OverlayId)
+             74 STORE_NAME              12 (OverlayId)
+             76 IMPORT_FROM             13 (OverlayPosition)
+             78 STORE_NAME              13 (OverlayPosition)
+             80 POP_TOP
+
+ 40          82 PUSH_NULL
+             84 LOAD_BUILD_CLASS
+             86 LOAD_CONST               7 (<code object TrackMapOverlay at 0x0000020DAF225C30, file "apps\hud\ui\overlays\track_map\track_map.py", line 40>)
+             88 MAKE_FUNCTION            0
+             90 LOAD_CONST               8 ('TrackMapOverlay')
+             92 LOAD_NAME               10 (BaseOverlayQML)
+             94 CALL                     3
+            102 STORE_NAME              14 (TrackMapOverlay)
+            104 RETURN_CONST             1 (None)
+
+Disassembly of <code object TrackMapOverlay at 0x0000020DAF225C30, file "apps\hud\ui\overlays\track_map\track_map.py", line 40>:
+              0 MAKE_CELL                0 (__class__)
+
+ 40           2 RESUME                   0
+              4 LOAD_NAME                0 (__name__)
+              6 STORE_NAME               1 (__module__)
+              8 LOAD_CONST               0 ('TrackMapOverlay')
+             10 STORE_NAME               2 (__qualname__)
+
+ 41          12 LOAD_CONST               1 ('\n    Track map overlay that displays an SVG representation of the current circuit.\n\n    - Loads appropriate SVG based on circuit name\n    - Displays the track map in the QML window\n    - Updates when circuit changes\n    ')
+             14 STORE_NAME               3 (__doc__)
+
+ 49          16 PUSH_NULL
+             18 LOAD_NAME                4 (Path)
+             20 LOAD_NAME                5 (__file__)
+             22 CALL                     1
+             30 LOAD_ATTR               12 (parent)
+             50 LOAD_CONST               2 ('track_map.qml')
+             52 BINARY_OP               11 (/)
+             56 STORE_NAME               7 (QML_FILE)
+
+ 50          58 LOAD_NAME                8 (OverlayId)
+             60 LOAD_ATTR               18 (TRACK_MAP)
+             80 STORE_NAME              10 (OVERLAY_ID)
+
+ 52          82 PUSH_NULL
+             84 LOAD_NAME               11 (defaultdict)
+
+ 53          86 LOAD_CONST               3 (<code object <lambda> at 0x0000020DAF2949F0, file "apps\hud\ui\overlays\track_map\track_map.py", line 53>)
+             88 MAKE_FUNCTION            0
+
+ 55          90 LOAD_CONST               4 ('#3671C6')
+
+ 56          92 LOAD_CONST               4 ('#3671C6')
+
+ 58          94 LOAD_CONST               5 ('#6692FF')
+
+ 59          96 LOAD_CONST               5 ('#6692FF')
+
+ 61          98 LOAD_CONST               6 ('#27F4D2')
+
+ 62         100 LOAD_CONST               7 ('#E8002D')
+
+ 63         102 LOAD_CONST               8 ('#FF8000')
+
+ 64         104 LOAD_CONST               8 ('#FF8000')
+
+ 65         106 LOAD_CONST               9 ('#229971')
+
+ 66         108 LOAD_CONST              10 ('#FF87BC')
+
+ 68         110 LOAD_CONST              11 ('#1E2850')
+
+ 69         112 LOAD_CONST              12 ('#9B0000')
+
+ 70         114 LOAD_CONST              13 ('#B6BABD')
+
+ 71         116 LOAD_CONST              14 ('#64C4FF')
+
+ 72         118 LOAD_CONST              15 ('#52E252')
+
+ 54         120 LOAD_CONST              16 (('Red Bull Racing', 'Red Bull', 'VCARB', 'RB', 'Mercedes', 'Ferrari', 'McLaren', 'Mclaren', 'Aston Martin', 'Alpine', 'Alpha Tauri', 'Alfa Romeo', 'Haas', 'Williams', 'Sauber'))
+            122 BUILD_CONST_KEY_MAP     15
+
+ 52         124 CALL                     2
+            132 STORE_NAME              12 (TEAM_COLOURS_HEX)
+
+ 76         134 LOAD_CONST              17 ('config')
+
+ 77         136 LOAD_NAME               13 (OverlayPosition)
+
+ 76         138 LOAD_CONST              18 ('logger')
+
+ 78         140 LOAD_NAME               14 (logging)
+            142 LOAD_ATTR               30 (Logger)
+
+ 76         162 LOAD_CONST              19 ('locked')
+
+ 79         164 LOAD_NAME               16 (bool)
+
+ 76         166 LOAD_CONST              20 ('opacity')
+
+ 80         168 LOAD_NAME               17 (int)
+
+ 76         170 LOAD_CONST              21 ('scale_factor')
+
+ 81         172 LOAD_NAME               18 (float)
+
+ 76         174 LOAD_CONST              22 ('windowed_overlay')
+
+ 82         176 LOAD_NAME               16 (bool)
+
+ 76         178 LOAD_CONST              23 ('refresh_interval_ms')
+
+ 83         180 LOAD_NAME               17 (int)
+
+ 76         182 LOAD_CONST              24 ('return')
+
+ 83         184 LOAD_CONST              25 (None)
+
+ 76         186 BUILD_TUPLE             16
+            188 LOAD_CLOSURE             0 (__class__)
+            190 BUILD_TUPLE              1
+            192 LOAD_CONST              26 (<code object __init__ at 0x0000020DAF2ADA70, file "apps\hud\ui\overlays\track_map\track_map.py", line 76>)
+            194 MAKE_FUNCTION           12 (annotations, closure)
+            196 STORE_NAME              19 (__init__)
+
+ 92         198 LOAD_CONST              27 (<code object _init_handlers at 0x0000020DAF2D4030, file "apps\hud\ui\overlays\track_map\track_map.py", line 92>)
+            200 MAKE_FUNCTION            0
+            202 STORE_NAME              20 (_init_handlers)
+
+130         204 LOAD_CONST              28 ('circuit_name')
+            206 LOAD_NAME               21 (str)
+            208 LOAD_CONST              24 ('return')
+            210 LOAD_NAME               22 (Optional)
+            212 LOAD_NAME               21 (str)
+            214 BINARY_SUBSCR
+            218 BUILD_TUPLE              4
+            220 LOAD_CONST              29 (<code object _get_circuit_svg_path at 0x0000020DAF220DC0, file "apps\hud\ui\overlays\track_map\track_map.py", line 130>)
+            222 MAKE_FUNCTION            4 (annotations)
+            224 STORE_NAME              23 (_get_circuit_svg_path)
+
+149         226 LOAD_CONST              30 (<code object _update_qml_track_map at 0x0000020DAEFD7E10, file "apps\hud\ui\overlays\track_map\track_map.py", line 149>)
+            228 MAKE_FUNCTION            0
+            230 STORE_NAME              24 (_update_qml_track_map)
+
+157         232 LOAD_CONST              31 (<code object _clear_track_map at 0x0000020DAF2B9A70, file "apps\hud\ui\overlays\track_map\track_map.py", line 157>)
+            234 MAKE_FUNCTION            0
+            236 STORE_NAME              25 (_clear_track_map)
+            238 LOAD_CLOSURE             0 (__class__)
+            240 COPY                     1
+            242 STORE_NAME              26 (__classcell__)
+            244 RETURN_VALUE
+
+Disassembly of <code object <lambda> at 0x0000020DAF2949F0, file "apps\hud\ui\overlays\track_map\track_map.py", line 53>:
+ 53           0 RESUME                   0
+              2 RETURN_CONST             1 ('#FFFFFF')
+
+Disassembly of <code object __init__ at 0x0000020DAF2ADA70, file "apps\hud\ui\overlays\track_map\track_map.py", line 76>:
+              0 COPY_FREE_VARS           1
+
+ 76           2 RESUME                   0
+
+ 85           4 LOAD_FAST                7 (refresh_interval_ms)
+              6 POP_JUMP_IF_TRUE         2 (to 12)
+              8 LOAD_ASSERTION_ERROR
+             10 RAISE_VARARGS            1
+
+ 86     >>   12 LOAD_GLOBAL              0 (super)
+             22 LOAD_DEREF               8 (__class__)
+             24 LOAD_FAST                0 (self)
+             26 LOAD_SUPER_ATTR          5 (NULL|self + __init__)
+             30 LOAD_FAST                1 (config)
+             32 LOAD_FAST                2 (logger)
+             34 LOAD_FAST                3 (locked)
+             36 LOAD_FAST                4 (opacity)
+             38 LOAD_FAST                5 (scale_factor)
+             40 LOAD_FAST                6 (windowed_overlay)
+             42 LOAD_FAST                7 (refresh_interval_ms)
+             44 CALL                     7
+             52 POP_TOP
+
+ 87          54 LOAD_FAST                0 (self)
+             56 LOAD_ATTR                5 (NULL|self + _init_handlers)
+             76 CALL                     0
+             84 POP_TOP
+
+ 89          86 LOAD_CONST               0 (None)
+             88 LOAD_FAST                0 (self)
+             90 STORE_ATTR               3 (curr_circuit_name)
+
+ 90         100 LOAD_CONST               0 (None)
+            102 LOAD_FAST                0 (self)
+            104 STORE_ATTR               4 (circuit_svg_path)
+            114 RETURN_CONST             0 (None)
+
+Disassembly of <code object _init_handlers at 0x0000020DAF2D4030, file "apps\hud\ui\overlays\track_map\track_map.py", line 92>:
+              0 MAKE_CELL                0 (self)
+
+ 92           2 RESUME                   0
+
+ 94           4 LOAD_DEREF               0 (self)
+              6 LOAD_ATTR                1 (NULL|self + on_event)
+             26 LOAD_CONST               1 ('stream_overlay_update')
+             28 CALL                     1
+
+ 95          36 LOAD_CONST               2 ('data')
+             38 LOAD_GLOBAL              2 (Dict)
+             48 LOAD_GLOBAL              4 (str)
+             58 LOAD_GLOBAL              6 (Any)
+             68 BUILD_TUPLE              2
+             70 BINARY_SUBSCR
+             74 BUILD_TUPLE              2
+             76 LOAD_CLOSURE             0 (self)
+             78 BUILD_TUPLE              1
+             80 LOAD_CONST               3 (<code object _handle_stream_overlay_update at 0x0000020DAEDE6350, file "apps\hud\ui\overlays\track_map\track_map.py", line 94>)
+             82 MAKE_FUNCTION           12 (annotations, closure)
+
+ 94          84 CALL                     0
+
+ 95          92 STORE_FAST               1 (_handle_stream_overlay_update)
+             94 RETURN_CONST             0 (None)
+
+Disassembly of <code object _handle_stream_overlay_update at 0x0000020DAEDE6350, file "apps\hud\ui\overlays\track_map\track_map.py", line 94>:
+              0 COPY_FREE_VARS           1
+
+ 94           2 RESUME                   0
+
+ 97           4 LOAD_FAST                0 (data)
+              6 LOAD_CONST               1 ('circuit-enum-name')
+              8 BINARY_SUBSCR
+             12 STORE_FAST               1 (circuit)
+
+ 98          14 LOAD_FAST                1 (circuit)
+             16 POP_JUMP_IF_TRUE        29 (to 76)
+             18 LOAD_DEREF              14 (self)
+             20 LOAD_ATTR                0 (curr_circuit_name)
+             40 POP_JUMP_IF_FALSE       17 (to 76)
+
+100          42 LOAD_DEREF              14 (self)
+             44 LOAD_ATTR                3 (NULL|self + _clear_track_map)
+             64 CALL                     0
+             72 POP_TOP
+
+101          74 RETURN_CONST             0 (None)
+
+103     >>   76 LOAD_FAST                0 (data)
+             78 LOAD_CONST               2 ('motion')
+             80 BINARY_SUBSCR
+             84 STORE_FAST               2 (motion_list)
+
+104          86 LOAD_FAST                2 (motion_list)
+             88 POP_JUMP_IF_TRUE         1 (to 92)
+
+105          90 RETURN_CONST             0 (None)
+
+108     >>   92 LOAD_FAST                1 (circuit)
+             94 LOAD_DEREF              14 (self)
+             96 LOAD_ATTR                0 (curr_circuit_name)
+            116 COMPARE_OP              55 (!=)
+            120 POP_JUMP_IF_FALSE       84 (to 290)
+
+109         122 LOAD_FAST                1 (circuit)
+            124 LOAD_DEREF              14 (self)
+            126 STORE_ATTR               0 (curr_circuit_name)
+
+110         136 LOAD_DEREF              14 (self)
+            138 LOAD_ATTR                5 (NULL|self + _get_circuit_svg_path)
+            158 LOAD_FAST                1 (circuit)
+            160 CALL                     1
+            168 LOAD_DEREF              14 (self)
+            170 STORE_ATTR               3 (circuit_svg_path)
+
+111         180 LOAD_DEREF              14 (self)
+            182 LOAD_ATTR                9 (NULL|self + _update_qml_track_map)
+            202 CALL                     0
+            210 POP_TOP
+
+112         212 LOAD_DEREF              14 (self)
+            214 LOAD_ATTR               10 (logger)
+            234 LOAD_ATTR               13 (NULL|self + debug)
+            254 LOAD_CONST               3 ('%s | Loaded new circuit: %s')
+            256 LOAD_DEREF              14 (self)
+            258 LOAD_ATTR               14 (OVERLAY_ID)
+            278 LOAD_FAST                1 (circuit)
+            280 CALL                     3
+            288 POP_TOP
+
+115     >>  290 LOAD_FAST                2 (motion_list)
+            292 GET_ITER
+        >>  294 FOR_ITER                58 (to 414)
+            298 STORE_FAST               3 (car)
+
+116         300 LOAD_FAST                3 (car)
+            302 LOAD_CONST               4 ('name')
+            304 BINARY_SUBSCR
+            308 STORE_FAST               4 (name)
+
+117         310 LOAD_FAST                3 (car)
+            312 LOAD_CONST               5 ('team')
+            314 BINARY_SUBSCR
+            318 STORE_FAST               5 (team)
+
+118         320 LOAD_FAST                3 (car)
+            322 LOAD_CONST               6 ('index')
+            324 BINARY_SUBSCR
+            328 STORE_FAST               6 (index)
+
+119         330 LOAD_FAST                3 (car)
+            332 LOAD_CONST               7 ('ers')
+            334 BINARY_SUBSCR
+            338 LOAD_CONST               8 ('mode')
+            340 BINARY_SUBSCR
+            344 STORE_FAST               7 (ers_mode)
+
+120         346 LOAD_FAST                3 (car)
+            348 LOAD_CONST               2 ('motion')
+            350 BINARY_SUBSCR
+            354 STORE_FAST               8 (motion_data)
+
+121         356 LOAD_FAST                8 (motion_data)
+            358 POP_JUMP_IF_TRUE         1 (to 362)
+
+122         360 JUMP_BACKWARD           34 (to 294)
+
+124     >>  362 LOAD_FAST                8 (motion_data)
+            364 LOAD_CONST               9 ('world-position')
+            366 BINARY_SUBSCR
+            370 STORE_FAST               9 (world_pos)
+
+125         372 LOAD_FAST                8 (motion_data)
+            374 LOAD_CONST              10 ('world-velocity')
+            376 BINARY_SUBSCR
+            380 STORE_FAST              10 (world_vel)
+
+126         382 LOAD_FAST                8 (motion_data)
+            384 LOAD_CONST              11 ('world-forward-dir')
+            386 BINARY_SUBSCR
+            390 STORE_FAST              11 (world_fwd_dir)
+
+127         392 LOAD_FAST                8 (motion_data)
+            394 LOAD_CONST              12 ('world-right-dir')
+            396 BINARY_SUBSCR
+            400 STORE_FAST              12 (world_right_dir)
+
+128         402 LOAD_FAST                8 (motion_data)
+            404 LOAD_CONST              13 ('orientation')
+            406 BINARY_SUBSCR
+            410 STORE_FAST              13 (orientation)
+            412 JUMP_BACKWARD           60 (to 294)
+
+115     >>  414 END_FOR
+            416 RETURN_CONST             0 (None)
+
+Disassembly of <code object _get_circuit_svg_path at 0x0000020DAF220DC0, file "apps\hud\ui\overlays\track_map\track_map.py", line 130>:
+130           0 RESUME                   0
+
+135           2 LOAD_CONST               1 ('_Reverse')
+              4 STORE_FAST               2 (suffix)
+
+136           6 LOAD_GLOBAL              1 (NULL + Path)
+             16 LOAD_CONST               2 ('assets')
+             18 CALL                     1
+             26 LOAD_CONST               3 ('track-maps')
+             28 BINARY_OP               11 (/)
+             32 STORE_FAST               3 (base_path)
+
+137          34 LOAD_FAST                1 (circuit_name)
+             36 LOAD_ATTR                3 (NULL|self + endswith)
+             56 LOAD_FAST                2 (suffix)
+             58 CALL                     1
+             66 POP_JUMP_IF_FALSE       15 (to 98)
+             68 LOAD_FAST                1 (circuit_name)
+             70 LOAD_CONST               4 (None)
+             72 LOAD_GLOBAL              5 (NULL + len)
+             82 LOAD_FAST                2 (suffix)
+             84 CALL                     1
+             92 UNARY_NEGATIVE
+             94 BINARY_SLICE
+             96 JUMP_FORWARD             1 (to 100)
+        >>   98 LOAD_FAST                1 (circuit_name)
+        >>  100 FORMAT_VALUE             0
+            102 LOAD_CONST               5 ('.svg')
+            104 BUILD_STRING             2
+            106 STORE_FAST               4 (svg_name)
+
+139         108 LOAD_FAST                3 (base_path)
+            110 LOAD_FAST                4 (svg_name)
+            112 BINARY_OP               11 (/)
+            116 STORE_FAST               5 (svg_path)
+
+141         118 LOAD_FAST                5 (svg_path)
+            120 LOAD_ATTR                7 (NULL|self + exists)
+            140 CALL                     0
+            148 POP_JUMP_IF_TRUE        40 (to 230)
+
+142         150 LOAD_FAST                0 (self)
+            152 LOAD_ATTR                8 (logger)
+            172 LOAD_ATTR               11 (NULL|self + error)
+            192 LOAD_CONST               6 ('%s | SVG not found: %s')
+            194 LOAD_FAST                0 (self)
+            196 LOAD_ATTR               12 (OVERLAY_ID)
+            216 LOAD_FAST                5 (svg_path)
+            218 CALL                     3
+            226 POP_TOP
+
+143         228 RETURN_CONST             4 (None)
+
+146     >>  230 LOAD_FAST                5 (svg_path)
+            232 LOAD_ATTR               15 (NULL|self + resolve)
+            252 CALL                     0
+            260 STORE_FAST               6 (abs_path)
+
+147         262 LOAD_FAST                6 (abs_path)
+            264 LOAD_ATTR               17 (NULL|self + as_uri)
+            284 CALL                     0
+            292 RETURN_VALUE
+
+Disassembly of <code object _update_qml_track_map at 0x0000020DAEFD7E10, file "apps\hud\ui\overlays\track_map\track_map.py", line 149>:
+149           0 RESUME                   0
+
+151           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (circuit_svg_path)
+             24 POP_JUMP_IF_FALSE       78 (to 182)
+
+152          26 LOAD_FAST                0 (self)
+             28 LOAD_ATTR                3 (NULL|self + set_qml_property)
+             48 LOAD_CONST               1 ('svgPath')
+             50 LOAD_FAST                0 (self)
+             52 LOAD_ATTR                0 (circuit_svg_path)
+             72 CALL                     2
+             80 POP_TOP
+
+153          82 LOAD_FAST                0 (self)
+             84 LOAD_ATTR                4 (logger)
+            104 LOAD_ATTR                7 (NULL|self + debug)
+            124 LOAD_CONST               2 ('%s | Updated QML with SVG: %s')
+            126 LOAD_FAST                0 (self)
+            128 LOAD_ATTR                8 (OVERLAY_ID)
+            148 LOAD_FAST                0 (self)
+            150 LOAD_ATTR                0 (circuit_svg_path)
+            170 CALL                     3
+            178 POP_TOP
+            180 RETURN_CONST             4 (None)
+
+155     >>  182 LOAD_FAST                0 (self)
+            184 LOAD_ATTR                4 (logger)
+            204 LOAD_ATTR               11 (NULL|self + warning)
+            224 LOAD_CONST               3 ('%s | Cannot update QML - path=%s')
+            226 LOAD_FAST                0 (self)
+            228 LOAD_ATTR                8 (OVERLAY_ID)
+            248 LOAD_FAST                0 (self)
+            250 LOAD_ATTR                0 (circuit_svg_path)
+            270 CALL                     3
+            278 POP_TOP
+            280 RETURN_CONST             4 (None)
+
+Disassembly of <code object _clear_track_map at 0x0000020DAF2B9A70, file "apps\hud\ui\overlays\track_map\track_map.py", line 157>:
+157           0 RESUME                   0
+
+159           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + set_qml_property)
+             24 LOAD_CONST               1 ('svgPath')
+             26 LOAD_CONST               2 ('')
+             28 CALL                     2
+             36 POP_TOP
+
+160          38 LOAD_CONST               3 (None)
+             40 LOAD_FAST                0 (self)
+             42 STORE_ATTR               1 (curr_circuit_name)
+
+161          52 LOAD_CONST               3 (None)
+             54 LOAD_FAST                0 (self)
+             56 STORE_ATTR               2 (circuit_svg_path)
+
+162          66 LOAD_FAST                0 (self)
+             68 LOAD_ATTR                6 (logger)
+             88 LOAD_ATTR                9 (NULL|self + debug)
+            108 LOAD_CONST               4 ('%s | Cleared track map')
+            110 LOAD_FAST                0 (self)
+            112 LOAD_ATTR               10 (OVERLAY_ID)
+            132 CALL                     2
+            140 POP_TOP
+            142 RETURN_CONST             3 (None)
