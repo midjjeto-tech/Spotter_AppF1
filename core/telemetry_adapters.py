@@ -75,6 +75,16 @@ TelemetryMessage = (
 SOURCE_RETRY_INTERVAL_S = 5.0
 
 
+def _close_quietly(transport: object | None) -> None:
+    """Закрыть транспорт, если он это умеет. Не все умеют — у iRacing-обёртки
+    и у тестовых дублей закрывать нечего."""
+    if transport is None:
+        return
+    close = getattr(transport, "close", None)
+    if close is not None:
+        close()
+
+
 class F1TelemetryAdapter:
     """Translate the F1 UDP protocol into source-neutral telemetry messages."""
 
@@ -126,7 +136,11 @@ class F1TelemetryAdapter:
                             continue
                         yield from self._decode(data)
                 finally:
-                    transport.close()
+                    # Терпимо к транспорту без close() — ровно как close()
+                    # адаптера ниже. Раньше закрытие шло только этим путём, и
+                    # прямой вызов сломал тестовые дубли, которым закрывать
+                    # нечего.
+                    _close_quietly(transport)
                     if self._transport is transport:
                         self._transport = None
                 # Сокет открывался успешно и поток закончился — значит нас
@@ -183,6 +197,11 @@ class F1TelemetryAdapter:
             yield TelemetryDelta("car_damage", payload, player, telemetry_year)
         elif packet_id == self._decoder.PACKET_MOTION:
             yield TelemetryDelta("motion", self._decoder.parse_motion_all(data), player, telemetry_year)
+        elif packet_id == self._decoder.PACKET_MOTION_EX:
+            # Отдельный kind от "motion": тот про взаимное расположение машин
+            # (споттер), этот про собственное сцепление (коуч пилотажа).
+            yield TelemetryDelta(
+                "motion_ex", self._decoder.parse_motion_ex(data), player, telemetry_year)
         elif packet_id == self._decoder.PACKET_TYRE_SETS:
             yield TelemetryDelta("tyre_sets", self._decoder.parse_tyre_sets(data), player, telemetry_year)
         elif packet_id == self._decoder.PACKET_FINAL_CLASSIFICATION:

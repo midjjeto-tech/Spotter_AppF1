@@ -40,25 +40,34 @@ class _OkTransport:
         self.closed = True
 
 
-def test_busy_port_raises_a_named_reason_not_a_bare_oserror():
+@pytest.fixture
+def occupied_port():
+    """Занятый порт, выданный ОС, а не config.UDP_PORT.
+
+    На боевом порту тест зависел бы от окружения: если 20777 уже держит
+    SimHub — или, как случилось при разработке, собственный проверочный
+    сервер, — падал бы сам squatter, а не проверяемый код.
+    """
     squatter = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    squatter.bind((config.UDP_IP, config.UDP_PORT))
+    squatter.bind((config.UDP_IP, 0))
     try:
-        with pytest.raises(TelemetryUnavailable) as excinfo:
-            Telemetry(config.UDP_IP, config.UDP_PORT)
+        yield squatter.getsockname()[1]
     finally:
         squatter.close()
+
+
+def test_busy_port_raises_a_named_reason_not_a_bare_oserror(occupied_port):
+    with pytest.raises(TelemetryUnavailable) as excinfo:
+        Telemetry(config.UDP_IP, occupied_port)
 
     assert excinfo.value.code == "port_busy"
     # Деталь обязана называть адрес: без неё пользователь не поймёт, какой
     # именно порт освобождать.
-    assert str(config.UDP_PORT) in excinfo.value.detail
+    assert str(occupied_port) in excinfo.value.detail
 
 
-def test_failed_bind_does_not_leak_the_socket():
+def test_failed_bind_does_not_leak_the_socket(occupied_port):
     """Ретрай раз в 5 секунд превратил бы утечку дескриптора в утечку без дна."""
-    squatter = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    squatter.bind((config.UDP_IP, config.UDP_PORT))
     leaked = []
     real_socket = socket.socket
 
@@ -70,10 +79,9 @@ def test_failed_bind_does_not_leak_the_socket():
     socket.socket = tracking_socket
     try:
         with pytest.raises(TelemetryUnavailable):
-            Telemetry(config.UDP_IP, config.UDP_PORT)
+            Telemetry(config.UDP_IP, occupied_port)
     finally:
         socket.socket = real_socket
-        squatter.close()
 
     assert leaked, "тест не поймал создание сокета — проверять нечего"
     assert all(sock.fileno() == -1 for sock in leaked), (

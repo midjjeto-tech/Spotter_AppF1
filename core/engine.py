@@ -3069,13 +3069,17 @@ class F1Engine:
     def _consume_telemetry_message(self, message) -> None:
         """Consume one canonical message emitted by any telemetry adapter."""
         if isinstance(message, SourceStatus):
+            previous = (self._telemetry_source_status or {}).get("code")
             self._telemetry_source_status = {
                 "code": message.code, "detail": message.detail}
-            if message.code != "ok":
+            if message.code != "ok" and message.code != previous:
                 # Источник не открылся — пакетов заведомо нет. Гасим «связь
                 # есть» явно, иначе UI унаследует состояние прошлой сессии.
                 self._telemetry_connected = False
                 self._ui_state.set_connected(False)
+                # Только на СМЕНЕ кода: попытка повторяется раз в 5 секунд, и
+                # безусловная запись залила бы лог одной и той же строкой за
+                # длинный заезд с намертво занятым портом.
                 _log.warning("Источник телеметрии недоступен: %s (%s)",
                              message.code, message.detail)
         elif isinstance(message, ConnectionChanged):

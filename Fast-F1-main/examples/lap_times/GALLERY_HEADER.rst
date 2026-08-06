@@ -1,2 +1,0 @@
-Lap Time Analysis
------------------
