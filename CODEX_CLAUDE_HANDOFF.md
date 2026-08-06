@@ -19,6 +19,48 @@
 
 ## Активная работа
 
+### 2026-08-06 — Claude Code, блокеры запуска (ЗАКРЫТО)
+
+**Владелец:** нет, работа завершена и закоммичена (`54ee5e7`, тег `v0.1.0`).
+
+**ПРОЕКТ ТЕПЕРЬ ПОД GIT.** Правило «не редактировать один файл из двух
+сессий» осталось в силе, но последствия ошибки больше не фатальны:
+`git diff` покажет расхождение, `git log` вернёт любую точку.
+
+**Мои файлы этой сессии:** `core/{telemetry,telemetry_adapters,engine,
+settings,diagnostics}.py`, `web_server.py`, `NewSpotterUI/{lib/api.ts,
+app/page.tsx,components/spotter/ui.tsx,components/spotter/views/
+{onboarding,settings}.tsx}`, `tests/test_{telemetry_source_recovery,
+diagnostics}.py`, `webui/`, `README.md`, `LICENSE`, `NOTICE`,
+`requirements.txt`, `.gitignore`.
+
+**Параллельная сессия (коуч пилотажа, MotionEx) в это же время правила**
+`core/{packets,coach_ai/*}.py`, `tests/test_telemetry_adapters.py` и свои
+новые файлы — я их НЕ трогал и НЕ коммитил, они остались в рабочем дереве
+незастейдженными. Пересечение было только в `core/telemetry_adapters.py`
+и `core/settings.py`; обе правки ужились (`SourceStatus`/`_close_quietly`
+рядом с `motion_ex`; `onboarding_done` рядом с `driving_coach_enabled`).
+
+**Изменённый контракт телеметрии.** `F1TelemetryAdapter.listen()` теперь
+отдаёт `SourceStatus(code, detail)` — новый тип в `TelemetryMessage`.
+Первым сообщением всегда идёт статус источника, только потом
+`ConnectionChanged`. Тесты, фиксирующие порядок, —
+`test_telemetry_adapters.py::test_f1_adapter_decodes_packet_into_domain_delta`
+(индексы сдвинуты на 1) и `test_telemetry_source_recovery.py`.
+`listen()` больше НЕ поднимает исключение при занятом порту: ретрай раз в
+5 с. Потребителю, который ждал падения, ждать больше нечего.
+
+**Новый контракт HTTP.** `GET /api/diagnostics` →
+`{telemetry:{status,detail,source,udp_ip,udp_port}, voice, brain, mic,
+hotkeys, ready}`. Коды перечислены в `core/diagnostics.py`. `ready`
+намеренно НЕ включает микрофон и хоткеи.
+
+**Следующий шаг — сборка EXE.** Перед ней нерешённое: `piper-tts` 1.4.2
+под GPL-3.0-or-later вшивается в закрытый EXE (см. `NOTICE`) — это блокер
+релиза, не косметика. Также нет `icon=` в `SpotterApp.spec`.
+
+Предыдущая запись:
+
 **Владелец:** нет (файлы разблокированы) — Broadcast Team Radio Overlay закрыт.
 **Изменены:** `core/radio/{speakers.py (новый),session,message,policy}.py`,
 `core/{ui_state,settings,overlay_window}.py`, `web_server.py`, `SpotterApp.spec`,
