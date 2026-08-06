@@ -28,9 +28,11 @@ from core.telemetry_adapters import (
     ConnectionChanged,
     F1TelemetryAdapter,
     IRacingTelemetryAdapter,
+    SourceStatus,
     TelemetryDelta,
     TelemetryRaceEvent,
 )
+from core import diagnostics
 from core import reality_mod_bridge
 from core.race_state import RaceState
 from core.packets import TRACK_LIMITS_INFRINGEMENT_TYPES
@@ -308,6 +310,10 @@ class F1Engine:
         self._session_active: bool = False
         self._session_guard = SessionGuard()
         self._telemetry_connected = False
+        # Доступность самого источника, отдельно от «идут ли пакеты».
+        # "pending" — поток телеметрии ещё не сообщил ничего (старт приложения).
+        self._telemetry_source_status: dict = {"code": "pending", "detail": ""}
+        self._telemetry_last_packet_at: float = 0.0
         self._leader_idx: int | None = None
         self._positions: dict[int, int] = {}
         self._current_grid: list[dict] = []
@@ -774,6 +780,42 @@ class F1Engine:
         except Exception as exc:  # noqa: BLE001
             _log.warning("hotkey status unavailable: %s", exc)
             return {"available": False, "ready": False, "hotkeys": []}
+
+    def get_diagnostics(self) -> dict:
+        """Снимок готовности для визарда первого запуска и для поддержки.
+
+        Собирает факты (включая единственный обход PortAudio за списком
+        микрофонов) и отдаёт их чистой `core.diagnostics.collect` — вся логика
+        кодов живёт там и тестируется без движка.
+        """
+        try:
+            from voice.listener import list_input_devices
+            mic_devices = len(list_input_devices())
+        except Exception:  # noqa: BLE001 - диагностика не имеет права падать
+            mic_devices = 0
+
+        try:
+            hotkeys_ready = bool(self.get_hotkey_status().get("ready"))
+        except Exception:  # noqa: BLE001
+            hotkeys_ready = False
+
+        status = self._telemetry_source_status or {}
+        return diagnostics.collect(
+            source_code=str(status.get("code", "pending")),
+            source_detail=str(status.get("detail", "")),
+            connected=self._telemetry_connected,
+            last_packet_at=self._telemetry_last_packet_at,
+            telemetry_source=self._telemetry_source,
+            udp_ip=config.UDP_IP,
+            udp_port=config.UDP_PORT,
+            voice_engine=self.voice.engine_name,
+            voice_available=self.voice.is_available,
+            yandex_healthy=self._yandex_healthy,
+            llm_provider=config.LLM_PROVIDER,
+            llm_connected=bool(getattr(self.ai, "available", False)),
+            mic_devices=mic_devices,
+            hotkeys_ready=hotkeys_ready,
+        )
 
     def _screenshots_dir(self) -> Path:
         d = Path(config.DATA_DIR) / "racefeed" / "screenshots"
@@ -1703,12 +1745,32 @@ class F1Engine:
     # Запуск
     # ------------------------------------------------------------
 
+    @staticmethod
+    def _guarded(target, name: str):
+        """Обёртка, из-за отсутствия которой падение воркера было невидимым.
+
+        `threading` печатает traceback умершего потока в stderr, а у оконного
+        приложения (`app.pyw`, frozen EXE) stderr никуда не ведёт. Поток
+        телеметрии, умерший на занятом порту, выглядел для пользователя просто
+        как вечное «нет связи». Логируем в файл — молчаливая смерть воркера
+        запрещена независимо от причины.
+        """
+
+        def runner(*args):
+            try:
+                target(*args)
+            except BaseException:  # noqa: BLE001 - последняя черта перед тишиной
+                _log.exception("Поток %s упал", name)
+                raise
+
+        return runner
+
     def _spawn_thread(self, target, *, name: str, args: tuple = (),
                       task: bool = False) -> threading.Thread | None:
         """Start and retain an owned thread unless shutdown has begun."""
         if self._stop_event.is_set():
             return None
-        kwargs = {"target": target, "daemon": True, "name": name}
+        kwargs = {"target": self._guarded(target, name), "daemon": True, "name": name}
         if args:
             kwargs["args"] = args
         thread = threading.Thread(**kwargs)
@@ -3006,9 +3068,21 @@ class F1Engine:
 
     def _consume_telemetry_message(self, message) -> None:
         """Consume one canonical message emitted by any telemetry adapter."""
-        if isinstance(message, ConnectionChanged):
+        if isinstance(message, SourceStatus):
+            self._telemetry_source_status = {
+                "code": message.code, "detail": message.detail}
+            if message.code != "ok":
+                # Источник не открылся — пакетов заведомо нет. Гасим «связь
+                # есть» явно, иначе UI унаследует состояние прошлой сессии.
+                self._telemetry_connected = False
+                self._ui_state.set_connected(False)
+                _log.warning("Источник телеметрии недоступен: %s (%s)",
+                             message.code, message.detail)
+        elif isinstance(message, ConnectionChanged):
             self._telemetry_connected = message.connected
             self._ui_state.set_connected(message.connected)
+            if message.connected:
+                self._telemetry_last_packet_at = time.time()
         elif isinstance(message, TelemetryDelta):
             self._consume_telemetry_delta(message)
         elif isinstance(message, TelemetryRaceEvent):

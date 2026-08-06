@@ -326,6 +326,38 @@ export type SettingsState = {
    *  токенов — lib/overlay-theme.ts, список значений продублирован в
    *  core/settings.py::_OVERLAY_THEMES. */
   overlay_theme: OverlayThemeId
+  /** Визард первого запуска пройден или пропущен. Отдельный флаг, а не факт
+   *  существования settings.json: файл создаётся первым же сохранением любой
+   *  галочки. */
+  onboarding_done: boolean
+}
+
+/** Готовность одной подсистемы. `status` — код, а не текст: формулировки
+ *  живут в UI, коды в core/diagnostics.py. */
+export type DiagnosticCheck = {
+  status: string
+  detail: string
+}
+
+export type TelemetryDiagnostic = DiagnosticCheck & {
+  /** "f1" | "iracing" */
+  source: string
+  udp_ip: string
+  udp_port: number
+}
+
+/** Снимок готовности. Отдельно от /api/state намеренно: там «связь есть/нет»
+ *  одним булевом, здесь — ПРИЧИНА, по которой её нет. Занятый порт, выключенный
+ *  в игре UDP и незапущенная игра требуют противоположных советов. */
+export type Diagnostics = {
+  telemetry: TelemetryDiagnostic
+  voice: DiagnosticCheck
+  brain: DiagnosticCheck
+  mic: DiagnosticCheck
+  hotkeys: DiagnosticCheck
+  /** Только телеметрия + хоть какая-то озвучка. Ключи, микрофон и хоткеи сюда
+   *  НЕ входят: без них продукт беднее, но работает. */
+  ready: boolean
 }
 
 /** Три визуальных языка оверлея. Живёт здесь, а не в lib/overlay-theme.ts,
@@ -820,6 +852,9 @@ export const askVoice = () =>
     asJson<{ ok: boolean; busy?: boolean; reason?: string }>(r))
 
 export const getVoices = () => fetch("/api/voices").then((r) => asJson<VoicesResponse>(r))
+
+export const getDiagnostics = () =>
+  fetch("/api/diagnostics").then((r) => asJson<Diagnostics>(r))
 
 export const getMicDevices = () =>
   fetch("/api/mic_devices").then((r) => asJson<{ devices: MicDevice[] }>(r))

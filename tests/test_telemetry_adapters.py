@@ -2,6 +2,7 @@ from core.telemetry_adapters import (
     ConnectionChanged,
     F1TelemetryAdapter,
     IRacingTelemetryAdapter,
+    SourceStatus,
     TelemetryDelta,
 )
 
@@ -51,8 +52,11 @@ def test_f1_adapter_decodes_packet_into_domain_delta():
 
     messages = list(adapter.listen())
 
-    assert messages[:2] == [ConnectionChanged(False), ConnectionChanged(True)]
-    assert messages[2] == TelemetryDelta(
+    # Первым идёт статус самого источника: сокет открылся. Только потом —
+    # «идут ли пакеты». Эти два вопроса намеренно разведены, см. SourceStatus.
+    assert messages[0] == SourceStatus("ok")
+    assert messages[1:3] == [ConnectionChanged(False), ConnectionChanged(True)]
+    assert messages[3] == TelemetryDelta(
         "lap_data",
         {"lap_info": {"positions": {3: 4}}, "player_lap": {"position": 4}},
         player_car_index=3,

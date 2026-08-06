@@ -2,13 +2,21 @@
 
 import type React from "react"
 import { useEffect, useState } from "react"
-import { PageHeader, Panel, Dot, Toggle } from "../ui"
+import { PageHeader, Panel, Dot, Input, Toggle } from "../ui"
 import { Button } from "@/components/ui/button"
 import { getGigachatStatus, getYandexStatus, resetSettings, saveGigachat, saveSettings, saveYandex, type GigachatStatus, type SpotterState, type YandexStatus } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { AlertTriangle, MessageSquare, Mic, Radio, Rss, Volume2, Waves } from "lucide-react"
 
-export function SettingsView({ state }: { state: SpotterState | null }) {
+export function SettingsView({
+  state,
+  onOpenOnboarding,
+}: {
+  state: SpotterState | null
+  /** Открыть визард первого запуска повторно. Он же — «диагностика»: живые
+   *  проверки телеметрии, звука и ключей в одном месте. */
+  onOpenOnboarding?: () => void
+}) {
   const settings = state?.settings
   const [controls, setControls] = useState({
     commentary: false,
@@ -145,7 +153,20 @@ export function SettingsView({ state }: { state: SpotterState | null }) {
 
   return (
     <div>
-      <PageHeader title="Настройки" subtitle="Управление комментариями, телеметрией и AI-сервисами" />
+      <PageHeader
+        title="Настройки"
+        subtitle="Управление комментариями, телеметрией и AI-сервисами"
+        action={
+          onOpenOnboarding && (
+            <Button
+              onClick={onOpenOnboarding}
+              className="bg-secondary text-foreground hover:bg-elevated"
+            >
+              Мастер настройки
+            </Button>
+          )
+        }
+      />
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Panel
@@ -509,19 +530,3 @@ function SaveFeedback({ state }: { state: "idle" | "saving" | "saved" | "error" 
   )
 }
 
-function Input({
-  className,
-  type = "text",
-  ...props
-}: React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <input
-      type={type}
-      className={cn(
-        "h-9 rounded-md border border-input bg-secondary px-3 font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring read-only:opacity-60",
-        className ?? "w-36",
-      )}
-      {...props}
-    />
-  )
-}

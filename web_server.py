@@ -238,6 +238,13 @@ def create_app(engine, settings: dict, base_dir: str) -> Bottle:
     def api_hotkeys_status():
         return _json(engine.get_hotkey_status())
 
+    @app.route("/api/diagnostics")
+    def api_diagnostics():
+        """Готовность подсистем для визарда первого запуска и для поддержки.
+        Отдельно от /api/state намеренно: там «связь есть/нет» одним булевом,
+        здесь — причина, по которой её нет."""
+        return _json(engine.get_diagnostics())
+
     @app.route("/racefeed/media/<filename>")
     def api_racefeed_media(filename):
         import config

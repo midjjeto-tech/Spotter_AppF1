@@ -212,6 +212,26 @@ export function TyreChip({ compound }: { compound: string }) {
   )
 }
 
+/* Text field. Жил локальной копией в settings.tsx; поднят сюда, когда за той
+   же разметкой пришёл визард первого запуска — две расходящиеся копии поля
+   ввода заметны пользователю сразу. */
+export function Input({
+  className,
+  type = "text",
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <input
+      type={type}
+      className={cn(
+        "h-9 rounded-md border border-input bg-secondary px-3 font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring read-only:opacity-60",
+        className ?? "w-36",
+      )}
+      {...props}
+    />
+  )
+}
+
 /* Keyboard key cap */
 export function KeyCap({ children }: { children: React.ReactNode }) {
   return (

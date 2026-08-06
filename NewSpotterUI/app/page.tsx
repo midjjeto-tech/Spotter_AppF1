@@ -19,6 +19,7 @@ import { HotkeysView } from "@/components/spotter/views/hotkeys"
 import { ArchiveView } from "@/components/spotter/views/archive"
 import { DebriefView } from "@/components/spotter/views/debrief"
 import { BroadcastOverlayView } from "@/components/spotter/views/broadcast-overlay"
+import { OnboardingView } from "@/components/spotter/views/onboarding"
 
 // "14%" -> 14, "29% (9.1 GB)" -> 29
 function pct(v: string | undefined): number | null {
@@ -30,6 +31,11 @@ function pct(v: string | undefined): number | null {
 export default function Page() {
   const [view, setView] = useState<ViewId>("dashboard")
   const { state, online } = useSpotterState()
+  // Визард первого запуска. Показываем только по ЯВНОМУ false: пока настройки
+  // не приехали, поле undefined — и экран мигал бы у тех, кто визард уже прошёл.
+  const [wizardClosed, setWizardClosed] = useState(false)
+  const [wizardManual, setWizardManual] = useState(false)
+  const wizardOpen = wizardManual || (!wizardClosed && state?.settings?.onboarding_done === false)
   const { unread, lastSeen, markSeen, hub: raceFeedHub } = useRaceFeedUnread()
   const [raceFeedVisitCutoff, setRaceFeedVisitCutoff] = useState(0)
 
@@ -52,6 +58,21 @@ export default function Page() {
     voice: state?.voice_available ?? false,
     ai: (state?.llm_engine ?? "") === "YandexGPT",
     ses: online && state != null,
+  }
+
+  // Визард занимает экран целиком: на первом запуске выбирать в боковом меню
+  // ещё нечего, а вернуться к нему можно кнопкой в Настройках.
+  if (wizardOpen) {
+    return (
+      <div className="h-screen w-full overflow-hidden bg-background text-foreground">
+        <OnboardingView
+          onClose={() => {
+            setWizardManual(false)
+            setWizardClosed(true)
+          }}
+        />
+      </div>
+    )
   }
 
   return (
@@ -87,7 +108,9 @@ export default function Page() {
                 onOpenSettings={() => navigate("settings")}
               />
             )}
-            {view === "settings" && <SettingsView state={state} />}
+            {view === "settings" && (
+              <SettingsView state={state} onOpenOnboarding={() => setWizardManual(true)} />
+            )}
             {view === "logs" && <LogsView state={state} />}
             {view === "hotkeys" && <HotkeysView state={state} />}
             {view === "archive" && <ArchiveView />}

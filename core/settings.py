@@ -117,6 +117,11 @@ DEFAULTS: dict = {
     # content-generation subsystem (LLM calls, background worker thread), not a
     # telemetry feature; see docs/superpowers/specs/2026-07-20-racefeed-phase1-design.md.
     "racefeed_enabled":         False,
+    # Визард первого запуска пройден или пропущен. False = показать его при
+    # старте. Отдельный флаг, а НЕ «существует ли settings.json»: файл создаётся
+    # первым же сохранением любой галочки, и по нему визард исчезал бы у
+    # пользователя, который до него не дошёл. См. views/onboarding.tsx.
+    "onboarding_done":          False,
 }
 
 #: Допустимые персонажи инженера. Дублирует ключи

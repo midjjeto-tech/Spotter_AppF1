@@ -9,12 +9,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import threading
+import time
 from typing import Any, Callable, Iterator, Literal
 
 from core import iracing_packets
 from core import packets
-from core.iracing_telemetry import IRacingTelemetry
-from core.telemetry import Telemetry
+from core.iracing_telemetry import IRacingTelemetry, irsdk
+from core.telemetry import Telemetry, TelemetryUnavailable
 
 
 DeltaKind = Literal[
@@ -50,7 +51,28 @@ class TelemetryRaceEvent:
     event: dict
 
 
-TelemetryMessage = ConnectionChanged | TelemetryDelta | TelemetryRaceEvent
+@dataclass(frozen=True, slots=True)
+class SourceStatus:
+    """Доступен ли САМ источник (сокет забинден, SDK загружен).
+
+    Не путать с ``ConnectionChanged``: тот отвечает на вопрос «идут ли пакеты
+    от уже открытого источника», то есть «запущена ли игра». Этот — на вопрос
+    «смогли ли мы вообще открыть источник». Разница видна пользователю: во
+    втором случае виновата не игра, а занятый порт или отсутствующий SDK, и
+    совет ему нужен совсем другой.
+    """
+
+    code: str          # "ok" | "port_busy" | "bind_failed" | "iracing_no_lib"
+    detail: str = ""
+
+
+TelemetryMessage = (
+    ConnectionChanged | TelemetryDelta | TelemetryRaceEvent | SourceStatus)
+
+# Пауза перед повторной попыткой открыть источник. Пользователь может закрыть
+# SimHub уже после старта Spotter — приложение обязано подхватить порт само,
+# без перезапуска.
+SOURCE_RETRY_INTERVAL_S = 5.0
 
 
 class F1TelemetryAdapter:
@@ -63,29 +85,69 @@ class F1TelemetryAdapter:
         *,
         transport_factory: Callable[..., Telemetry] = Telemetry,
         decoder=packets,
+        retry_interval: float = SOURCE_RETRY_INTERVAL_S,
     ) -> None:
         self._ip = ip
         self._port = port
         self._transport_factory = transport_factory
         self._decoder = decoder
+        self._retry_interval = max(0.0, float(retry_interval))
         self._transport: Telemetry | None = None
         self._closed = threading.Event()
 
     def listen(self, stop_event: threading.Event | None = None) -> Iterator[TelemetryMessage]:
-        transport = self._transport_factory(self._ip, self._port)
-        self._transport = transport
+        """Поток сообщений источника, переживающий занятый порт.
+
+        Открыть сокет может не получиться — и это НЕ повод убивать поток:
+        порт занимают SimHub, Pits n' Giggles, другие телеметрийные тулзы и
+        вторая копия Spotter. Вместо исключения наружу уходит
+        ``SourceStatus(code)``, а попытка повторяется, пока источник не
+        освободится или не попросят остановиться.
+        """
         try:
-            for data, connected in transport.listen():
-                if self._closed.is_set() or (stop_event and stop_event.is_set()):
-                    break
-                yield ConnectionChanged(connected)
-                if not connected or data is None or len(data) < self._decoder.HEADER_SIZE:
+            while not self._closed.is_set() and not (stop_event and stop_event.is_set()):
+                try:
+                    transport = self._transport_factory(self._ip, self._port)
+                except TelemetryUnavailable as exc:
+                    yield SourceStatus(exc.code, exc.detail)
+                    if self._wait_before_retry(stop_event):
+                        break
                     continue
-                yield from self._decode(data)
+
+                self._transport = transport
+                yield SourceStatus("ok")
+                try:
+                    for data, connected in transport.listen():
+                        if self._closed.is_set() or (stop_event and stop_event.is_set()):
+                            break
+                        yield ConnectionChanged(connected)
+                        if (not connected or data is None
+                                or len(data) < self._decoder.HEADER_SIZE):
+                            continue
+                        yield from self._decode(data)
+                finally:
+                    transport.close()
+                    if self._transport is transport:
+                        self._transport = None
+                # Сокет открывался успешно и поток закончился — значит нас
+                # остановили. Переоткрывать источник тут нечего.
+                break
         finally:
             self.close()
-            if self._transport is transport:
-                self._transport = None
+
+    def _wait_before_retry(self, stop_event: threading.Event | None) -> bool:
+        """Пауза перед следующей попыткой. True — пора выходить.
+
+        Ждём короткими шагами, а не одним ``sleep(5)``: остановка приложения
+        не должна упираться в интервал переподключения.
+        """
+        deadline = time.monotonic() + self._retry_interval
+        while time.monotonic() < deadline:
+            if self._closed.wait(0.25):
+                return True
+            if stop_event is not None and stop_event.is_set():
+                return True
+        return self._closed.is_set() or bool(stop_event and stop_event.is_set())
 
     def _decode(self, data: bytes) -> Iterator[TelemetryMessage]:
         header = self._decoder.parse_header(data)
@@ -172,6 +234,11 @@ class IRacingTelemetryAdapter:
         self._previous: dict | None = None
 
     def listen(self, stop_event: threading.Event | None = None) -> Iterator[TelemetryMessage]:
+        # Без pyirsdk источник отдаёт connected=False вечно и молча. Это верная
+        # деградация, но пользователю она неотличима от «iRacing не запущен» —
+        # поэтому причина называется отдельным статусом.
+        yield SourceStatus("ok") if irsdk is not None else SourceStatus(
+            "iracing_no_lib", "pyirsdk не установлен")
         transport = self._transport_factory()
         self._transport = transport
         try:
