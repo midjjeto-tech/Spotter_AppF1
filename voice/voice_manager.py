@@ -10,11 +10,13 @@ from __future__ import annotations
 
 import os
 
-from new_tts.piper_tts import PERSONA_VOICE, _PIPER_DIR
+# _voice_dir() — функция, а не константа: голоса теперь ставит отдельный
+# компонент установщика, и путь зависит от того, поставлен он или нет.
+from new_tts.piper_tts import PERSONA_VOICE, _voice_dir
 
 
 def _model_path(name: str) -> str:
-    return os.path.join(str(_PIPER_DIR), f"ru_RU-{name}-medium.onnx")
+    return os.path.join(str(_voice_dir()), f"ru_RU-{name}-medium.onnx")
 
 
 def voice_status(yandex_attached: bool = False, yandex_healthy: bool = False,
@@ -72,7 +74,7 @@ def voice_status(yandex_attached: bool = False, yandex_healthy: bool = False,
         "engine": "Yandex SpeechKit" if use_yandex else "Piper (RU)",
         "yandex_attached": yandex_attached,
         "yandex_healthy": yandex_healthy,
-        "voices_dir": str(_PIPER_DIR),
+        "voices_dir": str(_voice_dir()),
         "voices": yandex if use_yandex else piper,
         "piper_voices": piper,
         "yandex_voices": yandex,

@@ -70,6 +70,18 @@ def test_missing_keys_are_a_working_free_mode_not_a_failure():
     assert free["ready"] is True
 
 
+def test_missing_piper_component_is_named_system_not_piper():
+    """Офлайн-голос — отдельный компонент установщика (GPL, вне EXE). Без него
+    говорит системный SAPI5, и назвать это «piper» значило бы пообещать
+    качество, которого пользователь не услышит."""
+    result = diagnostics.collect(**_facts(
+        voice_engine="SAPI5", yandex_healthy=False, llm_connected=False))
+
+    assert result["voice"]["status"] == "system"
+    # Голос есть — продукт работает, держать пользователя в визарде не за что.
+    assert result["ready"] is True
+
+
 def test_no_voice_at_all_is_the_only_voice_failure():
     dead = diagnostics.collect(**_facts(voice_available=False))
 

@@ -46,11 +46,21 @@ def _telemetry(*, source_code: str, source_detail: str, connected: bool,
 
 
 def _voice(*, engine_name: str, yandex_healthy: bool, available: bool) -> dict:
+    """Каким голосом приложение говорит ПРЯМО СЕЙЧАС.
+
+    Четыре состояния, а не три: офлайн-голос Piper — отдельный компонент
+    установщика (он под GPL и живёт вне EXE, см. NOTICE), и его может не быть.
+    Тогда остаётся системный голос Windows. Схлопывать `system` в `piper`
+    нельзя: пользователь слышит разницу мгновенно, а UI обещал бы не то.
+    """
     if not available:
         return {"status": "none", "detail": engine_name}
-    if yandex_healthy and "yandex" in (engine_name or "").lower():
+    name = (engine_name or "").lower()
+    if yandex_healthy and "yandex" in name:
         return {"status": "yandex", "detail": engine_name}
-    return {"status": "piper", "detail": engine_name}
+    if "piper" in name:
+        return {"status": "piper", "detail": engine_name}
+    return {"status": "system", "detail": engine_name}
 
 
 def _brain(*, provider: str, provider_connected: bool) -> dict:

@@ -20,6 +20,11 @@ class _Decoder:
     PACKET_SESSION_HISTORY = 9
     PACKET_PARTICIPANTS = 10
     PACKET_EVENT = 11
+    PACKET_MOTION_EX = 12
+
+    @staticmethod
+    def parse_motion_ex(_data):
+        return {"slip_ratio": {"rl": 0.0, "rr": 0.0, "fl": -0.4, "fr": 0.0}}
 
     @staticmethod
     def parse_header(data):
@@ -62,6 +67,23 @@ def test_f1_adapter_decodes_packet_into_domain_delta():
         player_car_index=3,
         game_year=25,
     )
+
+
+def test_motion_ex_packet_yields_motion_ex_delta():
+    """Пакет 13 доезжает ОТДЕЛЬНЫМ kind: PACKET_MOTION — про взаимное
+    расположение машин (споттер), MotionEx — про собственное сцепление (коуч).
+    Смешивать их в один kind нельзя, у потребителей нет ничего общего."""
+    adapter = F1TelemetryAdapter(
+        "127.0.0.1", 20777, transport_factory=_Transport, decoder=_Decoder)
+
+    messages = list(adapter._decode(bytes([_Decoder.PACKET_MOTION_EX])))
+
+    assert messages == [TelemetryDelta(
+        "motion_ex",
+        {"slip_ratio": {"rl": 0.0, "rr": 0.0, "fl": -0.4, "fr": 0.0}},
+        player_car_index=3,
+        game_year=25,
+    )]
 
 
 def test_iracing_adapter_emits_same_delta_kinds_without_unknown_f1_fields():

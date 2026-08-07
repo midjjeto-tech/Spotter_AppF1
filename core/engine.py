@@ -113,6 +113,24 @@ _SPOTTER_EVENT_CODE: dict[str, str] = {
     _spotter.CODE_CLEAR: "SPOTTER_CLEAR",
 }
 RADAR_WINDOW_M = 25.0  # шире голосового LONGITUDINAL_WINDOW_M — только для HUD-радара
+
+# (вид ошибки коуча, колесо) -> семантический код банка. Сторона разводится
+# ЗДЕСЬ, а не внутри спеки: у левого и правого разные действия пилота, и выбор
+# не должен делать колода вариантов. Сочетание, которого тут нет (например
+# блокировка заднего), остаётся без реплики — промолчать безопаснее, чем
+# сказать не то.
+_COACH_PHRASE_CODE: dict[tuple[str, str | None], str] = {
+    ("lockup", "fl"): "coach.lockup_front_left",
+    ("lockup", "fr"): "coach.lockup_front_right",
+    ("wheelspin", "rl"): "coach.wheelspin",
+    ("wheelspin", "rr"): "coach.wheelspin",
+    ("understeer", None): "coach.understeer",
+    ("oversteer", None): "coach.oversteer",
+    ("offtrack", None): "coach.offtrack",
+}
+#: Выезд, засчитанный игрой как срезка, принадлежит TrackLimitsTracker. Окно то
+#: же, что у симметричного глушения PENA в core/strategy_ai/track_limits.py.
+COACH_TRACK_LIMITS_SUPPRESSION_S = 5.0
 from core.strategy_ai.safety_car import derive_safety_car_event
 from core.coach_ai import DriverCoach
 from core.rivals import RivalTracker
@@ -122,6 +140,8 @@ from core.broadcast.context import BroadcastContext
 from core.racefeed.engine import RaceFeedEngine
 from core.track_ai.loader import load_track
 from core.track_ai.track_manager import TrackManager
+from core.coach_ai.corner_log import CornerLog
+from core.coach_ai.slip import SlipDetector
 from core.session_guard import SessionGuard
 from core.num_to_words import ru_plural
 from core.situation_dedup import (
@@ -333,6 +353,15 @@ class F1Engine:
         self._track_city: str | None = None
         self._track_manager: TrackManager | None = None
         self._lap_distance_m: float | None = None
+        # Коуч пилотажа: детектор на тике MotionEx + копилка ошибок за сессию.
+        # Копилка живёт независимо от тумблера driving_coach_enabled — тот
+        # выключает ЭФИР, а карта ошибок для дебрифа собирается всегда.
+        self.coach_slip = SlipDetector()
+        self.coach_log = CornerLog()
+        self._last_track_limits_announcement_t: float = 0.0
+        # Покрытие под каждым колесом (хвост пакета 6). Скорость сюда не
+        # дублируется — она уже есть в self._player_speed_kmh.
+        self._player_surface: dict = {}
         self._game_year: int = 0
         self._prev_lap: int = 0
         # Пит-стоп: накопление ИЛИ по тикам одного круга (см. design spec §2 —
@@ -1571,6 +1600,85 @@ class F1Engine:
         draft["phrase"] = self._render_engineer_phrase(draft, phrase_code)
         self._commentary_events.publish(draft)
 
+    def _coach_tick(self, motion_ex: dict) -> None:
+        """Вызывается на каждом PACKET_MOTION_EX.
+
+        Собирает кадр из MotionEx и уже разобранных вводов пилота
+        (`self._player_hud`), привязывает его к повороту через track_ai и отдаёт
+        детекторам. Гейт `driving_coach_enabled` стоит НЕ здесь, а в
+        `_emit_coach_advice`: карта ошибок для дебрифа собирается независимо от
+        того, разрешена ли живая подсказка."""
+        if not motion_ex:
+            return
+        track_ctx = None
+        if self._track_manager and self._lap_distance_m is not None:
+            track_ctx = self._track_manager.resolve(self._lap_distance_m)
+        corner = track_ctx.corner if track_ctx else None
+
+        frame = {
+            **motion_ex,
+            "throttle_pct": self._player_hud.get("throttle_pct", 0.0),
+            "brake_pct": self._player_hud.get("brake_pct", 0.0),
+            "steer": self._player_hud.get("steer", 0.0),
+            "speed_kmh": self._player_speed_kmh,
+            "surface": self._player_surface,
+        }
+        now = time.time()
+        for mistake in self.coach_slip.tick(
+            frame,
+            now=now,
+            lap=self._player_lap or 0,
+            corner_id=corner.id if corner else None,
+            corner_name=corner.name if corner else None,
+            phase=track_ctx.phase if track_ctx else "straight",
+        ):
+            self._emit_coach_advice(mistake, now=now)
+
+    def _note_track_limits_announcement(self, now: float) -> None:
+        """Отметка, что о трек-лимитах только что объявили. Зовётся из той же
+        точки, где публикуется предупреждение TrackLimitsTracker."""
+        self._last_track_limits_announcement_t = now
+
+    def _emit_coach_advice(self, mistake, now: float | None = None) -> None:
+        """Записать ошибку в карту сессии и, если она повторяется, озвучить."""
+        now = time.time() if now is None else now
+        repeat = self.coach_log.add(mistake)
+        if repeat is None:
+            return
+        if not self._get_setting("driving_coach_enabled", False):
+            return
+        if (
+            repeat.kind == "offtrack"
+            and now - self._last_track_limits_announcement_t
+            < COACH_TRACK_LIMITS_SUPPRESSION_S
+        ):
+            # Тот же инцидент уже объявлен как трек-лимит: штраф важнее совета,
+            # и второй раз про то же самое мы молчим.
+            return
+        self._publish_coach_advice(repeat)
+
+    def _publish_coach_advice(self, mistake) -> None:
+        """Черновик события тем же путём, что у споттера: код банка
+        превращается в текст ЗДЕСЬ, наружу уезжает готовая `phrase`.
+
+        Ни `priority: "critical"`, ни `bypass_speak_threshold` — подсказка по
+        пилотажу обязана уступать споттеру и box-call. Это два разных флага с
+        разным смыслом, и коучу не положен ни один из них."""
+        code = _COACH_PHRASE_CODE.get((mistake.kind, mistake.wheel))
+        if code is None:
+            return
+        draft = {
+            "event_code": "COACH_ADVICE",
+            "priority": "normal",
+            "speaker": SPEAKER_ENGINEER,
+            "driver": "", "color": "#38BDF8",
+            "corner": mistake.corner_name,
+            "corner_id": mistake.corner_id,
+        }
+        draft["phrase"] = self._render_engineer_phrase(draft, code)
+        if draft["phrase"]:
+            self._commentary_events.publish(draft)
+
     @staticmethod
     def _spotter_neighbour_idx(code: str, radar: list[dict]) -> int | None:
         """Машина, о которой споттер только что предупредил, либо None.
@@ -2053,6 +2161,9 @@ class F1Engine:
                             tl_draft, tl_code)
                         if tl_draft["phrase"]:
                             self._commentary_events.publish(tl_draft)
+                            # Коуч не должен объявлять тот же выезд второй раз
+                            # своими словами — см. _emit_coach_advice.
+                            self._note_track_limits_announcement(time.time())
                 if self._session_type == "race":
                     pc_code = self._race_engineer.position_advisory(
                         self._player_pos, time.time())
@@ -2176,6 +2287,10 @@ class F1Engine:
             self._player_ers_deploy_mode = telem["ers_deploy_mode"]
         if telem.get("drs_allowed") is not None:
             self._player_drs_allowed = telem["drs_allowed"]
+        if telem.get("surface") is not None:
+            # Покрытие под колёсами — для детектора выездов коуча
+            # (core/coach_ai/slip.py). В HUD не идёт: там его нечем показать.
+            self._player_surface = telem["surface"]
         for _hud_key in (
             "throttle_pct", "brake_pct", "steer", "rpm", "rev_lights_pct",
             "fuel_remaining_laps", "ers_harvested_pct", "ers_deployed_pct",
@@ -2391,7 +2506,15 @@ class F1Engine:
         self._ui_state.set_analysis(
             race_ai=self.race_analyzer.get_state(),
             strategy_ai=strategy_result.state,
-            coach_ai=self.driver_coach.get_state(),
+            # Топ проблемных поворотов едет живьём, ПОЛНАЯ карта ошибок — нет:
+            # её место в файле сессии (recorder.set_coach_map). /api/state
+            # опрашивают восемь окон оверлея каждые 250 мс, и гнать туда сотни
+            # строк за гонку незачем — на экране всё равно видны только три.
+            coach_ai={
+                **self.driver_coach.get_state(),
+                "top_corners": self.coach_log.top_corners(),
+                "mistake_count": len(self.coach_log.map_rows()),
+            },
             rivals=self.rival_tracker.get_state(),
             track_ai=track_ctx.to_dict() if track_ctx is not None else None,
             track_name=(
@@ -3102,6 +3225,8 @@ class F1Engine:
         self._apply_telemetry_identity(delta)
         if delta.kind == "motion":
             self._spotter_tick(delta.payload)
+        elif delta.kind == "motion_ex":
+            self._coach_tick(delta.payload)
         elif delta.kind == "tyre_sets":
             self._update_tyre_sets(delta.payload)
         elif delta.kind == "final_classification":
@@ -3240,6 +3365,10 @@ class F1Engine:
             self._strategy_agreement.reset()
             self.commentator.reset_session()
             self.recorder.reset()
+            # Ошибки пилотажа принадлежат конкретной сессии: незакрытый срыв и
+            # карта поворотов прошлой сессии в новой означали бы не то место.
+            self.coach_slip.reset()
+            self.coach_log.reset()
             with self._engine_lock:
                 self.timeline.reset()
             self._session_events = []
@@ -3314,6 +3443,12 @@ class F1Engine:
             track_name = TRACK_ID_TO_GP.get(self._track_id, ("Unknown", "Unknown"))[0]
             pidx = self._player_car_index
             pos = self._positions.get(pidx)
+            # Карта ошибок пилотажа уезжает в тот же файл сессии, что и круги —
+            # отдельного хранилища у коуча нет.
+            self.recorder.set_coach_map(
+                rows=self.coach_log.map_rows(),
+                top_corners=self.coach_log.top_corners(),
+            )
             saved_path = self.recorder.finalize(
                 track_id=self._track_id, track_name=track_name,
                 session_type=self._session_type, final_position=pos,

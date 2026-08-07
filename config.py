@@ -13,6 +13,17 @@ DATA_DIR = (
     else os.path.dirname(os.path.abspath(__file__))
 )
 
+# --- Офлайн-синтез Piper ---
+# Piper распространяется под GPL-3.0-or-later и поэтому НЕ вшивается в наш
+# закрытый EXE, а ставится отдельным компонентом установщика рядом с ним и
+# запускается как отдельный процесс (см. NOTICE и new_tts/piper_tts.py).
+# В дереве разработки бинарника нет — там подхватывается пакет из окружения.
+PIPER_HOME = os.path.join(DATA_DIR, "piper")
+PIPER_EXE = os.path.join(PIPER_HOME, "piper.exe")
+PIPER_VOICES_DIR = os.path.join(PIPER_HOME, "voices")
+#: Голоса в дереве разработки (в дистрибутив не входят).
+PIPER_VOICES_DEV_DIR = os.path.join(BASE_DIR, "models", "piper")
+
 # --- Телеметрия ---
 UDP_IP = "127.0.0.1"
 UDP_PORT = 20777

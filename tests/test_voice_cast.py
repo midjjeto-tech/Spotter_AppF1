@@ -149,12 +149,12 @@ def test_piper_role_models_exist_on_disk():
     ловим тестом, а не в гонке."""
     import os
 
-    from new_tts.piper_tts import PERSONA_VOICE, _PIPER_DIR
+    from new_tts.piper_tts import PERSONA_VOICE, _voice_dir
 
     for slot in (voice_cast.SLOT_ENGINEER, voice_cast.SLOT_SPOTTER):
         name = PERSONA_VOICE[slot][0]
         assert os.path.isfile(
-            os.path.join(str(_PIPER_DIR), f"ru_RU-{name}-medium.onnx")), name
+            os.path.join(str(_voice_dir()), f"ru_RU-{name}-medium.onnx")), name
 
 
 def test_commentator_persona_list_matches_the_prompt_catalogue():

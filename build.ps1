@@ -1,4 +1,4 @@
-# build.ps1 - SpotterApp.exe build script
+﻿# build.ps1 - SpotterApp.exe build script
 # Usage:  .\build.ps1
 # Optional: set a specific interpreter via $env:SPOTTER_PYTHON before running.
 #
@@ -112,17 +112,81 @@ Write-Host "Dependencies OK. Cleaning build artifacts (preserving user data in d
 # выдаёт единственный dist\SpotterApp.exe, поэтому этого достаточно для чистой пересборки.
 Remove-Item -Recurse -Force build -ErrorAction SilentlyContinue
 Remove-Item -Force "dist\SpotterApp.exe" -ErrorAction SilentlyContinue
+Remove-Item -Force "dist\piper.exe" -ErrorAction SilentlyContinue
 
-Write-Host "Running PyInstaller..." -ForegroundColor Cyan
+# --- 1/3: piper.exe — ОТДЕЛЬНАЯ программа под GPL-3.0-or-later ---
+# Собирается первой и НЕ входит в SpotterApp.exe: вшивать GPL-код в закрытый
+# бинарник нельзя (см. NOTICE). Установщик кладёт её в отдельную папку.
+Write-Host "Building piper.exe (separate GPL program)..." -ForegroundColor Cyan
+& $pyExe @pyArgs -m PyInstaller --clean --noconfirm PiperCLI.spec
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "piper.exe build failed! Exit code: $LASTEXITCODE" -ForegroundColor Red
+    exit $LASTEXITCODE
+}
+
+# --- 2/3: SpotterApp.exe ---
+Write-Host "Running PyInstaller (SpotterApp)..." -ForegroundColor Cyan
 & $pyExe @pyArgs -m PyInstaller --clean --noconfirm SpotterApp.spec
-
-if ($LASTEXITCODE -eq 0) {
-    $exe = Get-Item "dist\SpotterApp.exe" -ErrorAction SilentlyContinue
-    $mb  = if ($exe) { [math]::Round($exe.Length / 1MB) } else { "?" }
-    Write-Host "Done! dist\SpotterApp.exe ($mb MB)" -ForegroundColor Green
-    Write-Host "Yandex GPT/SpeechKit = primary (API key entered at runtime in Settings)." -ForegroundColor Cyan
-    Write-Host "Piper voices bundled as offline fallback (models/piper)." -ForegroundColor Cyan
-} else {
+if ($LASTEXITCODE -ne 0) {
     Write-Host "Build failed! Exit code: $LASTEXITCODE" -ForegroundColor Red
     exit $LASTEXITCODE
 }
+
+# Проверка лицензионной границы. Если GPL-код просочился в закрытый EXE
+# транзитивным импортом, заметить это на глаз невозможно — поэтому гейт.
+#
+# Смотрим PKG-00.toc (что РЕАЛЬНО упаковано), а не Analysis-00.toc: в последнем
+# лежит в том числе сам список excludes, и первая версия проверки ловила слово
+# "onnxruntime" из него — то есть падала как раз на доказательстве, что
+# исключение сработало.
+#
+# Наш собственный new_tts\piper_tts.py под шаблон не подпадает намеренно: это
+# наш код, который управляет чужим процессом, а не код Piper.
+$pkgToc = "build\SpotterApp\PKG-00.toc"
+$leak = $null
+if (Test-Path $pkgToc) {
+    $leak = Select-String -Path $pkgToc -Pattern "site-packages\\\\+(piper|onnxruntime)\\\\|'(piper|onnxruntime)\\\\" -ErrorAction SilentlyContinue
+} else {
+    Write-Host "WARNING: $pkgToc не найден — лицензионная граница НЕ проверена." -ForegroundColor Yellow
+}
+if ($leak) {
+    Write-Host "ERROR: GPL-код Piper/onnxruntime попал в SpotterApp.exe!" -ForegroundColor Red
+    Write-Host "  Проверьте excludes в SpotterApp.spec." -ForegroundColor Yellow
+    exit 1
+}
+Write-Host "Лицензионная граница: Piper в закрытом EXE не найден." -ForegroundColor Green
+
+$exe = Get-Item "dist\SpotterApp.exe" -ErrorAction SilentlyContinue
+$mb  = if ($exe) { [math]::Round($exe.Length / 1MB) } else { "?" }
+Write-Host "dist\SpotterApp.exe ($mb MB)" -ForegroundColor Green
+
+# --- 3/3: установщик (Inno Setup) ---
+$iscc = $null
+# Путь в LOCALAPPDATA обязателен: winget ставит Inno Setup в профиль
+# пользователя, а не в Program Files, и первая версия поиска его не находила —
+# сборка молча заканчивалась без установщика.
+foreach ($candidate in @("${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
+                         "$env:ProgramFiles\Inno Setup 6\ISCC.exe",
+                         "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe")) {
+    if (Test-Path $candidate) { $iscc = $candidate; break }
+}
+if (-not $iscc) { $g = Get-Command ISCC -ErrorAction SilentlyContinue; if ($g) { $iscc = $g.Source } }
+
+if (-not $iscc) {
+    Write-Host "WARNING: Inno Setup не найден — установщик не собран." -ForegroundColor Yellow
+    Write-Host "  winget install --id JRSoftware.InnoSetup" -ForegroundColor Yellow
+} else {
+    Write-Host "Building installer..." -ForegroundColor Cyan
+    & $iscc "installer\SpotterApp.iss"
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Installer build failed! Exit code: $LASTEXITCODE" -ForegroundColor Red
+        exit $LASTEXITCODE
+    }
+    $setup = Get-ChildItem "dist\installer\SpotterApp-Setup-*.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($setup) {
+        Write-Host ("Done! " + $setup.FullName + " (" + [math]::Round($setup.Length / 1MB) + " MB)") -ForegroundColor Green
+    }
+}
+
+Write-Host "Yandex GPT/SpeechKit = primary (API key entered at runtime in Settings)." -ForegroundColor Cyan
+Write-Host "Piper = отдельный компонент установщика, отдельный процесс." -ForegroundColor Cyan

@@ -2,10 +2,14 @@
 #
 # Spotter App build spec.
 #
-# Commentator stack (2026-06-22 migration):
-#   - Text:  YandexGPT (Yandex Foundation Models) over REST via aiohttp.
+# Commentator stack:
+#   - Text:  GigaChat / YandexGPT over REST via aiohttp.
 #   - Voice: Yandex SpeechKit (cloud, REST via aiohttp) as PRIMARY.
-#            Piper (ONNX/CPU, models/piper) bundled as OFFLINE FALLBACK.
+#            Piper — OFFLINE FALLBACK, НО НЕ ЗДЕСЬ: он под GPL-3.0-or-later и
+#            в закрытый EXE не вшивается. Его ставит отдельный компонент
+#            установщика (installer/SpotterApp.iss), собирает PiperCLI.spec, а
+#            приложение запускает его отдельным процессом (new_tts/piper_tts.py).
+#            Вместе с Piper отсюда ушёл onnxruntime — его больше никто не звал.
 #   - No torch / MOSS / Qwen / transformers (removed).
 #
 # NOTE: build must run under an interpreter that has the FULL runtime stack
@@ -14,14 +18,6 @@
 # See build.ps1 for the dependency gate.
 #
 from PyInstaller.utils.hooks import collect_all
-
-
-def _safe_collect(pkg):
-    """collect_all that tolerates an absent optional package."""
-    try:
-        return collect_all(pkg)
-    except Exception:
-        return ([], [], [])
 
 
 datas = [
@@ -33,8 +29,8 @@ datas = [
     ('new_tts',      'new_tts'),
     ('analytics',    'analytics'),
     ('yandex_ai',    'yandex_ai'),
-    # Piper voices — OFFLINE FALLBACK (~240 MB: denis/dmitri/irina/ruslan medium)
-    ('models/piper', 'models/piper'),
+    # Голосов Piper здесь нет намеренно: их (242 МБ) кладёт компонент
+    # установщика в PIPER_VOICES_DIR рядом с приложением.
     # Static UI — статический экспорт Next.js (NewSpotterUI -> webui/, см. build.ps1)
     ('webui',        'webui'),
     # Портреты говорящих для карточки рации (web_server: /assets/radio/<file>).
@@ -68,10 +64,6 @@ hiddenimports = [
     'aiosignal',
     'attr',
     'attrs',
-    # Piper (offline TTS fallback) + ONNX runtime
-    'piper',
-    'onnxruntime',
-    'onnxruntime.capi',
     'numpy',
     # audio I/O
     'sounddevice',
@@ -117,14 +109,6 @@ for _pkg in ('aiohttp', 'multidict', 'yarl', 'frozenlist', 'aiosignal'):
     tmp_ret = collect_all(_pkg)
     datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 
-# Piper TTS (offline fallback) — bundles espeak-ng data + phonemizer assets
-tmp_ret = collect_all('piper')
-datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
-# Optional phonemize backends (name varies by piper-tts version; tolerate absence)
-for _opt in ('piper_phonemize', 'espeakng_loader', 'espeak_phonemizer'):
-    tmp_ret = _safe_collect(_opt)
-    datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
-
 # pyttsx3 (last-resort offline fallback, used only if BOTH Yandex and Piper
 # fail — see voice/tts.py::_init_pyttsx3). Its SAPI5 driver (pyttsx3/drivers/
 # sapi5.py) is loaded by name via importlib, invisible to PyInstaller's static
@@ -134,10 +118,6 @@ for _opt in ('piper_phonemize', 'espeakng_loader', 'espeak_phonemizer'):
 tmp_ret = collect_all('pyttsx3')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('comtypes')
-datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
-
-# onnxruntime — ONNX inference (used by Piper)
-tmp_ret = collect_all('onnxruntime')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 
 # audio
@@ -172,8 +152,14 @@ a = Analysis(
     hiddenimports=hiddenimports,
     hookspath=['hooks'],
     hooksconfig={},
-    runtime_hooks=['hooks/rthook_piper.py'],
+    # rthook_piper больше не нужен: espeak-ng-data живёт внутри piper.exe,
+    # который собирается отдельно (PiperCLI.spec) и не делит с нами _MEIPASS.
+    runtime_hooks=[],
     excludes=[
+        # Piper и его ONNX-движок — ТОЛЬКО в отдельном piper.exe.
+        # Здесь они запрещены явно: GPL-код не должен попасть в закрытый EXE
+        # транзитивным импортом, и молча это заметить было бы невозможно.
+        'piper', 'onnxruntime',
         # PyTorch full stack (system Python has CUDA torch — must not enter the EXE)
         'torch', 'torch.distributed', 'torch.cuda', 'torch.backends',
         'torchvision', 'torchaudio',

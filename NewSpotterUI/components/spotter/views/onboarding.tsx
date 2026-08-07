@@ -256,9 +256,18 @@ function VoiceStep({ diag }: { diag: Diagnostics | null }) {
                 ? "Нейросетевой голос Yandex"
                 : voice?.status === "piper"
                   ? "Офлайн-голос Piper (работает без ключей)"
-                  : "Озвучка недоступна"
+                  : voice?.status === "system"
+                    ? "Системный голос Windows"
+                    : "Озвучка недоступна"
             }
           />
+          {voice?.status === "system" && (
+            <p className="mt-2 rounded-md border border-border bg-secondary/45 px-3 py-2 text-xs leading-relaxed text-muted-foreground">
+              Компонент «Офлайн-голос Piper» не установлен, поэтому говорит
+              встроенный голос Windows — он звучит заметно хуже. Его можно
+              доставить, запустив установщик ещё раз и отметив этот компонент.
+            </p>
+          )}
           <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
             Нажмите «Проверить» — приложение произнесёт короткую фразу. Если тихо:
             проверьте устройство вывода Windows и громкость на экране «Голос».

@@ -282,6 +282,11 @@ export type SettingsState = {
   critical_events_enabled: boolean
   ambient_enabled: boolean
   engineer_chatter_enabled: boolean
+  /** Подсказки по ПИЛОТАЖУ (блокировка, пробуксовка, снос, занос, выезд).
+   *  Независимая ось от engineer_chatter_enabled: инженера можно держать
+   *  тихим, а подсказки по вождению включёнными. Звучат только на
+   *  повторяющейся ошибке в одном повороте (core/coach_ai/corner_log.py). */
+  driving_coach_enabled: boolean
   radio_fx: boolean
   commentator_position: string
   min_comment_gap: number
@@ -396,6 +401,15 @@ export type StrategyAIState = {
   } | null
 }
 
+/** Самый проблемный поворот сессии: сколько ошибок и каких.
+ *  Строится core/coach_ai/corner_log.py::top_corners. */
+export type CoachCornerStat = {
+  corner_id: number | null
+  corner_name: string | null
+  count: number
+  kinds: Record<string, number>
+}
+
 export type CoachAIState = {
   weak_sector: number | null
   lost_time_ms: number | null
@@ -404,6 +418,10 @@ export type CoachAIState = {
   tyre_advice: string
   lap_count: number
   advice: string | null
+  /** Топ-3 проблемных поворота. Полная карта «поворот × круг» живьём НЕ едет —
+   *  она сохраняется в файл сессии (core/session_recorder.py::set_coach_map). */
+  top_corners?: CoachCornerStat[]
+  mistake_count?: number
 }
 
 export type RivalEntry = {
