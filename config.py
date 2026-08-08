@@ -218,7 +218,20 @@ GIGACHAT_VERIFY_SSL = False
 # Root CA + Sub CA). Если файл есть — provider включает строгую проверку TLS
 # (verify_ssl_certs=True + ca_bundle_file), игнорируя GIGACHAT_VERIFY_SSL. Нет —
 # dev-режим. Собрать бандл: `python scripts/setup_gigachat_certs.py` (кладёт его
-# ровно сюда). Подхват автоматический по факту существования файла.
-_GIGACHAT_CA_DEFAULT = os.path.join(DATA_DIR, "certs", "gigachat_ca_bundle.pem")
-GIGACHAT_CA_BUNDLE = _GIGACHAT_CA_DEFAULT if os.path.exists(_GIGACHAT_CA_DEFAULT) else ""
+# в DATA_DIR). Подхват автоматический по факту существования файла.
+#
+# Ищем в ДВУХ местах, и порядок важен:
+#   1. DATA_DIR — бандл, собранный скриптом рядом с приложением. Идёт первым,
+#      чтобы пользователь мог подложить свой, не пересобирая EXE.
+#   2. BASE_DIR — бандл, вшитый в дистрибутив (в onefile это _MEIPASS, который
+#      с DATA_DIR НЕ совпадает). Без этой ветки вшитый в EXE сертификат просто
+#      не находился бы, и релизная сборка молча работала бы без проверки TLS.
+# dict.fromkeys — дедуп с сохранением порядка: в дереве разработки DATA_DIR и
+# BASE_DIR совпадают, и без него диагностика печатала бы один и тот же путь дважды.
+_GIGACHAT_CA_CANDIDATES = tuple(dict.fromkeys((
+    os.path.join(DATA_DIR, "certs", "gigachat_ca_bundle.pem"),
+    os.path.join(BASE_DIR, "certs", "gigachat_ca_bundle.pem"),
+)))
+GIGACHAT_CA_BUNDLE = next(
+    (p for p in _GIGACHAT_CA_CANDIDATES if os.path.exists(p)), "")
 GIGACHAT_CREDS_FILE = os.path.join(DATA_DIR, "gigachat_creds.json")

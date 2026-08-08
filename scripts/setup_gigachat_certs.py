@@ -32,6 +32,20 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config  # noqa: E402
 
 # Официальные RSA-сертификаты НУЦ Минцифры (страница: https://www.gosuslugi.ru/crt).
+#
+# ВНИМАНИЕ (проверено 2026-08-08): хост gu.gov.ru БОЛЬШЕ НЕ РЕЗОЛВИТСЯ — ни
+# системным резолвером, ни 1.1.1.1, при полностью живой сети (gosuslugi.ru и
+# посторонние хосты резолвятся нормально). То есть автоматическая ветка ниже
+# сейчас не работает и на релизной машине тоже не сработает.
+#
+# Ссылки НЕ заменены наугад: корневой сертификат — это якорь доверия, и тянуть
+# его с адреса, который кто-то (в том числе ИИ-агент) «вспомнил», нельзя. Точный
+# текущий адрес надо взять со страницы https://www.gosuslugi.ru/crt в браузере —
+# она отдаёт ссылки скриптом, из HTML их не видно.
+#
+# Ручной путь при этом полноценный: скачать PEM/CER браузером, положить (или
+# сконвертировать) в OUT_BUNDLE — config.GIGACHAT_CA_BUNDLE подхватит файл по
+# факту существования, никакой регистрации в коде не требуется.
 CERT_URLS = {
     "Russian Trusted Root CA (RSA 2022)": "https://gu.gov.ru/certs/rootca_ssl_rsa2022.cer",
     "Russian Trusted Sub CA (RSA 2022)":  "https://gu.gov.ru/certs/subca_ssl_rsa2022.cer",
@@ -64,8 +78,21 @@ def main() -> int:
             raw = _download(url)
         except Exception as exc:  # noqa: BLE001
             print(f"[FAIL] {name}: не скачался ({exc})")
-            print("       Проверь доступ к gu.gov.ru или скачай вручную со "
-                  "https://www.gosuslugi.ru/crt и положи PEM в", OUT_BUNDLE)
+            # Не пишем «проверь сеть»: на 2026-08-08 хост gu.gov.ru не резолвится
+            # в принципе, и отправлять человека чинить интернет — это отправить
+            # его чинить не то. Ручной путь ниже — рабочий, а не аварийный.
+            print()
+            print("       Автоматическая загрузка НЕ работает: адреса в CERT_URLS")
+            print("       устарели (gu.gov.ru не существует). Ручной путь:")
+            print("       1. Открыть https://www.gosuslugi.ru/crt в браузере")
+            print("       2. Скачать Russian Trusted Root CA и Sub CA (RSA)")
+            print("       3. Склеить их в один PEM (или положить .cer и")
+            print("          сконвертировать) по пути:")
+            print("         ", OUT_BUNDLE)
+            print("       4. Сверить SHA-256-отпечатки с указанными на странице")
+            print()
+            print("       config.GIGACHAT_CA_BUNDLE подхватит файл сам, а")
+            print("       build.ps1 перестанет предупреждать про TLS.")
             return 1
         pem = _to_pem(raw)
         fp = hashlib.sha256(ssl.PEM_cert_to_DER_cert(pem)).hexdigest()

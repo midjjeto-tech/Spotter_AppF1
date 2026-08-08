@@ -17,6 +17,8 @@
 # onnxruntime, numpy, psutil, aiohttp, pandas/fastf1) + pyinstaller.
 # See build.ps1 for the dependency gate.
 #
+import os
+
 from PyInstaller.utils.hooks import collect_all
 
 
@@ -43,6 +45,16 @@ datas = [
     ('app.pyw',      '.'),
     ('web_server.py', '.'),
 ]
+
+# CA-бандл корневых сертификатов НУЦ Минцифры. Без него GigaChat (провайдер по
+# умолчанию) ходит с verify_ssl_certs=False — а по этому соединению уходит
+# Authorization key пользователя. Условно, потому что бандл собирается скриптом
+# (scripts/setup_gigachat_certs.py) и в дереве разработки его может не быть:
+# безусловная строка роняла бы сборку у всех, кто его не собирал. Отсутствие
+# при этом НЕ молчаливое — build.ps1 предупреждает отдельно.
+_CA_BUNDLE = os.path.join('certs', 'gigachat_ca_bundle.pem')
+if os.path.exists(_CA_BUNDLE):
+    datas.append((_CA_BUNDLE, 'certs'))
 
 binaries = []
 
@@ -81,6 +93,10 @@ hiddenimports = [
     'pywintypes',
     'pyttsx3.drivers',
     'pyttsx3.drivers.sapi5',
+    # pycaw (приглушение игры) грузит COM-интерфейсы Core Audio через
+    # comtypes — тот уже в списке ниже ради SAPI5-драйвера pyttsx3.
+    'pycaw',
+    'pycaw.pycaw',
     'comtypes.client',
     'comtypes.gen',
     'comtypes.stream',

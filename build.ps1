@@ -76,6 +76,20 @@ if ($banned) {
     exit 1
 }
 
+# --- CA-бандл Минцифры для строгой TLS-проверки GigaChat ---
+# Не гейт, а предупреждение: без бандла приложение соберётся и будет работать,
+# но GigaChat (провайдер по умолчанию) пойдёт с verify_ssl_certs=False, а по
+# этому соединению уходит Authorization key пользователя. Молча выпускать такую
+# сборку нельзя — поэтому строка тут, рядом с остальными гейтами.
+$caBundle = Join-Path $PSScriptRoot "certs\gigachat_ca_bundle.pem"
+if (Test-Path $caBundle) {
+    Write-Host "GigaChat CA bundle: найден, TLS будет проверяться." -ForegroundColor Green
+} else {
+    Write-Host "WARNING: certs\gigachat_ca_bundle.pem не найден." -ForegroundColor Yellow
+    Write-Host "  GigaChat в этой сборке пойдёт БЕЗ проверки TLS-сертификата." -ForegroundColor Yellow
+    Write-Host "  Собрать: python scripts\setup_gigachat_certs.py (и сверить отпечатки)" -ForegroundColor Yellow
+}
+
 # --- Track Intelligence JSON database must be present ---
 $tracksDir = Join-Path $PSScriptRoot "tracks"
 if (-not (Test-Path $tracksDir)) {

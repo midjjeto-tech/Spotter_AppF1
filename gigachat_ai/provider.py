@@ -53,6 +53,18 @@ class GigaChatProvider:
                     kwargs["ca_bundle_file"] = ca
                 else:
                     kwargs["verify_ssl_certs"] = config.GIGACHAT_VERIFY_SSL
+                    if not config.GIGACHAT_VERIFY_SSL:
+                        # Кричим в лог, а не деградируем молча: по этому же
+                        # соединению SDK гоняет Authorization key при OAuth, и
+                        # «работает, но без проверки сертификата» снаружи
+                        # выглядит ровно как «работает».
+                        _log.warning(
+                            "GigaChat: TLS-сертификат НЕ проверяется "
+                            "(CA-бандл Минцифры не найден: %s). "
+                            "Ключ уходит по непроверенному соединению — "
+                            "собрать бандл: python scripts/setup_gigachat_certs.py",
+                            " / ".join(getattr(config, "_GIGACHAT_CA_CANDIDATES", ())),
+                        )
                 self._client = GigaChat(**kwargs)
             except Exception as exc:  # noqa: BLE001 — нет пакета/битый ключ -> провайдер недоступен
                 _log.warning("GigaChat init failed: %s", exc)
