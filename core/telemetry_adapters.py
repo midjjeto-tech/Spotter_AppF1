@@ -197,6 +197,11 @@ class F1TelemetryAdapter:
             yield TelemetryDelta("car_damage", payload, player, telemetry_year)
         elif packet_id == self._decoder.PACKET_MOTION:
             yield TelemetryDelta("motion", self._decoder.parse_motion_all(data), player, telemetry_year)
+        elif packet_id == self._decoder.PACKET_CAR_SETUPS:
+            # Только для разбора после сессии: сетап посреди заезда не меняется,
+            # живого потребителя у этого пакета нет.
+            payload = self._decoder.parse_player_setup(data, player) if player < 22 else {}
+            yield TelemetryDelta("car_setup", payload, player, telemetry_year)
         elif packet_id == self._decoder.PACKET_MOTION_EX:
             # Отдельный kind от "motion": тот про взаимное расположение машин
             # (споттер), этот про собственное сцепление (коуч пилотажа).

@@ -9,7 +9,7 @@ import {
   type SpotterState, type VoicesResponse, type MicDevice,
 } from "@/lib/api"
 import { cn } from "@/lib/utils"
-import { Tv, Flame, Wind, Skull, Play, RotateCw, Radio, Mic } from "lucide-react"
+import { Tv, Flame, Wind, Skull, Play, RotateCw, Radio, Mic, Gauge, Volume2 } from "lucide-react"
 
 const icons: Record<string, typeof Tv> = { tv: Tv, hype: Flame, calm: Wind, toxic: Skull }
 
@@ -18,6 +18,9 @@ export function VoiceView({ state }: { state: SpotterState | null }) {
   const [engineer, setEngineer] = useState("volkov")
   const [engineerError, setEngineerError] = useState(false)
   const [radioFx, setRadioFx] = useState(true)
+  const [drivingCoach, setDrivingCoach] = useState(false)
+  const [ducking, setDucking] = useState(false)
+  const [duckingLevel, setDuckingLevel] = useState(35)
   const [ttsVersion, setTtsVersion] = useState<"v1" | "v3">("v1")
   const [commentaryMode, setCommentaryMode] = useState<"live" | "calm" | "story">("live")
   const [voices, setVoices] = useState<VoicesResponse | null>(null)
@@ -42,6 +45,25 @@ export function VoiceView({ state }: { state: SpotterState | null }) {
   useEffect(() => {
     if (typeof state?.settings?.radio_fx === "boolean") setRadioFx(state.settings.radio_fx)
   }, [state?.settings?.radio_fx])
+
+  // Тумблер подсказок по пилотажу — тоже зеркало бэкенда, а не локальный
+  // хардкод: по умолчанию он выключен, и показать включённым его нельзя.
+  useEffect(() => {
+    if (typeof state?.settings?.driving_coach_enabled === "boolean") {
+      setDrivingCoach(state.settings.driving_coach_enabled)
+    }
+  }, [state?.settings?.driving_coach_enabled])
+
+  // Приглушение игры — тоже зеркало бэкенда: по умолчанию выключено, и
+  // показать включённым его нельзя.
+  useEffect(() => {
+    if (typeof state?.settings?.game_ducking_enabled === "boolean") {
+      setDucking(state.settings.game_ducking_enabled)
+    }
+    if (typeof state?.settings?.game_ducking_level === "number") {
+      setDuckingLevel(state.settings.game_ducking_level)
+    }
+  }, [state?.settings?.game_ducking_enabled, state?.settings?.game_ducking_level])
 
   // Sync Yandex TTS version from backend state.
   useEffect(() => {
@@ -70,6 +92,21 @@ export function VoiceView({ state }: { state: SpotterState | null }) {
   const toggleRadioFx = (v: boolean) => {
     setRadioFx(v)
     saveSettings({ radio_fx: v })
+  }
+
+  const toggleDrivingCoach = (v: boolean) => {
+    setDrivingCoach(v)
+    saveSettings({ driving_coach_enabled: v })
+  }
+
+  const toggleDucking = (v: boolean) => {
+    setDucking(v)
+    saveSettings({ game_ducking_enabled: v })
+  }
+
+  const pickDuckingLevel = (v: number) => {
+    setDuckingLevel(v)
+    saveSettings({ game_ducking_level: v })
   }
 
   const pickTtsVersion = (v: "v1" | "v3") => {
@@ -408,6 +445,52 @@ export function VoiceView({ state }: { state: SpotterState | null }) {
             </div>
             <Toggle checked={radioFx} onChange={toggleRadioFx} label="Radio FX" />
           </div>
+
+          {/* Приглушение игры живёт в той же панели, что эффект рации: обе
+              настройки про то, КАК звучит радио на фоне игры, и искать их
+              пользователь будет в одном месте. */}
+          <div className="mt-4 border-t border-border pt-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5">
+                <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/15 text-primary">
+                  <Volume2 className="h-4.5 w-4.5" />
+                </span>
+                <div>
+                  <p className="text-sm font-medium text-foreground">Приглушать игру во время реплики</p>
+                  <p className="text-xs text-muted-foreground">
+                    Как настоящий радиоканал: пока говорят, остальное тише
+                  </p>
+                </div>
+              </div>
+              <Toggle checked={ducking} onChange={toggleDucking} label="Ducking" />
+            </div>
+
+            {ducking && (
+              <div className="mt-4">
+                {/* Подпись и значение рисует вызывающий: Slider кладёт label
+                    только в aria-label и видимого текста не даёт. */}
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-sm text-foreground">Насколько тише</span>
+                  <span className="w-10 text-right font-mono text-sm text-foreground">
+                    {duckingLevel}%
+                  </span>
+                </div>
+                <Slider
+                  label="Ducking level"
+                  value={duckingLevel}
+                  onChange={setDuckingLevel}
+                  onPointerUp={pickDuckingLevel}
+                  min={10}
+                  max={90}
+                />
+                <p className="mt-2 text-[11px] text-muted-foreground">
+                  Доля от ТЕКУЩЕЙ громкости игры, а не абсолютная величина: если
+                  игра у тебя и так тихая, приглушение не сделает её громче.
+                  Затрагивается только звук игры — Discord и музыка не трогаются.
+                </p>
+              </div>
+            )}
+          </div>
         </Panel>
 
         {/* Microphone input device */}
@@ -459,6 +542,37 @@ export function VoiceView({ state }: { state: SpotterState | null }) {
               {micTestResult.ok ? "Микрофон работает — запись воспроизведена." : micTestResult.error}
             </p>
           )}
+        </Panel>
+
+        {/* Подсказки по пилотажу. Отдельная панель, а не строка в «болтовне
+            инженера»: это независимый тумблер, и обещать он должен ровно то,
+            что делает — иначе пользователь ждёт разбора каждой ошибки. */}
+        <Panel label="Подсказки по пилотажу">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/15 text-primary">
+                <Gauge className="h-4.5 w-4.5" />
+              </span>
+              <div>
+                <p className="text-sm font-medium text-foreground">Инженер говорит об ошибках вождения</p>
+                <p className="text-xs text-muted-foreground">
+                  Блокировка колеса, пробуксовка, снос, занос, выезд за трассу
+                </p>
+              </div>
+            </div>
+            <Toggle
+              checked={drivingCoach}
+              onChange={toggleDrivingCoach}
+              label="Коуч"
+            />
+          </div>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Вживую звучит только повторяющаяся ошибка — та же проблема в том же
+            повороте на трёх кругах из пяти. Разовый срыв инженер не
+            комментирует: его ты и сам почувствовал. Полный разбор по всем
+            поворотам всегда доступен в «Дебрифе», независимо от этого
+            переключателя.
+          </p>
         </Panel>
 
         {/* Yandex TTS version */}

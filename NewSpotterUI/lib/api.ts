@@ -287,6 +287,14 @@ export type SettingsState = {
    *  тихим, а подсказки по вождению включёнными. Звучат только на
    *  повторяющейся ошибке в одном повороте (core/coach_ai/corner_log.py). */
   driving_coach_enabled: boolean
+  /** Приглушать звук игры на время реплики. `game_ducking_level` — до скольких
+   *  процентов от ТЕКУЩЕЙ громкости игры; доля, а не абсолютная величина. */
+  game_ducking_enabled: boolean
+  game_ducking_level: number
+  /** Второй экран: открыть UI по локальной сети. Токен в этот тип НЕ входит —
+   *  он вырезан из снимка состояния и отдаётся только локальной ручкой
+   *  /api/remote-access. */
+  remote_access_enabled: boolean
   radio_fx: boolean
   commentator_position: string
   min_comment_gap: number
@@ -410,6 +418,18 @@ export type CoachCornerStat = {
   kinds: Record<string, number>
 }
 
+/** Отклонения одного поворота от эталонного круга — СЫРЫЕ, без нормализации:
+ *  на экране после сессии видны все столбцы сразу, и пилот сам различает общий
+ *  сдвиг и локальную потерю. Строится core/coach_ai/compare.py::corner_deltas. */
+export type CoachReferenceDelta = {
+  corner_id: number
+  corner_name: string | null
+  duration_ms: number | null
+  brake_delta: number | null
+  min_speed_delta: number | null
+  throttle_delta: number | null
+}
+
 export type CoachAIState = {
   weak_sector: number | null
   lost_time_ms: number | null
@@ -422,6 +442,42 @@ export type CoachAIState = {
    *  она сохраняется в файл сессии (core/session_recorder.py::set_coach_map). */
   top_corners?: CoachCornerStat[]
   mistake_count?: number
+  /** Отклонения от эталонного круга по поворотам (фаза 2). Живьём едут первые
+   *  восемь; полная таблица сохраняется в файл сессии. */
+  reference_deltas?: CoachReferenceDelta[]
+  /** Чем является эталон: лучшим кругом на трассе за всю историю или лучшим в
+   *  текущей сессии (первый визит). null — эталона ещё нет. */
+  reference_source?: "career" | "session" | null
+  /** Отчёт «Гараж» (фаза 3): во что стиль обошёлся машине. Компактен по
+   *  построению, поэтому едет целиком. */
+  garage?: CoachGarageReport
+}
+
+/** Перекос износа и нагрева резины. Износ сравнивается ВНУТРИ оси, нагрев — по
+ *  всем четырём колёсам. */
+export type CoachTyreLoad = {
+  worst_wheel: string | null
+  worst_axle: "front" | "rear" | null
+  wear_spread_pct: number
+  hottest_wheel: string | null
+  temp_spread_c: number
+}
+
+/** Совет по гаражу. Только баланс тормозов и дифференциал: причинной модели
+ *  крыльев и подвески в F1 25 у нас нет, и догадку пилот не отличит от
+ *  обоснованного вывода. `evidence` обязателен — совет без основания это
+ *  приказ. */
+export type CoachSetupHint = {
+  parameter: "brake_bias" | "diff_on_throttle"
+  direction: "up" | "down"
+  advice: string
+  evidence: string
+}
+
+export type CoachGarageReport = {
+  tyre_load: CoachTyreLoad | null
+  setup: Record<string, number | Record<string, number>>
+  hints: CoachSetupHint[]
 }
 
 export type RivalEntry = {
@@ -820,6 +876,56 @@ export type CompareResult = {
   error?: string
 }
 
+/** Токен второго экрана.
+ *
+ *  Локальный UI (webview на той же машине) токена не имеет и не должен —
+ *  политика на сервере пускает loopback всегда. Токен нужен ТОЛЬКО телефону:
+ *  он приходит один раз в адресе (`/?token=…`), сохраняется и сразу вычищается
+ *  из строки браузера, чтобы не оставаться в истории и на скриншотах. */
+const TOKEN_KEY = "spotter_remote_token"
+
+function readToken(): string {
+  if (typeof window === "undefined") return ""
+  try {
+    const fromUrl = new URLSearchParams(window.location.search).get("token")
+    if (fromUrl) {
+      window.localStorage.setItem(TOKEN_KEY, fromUrl)
+      // Чистка адреса — ПОСЛЕ гидратации: этот модуль грузится раньше неё, и
+      // роутер Next возвращает исходную строку обратно, если переписать её
+      // сейчас. Проверено в браузере: без задержки токен оставался в адресе.
+      window.setTimeout(() => {
+        try {
+          const clean = window.location.pathname + window.location.hash
+          window.history.replaceState(null, "", clean)
+        } catch {
+          // Не критично: токен уже сохранён, дальше он берётся из хранилища.
+        }
+      }, 0)
+      return fromUrl
+    }
+    return window.localStorage.getItem(TOKEN_KEY) ?? ""
+  } catch {
+    // Приватный режим/заблокированное хранилище — работаем без токена.
+    return ""
+  }
+}
+
+let token = ""
+if (typeof window !== "undefined") token = readToken()
+
+/** Единственная точка сетевых вызовов этого модуля.
+ *
+ *  Явная обёртка, а не патч глобального fetch: скрытый шов здесь означал бы,
+ *  что пропущенный вызов ломается ТОЛЬКО на телефоне и только у того, кто
+ *  включил второй экран. `grep "fetch("` по этому файлу должен находить лишь
+ *  строку ниже. */
+function http(input: string, init?: RequestInit): Promise<Response> {
+  if (!token) return fetch(input, init)
+  const headers = new Headers(init?.headers)
+  headers.set("X-Spotter-Token", token)
+  return fetch(input, { ...init, headers })
+}
+
 async function asJson<T>(r: Response): Promise<T> {
   // 400 от бэкенда несёт полезный JSON ({error: ...}) — пропускаем его дальше.
   if (!r.ok && r.status !== 400) throw new Error("HTTP " + r.status)
@@ -827,7 +933,7 @@ async function asJson<T>(r: Response): Promise<T> {
 }
 
 const post = (url: string, body: unknown) =>
-  fetch(url, {
+  http(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -840,52 +946,95 @@ const post = (url: string, body: unknown) =>
  *  150 строк. Нужно тем, кто опрашивает часто: оверлей делает это 4 раза в
  *  секунду и историю вообще не рисует. Без аргумента поведение прежнее. */
 export const getState = (radioSince?: number) =>
-  fetch(radioSince === undefined ? "/api/state" : `/api/state?radio_since=${radioSince}`)
+  http(radioSince === undefined ? "/api/state" : `/api/state?radio_since=${radioSince}`)
     .then((r) => asJson<SpotterState>(r))
 
 export const saveSettings = (patch: Partial<SettingsState>) =>
   post("/api/settings", patch).then((r) => asJson<{ ok: boolean }>(r))
 
 export const resetSettings = (): Promise<{ ok: boolean; settings: SettingsState }> =>
-  fetch("/api/settings/reset", { method: "POST" }).then((r) => asJson<{ ok: boolean; settings: SettingsState }>(r))
+  http("/api/settings/reset", { method: "POST" }).then((r) => asJson<{ ok: boolean; settings: SettingsState }>(r))
 
 export const clearRadioHistory = () =>
   post("/api/radio/clear_history", {}).then((r) => asJson<{ ok: boolean }>(r))
 
 export const testVoice = () =>
-  fetch("/api/test_voice").then((r) => asJson<{ ok: boolean; error?: string; engine?: string }>(r))
+  http("/api/test_voice").then((r) => asJson<{ ok: boolean; error?: string; engine?: string }>(r))
 
-export const clearLogs = () => fetch("/api/clear_logs").then((r) => asJson<{ ok: boolean }>(r))
+export const clearLogs = () => http("/api/clear_logs").then((r) => asJson<{ ok: boolean }>(r))
 
-export const highlight = () => fetch("/api/highlight").then((r) => asJson<{ ok: boolean }>(r))
+export const highlight = () => http("/api/highlight").then((r) => asJson<{ ok: boolean }>(r))
 
 export const generateStory = () =>
-  fetch("/api/story/generate", { method: "POST" }).then((r) => asJson<{ ok: boolean }>(r))
+  http("/api/story/generate", { method: "POST" }).then((r) => asJson<{ ok: boolean }>(r))
 
 export const replayStory = () =>
-  fetch("/api/story/replay", { method: "POST" }).then((r) => asJson<{ ok: boolean }>(r))
+  http("/api/story/replay", { method: "POST" }).then((r) => asJson<{ ok: boolean }>(r))
 
 export const askVoice = () =>
-  fetch("/api/voice/ask", { method: "POST" }).then((r) =>
+  http("/api/voice/ask", { method: "POST" }).then((r) =>
     asJson<{ ok: boolean; busy?: boolean; reason?: string }>(r))
 
-export const getVoices = () => fetch("/api/voices").then((r) => asJson<VoicesResponse>(r))
+export const getVoices = () => http("/api/voices").then((r) => asJson<VoicesResponse>(r))
+
+/** Адрес второго экрана. Ручка ЛОКАЛЬНАЯ: с телефона она отдаёт 401, потому что
+ *  токен показывают только на той машине, где запущено приложение. */
+export type RemoteAccessInfo = {
+  enabled: boolean
+  url: string
+  token: string
+  host: string
+}
+
+export const getRemoteAccess = () =>
+  http("/api/remote-access").then((r) => asJson<RemoteAccessInfo>(r))
+
+/** Позиции всех машин по кругам. Снимок берётся в момент, когда линию
+ *  пересекает ИГРОК: соперники могут быть на другом круге, и подпись на
+ *  графике обязана это говорить. */
+export type RaceMapRow = {
+  vehicle_idx: number
+  name: string | null
+  is_player: boolean
+  positions: (number | null)[]
+}
+
+export type RaceMapSummary = {
+  start_position: number
+  end_position: number
+  net: number
+  worst_lap: number | null
+  worst_delta: number
+}
+
+export type RaceMapResponse = {
+  laps: number[]
+  pit_laps: number[]
+  rows: RaceMapRow[]
+  summary: RaceMapSummary | null
+}
+
+/** Отдельный эндпоинт, а не поле /api/state: сетка на 22 машины за 60 кругов
+ *  весит больше тысячи чисел, а состояние опрашивают восемь окон оверлея
+ *  каждые 250 мс. Дебриф читает карту по запросу. */
+export const getRaceMap = () =>
+  http("/api/race-map").then((r) => asJson<RaceMapResponse>(r))
 
 export const getDiagnostics = () =>
-  fetch("/api/diagnostics").then((r) => asJson<Diagnostics>(r))
+  http("/api/diagnostics").then((r) => asJson<Diagnostics>(r))
 
 export const getMicDevices = () =>
-  fetch("/api/mic_devices").then((r) => asJson<{ devices: MicDevice[] }>(r))
+  http("/api/mic_devices").then((r) => asJson<{ devices: MicDevice[] }>(r))
 
 export const testMic = () =>
-  fetch("/api/mic_test", { method: "POST" }).then((r) => asJson<{ ok: boolean; error?: string }>(r))
+  http("/api/mic_test", { method: "POST" }).then((r) => asJson<{ ok: boolean; error?: string }>(r))
 
-export const getSessions = () => fetch("/api/sessions").then((r) => asJson<SessionItem[]>(r))
+export const getSessions = () => http("/api/sessions").then((r) => asJson<SessionItem[]>(r))
 
 export const loadF1 = (body: { year: number; stype: string; game_session_path: string }) =>
   post("/api/load_f1", body).then((r) => asJson<CompareResult>(r))
 
-export const getYandexStatus = () => fetch("/api/yandex/status").then((r) => asJson<YandexStatus>(r))
+export const getYandexStatus = () => http("/api/yandex/status").then((r) => asJson<YandexStatus>(r))
 
 export const saveYandex = (body: { api_key: string; folder_id: string; auth_mode: string }) =>
   post("/api/yandex/credentials", body).then((r) => asJson<{ ok: boolean; code: string; message: string }>(r))
@@ -899,12 +1048,12 @@ export type GigachatStatus = {
   active?: boolean
 }
 
-export const getGigachatStatus = () => fetch("/api/gigachat/status").then((r) => asJson<GigachatStatus>(r))
+export const getGigachatStatus = () => http("/api/gigachat/status").then((r) => asJson<GigachatStatus>(r))
 
 export const saveGigachat = (body: { authorization_key: string }) =>
   post("/api/gigachat/credentials", body).then((r) => asJson<{ ok: boolean; code: string; message: string }>(r))
 
-export const getOverlay = () => fetch("/api/overlay").then((r) => asJson<OverlayState>(r))
+export const getOverlay = () => http("/api/overlay").then((r) => asJson<OverlayState>(r))
 
 // ── Геометрия оверлея ───────────────────────────────────────────────────────
 // Живёт отдельно от /api/settings: раскладку пишут восемь процессов виджетов, а
@@ -923,7 +1072,7 @@ export type OverlayLayoutState = {
 }
 
 export const getOverlayLayout = () =>
-  fetch("/api/overlay/layout").then((r) => asJson<OverlayLayoutState>(r))
+  http("/api/overlay/layout").then((r) => asJson<OverlayLayoutState>(r))
 
 export const setOverlayScale = (widget: string, scale: number) =>
   post("/api/overlay/layout", { widget, scale }).then((r) =>
@@ -937,10 +1086,10 @@ export const overlayPreset = (action: "save" | "apply" | "delete", name: string)
   post("/api/overlay/presets", { action, name }).then((r) =>
     asJson<OverlayLayoutState & { ok: boolean; error?: string }>(r))
 
-export const getRaceFeed = () => fetch("/api/racefeed").then((r) => asJson<RaceFeedResponse>(r))
+export const getRaceFeed = () => http("/api/racefeed").then((r) => asJson<RaceFeedResponse>(r))
 
 export const getSeasonStandings = () =>
-  fetch("/api/racefeed/standings").then((r) => asJson<SeasonStandingsResponse>(r))
+  http("/api/racefeed/standings").then((r) => asJson<SeasonStandingsResponse>(r))
 
 /** Счётчики конвейера репортажа за текущую сессию (core/racefeed/engine.py::_STAT_KEYS).
  *  Отвечают на вопрос «почему лента пустая»: нет событий / всё подавил Editor /
@@ -986,10 +1135,10 @@ export type HotkeyStatusResponse = {
 }
 
 export const getHotkeyStatus = () =>
-  fetch("/api/hotkeys/status").then((r) => asJson<HotkeyStatusResponse>(r))
+  http("/api/hotkeys/status").then((r) => asJson<HotkeyStatusResponse>(r))
 
 export const getRaceFeedStats = () =>
-  fetch("/api/racefeed/stats").then((r) => asJson<RaceFeedStatsResponse>(r))
+  http("/api/racefeed/stats").then((r) => asJson<RaceFeedStatsResponse>(r))
 
 /** Лента завершившейся гонки. Движок открывает новый SQLite на каждую сессию,
  *  поэтому без архива канал пуст всё время между гонками. */
@@ -1011,7 +1160,7 @@ export type RaceFeedArchiveResponse = {
 }
 
 export const getRaceFeedArchive = () =>
-  fetch("/api/racefeed/archive").then((r) => asJson<RaceFeedArchiveResponse>(r))
+  http("/api/racefeed/archive").then((r) => asJson<RaceFeedArchiveResponse>(r))
 
 export type ReaderActionResult = {
   ok: boolean

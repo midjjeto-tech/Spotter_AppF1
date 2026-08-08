@@ -131,6 +131,14 @@ _COACH_PHRASE_CODE: dict[tuple[str, str | None], str] = {
 #: Выезд, засчитанный игрой как срезка, принадлежит TrackLimitsTracker. Окно то
 #: же, что у симметричного глушения PENA в core/strategy_ai/track_limits.py.
 COACH_TRACK_LIMITS_SUPPRESSION_S = 5.0
+
+# Метрика отклонения от эталонного круга -> семантический код банка (фаза 2).
+_COACH_REFERENCE_CODE: dict[str, str] = {
+    "brake": "coach.ref_brake_early",
+    "min_speed": "coach.ref_apex_slow",
+    "throttle": "coach.ref_throttle_late",
+    "duration": "coach.ref_losing_time",
+}
 from core.strategy_ai.safety_car import derive_safety_car_event
 from core.coach_ai import DriverCoach
 from core.rivals import RivalTracker
@@ -142,6 +150,16 @@ from core.track_ai.loader import load_track
 from core.track_ai.track_manager import TrackManager
 from core.coach_ai.corner_log import CornerLog
 from core.coach_ai.slip import SlipDetector
+from core.coach_ai.compare import compare_lap, corner_deltas
+from core.coach_ai.reference import LapTracer
+from core.coach_ai.reference_store import ReferenceLap, load_career_reference
+from core.coach_ai.repeat import RepeatGate
+from core.coach_ai.setup_advice import build_hints as build_setup_hints
+from core.coach_ai.tyre_load import TyreLoadTracker
+from core.race_map import RaceMap
+from core.audio_ducking import GameDucker
+from core.remote_access import (
+    generate_token as generate_remote_token, lan_address as _lan_address)
 from core.session_guard import SessionGuard
 from core.num_to_words import ru_plural
 from core.situation_dedup import (
@@ -286,6 +304,10 @@ class F1Engine:
         # комментатора.
         self.voice.set_persona(self.settings.get("persona", config.PERSONA))
         self._apply_voice_cast()
+        # Приглушение игры поднимается и на старте, а не только при правке
+        # настройки: иначе включённый тумблер не работал бы до первого захода в
+        # настройки — ровно тот класс багов, когда готовая фича не доезжает.
+        self._apply_game_ducking()
         self._voice_listener = VoiceListener(device=self.settings.get("mic_device"))
         self._yandex_client: YandexClient | None = None
         self._yandex_status = {"connected": False, "code": "YANDEX_NO_CREDENTIALS",
@@ -358,6 +380,22 @@ class F1Engine:
         # выключает ЭФИР, а карта ошибок для дебрифа собирается всегда.
         self.coach_slip = SlipDetector()
         self.coach_log = CornerLog()
+        # Фаза 2: метрики круга, эталон и своё правило повтора. Гейт отдельный
+        # от фазы 1 — «блокируешь в третьем» и «тормозишь рано в третьем» это
+        # разные темы, и молчание об одной не должно глушить другую.
+        self.coach_tracer = LapTracer()
+        self.coach_reference: ReferenceLap | None = None
+        self.coach_reference_gate = RepeatGate()
+        self._coach_last_deltas: list[dict] = []
+        self._player_lap_time_ms: int = 0
+        # Фаза 3: во что стиль обходится машине. Живого канала у неё нет —
+        # сетап посреди заезда не меняется, всё уходит в дебриф и файл сессии.
+        self.tyre_load = TyreLoadTracker()
+        self._player_setup: dict = {}
+        self._player_tyre_temp: dict = {}
+        # Карта гонки: позиции всех машин по кругам. Своего пакета не требует —
+        # снимок берётся из уже разобранных позиций на круге игрока.
+        self.race_map = RaceMap()
         self._last_track_limits_announcement_t: float = 0.0
         # Покрытие под каждым колесом (хвост пакета 6). Скорость сюда не
         # дублируется — она уже есть в self._player_speed_kmh.
@@ -570,6 +608,54 @@ class F1Engine:
     # Настройки
     # ------------------------------------------------------------
 
+    def _ensure_remote_access_token(self) -> None:
+        """Токен второго экрана создаётся при первом включении и больше не
+        меняется: иначе адрес, открытый на телефоне, протухал бы после каждого
+        касания настроек. Выключение токен НЕ стирает — включив снова,
+        пользователь ждёт тот же адрес."""
+        if not self._get_setting("remote_access_enabled", False):
+            return
+        if self._get_setting("remote_access_token", ""):
+            return
+        token = generate_remote_token()
+        with self._engine_lock:
+            self.settings["remote_access_token"] = token
+
+    def get_remote_access_info(self) -> dict:
+        """Адрес второго экрана для UI. Пока фича выключена — пустой."""
+        enabled = bool(self._get_setting("remote_access_enabled", False))
+        token = str(self._get_setting("remote_access_token", ""))
+        if not enabled or not token:
+            return {"enabled": False, "url": "", "token": "", "host": ""}
+        host = _lan_address()
+        return {
+            "enabled": True,
+            "token": token,
+            "host": host,
+            "url": f"http://{host}:{config.API_PORT}/?token={token}",
+        }
+
+    def _apply_game_ducking(self) -> None:
+        """Включить/выключить приглушение игры и обновить его глубину.
+
+        Выключение обязано СНЯТЬ уже удерживаемое приглушение: иначе тумблер,
+        сдвинутый посреди реплики, оставил бы игру тихой навсегда, и причину
+        пользователь искал бы в настройках игры, а не у нас."""
+        enabled = bool(self._get_setting("game_ducking_enabled", False))
+        level = float(self._get_setting("game_ducking_level", 35)) / 100.0
+        current = getattr(self.voice, "game_ducker", None)
+
+        if not enabled:
+            if current is not None:
+                current.shutdown()
+                self.voice.game_ducker = None
+            return
+
+        if current is None:
+            self.voice.game_ducker = GameDucker(level=level)
+        else:
+            current.set_level(level)
+
     def apply_settings(self, settings: dict):
         with self._engine_lock:
             self.settings.update(settings)
@@ -587,6 +673,12 @@ class F1Engine:
 
         if "persona" in settings or "engineer_character" in settings:
             self._apply_voice_cast()
+
+        if "game_ducking_enabled" in settings or "game_ducking_level" in settings:
+            self._apply_game_ducking()
+
+        if "remote_access_enabled" in settings:
+            self._ensure_remote_access_token()
 
         if "mic_device" in settings:
             self._voice_listener.set_device(settings["mic_device"])
@@ -1615,6 +1707,18 @@ class F1Engine:
             track_ctx = self._track_manager.resolve(self._lap_distance_m)
         corner = track_ctx.corner if track_ctx else None
 
+        # Фаза 2 кормится с того же тика: поворот здесь уже разрешён, а вводы
+        # пилота уже разобраны — второй проход по геометрии не нужен.
+        self.coach_tracer.tick(
+            corner_id=corner.id if corner else None,
+            phase=track_ctx.phase if track_ctx else "straight",
+            lap_distance_m=self._lap_distance_m or 0.0,
+            lap_time_ms=self._player_lap_time_ms,
+            brake_pct=self._player_hud.get("brake_pct", 0.0),
+            throttle_pct=self._player_hud.get("throttle_pct", 0.0),
+            speed_kmh=self._player_speed_kmh,
+        )
+
         frame = {
             **motion_ex,
             "throttle_pct": self._player_hud.get("throttle_pct", 0.0),
@@ -1633,6 +1737,97 @@ class F1Engine:
             phase=track_ctx.phase if track_ctx else "straight",
         ):
             self._emit_coach_advice(mistake, now=now)
+
+    def _corner_names(self) -> dict[int, str]:
+        if self._track_manager is None:
+            return {}
+        return {c.id: c.name for c in self._track_manager.corners()}
+
+    def _note_lap_reference(self, metrics: dict, lap_time_ms: int) -> None:
+        """Кандидат в эталон — лучший круг сессии.
+
+        Карьерный эталон сессионным НЕ перебивается: цель должна быть
+        фиксированной, иначе она уезжает вместе с сегодняшней формой и пилот
+        никогда не увидит, что стал быстрее."""
+        if not metrics or lap_time_ms <= 0:
+            return
+        cur = self.coach_reference
+        if cur is not None and lap_time_ms >= cur.lap_time_ms:
+            return
+        self.coach_reference = ReferenceLap(
+            lap_time_ms=lap_time_ms, corners=metrics, source="session")
+
+    def _compare_lap_to_reference(self, metrics: dict, lap: int) -> None:
+        """Круг завершён: сравнить с эталоном, при устойчивом отклонении —
+        сказать. Таблица дельт считается ВСЕГДА, она нужна дебрифу независимо
+        от тумблера и от правила повтора."""
+        reference = self.coach_reference
+        if not metrics or reference is None:
+            return
+        names = self._corner_names()
+        self._coach_last_deltas = corner_deltas(metrics, reference.corners, names)
+
+        advice = compare_lap(metrics, reference.corners, names)
+        if advice is None:
+            return
+        if not self.coach_reference_gate.observe(
+                (advice.metric, advice.corner_id), lap):
+            return
+        if not self._get_setting("driving_coach_enabled", False):
+            return
+        code = _COACH_REFERENCE_CODE.get(advice.metric)
+        if code is None:
+            return
+        draft = {
+            "event_code": "COACH_REFERENCE",
+            "priority": "normal",
+            "speaker": SPEAKER_ENGINEER,
+            "driver": "", "color": "#38BDF8",
+            "corner": advice.corner_name,
+            "corner_id": advice.corner_id,
+        }
+        draft["phrase"] = self._render_engineer_phrase(draft, code)
+        if draft["phrase"]:
+            self._commentary_events.publish(draft)
+
+    def _record_race_map_lap(self, lap: int, player_pit: bool) -> None:
+        """Снимок позиций на завершении круга ИГРОКОМ.
+
+        Соперники в этот момент могут быть на другом круге — это честное «на
+        момент твоего пересечения линии», и подпись на графике говорит именно
+        так. Изображать одновременность было бы враньём."""
+        self.race_map.set_player(
+            self._player_car_index if self._player_car_index < 22 else None)
+        self.race_map.observe_lap(lap, dict(self._positions), player_pit=player_pit)
+
+    def get_race_map(self) -> dict:
+        """Карта гонки для /api/race_map. В /api/state НЕ входит: сетка на 22
+        машины за 60 кругов — это больше тысячи чисел, а состояние опрашивают
+        восемь окон оверлея каждые 250 мс."""
+        def _name(idx: int) -> str | None:
+            try:
+                return self.race_state.driver(idx).get("name") or None
+            except Exception:  # noqa: BLE001
+                return None
+
+        return self.race_map.to_dict(name_for=_name)
+
+    def _garage_report(self) -> dict:
+        """Что стиль пилота сделал с машиной и что с этим делать в гараже.
+
+        Ничего не публикует и не озвучивает: сетап посреди заезда не меняется,
+        а про стадию износа резины в эфире уже говорит strategy_ai. Отчёт живёт
+        только на экране и в файле сессии."""
+        load = self.tyre_load.report()
+        return {
+            "tyre_load": load.to_dict() if load is not None else None,
+            "setup": dict(self._player_setup),
+            "hints": [
+                hint.to_dict()
+                for hint in build_setup_hints(
+                    self.coach_log.map_rows(), self._player_setup)
+            ],
+        }
 
     def _note_track_limits_announcement(self, now: float) -> None:
         """Отметка, что о трек-лимитах только что объявили. Зовётся из той же
@@ -2022,6 +2217,12 @@ class F1Engine:
                     self._track_city = city
                     track_info = load_track(city)
                     self._track_manager = TrackManager(track_info) if track_info else None
+                    # Карьерный эталон коуча — самый быстрый записанный круг на
+                    # этой трассе. Нет его (первый визит) — эталоном станет
+                    # лучший круг текущей сессии, см. _note_lap_reference.
+                    self.coach_tracer.reset()
+                    self.coach_reference_gate.reset()
+                    self.coach_reference = load_career_reference(self._track_id)
                     self.f1_benchmark.reset()
                     self._f1_comparison_progress.reset()
                     self._f1_context_line = None
@@ -2128,6 +2329,13 @@ class F1Engine:
                 if pl.get("current_lap"):
                     telem["current_lap"] = pl["current_lap"]
                     self._player_lap = pl["current_lap"]
+                if pl.get("current_lap_time_ms") is not None:
+                    # Время текущего круга — коучу для дельты по повороту
+                    # (core/coach_ai/reference.py). Отдельное поле, а НЕ
+                    # _player_hud: тот словарь целиком разворачивается в
+                    # OverlayTelemetry (get_overlay_state), и лишний ключ там
+                    # роняет оверлей. Игра рисует время круга сама.
+                    self._player_lap_time_ms = pl["current_lap_time_ms"]
                 if pl.get("position"):
                     telem["position"] = pl["position"]
                     self._player_pos = pl["position"]
@@ -2204,7 +2412,14 @@ class F1Engine:
                     if lms > 0:
                         self._player_pace_ms = lms   # последний завершённый круг (темп)
                     if cur > self._prev_lap and self._prev_lap > 0 and lms > 0:
+                        # Порядок важен: сначала кандидат в эталон, потом
+                        # сравнение — иначе первый круг сессии сравнивался бы
+                        # сам с собой и всегда давал бы нули.
+                        lap_metrics = self.coach_tracer.finish_lap()
+                        self._note_lap_reference(lap_metrics, lms)
+                        self._compare_lap_to_reference(lap_metrics, self._prev_lap)
                         lap_was_pit = self._current_lap_pit
+                        self._record_race_map_lap(self._prev_lap, lap_was_pit)
                         self.recorder.on_lap_complete(
                             lap_num=self._prev_lap,
                             last_lap_ms=lms,
@@ -2254,6 +2469,13 @@ class F1Engine:
             dmg = delta.payload["player"]
             if dmg.get("tyre_wear") is not None:
                 self._player_tyre_wear = dmg["tyre_wear"]
+            # Поколёсный износ — фазе 3. Среднее выше остаётся стратегии:
+            # ей нужно «пора в боксы», а не перекос между колёсами оси.
+            if dmg.get("tyre_wear_per_wheel"):
+                self.tyre_load.observe(
+                    wear=dmg["tyre_wear_per_wheel"],
+                    surface_temp=self._player_tyre_temp or None,
+                )
             # нет полей для state.telemetry — снимок подтянет износ на следующем LAP_DATA
             if dmg:
                 self._update_damage(dmg)
@@ -2291,6 +2513,10 @@ class F1Engine:
             # Покрытие под колёсами — для детектора выездов коуча
             # (core/coach_ai/slip.py). В HUD не идёт: там его нечем показать.
             self._player_surface = telem["surface"]
+        if telem.get("tyre_surface_temp") is not None:
+            # Температуры по колёсам — фазе 3 (перекос нагрева). Хранится
+            # отдельно от _player_hud: в HUD они не показываются.
+            self._player_tyre_temp = telem["tyre_surface_temp"]
         for _hud_key in (
             "throttle_pct", "brake_pct", "steer", "rpm", "rev_lights_pct",
             "fuel_remaining_laps", "ers_harvested_pct", "ers_deployed_pct",
@@ -2514,6 +2740,14 @@ class F1Engine:
                 **self.driver_coach.get_state(),
                 "top_corners": self.coach_log.top_corners(),
                 "mistake_count": len(self.coach_log.map_rows()),
+                # Полную таблицу дельт живьём не шлём по той же причине, что и
+                # карту ошибок: восемь окон опрашивают /api/state каждые 250 мс.
+                "reference_deltas": self._coach_last_deltas[:8],
+                "reference_source": (
+                    self.coach_reference.source if self.coach_reference else None),
+                # Отчёт «Гараж» компактен по построению (перекос + сетап +
+                # максимум два совета), поэтому его можно слать целиком.
+                "garage": self._garage_report(),
             },
             rivals=self.rival_tracker.get_state(),
             track_ai=track_ctx.to_dict() if track_ctx is not None else None,
@@ -3227,6 +3461,11 @@ class F1Engine:
             self._spotter_tick(delta.payload)
         elif delta.kind == "motion_ex":
             self._coach_tick(delta.payload)
+        elif delta.kind == "car_setup":
+            # Пустой разбор не стирает уже известный сетап: пакет приходит
+            # редко, и потерять его из-за одного короткого буфера нельзя.
+            if delta.payload:
+                self._player_setup = delta.payload
         elif delta.kind == "tyre_sets":
             self._update_tyre_sets(delta.payload)
         elif delta.kind == "final_classification":
@@ -3369,6 +3608,13 @@ class F1Engine:
             # карта поворотов прошлой сессии в новой означали бы не то место.
             self.coach_slip.reset()
             self.coach_log.reset()
+            self.tyre_load.reset()
+            self.race_map.reset()
+            # Эталон (coach_reference) НЕ сбрасывается: он привязан к трассе, а
+            # не к сессии, и переживает смену практики на квалификацию.
+            self.coach_tracer.reset()
+            self.coach_reference_gate.reset()
+            self._coach_last_deltas = []
             with self._engine_lock:
                 self.timeline.reset()
             self._session_events = []
@@ -3449,6 +3695,20 @@ class F1Engine:
                 rows=self.coach_log.map_rows(),
                 top_corners=self.coach_log.top_corners(),
             )
+            # Отчёт «Гараж» — рядом с картой ошибок: он собран из неё и из
+            # сетапа, отдельной сущностью в архиве быть не должен.
+            self.recorder.set_garage_report(self._garage_report())
+            # Карта гонки — в тот же файл: архив должен показывать её и через
+            # месяц, когда живого состояния давно нет.
+            self.recorder.set_race_map(self.get_race_map())
+            # Эталон сохраняем всегда, когда он есть: следующий визит на трассу
+            # начнётся уже с карьерной целью, а не с прогревочного круга.
+            if self.coach_reference is not None:
+                self.recorder.set_reference_lap(
+                    lap_time_ms=self.coach_reference.lap_time_ms,
+                    corners={cid: m.to_dict()
+                             for cid, m in self.coach_reference.corners.items()},
+                )
             saved_path = self.recorder.finalize(
                 track_id=self._track_id, track_name=track_name,
                 session_type=self._session_type, final_position=pos,

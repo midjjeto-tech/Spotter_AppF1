@@ -9,6 +9,9 @@ pywebview==6.2.1
 psutil>=5.9
 aiohttp>=3.9
 pyttsx3>=2.90
+# Приглушение звука игры на время реплики (core/audio_ducking.py).
+# Тонкая обёртка над comtypes, который уже нужен SAPI5-драйверу pyttsx3.
+pycaw>=20240210
 piper-tts>=1.4.0
 onnxruntime>=1.20.0
 numpy>=1.24

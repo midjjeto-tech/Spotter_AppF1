@@ -4,9 +4,9 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import { PageHeader, Panel, Dot, Input, Toggle } from "../ui"
 import { Button } from "@/components/ui/button"
-import { getGigachatStatus, getYandexStatus, resetSettings, saveGigachat, saveSettings, saveYandex, type GigachatStatus, type SpotterState, type YandexStatus } from "@/lib/api"
+import { getGigachatStatus, getRemoteAccess, getYandexStatus, resetSettings, saveGigachat, saveSettings, saveYandex, type GigachatStatus, type RemoteAccessInfo, type SpotterState, type YandexStatus } from "@/lib/api"
 import { cn } from "@/lib/utils"
-import { AlertTriangle, MessageSquare, Mic, Radio, Rss, Volume2, Waves } from "lucide-react"
+import { AlertTriangle, MessageSquare, Mic, Radio, Rss, Smartphone, Volume2, Waves } from "lucide-react"
 
 export function SettingsView({
   state,
@@ -29,6 +29,22 @@ export function SettingsView({
     position: "auto",
   })
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle")
+  const [remote, setRemote] = useState<RemoteAccessInfo | null>(null)
+
+  // Адрес второго экрана тянем отдельной ручкой, а не из /api/state: токен
+  // намеренно вырезан из снимка состояния, который уходит и на телефон, и в
+  // восемь окон оверлея четыре раза в секунду.
+  useEffect(() => {
+    if (!settings?.remote_access_enabled) {
+      setRemote(null)
+      return
+    }
+    getRemoteAccess().then(setRemote).catch(() => setRemote(null))
+  }, [settings?.remote_access_enabled])
+
+  const toggleRemoteAccess = (v: boolean) => {
+    void saveSettings({ remote_access_enabled: v })
+  }
 
   useEffect(() => {
     if (!settings) return
@@ -268,6 +284,55 @@ export function SettingsView({
               выключаются, а переходят на заготовленные фразы — включённый тумблер при
               этом ничего не меняет.
             </p>
+          )}
+        </Panel>
+
+        {/* Второй экран. Живёт в «Настройках», а не в «Голосе»: это про
+            доступ к приложению по сети, а не про звук. */}
+        <Panel label="Второй экран (телефон)">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/15 text-primary">
+                <Smartphone className="h-4.5 w-4.5" />
+              </span>
+              <div>
+                <p className="text-sm font-medium text-foreground">Открыть по локальной сети</p>
+                <p className="text-xs text-muted-foreground">
+                  Таймингборд и лента на телефоне рядом с рулём
+                </p>
+              </div>
+            </div>
+            <Toggle
+              checked={Boolean(state?.settings?.remote_access_enabled)}
+              onChange={toggleRemoteAccess}
+              label="Второй экран"
+            />
+          </div>
+
+          {state?.settings?.remote_access_enabled && (
+            <div className="mt-4">
+              {remote?.url ? (
+                <>
+                  <p className="mb-1 text-xs text-muted-foreground">
+                    Открой этот адрес на телефоне (он в той же сети Wi-Fi):
+                  </p>
+                  <code className="block break-all rounded-md bg-secondary/60 px-3 py-2 font-mono text-[11px] text-foreground">
+                    {remote.url}
+                  </code>
+                </>
+              ) : (
+                <p className="rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-xs leading-relaxed text-warning">
+                  Адрес появится после перезапуска приложения: порт открывается
+                  при старте, перевесить уже слушающий сокет на лету нельзя.
+                </p>
+              )}
+              <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+                Ссылка содержит токен — у кого она есть, тот видит гонку и может
+                менять настройки. Не выкладывай её в стрим. Ключи Yandex и
+                GigaChat по сети недоступны в любом случае: их можно задать
+                только здесь, на этой машине.
+              </p>
+            </div>
           )}
         </Panel>
 

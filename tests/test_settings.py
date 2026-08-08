@@ -105,3 +105,58 @@ def test_unknown_overlay_theme_falls_back_to_default():
     s._PATH.write_text(json.dumps({"overlay_theme": "ludicrous"}), encoding="utf-8")
     from core.settings import load
     assert load()["overlay_theme"] == "broadcast"
+
+
+def test_driving_coach_disabled_by_default():
+    """Пороги детекторов до живой калибровки не проверены, а коуч, который
+    может назвать не то колесо, хуже выключенного."""
+    from core.settings import DEFAULTS
+    assert DEFAULTS["driving_coach_enabled"] is False
+
+
+def test_driving_coach_flag_roundtrip():
+    from core.settings import load, save
+    save({"driving_coach_enabled": True})
+    assert load()["driving_coach_enabled"] is True
+
+
+def test_game_ducking_disabled_by_default():
+    """Обновление не должно молча убавлять пользователю звук игры — тот же
+    принцип, что у тем оверлея."""
+    from core.settings import DEFAULTS
+    assert DEFAULTS["game_ducking_enabled"] is False
+
+
+def test_game_ducking_level_has_a_sane_default():
+    from core.settings import DEFAULTS
+    assert 10 <= DEFAULTS["game_ducking_level"] <= 90
+
+
+def test_game_ducking_roundtrip():
+    from core.settings import load, save
+    save({"game_ducking_enabled": True, "game_ducking_level": 25})
+    loaded = load()
+    assert loaded["game_ducking_enabled"] is True
+    assert loaded["game_ducking_level"] == 25
+
+
+def test_remote_access_disabled_by_default():
+    """Порт наружу не открывается сам: включение — только явное действие
+    пользователя."""
+    from core.settings import DEFAULTS
+    assert DEFAULTS["remote_access_enabled"] is False
+
+
+def test_remote_access_token_is_empty_by_default():
+    """Токен генерируется при включении, а не лежит в дефолтах: одинаковый
+    токен у всех сборок — это отсутствие токена."""
+    from core.settings import DEFAULTS
+    assert DEFAULTS["remote_access_token"] == ""
+
+
+def test_remote_access_roundtrip():
+    from core.settings import load, save
+    save({"remote_access_enabled": True, "remote_access_token": "abc"})
+    loaded = load()
+    assert loaded["remote_access_enabled"] is True
+    assert loaded["remote_access_token"] == "abc"

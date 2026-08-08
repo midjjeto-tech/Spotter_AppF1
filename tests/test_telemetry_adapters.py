@@ -21,6 +21,11 @@ class _Decoder:
     PACKET_PARTICIPANTS = 10
     PACKET_EVENT = 11
     PACKET_MOTION_EX = 12
+    PACKET_CAR_SETUPS = 13
+
+    @staticmethod
+    def parse_player_setup(_data, _player):
+        return {"brake_bias": 54, "diff_on_throttle": 75}
 
     @staticmethod
     def parse_motion_ex(_data):
@@ -107,3 +112,17 @@ def test_iracing_adapter_emits_same_delta_kinds_without_unknown_f1_fields():
     assert player_telemetry["gear"] == "5"
     assert "ers_percent" not in player_telemetry
     assert all(d.game_year == 0 for d in deltas)
+
+
+def test_car_setups_packet_yields_car_setup_delta():
+    """Пакет 5 нужен коучу в дебрифе (баланс тормозов, дифференциал), а не в
+    живом эфире: сетап посреди заезда не меняется."""
+    adapter = F1TelemetryAdapter(
+        "127.0.0.1", 20777, transport_factory=_Transport, decoder=_Decoder)
+
+    messages = list(adapter._decode(bytes([_Decoder.PACKET_CAR_SETUPS])))
+
+    assert messages == [TelemetryDelta(
+        "car_setup", {"brake_bias": 54, "diff_on_throttle": 75},
+        player_car_index=3, game_year=25,
+    )]

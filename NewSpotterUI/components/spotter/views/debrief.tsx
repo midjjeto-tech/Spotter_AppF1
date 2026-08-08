@@ -5,7 +5,8 @@ import { Panel, Readout, SectionLabel } from "../ui"
 import type { SpotterState } from "@/lib/api"
 import { generateStory, replayStory } from "@/lib/api"
 import { feedToEvent } from "@/lib/feed"
-import { Trophy, TrendingUp, Target, Users, Radio, BookOpen } from "lucide-react"
+import { RaceMapPanel } from "./race-map-panel"
+import { Trophy, TrendingUp, Target, Users, Radio, BookOpen, Gauge, Wrench } from "lucide-react"
 
 /** «12 / 58» → [12, 58]. Формат строит core/ui_state.py::update_telemetry;
  *  тотал бывает «—», когда игра ещё не сообщила дистанцию. */
@@ -47,6 +48,25 @@ const _TREND_LABELS: Record<string, string> = {
   stable:  "Стабильно",
 }
 
+// Виды ошибок пилотажа (core/coach_ai/slip.py). Отдельный словарь от советов
+// про резину выше: там совет, здесь причина потери времени.
+const _MISTAKE_LABELS: Record<string, string> = {
+  lockup:     "блокировка",
+  wheelspin:  "пробуксовка",
+  understeer: "снос",
+  oversteer:  "занос",
+  offtrack:   "выезд",
+}
+
+// Колёса в порядке пакетов F1 — RL, RR, FL, FR. Женский род намеренно: речь
+// о шине, а не о колесе («передняя левая изношена»).
+const _WHEEL_RU: Record<string, string> = {
+  rl: "Задняя левая",
+  rr: "Задняя правая",
+  fl: "Передняя левая",
+  fr: "Передняя правая",
+}
+
 const _STYLE_LABELS: Record<string, string> = {
   consistent: "стабильный",
   aggressive:  "агрессивный",
@@ -57,6 +77,9 @@ const _STYLE_LABELS: Record<string, string> = {
 export function DebriefView({ state }: { state: SpotterState | null }) {
   const t = state?.telemetry
   const coach = state?.coach_ai
+  const topCorners = coach?.top_corners ?? []
+  const referenceDeltas = coach?.reference_deltas ?? []
+  const garage = coach?.garage
   const strategy = state?.strategy_ai
   const rivals = state?.rivals
   const events = (state?.feed ?? []).slice(0, 5).map(feedToEvent)
@@ -220,6 +243,127 @@ export function DebriefView({ state }: { state: SpotterState | null }) {
             </p>
           )}
         </Panel>
+
+        {/* Где теряется время — по поворотам, а не по секторам. Секция
+            появляется только при непустом топе: сессия без ошибок не повод
+            рисовать пустую таблицу. */}
+        {topCorners.length > 0 && (
+          <Panel label="Где теряется время" action={
+            <div className="flex items-center gap-1.5">
+              <Gauge className="h-3 w-3 text-muted-foreground" />
+              <span className="label-mono text-[10px] text-muted-foreground">
+                {coach?.mistake_count ?? 0} ош.
+              </span>
+            </div>
+          }>
+            <div className="flex flex-col gap-2.5">
+              {topCorners.map((c) => (
+                <div
+                  key={c.corner_id ?? "none"}
+                  className="flex items-baseline justify-between gap-4 rounded-md bg-secondary/60 px-3 py-2.5"
+                >
+                  <span className="text-xs font-medium text-foreground">
+                    {c.corner_name ?? "Вне поворота"}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground">
+                    {Object.entries(c.kinds)
+                      .sort((a, b) => b[1] - a[1])
+                      .map(([kind, n]) => `${_MISTAKE_LABELS[kind] ?? kind} ×${n}`)
+                      .join(" · ")}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-3 text-[11px] text-muted-foreground">
+              Считаются все ошибки, включая одиночные. Вживую инженер говорит
+              только о повторяющихся.
+            </p>
+          </Panel>
+        )}
+
+        {/* Против эталонного круга. Показываем СЫРЫЕ дельты: инженер вживую
+            говорит только про локальные потери, а здесь пилот должен видеть и
+            общий сдвиг — по нему понятно, что дело в топливе, а не в руках. */}
+        {referenceDeltas.length > 0 && (
+          <Panel label="Против эталона" action={
+            <span className="label-mono text-[10px] text-muted-foreground">
+              {coach?.reference_source === "career" ? "лучший на трассе" : "лучший в сессии"}
+            </span>
+          }>
+            <div className="flex flex-col gap-1.5">
+              {referenceDeltas.map((d) => (
+                <div
+                  key={d.corner_id}
+                  className="flex items-baseline justify-between gap-4 text-xs"
+                >
+                  <span className="text-foreground">
+                    {d.corner_name ?? `Поворот ${d.corner_id}`}
+                  </span>
+                  <span className="label-mono text-[11px] text-muted-foreground">
+                    {d.duration_ms == null
+                      ? "—"
+                      : `${d.duration_ms >= 0 ? "+" : ""}${(d.duration_ms / 1000).toFixed(2)}с`}
+                    {d.brake_delta != null &&
+                      ` · тормоз ${d.brake_delta >= 0 ? "+" : ""}${Math.round(d.brake_delta)}м`}
+                    {d.min_speed_delta != null &&
+                      ` · апекс ${d.min_speed_delta >= 0 ? "+" : ""}${Math.round(d.min_speed_delta)}км/ч`}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </Panel>
+        )}
+
+        {/* Гараж (фаза 3). Показывается, когда есть что показать: перекос
+            резины или советы. Голосом это не звучит нигде — сетап посреди
+            заезда не меняется. */}
+        {(garage?.tyre_load?.worst_wheel || garage?.tyre_load?.hottest_wheel
+          || (garage?.hints?.length ?? 0) > 0) && (
+          <Panel label="Гараж" action={
+            <div className="flex items-center gap-1.5">
+              <Wrench className="h-3 w-3 text-muted-foreground" />
+              <span className="label-mono text-[10px] text-muted-foreground">
+                {garage?.setup?.brake_bias != null
+                  ? `баланс ${String(garage.setup.brake_bias)}%`
+                  : "сетап —"}
+              </span>
+            </div>
+          }>
+            <div className="flex flex-col gap-2.5">
+              {garage?.tyre_load?.worst_wheel && (
+                <p className="text-xs leading-relaxed text-foreground/90">
+                  {_WHEEL_RU[garage.tyre_load.worst_wheel] ?? garage.tyre_load.worst_wheel}
+                  {" изношена на "}
+                  {garage.tyre_load.wear_spread_pct.toFixed(0)}
+                  {"% сильнее парной по оси."}
+                </p>
+              )}
+              {garage?.tyre_load?.hottest_wheel && (
+                <p className="text-xs leading-relaxed text-foreground/90">
+                  {_WHEEL_RU[garage.tyre_load.hottest_wheel] ?? garage.tyre_load.hottest_wheel}
+                  {" горячее самой холодной на "}
+                  {garage.tyre_load.temp_spread_c.toFixed(0)}
+                  {"°."}
+                </p>
+              )}
+              {garage?.hints?.map((h) => (
+                <div key={h.parameter} className="rounded-md bg-secondary/60 px-3 py-2.5">
+                  <p className="text-xs font-medium text-foreground">{h.advice}</p>
+                  {/* Основание показывается ВСЕГДА и рядом: пилот должен иметь
+                      возможность не согласиться, посмотрев на те же цифры. */}
+                  <p className="mt-1 text-[11px] text-muted-foreground">{h.evidence}</p>
+                </div>
+              ))}
+            </div>
+          </Panel>
+        )}
+
+        {/* Карта гонки — на всю ширину под сеткой панелей: спагетти-график в
+            половину экрана нечитаем. Рендерится сам собой пустым, если кругов
+            меньше двух. */}
+        <div className="lg:col-span-2">
+          <RaceMapPanel />
+        </div>
 
         {/* Strategy */}
         <Panel label="Стратегия" action={

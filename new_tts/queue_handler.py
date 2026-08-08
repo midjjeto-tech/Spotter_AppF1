@@ -27,6 +27,7 @@ from enum import Enum
 import logging
 import queue
 import threading
+import time
 from typing import Callable
 
 _log = logging.getLogger(__name__)
@@ -107,10 +108,20 @@ class _Item:
 
 class TTSQueue:
     def __init__(self, speak_fn: Callable[[str, str | None], None],
-                 stop_fn: Callable[[], None] | None = None, maxsize: int = 8):
+                 stop_fn: Callable[[], None] | None = None, maxsize: int = 8,
+                 on_busy_change: Callable[[bool], None] | None = None,
+                 release_delay_s: float = 0.6):
         self._speak_fn = speak_fn
         self._stop_fn = stop_fn            # прерывание текущего воспроизведения
         self._maxsize = maxsize
+        # Сигнал «идёт речь» для приглушения игры (core/audio_ducking.py).
+        # Живёт здесь, а не в отдельном потоке: у воркера ниже и так есть цикл с
+        # таймаутом, и только он точно знает, началась речь или очередь
+        # опустела. `release_delay_s` держит приглушение между фразами подряд —
+        # без него громкость игры прыгала бы вверх-вниз между репликами.
+        self._on_busy_change = on_busy_change
+        self._release_delay_s = release_delay_s
+        self._busy = False
         # (rank, seq) — уникальный ключ сортировки: seq монотонен, поэтому
         # сравнение никогда не доходит до _Item и не требует от него __lt__.
         self._queue: "queue.PriorityQueue[tuple[int, int, _Item]]" = (
@@ -267,6 +278,8 @@ class TTSQueue:
                 pass
         if self._thread is not threading.current_thread():
             self._thread.join(timeout=max(0.0, timeout))
+        # Процесс не должен умереть, оставив игру приглушённой.
+        self._set_busy(False)
 
     @property
     def critical_active(self) -> bool:
@@ -292,12 +305,32 @@ class TTSQueue:
         одновременно обрабатывается ровно один элемент."""
         return self._current_item
 
+    def _set_busy(self, busy: bool) -> None:
+        """Смена состояния «идёт речь». Колбэк не должен ронять воркер: он
+        трогает системный микшер, а тот бывает недоступен."""
+        if busy == self._busy or self._on_busy_change is None:
+            self._busy = busy
+            return
+        self._busy = busy
+        try:
+            self._on_busy_change(busy)
+        except Exception:  # noqa: BLE001
+            _log.warning("TTSQueue: on_busy_change failed", exc_info=True)
+
     def _worker(self) -> None:
+        idle_since: float | None = None
         while not self._stop.is_set():
             try:
                 rank, _seq, item = self._queue.get(timeout=0.1)
             except queue.Empty:
+                # Очередь пуста. Отпускаем приглушение не сразу, а спустя
+                # release_delay: следом почти всегда идёт вторая фраза, и
+                # мгновенный отпуск дал бы качели громкости.
+                if (self._busy and idle_since is not None
+                        and time.monotonic() - idle_since >= self._release_delay_s):
+                    self._set_busy(False)
                 continue
+            self._set_busy(True)
             if rank == 0:
                 self._critical_active.set()
             self._current_item = item
@@ -316,5 +349,6 @@ class TTSQueue:
                              item.message_id or "phrase", exc_info=True)
             finally:
                 self._current_item = None
+                idle_since = time.monotonic()
                 if rank == 0:
                     self._critical_active.clear()

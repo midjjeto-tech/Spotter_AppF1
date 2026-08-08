@@ -208,7 +208,8 @@ DD-MM», не магические числа.
 - `core/engine.py` — проводка: тик MotionEx → детектор; конец круга → агрегатор
 - `core/radio/phrases.py` — семейка `coach.*`
 - `core/settings.py` — `driving_coach_enabled`
-- `core/session_recorder.py`, `analytics/archive.py` — сохранение карты ошибок
+- `core/session_recorder.py` — сохранение карты ошибок (`analytics/archive.py`
+  править не нужно: `save_game_session` пишет переданный словарь как есть)
 - `NewSpotterUI/.../views/debrief.tsx` — блок «карта ошибок»
 - `NewSpotterUI/.../views/voice.tsx` — тумблер
 - пересборка `webui/` (приложение отдаёт статику оттуда, не из `NewSpotterUI/`)

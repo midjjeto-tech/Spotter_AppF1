@@ -28,6 +28,11 @@ PIPER_VOICES_DEV_DIR = os.path.join(BASE_DIR, "models", "piper")
 UDP_IP = "127.0.0.1"
 UDP_PORT = 20777
 
+# Порт локального HTTP-API и UI. Живёт здесь, а не в web_server.py, потому что
+# нужен и движку (адрес второго экрана для телефона), а импорт web_server в
+# core/engine.py замкнул бы граф импортов. web_server его реэкспортирует.
+API_PORT = 8765
+
 # --- LLM ---
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 LLM_MODEL = "claude-haiku-4-5-20251001"

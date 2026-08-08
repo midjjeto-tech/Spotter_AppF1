@@ -625,3 +625,75 @@ def test_front_and_behind_fragments_are_not_near_homophones():
         and sum(x != y for x, y in zip(a, b)) == 1
     ]
     assert not collisions, f"почти одинаковые на слух: {collisions}"
+
+
+# ── Коуч пилотажа (фаза 1) ───────────────────────────────────────────────────
+
+_COACH_CODES = [
+    "coach.lockup_front_left", "coach.lockup_front_right",
+    "coach.wheelspin", "coach.understeer", "coach.oversteer", "coach.offtrack",
+]
+
+
+@pytest.mark.parametrize("code", _COACH_CODES)
+def test_coach_spec_exists(code):
+    assert code in phrases.codes()
+
+
+@pytest.mark.parametrize("code", _COACH_CODES)
+def test_coach_spec_has_enough_variants(code):
+    """Инвариант банка для небоевой спеки: подсказка звучит по многу раз за
+    сессию, шесть вариантов — минимум, чтобы не приедаться."""
+    assert len(phrases.spec_for(code).variants) >= 6
+
+
+@pytest.mark.parametrize("code", _COACH_CODES)
+def test_coach_spec_is_never_critical(code):
+    """Подсказка по пилотажу не имеет права перебивать споттера или box-call."""
+    assert phrases.spec_for(code).urgency != policy.URGENCY_CRITICAL
+
+
+def test_lockup_sides_are_separate_specs_not_one_pool():
+    """Сторона колеса — отдельная спека, а не вариант в общем пуле: «левое» и
+    «правое» требуют разных действий, и выбор не должен делать колода."""
+    left = phrases.spec_for("coach.lockup_front_left")
+    right = phrases.spec_for("coach.lockup_front_right")
+    assert left.action != right.action
+    for variant in left.variants:
+        assert "прав" not in variant.lower(), variant
+    for variant in right.variants:
+        assert "лев" not in variant.lower(), variant
+
+
+# ── Коуч, фаза 2: отклонения от эталонного круга ─────────────────────────────
+
+_COACH_REF_CODES = [
+    "coach.ref_brake_early", "coach.ref_apex_slow",
+    "coach.ref_throttle_late", "coach.ref_losing_time",
+]
+
+
+@pytest.mark.parametrize("code", _COACH_REF_CODES)
+def test_coach_reference_spec_exists(code):
+    assert code in phrases.codes()
+
+
+@pytest.mark.parametrize("code", _COACH_REF_CODES)
+def test_coach_reference_spec_has_enough_variants(code):
+    assert len(phrases.spec_for(code).variants) >= 6
+
+
+@pytest.mark.parametrize("code", _COACH_REF_CODES)
+def test_coach_reference_spec_is_never_critical(code):
+    assert phrases.spec_for(code).urgency != policy.URGENCY_CRITICAL
+
+
+@pytest.mark.parametrize("code", _COACH_REF_CODES)
+def test_coach_reference_spec_needs_no_substitution(code):
+    """Величину отклонения мы намеренно не зачитываем: «на двенадцать метров
+    раньше» пилот в повороте не применит, ему нужно направление. Значит и полей
+    для подстановки у этих спек быть не должно."""
+    spec = phrases.spec_for(code)
+    assert not spec.required_fields
+    for variant in spec.variants:
+        assert "{" not in variant, f"{code}: {variant!r}"

@@ -45,6 +45,9 @@ def post(app, path, body):
         "REQUEST_METHOD": "POST",
         "PATH_INFO": path,
         "QUERY_STRING": "",
+        # Гейт удалённого доступа (core/remote_access.py) закрыт по умолчанию
+        # и fail-closed: без REMOTE_ADDR клиент считается чужим и получает 401.
+        "REMOTE_ADDR": "127.0.0.1",
         "SERVER_NAME": "127.0.0.1",
         "SERVER_PORT": "8765",
         "SERVER_PROTOCOL": "HTTP/1.1",

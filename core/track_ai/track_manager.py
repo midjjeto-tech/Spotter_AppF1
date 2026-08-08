@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from core.race_ai.sectors import get_sector
 from core.track_ai.corners import get_corner, get_phase
-from core.track_ai.models import TrackContext, TrackInfo
+from core.track_ai.models import Corner, TrackContext, TrackInfo
 from core.track_ai.racing_line import get_advice
 from core.track_ai.zones import is_attack_zone
 
@@ -17,6 +17,11 @@ class TrackManager:
     @property
     def track_name(self) -> str:
         return self._track.name
+
+    def corners(self) -> list[Corner]:
+        """Разметка активной трассы. Нужна коучу, чтобы называть повороты по
+        имени, не таща к себе загрузчик треков."""
+        return list(self._track.corners)
 
     def resolve(
         self,

@@ -35,10 +35,69 @@ PACKET_TYRE_SETS = 12
 PACKET_SESSION_HISTORY = 11
 MOTION_SIZE = 60   # CarMotionData — см. golden-master в tests/test_packets_motion.py
 
+PACKET_MOTION_EX = 13
+PACKET_CAR_SETUPS = 5
+
+# CarSetupData (packet 5) — офсеты ВНУТРИ одного элемента m_carSetups[22].
+# Шаг между машинами выводится из длины пакета, а не хардкодится: захардкоженный
+# PARTICIPANT_SIZE уже один раз ломал парсер после патча игры (см. «Известные
+# gotchas» в CONTEXT.md). Раскладка реконструирована по публичному формату F1
+# UDP и требует живой сверки SPOTTER_DIAG=1 — тот же класс риска, что MotionEx.
+_SETUP_FRONT_WING_OFF = 0
+_SETUP_REAR_WING_OFF = 1
+_SETUP_ON_THROTTLE_OFF = 2      # дифференциал на разгоне
+_SETUP_OFF_THROTTLE_OFF = 3
+_SETUP_BRAKE_PRESSURE_OFF = 26
+_SETUP_BRAKE_BIAS_OFF = 27
+# m_engineBraking появился в F1 24 (байт 28) и сдвинул давления на байт вперёд.
+# Офсет ниже — для структуры С ним; для более короткой структуры вычитается 1.
+_SETUP_TYRE_PRESSURE_OFF = 29
+_SETUP_STRIDE_WITH_ENGINE_BRAKING = 50
+
+# Порядок колёс во ВСЕХ поколёсных массивах пакетов F1: заднее левое, заднее
+# правое, переднее левое, переднее правое. Не менять и не «исправлять» на
+# привычный FL/FR/RL/RR — перепутанный порядок заставит коуча уверенно называть
+# не то колесо, и пилот начнёт чинить то, что не сломано.
+WHEEL_ORDER: tuple[str, str, str, str] = ("rl", "rr", "fl", "fr")
+
+# PacketMotionExData (packet 13) — офсеты ОТ КОНЦА ЗАГОЛОВКА. Пакет всегда про
+# машину ИГРОКА, массива по 22 машинам в нём нет. Раскладка реконструирована по
+# публичному формату F1 UDP; живая сверка — SPOTTER_DIAG=1 (см. Task 13 плана
+# docs/superpowers/plans/2026-08-06-driving-coach-phase1.md). Массивы идут
+# подряд по 4 float: suspensionPosition(0) / Velocity(16) / Acceleration(32),
+# wheelSpeed(48), slipRatio(64), slipAngle(80).
+_MOTION_EX_SLIP_RATIO_OFF = 64
+_MOTION_EX_SLIP_ANGLE_OFF = 80
+_MOTION_EX_ANG_VEL_Y_OFF = 148     # m_angularVelocityY — скорость рыскания
+_MOTION_EX_FRONT_ANGLE_OFF = 168   # m_frontWheelsAngle
+MOTION_EX_MIN_SIZE = _MOTION_EX_FRONT_ANGLE_OFF + 4
+
 LAP_DATA_SIZE = 57
 CAR_TELEMETRY_SIZE = 60
 CAR_STATUS_SIZE = 55
 CAR_TELEMETRY_FORMAT = "<HfffBbHBBBBHHHHbbbbHffffBBBB"
+
+# Хвост CarTelemetryData читается по ЯВНЫМ офсетам, а НЕ по
+# CAR_TELEMETRY_FORMAT: формат разъехался с реальной структурой начиная с
+# внутренних температур (там 4 байта uint8, а формат читает один H), поэтому
+# всё, что в строке дальше — давления и surfaceType — смещено на 4 байта.
+# Поля 0-8, которыми пользуется parse_player_telemetry, лежат ДО этого места и
+# верны; формат не трогаем, чтобы не переписывать рабочий код, но и не
+# расширяем по индексам. Реальная раскладка (60 байт): brakesTemperature[4] @22,
+# tyresSurfaceTemperature[4] @30, tyresInnerTemperature[4] @34,
+# engineTemperature @38, tyresPressure[4] @40, surfaceType[4] @56.
+_CAR_TELEMETRY_TYRE_SURF_TEMP_OFF = 30    # uint8[4]
+_CAR_TELEMETRY_TYRE_INNER_TEMP_OFF = 34   # uint8[4]
+_CAR_TELEMETRY_SURFACE_OFF = 56           # uint8[4]
+
+# m_surfaceType: покрытие под колесом.
+SURFACE_TYPE = {
+    0: "tarmac", 1: "rumble_strip", 2: "concrete", 3: "rock", 4: "gravel",
+    5: "mud", 6: "sand", 7: "grass", 8: "water", 9: "cobblestone",
+    10: "metal", 11: "ridged",
+}
+# Поребрик — часть трассы, а не выезд: пилот кладёт на него колесо намеренно.
+SURFACE_ON_TRACK = frozenset({"tarmac", "rumble_strip", "concrete"})
 
 # TyreSetData (Tyre Sets, packet 12) — офсеты внутри одного элемента
 # m_tyreSetData[20], сверены EA F1 25 UDP spec + MacManley/f1-25-udp.
@@ -586,6 +645,16 @@ def parse_player_lap(data: bytes, player_idx: int) -> dict:
         if 0.0 <= val <= 10000.0:   # sanity: no real F1 track > 10 km
             lap_distance_m = val
 
+    # m_currentLapTimeInMS @+4 (uint32) — время ТЕКУЩЕГО круга. Нужно коучу для
+    # времени прохождения поворота (core/coach_ai/reference.py). Санитарный
+    # предел по духу тот же, что у скорости и передачи: час на круге означает
+    # смещённый пакет, а не медленный круг.
+    current_lap_time_ms: int | None = None
+    if base + 8 <= len(data):
+        val_ms = struct.unpack_from("<I", data, base + 4)[0]
+        if 0 <= val_ms <= 3_600_000:
+            current_lap_time_ms = val_ms
+
     corner_cutting_warnings: int | None = None
     if base + 41 <= len(data):
         # m_cornerCuttingWarnings @40 (uint8) — сверено с независимым парсером
@@ -600,6 +669,7 @@ def parse_player_lap(data: bytes, player_idx: int) -> dict:
         # (сразу после m_carPosition@32/m_currentLapNum@33 — F1 25 LapData спека).
         "pit_status": data[base + 34],
         "last_lap_ms": last_lap_ms,
+        "current_lap_time_ms": current_lap_time_ms,
         "s1_ms": s1_ms,
         "s2_ms": s2_ms,
         "s3_ms": s3_ms,
@@ -669,6 +739,27 @@ def parse_player_telemetry(data: bytes, player_idx: int) -> dict:
     if 0 <= rev_lights <= 100:
         result["rev_lights_pct"] = rev_lights
     result["drs_active"] = bool(drs)
+
+    # Хвост структуры: покрытие и температуры резины по колёсам — то, чего не
+    # даёт CAR_TELEMETRY_FORMAT (см. комментарий у _CAR_TELEMETRY_SURFACE_OFF).
+    # Читаем от base, а не от начала пакета: у второй машины тот же офсет
+    # внутри её собственного элемента.
+    if base + CAR_TELEMETRY_SIZE <= len(data):
+        surf_base = base + _CAR_TELEMETRY_SURFACE_OFF
+        result["surface"] = {
+            wheel: SURFACE_TYPE.get(data[surf_base + i], "unknown")
+            for i, wheel in enumerate(WHEEL_ORDER)
+        }
+        temp_base = base + _CAR_TELEMETRY_TYRE_SURF_TEMP_OFF
+        result["tyre_surface_temp"] = {
+            wheel: data[temp_base + i] for i, wheel in enumerate(WHEEL_ORDER)
+        }
+        # Внутренняя температура — про то, как резина работает под нагрузкой;
+        # поверхностная скачет от одного торможения. Коучу нужны обе.
+        inner_base = base + _CAR_TELEMETRY_TYRE_INNER_TEMP_OFF
+        result["tyre_inner_temp"] = {
+            wheel: data[inner_base + i] for i, wheel in enumerate(WHEEL_ORDER)
+        }
 
     return result
 
@@ -774,12 +865,17 @@ def _car_damage_fields(data: bytes, base: int) -> dict:
     parse_car_damage_all (все 22) — офсеты не дублируются в двух местах."""
     wear = struct.unpack_from("<ffff", data, base + 0)   # RL, RR, FL, FR
     avg = sum(wear) / 4.0
+    # Поколёсный износ раньше распаковывался и тут же выбрасывался. Среднее
+    # нужно стратегии («пора в боксы»), поколёсное — коучу: перекос между
+    # колёсами одной оси показывает, ЧЕМ пилот убивает резину.
+    per_wheel = {wheel: round(wear[i], 1) for i, wheel in enumerate(WHEEL_ORDER)}
     wing = max(data[base + 24], data[base + 25], data[base + 26])
     floor = max(data[base + 27], data[base + 28], data[base + 29])
     gearbox = data[base + 32]
     engine = data[base + 33]
     return {
         "tyre_wear": round(avg, 1),
+        "tyre_wear_per_wheel": per_wheel,
         "wing_damage": wing,
         "floor_damage": floor,
         "gearbox_damage": gearbox,
@@ -843,6 +939,89 @@ def _motion_fields(data: bytes, base: int) -> dict:
         "world_x": x, "world_z": z,
         "right_x": rx / 32767.0, "right_z": rz / 32767.0,
     }
+
+
+def parse_player_setup(data: bytes, player_idx: int) -> dict:
+    """Настройки машины ИГРОКА из Car Setups (packet 5).
+
+    Отдаём только то, на чём коуч реально делает выводы (баланс тормозов,
+    дифференциал на разгоне), плюс крылья и давления как факт для экрана.
+    Остальные поля структуры сознательно не разбираем: советовать по ним мы
+    всё равно не будем (см. spec 2026-08-07-driving-coach-phase3-garage.md §2.2).
+
+    Шаг между машинами выводится из длины пакета — версия игры меняет размер
+    структуры, и хардкод здесь уже однажды стоил мусорных данных."""
+    body = len(data) - HEADER_SIZE
+    if body <= 0 or not (0 <= player_idx < 22):
+        return {}
+    stride = body // 22
+    if not (40 <= stride <= 80):
+        return {}
+    base = HEADER_SIZE + player_idx * stride
+    if base + stride > len(data):
+        return {}
+    # Структура без m_engineBraking короче на байт, и всё после него смещено.
+    pressure_off = _SETUP_TYRE_PRESSURE_OFF
+    if stride < _SETUP_STRIDE_WITH_ENGINE_BRAKING:
+        pressure_off -= 1
+    return {
+        "front_wing": data[base + _SETUP_FRONT_WING_OFF],
+        "rear_wing": data[base + _SETUP_REAR_WING_OFF],
+        "diff_on_throttle": data[base + _SETUP_ON_THROTTLE_OFF],
+        "diff_off_throttle": data[base + _SETUP_OFF_THROTTLE_OFF],
+        "brake_pressure": data[base + _SETUP_BRAKE_PRESSURE_OFF],
+        "brake_bias": data[base + _SETUP_BRAKE_BIAS_OFF],
+        # Округляем: давление показывается пилоту в PSI, одного знака хватает,
+        # а сырой float даёт 23.200000762939453 на экране и в тестах.
+        "tyre_pressure": {
+            wheel: round(value, 1)
+            for wheel, value in _wheel_floats(data, base + pressure_off).items()
+        },
+    }
+
+
+_last_motion_ex_diag_t = 0.0
+
+
+def _wheel_floats(data: bytes, base: int) -> dict[str, float]:
+    """Четыре float подряд -> словарь по WHEEL_ORDER. Единая точка чтения
+    любого поколёсного массива — порядок колёс не дублируется по функциям."""
+    values = struct.unpack_from("<ffff", data, base)
+    return dict(zip(WHEEL_ORDER, values))
+
+
+def parse_motion_ex(data: bytes) -> dict:
+    """MotionEx (packet 13) — проскальзывание колёс машины ИГРОКА.
+
+    В отличие от PACKET_MOTION (тот про взаимное расположение всех машин, для
+    споттера) этот пакет всегда про одну машину и нужен для другого — понять,
+    ПОЧЕМУ пилот теряет время. Возвращает пустой словарь на коротком буфере;
+    вызывающий обязан это проверять."""
+    if len(data) < HEADER_SIZE + MOTION_EX_MIN_SIZE:
+        return {}
+    out = {
+        "slip_ratio": _wheel_floats(data, HEADER_SIZE + _MOTION_EX_SLIP_RATIO_OFF),
+        "slip_angle": _wheel_floats(data, HEADER_SIZE + _MOTION_EX_SLIP_ANGLE_OFF),
+        "yaw_rate": struct.unpack_from(
+            "<f", data, HEADER_SIZE + _MOTION_EX_ANG_VEL_Y_OFF)[0],
+        "front_wheels_angle": struct.unpack_from(
+            "<f", data, HEADER_SIZE + _MOTION_EX_FRONT_ANGLE_OFF)[0],
+    }
+    if _DIAG:
+        global _last_motion_ex_diag_t
+        now = time.time()
+        # Пакет идёт с той же частотой, что Motion (20-60 Гц) — без троттлинга
+        # DIAG-строка захлестнула бы лог. Тот же приём, что у parse_motion_all.
+        if now - _last_motion_ex_diag_t >= 1.0:
+            _last_motion_ex_diag_t = now
+            _log.warning(
+                "DIAG motion_ex slip_ratio rl=%.3f rr=%.3f fl=%.3f fr=%.3f | "
+                "slip_angle rl=%.3f rr=%.3f fl=%.3f fr=%.3f | yaw=%.3f front=%.3f",
+                *(out["slip_ratio"][w] for w in WHEEL_ORDER),
+                *(out["slip_angle"][w] for w in WHEEL_ORDER),
+                out["yaw_rate"], out["front_wheels_angle"],
+            )
+    return out
 
 
 def parse_tyre_sets(data: bytes) -> dict:

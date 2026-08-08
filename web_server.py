@@ -14,13 +14,16 @@ from socketserver import ThreadingMixIn
 from wsgiref.simple_server import WSGIServer, make_server
 
 import psutil
-from bottle import Bottle, request, response, static_file
+
+import config
+from bottle import Bottle, HTTPResponse, request, response, static_file
 
 from analytics import archive as _archive
 from analytics.loader import load_f1_session, TRACK_ID_TO_GP
 from analytics.normalizer import normalize as _normalize
 from analytics.comparator import compare as _compare
 from core import overlay_layout as _layout
+from core.remote_access import RemoteAccessPolicy, bind_host
 from core.overlay_window import HUD_WIDGETS as _HUD_WIDGETS
 
 #: Порядок важен только для UI — список виджетов, у которых есть геометрия.
@@ -74,7 +77,9 @@ class LocalWebServer:
         if thread is not None and thread is not threading.current_thread():
             thread.join(timeout=max(0.0, timeout))
 
-API_PORT = 8765
+#: Реэкспорт из config: константа переехала туда, чтобы движок мог
+#: построить адрес второго экрана, не импортируя web_server.
+API_PORT = config.API_PORT
 
 
 def _json(data: dict) -> str:
@@ -116,6 +121,34 @@ def create_app(engine, settings: dict, base_dir: str) -> Bottle:
     import core.settings as _ss
     app = Bottle()
 
+    # Гейт удалённого доступа стоит ПЕРЕД всеми ручками — и API, и статикой.
+    # Вешать его на отдельные маршруты нельзя: забытый маршрут здесь означает
+    # открытую наружу ручку, а через это API меняют настройки и пишут ключи.
+    # Сама политика — core/remote_access.py, здесь только проводка.
+    @app.hook("before_request")
+    def _guard_remote_access():
+        policy = RemoteAccessPolicy(
+            enabled=bool(settings.get("remote_access_enabled", False)),
+            token=str(settings.get("remote_access_token", "")),
+        )
+        token = (request.get_header("X-Spotter-Token")
+                 or request.query.get("token")
+                 or None)
+        # REMOTE_ADDR из environ, а НЕ `request.remote_addr`: последний в Bottle
+        # читает заголовок `X-Forwarded-For` раньше адреса сокета (см.
+        # BaseRequest.remote_route), а заголовок ставит сам клиент. Через
+        # `remote_addr` любой в сети присылал `X-Forwarded-For: 127.0.0.1`,
+        # попадал в ветку «локальный разрешён ВСЕГДА» и получал ровно то, что
+        # политика и создана запрещать: токен, чужие ключи Yandex/GigaChat и
+        # запись настроек — причём БЕЗ токена и даже при выключенной фиче.
+        # Прокси перед этим сервером не бывает (он локальный), поэтому доверять
+        # заголовку незачем в принципе.
+        if not policy.allows(request.environ.get("REMOTE_ADDR"), request.path,
+                             request.method, token):
+            # Тело без подробностей: чужому клиенту незачем знать, выключена
+            # фича, неверен токен или ручка запрещена в принципе.
+            raise HTTPResponse(status=401, body="unauthorized")
+
     # UI — статический экспорт Next.js в webui/ (исходники в NewSpotterUI).
     # Фоллбэк на base_dir сохранён на случай старого одиночного index.html.
     webui_dir = os.path.join(base_dir, "webui")
@@ -152,7 +185,11 @@ def create_app(engine, settings: dict, base_dir: str) -> Bottle:
         mem = psutil.virtual_memory()
         state["cpu"] = f"{psutil.cpu_percent(interval=None):.0f}%"
         state["ram"] = f"{mem.percent:.0f}% ({round(mem.used / (1024 ** 3), 1)} GB)"
-        state["settings"] = dict(settings)
+        # Токен второго экрана вырезан: снимок состояния уходит и на телефон,
+        # и в восемь окон оверлея четыре раза в секунду. Показать токен
+        # пользователю — задача отдельной локальной ручки, а не каждого поллинга.
+        state["settings"] = {k: v for k, v in settings.items()
+                             if k != "remote_access_token"}
         _trim_unchanged_radio_history(state, request.query.get("radio_since"))
         return _json(state)
 
@@ -175,6 +212,20 @@ def create_app(engine, settings: dict, base_dir: str) -> Bottle:
     @app.route("/api/rivals")
     def api_rivals():
         return _json(engine.get_rivals_state())
+
+    @app.route("/api/remote-access")
+    def api_remote_access():
+        """Адрес и токен второго экрана. Только с локальной машины — гейт выше
+        держит этот путь в LOCAL_ONLY_PATHS."""
+        return _json(engine.get_remote_access_info())
+
+    @app.route("/api/race-map")
+    def api_race_map():
+        """Карта гонки — намеренно ОТДЕЛЬНЫЙ эндпоинт, а не поле /api/state:
+        сетка позиций на 22 машины за 60 кругов весит больше тысячи чисел, а
+        состояние опрашивают восемь окон оверлея каждые 250 мс. Дебриф читает
+        её по запросу, когда пользователь открыл экран."""
+        return _json(engine.get_race_map())
 
     @app.route("/api/overlay")
     def api_overlay():
@@ -493,6 +544,13 @@ def start_api_server(engine, settings: dict, port: int = API_PORT,
     """Bind and start the local HTTP server, returning its lifecycle owner."""
     root = base_dir or os.path.dirname(os.path.abspath(__file__))
     app = create_app(engine, settings, root)
-    server = LocalWebServer(app, port=port)
+    # Адрес привязки выбирается ОДИН раз на старте: перевесить уже слушающий
+    # сокет на лету нельзя, а делать вид, что настройка применилась, — врать.
+    # UI поэтому и говорит, что второй экран включается после перезапуска.
+    server = LocalWebServer(
+        app,
+        host=bind_host(bool(settings.get("remote_access_enabled", False))),
+        port=port,
+    )
     server.start()
     return server

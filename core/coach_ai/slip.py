@@ -1,0 +1,172 @@
+"""
+core/coach_ai/slip.py
+======================
+Детекторы срывов сцепления по MotionEx. Чистые конечные автоматы: на вход —
+кадр телеметрии, на выходе — список завершённых `CornerMistake`.
+
+Событие публикуется ТОЛЬКО по окончании срыва: до этого неизвестен пик, а пик
+и есть степень ошибки. Автомат на каждый вид ошибки отдельный — они идут
+одновременно (заблокировать переднее на входе и снести машину там же это две
+разные проблемы с разными указаниями пилоту), и `tick` возвращает СПИСОК, а не
+одно событие: при одновременном закрытии двух срывов второй иначе терялся бы
+молча.
+
+Пороги ниже НЕ откалиброваны на живых данных (см. Task 13 плана
+docs/superpowers/plans/2026-08-06-driving-coach-phase1.md). До калибровки фича
+выключена по умолчанию: `driving_coach_enabled=False`.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+from core.coach_ai.models import CornerMistake
+from core.packets import SURFACE_ON_TRACK
+
+# ── Пороги (НЕ откалиброваны, см. Task 13) ───────────────────────────────────
+LOCKUP_SLIP = -0.25                # slip_ratio ниже этого при нажатом тормозе
+LOCKUP_MIN_BRAKE_PCT = 20.0
+WHEELSPIN_SLIP = 0.20              # slip_ratio выше этого при открытом газе
+WHEELSPIN_MIN_THROTTLE_PCT = 40.0
+UNDERSTEER_SLIP_ANGLE = 0.12       # передние, рад
+UNDERSTEER_MIN_STEER = 0.25        # |steer|, доля хода руля
+UNDERSTEER_MAX_YAW_RATE = 0.10     # кузов не доворачивает, рад/с
+OVERSTEER_SLIP_ANGLE = 0.15        # задние, рад
+OFFTRACK_MIN_WHEELS = 2            # поребрик за выезд не считается
+MIN_EVENT_DURATION_S = 0.20        # короче — шум подвески, не потеря сцепления
+
+_REAR = ("rl", "rr")
+_FRONT = ("fl", "fr")
+
+
+@dataclass
+class _Ongoing:
+    kind: str
+    wheel: str | None
+    started_at: float
+    peak: float
+    corner_id: int | None
+    corner_name: str | None
+    phase: str
+    lap: int
+    speed_kmh: int | None
+
+
+class SlipDetector:
+    """Один экземпляр на сессию. `tick()` зовётся на каждом MotionEx."""
+
+    def __init__(self) -> None:
+        self._ongoing: dict[str, _Ongoing] = {}
+
+    def reset(self) -> None:
+        """Смена сессии или флэшбек: незакрытые события выбрасываются, а не
+        дозакрываются — их место на трассе уже неактуально."""
+        self._ongoing.clear()
+
+    def tick(
+        self,
+        frame: dict,
+        now: float,
+        lap: int,
+        corner_id: int | None,
+        corner_name: str | None,
+        phase: str,
+    ) -> list[CornerMistake]:
+        """Один кадр. Возвращает завершившиеся на нём ошибки (обычно пустой
+        список).
+
+        Место и фаза берутся на НАЧАЛЕ срыва, а не на конце: пилот ошибается на
+        входе в поворот, а отпускает уже в апексе — «блокировка в апексе»
+        отправила бы его чинить не то место.
+        """
+        finished: list[CornerMistake] = []
+        for kind, wheel, magnitude in self._candidates(frame):
+            if magnitude is None:
+                done = self._close(kind, now)
+                if done is not None:
+                    finished.append(done)
+                continue
+            cur = self._ongoing.get(kind)
+            if cur is None:
+                self._ongoing[kind] = _Ongoing(
+                    kind=kind, wheel=wheel, started_at=now, peak=magnitude,
+                    corner_id=corner_id, corner_name=corner_name, phase=phase,
+                    lap=lap, speed_kmh=frame.get("speed_kmh"),
+                )
+            elif magnitude > cur.peak:
+                cur.peak = magnitude
+                cur.wheel = wheel
+        return finished
+
+    def _close(self, kind: str, now: float) -> CornerMistake | None:
+        cur = self._ongoing.pop(kind, None)
+        if cur is None:
+            return None
+        duration = now - cur.started_at
+        if duration < MIN_EVENT_DURATION_S:
+            return None
+        return CornerMistake(
+            kind=cur.kind, wheel=cur.wheel, corner_id=cur.corner_id,
+            corner_name=cur.corner_name, phase=cur.phase, lap=cur.lap,
+            peak=round(cur.peak, 3), duration_s=round(duration, 2),
+            speed_kmh=cur.speed_kmh,
+        )
+
+    def _candidates(self, frame: dict):
+        """(вид, колесо, величина) по каждому виду ошибки. Величина None —
+        сейчас не срывает."""
+        ratio = frame.get("slip_ratio") or {}
+        angle = frame.get("slip_angle") or {}
+        brake = frame.get("brake_pct") or 0.0
+        throttle = frame.get("throttle_pct") or 0.0
+        steer = frame.get("steer") or 0.0
+        yaw = frame.get("yaw_rate") or 0.0
+
+        yield ("lockup", *_worst(
+            ratio,
+            lambda v: v <= LOCKUP_SLIP and brake >= LOCKUP_MIN_BRAKE_PCT,
+            key=lambda v: -v))
+        # Пробуксовка — только ведущая ось: передние колёса под газом не буксуют.
+        yield ("wheelspin", *_worst(
+            {w: ratio.get(w, 0.0) for w in _REAR},
+            lambda v: v >= WHEELSPIN_SLIP and throttle >= WHEELSPIN_MIN_THROTTLE_PCT,
+            key=lambda v: v))
+
+        front = max((abs(angle.get(w, 0.0)) for w in _FRONT), default=0.0)
+        rear = max((abs(angle.get(w, 0.0)) for w in _REAR), default=0.0)
+
+        # Снос: передние скользят сильнее задних, руль повёрнут, а кузов почти
+        # не доворачивает. Без проверки руля любой быстрый поворот считался бы
+        # ошибкой.
+        understeer = (
+            front >= UNDERSTEER_SLIP_ANGLE
+            and front > rear
+            and abs(steer) >= UNDERSTEER_MIN_STEER
+            and abs(yaw) <= UNDERSTEER_MAX_YAW_RATE
+        )
+        yield ("understeer", None, front if understeer else None)
+
+        # Занос: задние скользят сильнее передних И пилот уже ловит машину —
+        # руль в одну сторону, разворот кузова в другую. Без контр-руления это
+        # просто поворот на пределе, а не ошибка.
+        counter_steering = steer * yaw < 0
+        oversteer = (
+            rear >= OVERSTEER_SLIP_ANGLE and rear > front and counter_steering
+        )
+        yield ("oversteer", None, rear if oversteer else None)
+
+        surface = frame.get("surface") or {}
+        off_wheels = sum(
+            1 for s in surface.values()
+            if s not in SURFACE_ON_TRACK and s != "unknown"
+        )
+        yield ("offtrack", None,
+               float(off_wheels) if off_wheels >= OFFTRACK_MIN_WHEELS else None)
+
+
+def _worst(values: dict, predicate, key):
+    """Худшее колесо среди сработавших: (колесо, величина) или (None, None)."""
+    hits = [(w, v) for w, v in values.items() if predicate(v)]
+    if not hits:
+        return None, None
+    wheel, value = max(hits, key=lambda wv: key(wv[1]))
+    return wheel, abs(value)
