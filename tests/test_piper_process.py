@@ -42,7 +42,7 @@ def test_missing_component_is_a_state_not_a_crash(monkeypatch, tmp_path):
 def test_installed_voices_win_over_the_development_tree(monkeypatch, tmp_path):
     installed = tmp_path / "installed"
     installed.mkdir()
-    (installed / "ru_RU-ruslan-medium.onnx").write_bytes(b"x")
+    (installed / "ru_RU-denis-medium.onnx").write_bytes(b"x")
     monkeypatch.setattr(config, "PIPER_VOICES_DIR", str(installed))
     monkeypatch.setattr(config, "PIPER_VOICES_DEV_DIR", str(tmp_path / "dev"))
 
@@ -144,14 +144,20 @@ class _FakeProcess:
 
 def test_live_voices_are_capped_so_the_game_keeps_its_memory(monkeypatch):
     """Каждый процесс держит свою ONNX-модель, а рядом работает F1 на скромном
-    железе. Лимит — три по числу каналов каста."""
+    железе. Лимит — три по числу каналов каста.
+
+    Имена голосов здесь СИНТЕТИЧЕСКИЕ, и это осознанно. После лицензионной
+    чистки (NOTICE, 2026-08-08) моделей осталось две, а вытеснение начинается на
+    четвёртой — реальными именами этот путь уже не пройти. Проверяется свойство
+    пула процессов, а не раскладка голосов; `_voice_path` тут замокан, имя для
+    него роли не играет."""
     monkeypatch.setattr(piper_tts, "_VoiceProcess", _FakeProcess)
     monkeypatch.setattr(piper_tts, "_resolve_runtime", lambda: (["piper"], "exe"))
     monkeypatch.setattr(piper_tts, "_voice_path", lambda name: Path(__file__))
 
     engine = piper_tts.PiperVoiceEngine()
     created = []
-    for index, name in enumerate(("ruslan", "denis", "irina", "dmitri")):
+    for index, name in enumerate(("voice_a", "voice_b", "voice_c", "voice_d")):
         process = engine._ensure_process(name, 1.0 + index)
         created.append(process)
 
@@ -166,8 +172,8 @@ def test_reusing_a_voice_keeps_the_same_process(monkeypatch):
     monkeypatch.setattr(piper_tts, "_voice_path", lambda name: Path(__file__))
 
     engine = piper_tts.PiperVoiceEngine()
-    first = engine._ensure_process("ruslan", 1.0)
-    again = engine._ensure_process("ruslan", 1.0)
+    first = engine._ensure_process("denis", 1.0)
+    again = engine._ensure_process("denis", 1.0)
 
     assert first is again, "модель перезагружалась бы на каждую фразу"
 
@@ -178,9 +184,9 @@ def test_a_dead_process_is_replaced_not_reused(monkeypatch):
     monkeypatch.setattr(piper_tts, "_voice_path", lambda name: Path(__file__))
 
     engine = piper_tts.PiperVoiceEngine()
-    first = engine._ensure_process("ruslan", 1.0)
+    first = engine._ensure_process("denis", 1.0)
     first.stopped = True                      # процесс упал сам
-    second = engine._ensure_process("ruslan", 1.0)
+    second = engine._ensure_process("denis", 1.0)
 
     assert second is not first
 

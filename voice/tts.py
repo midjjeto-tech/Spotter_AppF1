@@ -46,9 +46,13 @@ class Voice:
     def __init__(self, *_args, **_kwargs):
         self._engine = PiperVoiceEngine()
         self.pyttsx3_engine = None
+        # Приглушение игры на время реплики. None = выключено; владелец
+        # (core/engine.py) ставит сюда GameDucker, когда настройка включена.
+        # Голос про настройки ничего не знает — он только сообщает «говорю».
+        self.game_ducker = None
         self.status_message = "Голос не запущен"
         # version tag invalidates stale cache. Bump on engine/voice/normalizer change.
-        # v2: Ruslan default + расширенный ru_textnorm (англ.→кириллица, год→порядковое)
+        # v2: Piper default + расширенный ru_textnorm (англ.→кириллица, год→порядковое)
         # yandex-v2: фолбэк-аудио Piper больше не пишется в Yandex-ключ — старый
         #            «отравленный» кэш (Piper под y:-ключом) инвалидируется бампом.
         # yandex-v3 (07-08): core/pronunciation.py (04-07, ударение «Ферст+аппен» для
@@ -66,7 +70,16 @@ class Voice:
         # yandex-v6 (07-21): Jolpica/LLM-формы с латиницей и диакритикой
         #            (Sergio Pérez и остальные пилоты) приводятся к русским именам
         #            на общей границе TTS; старые WAV с побуквенным чтением невалидны.
-        self._cache = TTSCache(os.path.join(config.DATA_DIR, "tts_cache"), version="yandex-v6")
+        # yandex-v7 (08-08): ОБЯЗАТЕЛЬНЫЙ бамп, без него правка не доехала бы.
+        #            Piper-ключ — это `piper:{persona}` (см. _voice_key), то есть
+        #            ПЕРСОНА, а не имя модели. После лицензионной чистки персоны
+        #            переехали на другие голоса (tv: ruslan→denis, calm: irina→
+        #            dmitri), и весь старый кэш продолжил бы отдавать удалённые
+        #            ru_RU-{ruslan,irina} под видом новых — то есть NC-голос звучал
+        #            бы дальше на каждой машине, где уже накоплен tts_cache/.
+        #            Ровно те же грабли, что yandex-v3: код верен, а кэш об этом
+        #            не знает.
+        self._cache = TTSCache(os.path.join(config.DATA_DIR, "tts_cache"), version="yandex-v7")
         self._queue: TTSQueue | None = None
         self._queue_lock = threading.Lock()
         self._current_persona = "tv"
@@ -159,7 +172,8 @@ class Voice:
                 with self._queue_lock:
                     if self._queue is None:
                         self._queue = TTSQueue(speak_fn=self._say_pyttsx3_blocking,
-                                               stop_fn=self._interrupt_playback)
+                                               stop_fn=self._interrupt_playback,
+                                               on_busy_change=self._on_speech_busy)
             else:
                 self.status_message = engine_err
 
@@ -168,7 +182,18 @@ class Voice:
         with self._queue_lock:
             if self._queue is None:
                 self._queue = TTSQueue(speak_fn=self._play_blocking,
-                                       stop_fn=self._interrupt_playback)
+                                       stop_fn=self._interrupt_playback,
+                                       on_busy_change=self._on_speech_busy)
+
+    def _on_speech_busy(self, busy: bool) -> None:
+        """Речь началась / очередь опустела — приглушаем или отпускаем игру.
+
+        Зовётся ВОРКЕРОМ очереди, поэтому здесь нельзя ничего долгого и нельзя
+        бросать: сам GameDucker при любом сбое отключается и возвращает
+        громкость, но до него надо ещё дойти."""
+        ducker = self.game_ducker
+        if ducker is not None:
+            ducker.set_busy(busy)
 
     def _init_pyttsx3(self) -> None:
         try:
@@ -244,7 +269,7 @@ class Voice:
 
     @property
     def active_speaker(self) -> str:
-        """Ярлык реально звучащего спикера для UI: «Яндекс: Филипп» / «Piper: Ruslan».
+        """Ярлык реально звучащего спикера для UI: «Яндекс: Филипп» / «Piper: Denis».
 
         Опирается на реально использованный движок (_last_engine); до первой фразы —
         на то, что прицеплено и здорово. Имя голоса берётся из текущей персоны
@@ -256,7 +281,7 @@ class Voice:
             spec = voices.resolve(persona, self._voice_overrides)
             return f"Яндекс: {voices.display_name(spec['voice'])}"
         if eng == "Piper (RU)" or (not eng and self._engine.is_ready):
-            name = PERSONA_VOICE.get(persona, PERSONA_VOICE.get("tv", ("ruslan", 1.0)))[0]
+            name = PERSONA_VOICE.get(persona, PERSONA_VOICE.get("tv", ("denis", 1.0)))[0]
             return f"Piper: {name.capitalize()}"
         if eng == "pyttsx3" or self.pyttsx3_engine is not None:
             return "pyttsx3 (резерв)"

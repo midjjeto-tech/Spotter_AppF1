@@ -3,32 +3,35 @@ core/f1_metadata.py
 ===================
 Обогащение данных пилотов/команд для live-телеметрии F1 25.
 
+СЕТИ ЗДЕСЬ БОЛЬШЕ НЕТ. До 2026-08-08 вторым слоем стояла Jolpica/Ergast, но её
+TERMS разрешают только некоммерческое использование, а содержимое отдано под
+CC BY-NC-SA 4.0 (см. NOTICE) — для продаваемой сборки это блокер. Слой удалён
+целиком; статические ростеры ниже покрывают обе реальные сетки полностью, а
+всё остальное добирают whitelist и транслитерация. Не возвращать сетевой
+источник, не проверив его условия.
+
 Слои (в порядке приоритета внутри enrich_driver):
-1. Статический русский словарь F1_2025_BY_NUMBER по номеру — авторитетно и
-   мгновенно для реальной сетки 2025 (русский TTS коверкает латиницу, см. ru_names).
-2. Jolpica/Ergast (через core/ergast_client.JolpicaClient) — добивает НЕИЗВЕСТНЫЕ
-   номера (новички/2026/карьера), команды и национальности. Сеть идёт в ФОНОВОМ
-   потоке (_load) с дисковым кэшем; горячий путь читает готовые карты в памяти.
-3. Точные имена/фамилии реальных пилотов (core/transliterate.py) — whitelist
-   действующего ростера, где буквенная транслитерация ниже
-   документированно ошибается (Verstappen, Sainz/Perez и т.п.). Проверяется
-   и по сырому UDP-имени (если Jolpica вообще ничего не нашла), и по
-   Jolpica-имени — ДО общей транслитерации.
-4. Транслитерация (core/transliterate.py::to_cyrillic) — если имя всё ещё
-   латиница и его нет ни в статическом словаре, ни в KNOWN_SURNAMES,
-   приблизительная кириллица лучше, чем сырая латиница в Yandex TTS.
-5. Фолбэк «гонщик»/«соперник» — в race_state, если ничего не нашли.
+1. Статический русский словарь по номеру (roster_by_number → F1_2025_BY_NUMBER
+   или F1_2026_BY_NUMBER) — авторитетно и мгновенно для реальной сетки
+   (русский TTS коверкает латиницу, см. ru_names).
+2. Точные имена/фамилии реальных пилотов (core/transliterate.py) — whitelist
+   действующего ростера, где буквенная транслитерация документированно
+   ошибается (Verstappen, Sainz/Perez и т.п.). Проверяется по сырому
+   UDP-имени — новичок может отсутствовать в статическом словаре.
+3. Транслитерация (core/transliterate.py::to_cyrillic) — приблизительная
+   кириллица лучше, чем сырая латиница в Yandex TTS.
+4. Фолбэк «гонщик»/«соперник» — в race_state, если ничего не нашли.
+
+Кастомные пилоты карьеры сохраняют своё UDP-имя: whitelist состоит только из
+реальных имён и их не задевает.
 """
 
 from __future__ import annotations
 
 import logging
 import os
-import re
-import threading
 from typing import Any
 
-from core.ergast_client import JolpicaClient
 from core import transliterate
 
 _log = logging.getLogger(__name__)
@@ -103,52 +106,34 @@ def roster_by_number(game_year: int) -> dict[int, tuple[str, str]]:
     return F1_2026_BY_NUMBER if game_year >= 2026 else F1_2025_BY_NUMBER
 
 
-def _normalize_key(value: str) -> str:
-    return re.sub(r"[^a-z0-9]", "", value.lower())
-
-
 class F1Metadata:
-    """Кэш метаданных сезона F1 из Ergast."""
+    """Обогащение имён пилотов из статических ростеров. Без сети и без потоков."""
 
-    def __init__(self, season: str = DEFAULT_SEASON,
-                 client: JolpicaClient | None = None):
+    def __init__(self, season: str = DEFAULT_SEASON):
         self.season = season
         self._game_year: int = 0
-        self._client = client or JolpicaClient(current_season=season)
-        self._drivers: dict[str, dict[str, Any]] = {}     # normalized name/code/number → info
-        self._by_number: dict[int, dict[str, Any]] = {}    # permanentNumber → info
-        self._teams: dict[str, dict[str, Any]] = {}
-        self._loaded = False
-        self._error: str | None = None
-        self._load_thread: threading.Thread | None = None
-        self._stopped = False
 
     def start(self) -> None:
-        """Start background enrichment explicitly; construction is passive."""
-        if self._load_thread is not None or self._stopped:
-            return
-        self._start_load()
+        """Совместимость с прежним жизненным циклом: фонового обогащения больше
+        нет, загружать нечего. Метод оставлен, чтобы владелец (core/runtime.py,
+        core/engine.py) не менял порядок запуска ради удалённой сети."""
 
     def stop(self, timeout: float = 1.0) -> None:
-        self._stopped = True
-        thread = self._load_thread
-        if thread is not None and thread is not threading.current_thread():
-            thread.join(timeout=max(0.0, timeout))
-
-    def _start_load(self) -> None:
-        if self._stopped:
-            return
-        self._load_thread = threading.Thread(
-            target=self._load, daemon=True, name="ergast-load")
-        self._load_thread.start()
+        """См. start(): останавливать больше нечего."""
 
     @property
     def loaded(self) -> bool:
-        return self._loaded
+        """Данные готовы всегда: ростеры статические, ждать нечего.
+
+        Флаг уезжает в UI как `metadata_loaded` (core/ui_state.py). Вернуть
+        False значило бы вечное «обогащение не готово» при полностью рабочем
+        обогащении."""
+        return True
 
     @property
     def error(self) -> str | None:
-        return self._error
+        """Сломаться больше негде — сети нет."""
+        return None
 
     @property
     def game_year(self) -> int:
@@ -156,74 +141,16 @@ class F1Metadata:
 
     @game_year.setter
     def game_year(self, year: int) -> None:
-        """Проставляется Engine'ом из заголовка UDP-пакета (может прилетать на каждом
-        пакете — сравнение ниже делает повторные установки того же года no-op).
+        """Проставляется Engine'ом из заголовка UDP-пакета (может прилетать на
+        каждом пакете — повторная установка того же года ничего не делает).
 
-        Двигает и выбор ТЕЛЕМЕТРИЙНОГО ростера по номеру (roster_by_number в
-        enrich_driver), И — если год реально расходится с уже загруженным сезоном
-        Jolpica — сезон фонового обогащения резервных/незаявленных пилотов. Без
-        этого резервный пилот в реальной 2026-сессии обогащался бы данными Jolpica
-        за self.season по умолчанию (config.F1_SEASON), а не за фактический год игры.
-        Старые per-season карты сбрасываются перед перезапуском — иначе номер,
-        существовавший только в предыдущем сезоне, остался бы призрачно резолвиться.
-        """
+        Двигает выбор ростера по номеру (roster_by_number в enrich_driver):
+        номера переиспользуются между сезонами, Ферстаппен 1→3. Раньше этот же
+        сеттер перезапускал фоновую загрузку сезона из Jolpica — сети больше
+        нет, осталось только переключение словаря."""
         self._game_year = year
         if year and str(year) != self.season:
             self.season = str(year)
-            self._drivers = {}
-            self._by_number = {}
-            self._teams = {}
-            self._loaded = False
-            self._start_load()
-
-    def _load(self):
-        """Фоновая загрузка ростера сезона через кэширующий JolpicaClient.
-
-        Строит карты по имени и по номеру. Любой сбой сети деградирует тихо —
-        приложение остаётся на статическом словаре. НИКОГДА не дёргать из потока
-        телеметрии (блокирует сеть): enrich_driver читает только готовые карты.
-        """
-        data = self._client.get_json(f"{self.season}/driverStandings.json")
-        if not data:
-            self._error = "Jolpica недоступна — работаем на статическом словаре"
-            return
-
-        try:
-            standings = data["MRData"]["StandingsTable"]["StandingsLists"][0]["DriverStandings"]
-        except (KeyError, IndexError, TypeError):
-            self._error = "Неверный формат ответа Jolpica"
-            return
-
-        for entry in standings:
-            driver = entry.get("Driver", {})
-            constructor = entry.get("Constructors", [{}])[0]
-            full_name = f"{driver.get('givenName', '')} {driver.get('familyName', '')}".strip()
-            code = driver.get("code") or ""
-            number = driver.get("permanentNumber") or entry.get("position")
-            team = constructor.get("name", "")
-
-            info = {
-                "name": full_name,
-                "code": code,
-                "number": int(number) if str(number).isdigit() else None,
-                "team": team,
-                "nationality": driver.get("nationality", ""),
-            }
-
-            for key in filter(None, [full_name, code, driver.get("familyName")]):
-                self._drivers[_normalize_key(str(key))] = info
-
-            if info["number"] is not None:
-                self._by_number[info["number"]] = info
-
-            if team:
-                self._teams[_normalize_key(team)] = {
-                    "name": team,
-                    "id": constructor.get("constructorId", ""),
-                }
-
-        self._loaded = True
-        self._error = None
 
     def enrich_driver(self, name: str | None, team: str | None, number: int | None) -> dict[str, Any]:
         """Дополняет данные пилота. Русское имя по номеру — ПРИОРИТЕТ.
@@ -247,57 +174,22 @@ class F1Metadata:
                 if not team:
                     result["team"] = static[1]
 
-        # 2. Jolpica по номеру (готовая карта в памяти) — для номеров ВНЕ
-        #    статического словаря (новички/2026/карьера). Работает и без UDP-имени.
-        if not result.get("name") and self._loaded and number is not None:
-            try:
-                meta = self._by_number.get(int(number))
-            except (TypeError, ValueError):
-                meta = None
-            if meta:
-                if meta.get("name"):
-                    result["name"] = meta["name"]
-                if not result.get("team") and meta.get("team"):
-                    result["team"] = meta["team"]
-
-        # 3. Jolpica по имени/коду — если номер не дал результата.
-        if not result.get("name") and self._loaded and name:
-            keys = [_normalize_key(name)]
-            parts = name.split()
-            if parts:
-                keys.append(_normalize_key(parts[-1]))
-            if number is not None:
-                keys.append(_normalize_key(str(number)))
-
-            for key in keys:
-                meta = self._drivers.get(key)
-                if meta:
-                    if meta.get("name"):
-                        result["name"] = meta["name"]
-                    if meta.get("team"):
-                        result["team"] = meta["team"]
-                    break
-
-        # 4. Нормализация названия команды через Jolpica (не зависит от имени).
-        if self._loaded and team and self._teams.get(_normalize_key(team)):
-            result["team"] = self._teams[_normalize_key(team)]["name"]
-
-        # 5а. Точные имена/фамилии реальных пилотов (known_driver_name) —
-        #     проверяем ДАЖЕ по сырому UDP-имени, если Jolpica ничего не нашла:
-        #     новичок (напр. Линдблад) может отсутствовать в driverStandings.json
-        #     (там только очковые пилоты), но уже быть в этом whitelist.
-        #     Whitelist только из реальных имён — кастомных/карьерных пилотов
-        #     не задевает (см. tests/test_driver_names.py::
-        #     test_custom_driver_keeps_udp_name_for_unknown_number).
+        # 2. Точные имена/фамилии реальных пилотов (known_driver_name) —
+        #    проверяем ДАЖЕ по сырому UDP-имени: новичок (напр. Линдблад) мог
+        #    ещё не попасть в статический словарь, но уже быть в whitelist.
+        #    Whitelist только из реальных имён — кастомных/карьерных пилотов
+        #    не задевает (см. tests/test_driver_names.py::
+        #    test_custom_driver_keeps_udp_name_for_unknown_number).
         candidate = result.get("name") or name
         known = transliterate.known_driver_name(candidate) if candidate else None
         if known:
             result["name"] = known
-        # 5б. Общая транслитерация — прежнее поведение, без изменений: только
-        #     для того, что уже нашла Jolpica (result["name"]), не для сырого
-        #     UDP-имени. Лучше приблизительная кириллица, чем сырая латиница в
-        #     Yandex TTS. Точные случаи — в F1_2025_BY_NUMBER/F1_2026_BY_NUMBER
-        #     и KNOWN_SURNAMES выше, это не замена им (см. core/transliterate.py).
+        # 3. Общая транслитерация — только для имени, уже положенного в result,
+        #    не для сырого UDP-имени: кастомный пилот карьеры обязан остаться
+        #    собой. Ветка стала почти недостижимой (слой 1 кладёт сразу
+        #    кириллицу), но остаётся страховкой на случай нового источника имён
+        #    выше по списку. Точные случаи — в статических словарях и
+        #    KNOWN_SURNAMES, это не замена им (см. core/transliterate.py).
         elif result.get("name") and transliterate.is_latin(result["name"]):
             result["name"] = transliterate.to_cyrillic(result["name"])
 
@@ -314,9 +206,9 @@ class F1Metadata:
             if _DIAG:
                 _log.warning(
                     "DIAG enrich idx=%s number=%s raw_name=%r -> name=%r team=%r "
-                    "(jolpica_loaded=%s)",
+                    "(roster_year=%s)",
                     idx, info.get("number"), info.get("name"),
-                    merged.get("name"), merged.get("team"), self._loaded,
+                    merged.get("name"), merged.get("team"), self._game_year,
                 )
         return enriched
 

@@ -58,8 +58,20 @@ def test_voice_key_piper_when_no_yandex():
 
 
 def test_pronunciation_change_invalidates_old_audio_cache():
+    """Растяжка проволоки, а не проверка строки: версия закреплена нарочно,
+    чтобы правку, меняющую ЗВУЧАНИЕ, нельзя было внести молча.
+
+    Ключ кэша = hash(version + text + speaker), а speaker на пути Piper — это
+    `piper:{persona}` (см. `_voice_key`), то есть ПЕРСОНА, не имя модели. Любая
+    правка, после которой та же персона должна звучать иначе, кэшем не видна:
+    без бампа старые WAV играют вечно. Так было с ударением «Ферстаппен»
+    (yandex-v3) и так было бы с лицензионной чисткой голосов (yandex-v7:
+    tv ruslan→denis, calm irina→dmitri).
+
+    Меняешь версию здесь — значит, действительно бампнул её в voice/tts.py,
+    а не наоборот."""
     v = Voice()
-    assert v._cache.version == "yandex-v6"
+    assert v._cache.version == "yandex-v7"
 
 
 def test_set_yandex_enables_availability_and_queue():
@@ -112,7 +124,7 @@ def test_active_speaker_piper_label(speaker_voice):
     v._current_persona = "tv"
     v._voice_overrides = {}
     v._last_engine = "Piper (RU)"
-    assert v.active_speaker == "Piper: Ruslan"
+    assert v.active_speaker == "Piper: Denis"
 
 
 # ---- circuit breaker: _synthesize не ходит в Yandex, пока он помечен упавшим (баг №2) ---- #

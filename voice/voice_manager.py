@@ -4,7 +4,8 @@ voice/voice_manager.py
 Reports the status of the voices used per persona.
 
 When Yandex SpeechKit is attached and healthy → returns Yandex voices (filipp/ermil/alena/zahar).
-When falling back to Piper → returns Piper voices (ruslan/denis/irina/dmitri).
+When falling back to Piper → returns Piper voices (denis/dmitri; ruslan и irina
+удалены как непригодные для коммерческого распространения, см. NOTICE).
 """
 from __future__ import annotations
 

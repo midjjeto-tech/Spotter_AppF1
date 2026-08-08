@@ -33,7 +33,7 @@ if ($LASTEXITCODE -ne 0) {
 # --- Runtime dependency gate (import names) ---
 $deps = @("bottle","webview","win32gui","sounddevice","soundfile","piper",
           "onnxruntime","numpy","psutil","aiohttp","pandas","grpc","yandexcloud",
-          "pyttsx3")
+          "pyttsx3","pycaw")
 $pipName = @{ webview = "pywebview"; win32gui = "pywin32"; piper = "piper-tts"; grpc = "grpcio" }
 $missing = @()
 foreach ($pkg in $deps) {
@@ -59,6 +59,20 @@ if (-not (Test-Path $piperDir)) {
 $onnx = Get-ChildItem -Path $piperDir -Filter *.onnx -ErrorAction SilentlyContinue
 if (-not $onnx) {
     Write-Host "ERROR: no .onnx voices found in models\piper" -ForegroundColor Red
+    exit 1
+}
+
+# --- Лицензионный гейт по голосам (тот же приём, что проверка GPL ниже) ---
+# ru_RU-ruslan-medium — CC BY-NC-SA 4.0 (корпус RUSLAN), ru_RU-irina-medium — с
+# неустановленными условиями. Оба непригодны для коммерческого распространения
+# и удалены 2026-08-08 (см. NOTICE). Файл модели легко вернуть в models\piper
+# по невнимательности — а установщик забирает голоса маской ru_RU-*.onnx, и
+# заметить возврат на глаз невозможно. Поэтому гейт, а не договорённость.
+$banned = $onnx | Where-Object { $_.Name -match '^ru_RU-(ruslan|irina)-' }
+if ($banned) {
+    Write-Host "ERROR: в models\piper найдены голоса, запрещённые к распространению:" -ForegroundColor Red
+    $banned | ForEach-Object { Write-Host "  $($_.Name)" -ForegroundColor Red }
+    Write-Host "  Удалите их (вместе с .onnx.json). Подробности — NOTICE." -ForegroundColor Yellow
     exit 1
 }
 

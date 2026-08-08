@@ -9,16 +9,12 @@ from core.f1_metadata import F1Metadata
 from core.packets import _looks_like_name, _decode_name
 
 
-class _OfflineClient:
-    """Stand-in JolpicaClient that never touches the network (deterministic tests)."""
-    def get_json(self, path):
-        return None
-
-
 def _meta_no_ergast() -> F1Metadata:
-    m = F1Metadata(client=_OfflineClient())
-    m._loaded = False   # force static-only path, deterministic offline
-    return m
+    """Сети в F1Metadata больше нет (Jolpica удалена 2026-08-08, см. NOTICE) —
+    статический путь теперь единственный. Раньше он выставлялся здесь вручную
+    подставным клиентом и `_loaded = False`; имя функции оставлено, чтобы не
+    трогать полсотни вызовов ниже."""
+    return F1Metadata()
 
 
 def test_russian_name_wins_over_latin_for_known_number():
@@ -97,17 +93,17 @@ def test_decode_name_keeps_valid_latin():
     assert _decode_name(b"Verstappen\x00\x00") == "Verstappen"
 
 
-# --- transliteration fallback (Jolpica-resolved Latin name outside static dicts) ---
+# --- латиница вне статических словарей не должна утекать в TTS ---
 
-def test_jolpica_latin_name_outside_static_dict_gets_transliterated():
-    """Number 99 is not in F1_2025_BY_NUMBER/F1_2026_BY_NUMBER. Simulate
-    Jolpica resolving it to a Latin name that isn't in either static dict —
-    the transliteration fallback should kick in rather than passing raw
-    Latin through to TTS."""
+def test_latin_name_outside_static_dict_does_not_reach_tts_raw():
+    """Номера 99 нет ни в F1_2025_BY_NUMBER, ни в F1_2026_BY_NUMBER — то есть
+    имя приходит только сырой латиницей из UDP.
+
+    Раньше этот случай закрывала Jolpica: она резолвила номер в латинское имя,
+    которое дальше транслитерировалось. Jolpica удалена (NOTICE, 2026-08-08), и
+    единственное, что теперь стоит между латиницей и SpeechKit, — whitelist
+    реальных пилотов. Тест держит именно его."""
     m = _meta_no_ergast()
-    m._loaded = True
-    m._by_number[99] = {"name": "Bearman", "code": "BEA", "number": 99,
-                        "team": "Haas", "nationality": "British"}
     out = m.enrich_drivers({0: {"name": "Bearman", "team": "Haas", "number": 99}})
     assert out[0]["name"] == "Бирман"
 
@@ -137,24 +133,20 @@ def test_known_real_driver_raw_udp_name_gets_fixed_even_without_jolpica():
     assert out[0]["name"] == "Перес"
 
 
-def test_jolpica_accented_perez_name_gets_fixed():
-    """Jolpica spells Perez as ``Pérez``. The accent must not bypass the
-    curated Russian full name and leak Latin text into SpeechKit."""
+def test_accented_perez_name_gets_fixed():
+    """Диакритика не должна проносить латиницу мимо whitelist в SpeechKit.
+
+    Источником написания ``Pérez`` была Jolpica; после её удаления то же
+    написание приходит из UDP-пакета участников, а номер 99 вне обоих
+    статических словарей. Проверка та же, ожидание — фамилия из whitelist (полное имя даёт
+    только статический словарь по номеру)."""
     m = _meta_no_ergast()
-    m._loaded = True
-    m._by_number[99] = {
-        "name": "Sergio Pérez",
-        "code": "PER",
-        "number": 99,
-        "team": "Cadillac",
-        "nationality": "Mexican",
-    }
 
     out = m.enrich_drivers({
         0: {"name": "Pérez", "team": "Cadillac", "number": 99},
     })
 
-    assert out[0]["name"] == "Серхио Перес"
+    assert out[0]["name"] == "Перес"
 
 
 def test_known_real_driver_raw_udp_name_lindblad():
