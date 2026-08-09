@@ -58,14 +58,106 @@ def bind_host(remote_enabled: bool) -> str:
     return "0.0.0.0" if remote_enabled else "127.0.0.1"
 
 
-def lan_address() -> str:
-    """Адрес этой машины в локальной сети — тот, который надо набрать на
-    телефоне.
+#: Куски имён адаптеров, которые почти никогда не являются домашней сетью.
+#: Список именно по ИМЕНАМ, потому что по адресу их не отличить: Docker живёт в
+#: 172.17–172.18, а это тот же приватный диапазон, что и у роутеров.
+_VIRTUAL_HINTS = (
+    "loopback", "vethernet", "hyper-v", "wsl", "docker", "vmware", "virtualbox",
+    "vbox", "tap", "tun", "tailscale", "zerotier", "wireguard", "openvpn",
+    "hamachi", "radmin", "bluetooth", "npcap", "teredo", "isatap",
+)
 
-    UDP-сокет к внешнему адресу НИЧЕГО не отправляет: он нужен только чтобы
-    спросить у ОС, какой интерфейс она выбрала бы для выхода наружу. Это
-    надёжнее, чем `gethostbyname(gethostname())`, который на машинах с
-    несколькими адаптерами (Hyper-V, VPN, WSL) часто отдаёт не тот адрес."""
+
+def _rank(address: str, adapter: str) -> tuple:
+    """Ключ сортировки кандидатов: меньше — лучше."""
+    name = adapter.lower()
+    virtual = any(hint in name for hint in _VIRTUAL_HINTS)
+    # 192.168/16 — то, что раздаёт почти любой домашний роутер; 10/8 — второй по
+    # распространённости; 172.16/12 идёт последним ОСОЗНАННО: в нём же сидят
+    # Docker и WSL, поэтому реальная сеть в этом диапазоне встречается реже, чем
+    # виртуальная.
+    if address.startswith("192.168."):
+        family = 0
+    elif address.startswith("10."):
+        family = 1
+    else:
+        family = 2
+    return (int(virtual), family, address)
+
+
+def lan_candidates() -> list[tuple[str, str]]:
+    """Все адреса этой машины в приватных сетях: [(адрес, адаптер)], лучший
+    первым.
+
+    Отдаём СПИСОК, а не одно значение, потому что честно угадать нельзя.
+    Найдено живой проверкой: на машине с VPN прежний способ (UDP-сокет к внешнему
+    адресу — «спроси у ОС, каким интерфейсом она пойдёт наружу») возвращал адрес
+    туннеля для ЛЮБОЙ цели, включая 8.8.8.8 и 192.168.1.1, потому что VPN
+    забирает маршрут по умолчанию. Телефон по такому адресу не достучится
+    никогда, а пользователь видит правдоподобную ссылку и ищет причину в
+    брандмауэре.
+
+    Поэтому лучший кандидат — только предположение, а UI обязан показать
+    остальные."""
+    try:
+        import socket
+
+        import psutil
+    except ImportError:
+        return []
+
+    found: list[tuple[str, str]] = []
+    try:
+        stats = psutil.net_if_stats()
+        for adapter, addresses in psutil.net_if_addrs().items():
+            link = stats.get(adapter)
+            if link is not None and not link.isup:
+                continue
+            for entry in addresses:
+                # Сравнение с самой константой, а НЕ со строкой её имени: в
+                # Python 3.11 у IntEnum сменился __str__, и str(socket.AF_INET)
+                # стал "2" вместо "AddressFamily.AF_INET". Проверка по имени
+                # молча не находила ни одного адреса — список кандидатов
+                # получался пустым, и всё откатывалось на тот же VPN.
+                if entry.family != socket.AF_INET:
+                    continue
+                address = getattr(entry, "address", "") or ""
+                if _is_private(address):
+                    found.append((address, adapter))
+    except Exception:  # noqa: BLE001 — адрес не повод падать на старте
+        return []
+    return sorted(found, key=lambda item: _rank(*item))
+
+
+def _is_private(address: str) -> bool:
+    if not address or address.startswith("127.") or address.startswith("169.254."):
+        return False
+    if address.startswith("192.168.") or address.startswith("10."):
+        return True
+    if address.startswith("172."):
+        try:
+            second = int(address.split(".")[1])
+        except (IndexError, ValueError):
+            return False
+        return 16 <= second <= 31
+    return False
+
+
+def lan_address() -> str:
+    """Лучший кандидат на адрес для телефона. Только предположение — полный
+    список отдаёт `lan_candidates()`."""
+    candidates = lan_candidates()
+    if candidates:
+        return candidates[0][0]
+    return _address_by_route()
+
+
+def _address_by_route() -> str:
+    """Запасной способ: спросить у ОС, каким интерфейсом она пойдёт наружу.
+
+    UDP-сокет НИЧЕГО не отправляет — `connect` на датаграммном сокете только
+    выбирает маршрут. Оставлен на случай, когда перебор интерфейсов недоступен
+    (нет psutil); самостоятельно он ненадёжен — см. `lan_candidates`."""
     import socket
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

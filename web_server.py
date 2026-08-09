@@ -552,4 +552,11 @@ def start_api_server(engine, settings: dict, port: int = API_PORT,
         port=port,
     )
     server.start()
+    # Движок обязан знать, что сокет открыл НА САМОМ ДЕЛЕ, а не что просили в
+    # настройках: между этими двумя вещами целый перезапуск, и раньше панель
+    # второго экрана показывала работающий адрес, пока порт висел на 127.0.0.1.
+    # getattr — на случай тестовых заглушек движка без этого метода.
+    report = getattr(engine, "set_bound_host", None)
+    if callable(report):
+        report(server.host)
     return server

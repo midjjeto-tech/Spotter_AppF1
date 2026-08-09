@@ -162,7 +162,8 @@ from core.coach_ai.tyre_load import TyreLoadTracker
 from core.race_map import RaceMap
 from core.audio_ducking import GameDucker
 from core.remote_access import (
-    generate_token as generate_remote_token, lan_address as _lan_address)
+    generate_token as generate_remote_token, lan_address as _lan_address,
+    lan_candidates as _lan_candidates)
 from core.session_guard import SessionGuard
 from core.num_to_words import ru_plural
 from core.situation_dedup import (
@@ -631,18 +632,47 @@ class F1Engine:
         with self._engine_lock:
             self.settings["remote_access_token"] = token
 
+    def set_bound_host(self, host: str) -> None:
+        """Адрес, на котором HTTP-сервер РЕАЛЬНО открыл сокет.
+
+        Сообщает `web_server.start_api_server` сразу после привязки. Это
+        единственный честный источник: настройка говорит, чего пользователь
+        хочет, а слушающий сокет — что есть на самом деле, и между ними целый
+        перезапуск."""
+        self._bound_host = str(host or "")
+
     def get_remote_access_info(self) -> dict:
-        """Адрес второго экрана для UI. Пока фича выключена — пустой."""
+        """Адрес второго экрана для UI. Пока фича выключена — пустой.
+
+        Пустой `url` — это НЕ ошибка, а сигнал: UI на него показывает «адрес
+        появится после перезапуска». Найдено живой проверкой: настройку включали
+        на работающем приложении, порт оставался на 127.0.0.1, а панель бодро
+        показывала ссылку — с телефона и с самого ПК она давала
+        ERR_CONNECTION_REFUSED, и причину пользователь шёл искать в брандмауэре."""
         enabled = bool(self._get_setting("remote_access_enabled", False))
         token = str(self._get_setting("remote_access_token", ""))
         if not enabled or not token:
-            return {"enabled": False, "url": "", "token": "", "host": ""}
-        host = _lan_address()
+            return {"enabled": False, "url": "", "token": "", "host": "",
+                    "restart_required": False, "candidates": []}
+        # Сокет открыт наружу только если привязка нелокальная. Пока про
+        # привязку ничего не известно (сервер ещё не стартовал) — считаем, что
+        # наружу не открыт: обещать работающий адрес авансом мы уже пробовали.
+        bound = getattr(self, "_bound_host", "") or ""
+        listening_outside = bound not in ("", "127.0.0.1", "localhost")
+        candidates = [{"host": address, "adapter": adapter}
+                      for address, adapter in _lan_candidates()]
+        host = candidates[0]["host"] if candidates else _lan_address()
         return {
             "enabled": True,
             "token": token,
             "host": host,
-            "url": f"http://{host}:{config.API_PORT}/?token={token}",
+            # Остальные адреса машины — чтобы пользователь мог выбрать сам, если
+            # угадали неверно. Одного адреса мало: на машине с VPN их несколько,
+            # и какой из них видит телефон, приложение знать не может.
+            "candidates": candidates,
+            "restart_required": not listening_outside,
+            "url": ("" if not listening_outside
+                    else f"http://{host}:{config.API_PORT}/?token={token}"),
         }
 
     def _apply_game_ducking(self) -> None:
