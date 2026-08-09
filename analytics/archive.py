@@ -67,29 +67,40 @@ def load_game_session(path: str | Path) -> dict | None:
     return _load(Path(path))
 
 
-def list_game_sessions() -> list[dict]:
+def iter_game_sessions():
+    """Весь архив заездов целиком, новые первыми: пары (путь, документ).
+
+    Существует ради потребителей, которым нужен не только заголовок сессии.
+    Раньше они брали `list_game_sessions()` — а та уже читает и разбирает КАЖДЫЙ
+    файл — и следом звали `load_game_session()` на подходящие, то есть
+    разбирали архив ДВАЖДЫ. Архив при этом ничем не чистится и растёт с каждой
+    гонкой.
+
+    Битый файл пропускается с предупреждением, а не роняет перебор: один
+    испорченный заезд не должен лишать пилота всей истории."""
     if not _GAME_SESSIONS.exists():
-        return []
-    files = sorted(_GAME_SESSIONS.glob("*.json"), reverse=True)
-    result = []
-    for f in files:
+        return
+    for f in sorted(_GAME_SESSIONS.glob("*.json"), reverse=True):
         try:
             d = _load(f)
-            if d is None:
-                continue
         except (OSError, json.JSONDecodeError):
             _log.warning("Skipping corrupt or unreadable session file: %s", f)
             continue
-        result.append({
-            "path": str(f),
-            "track_name": d.get("track_name"),
-            "track_id": d.get("track_id"),
-            "timestamp": d.get("timestamp"),
-            "final_position": d.get("final_position"),
-            "game_year": d.get("game_year"),
-            "session_type": _normalize_session_type(d.get("session_type")),
-        })
-    return result
+        if d is None:
+            continue
+        yield f, d
+
+
+def list_game_sessions() -> list[dict]:
+    return [{
+        "path": str(f),
+        "track_name": d.get("track_name"),
+        "track_id": d.get("track_id"),
+        "timestamp": d.get("timestamp"),
+        "final_position": d.get("final_position"),
+        "game_year": d.get("game_year"),
+        "session_type": _normalize_session_type(d.get("session_type")),
+    } for f, d in iter_game_sessions()]
 
 
 def get_last_race() -> dict | None:
@@ -149,12 +160,18 @@ def load_f1(track_id: int, year: int, stype: str) -> dict | None:
 def save_compare(
     game_path: str | Path,
     track_id: int,
-    year: int,
-    stype: str,
     data: dict,
 ) -> Path:
+    """Сохранить результат сравнения заезда.
+
+    Параметры `year`/`stype` убраны 2026-08-08: они описывали сезон и тип
+    РЕАЛЬНОЙ сессии F1, с которой шло сравнение, а этого источника больше нет
+    (см. analytics/loader.py и NOTICE). Эталон теперь однозначен — свой лучший
+    заезд на той же трассе, — и различать файлы по сезону не нужно. Имя файла
+    из-за этого изменилось; старые *_compare.json читаются по-прежнему, их
+    формат внутри не менялся."""
     game_stem = Path(game_path).stem
-    path = _RACE_ARCHIVE / f"{game_stem}_{track_id}_{year}_{stype}_compare.json"
+    path = _RACE_ARCHIVE / f"{game_stem}_{track_id}_own_compare.json"
     _atomic_write(path, data)
     return path
 

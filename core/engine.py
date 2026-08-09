@@ -936,6 +936,7 @@ class F1Engine:
             llm_connected=bool(getattr(self.ai, "available", False)),
             mic_devices=mic_devices,
             hotkeys_ready=hotkeys_ready,
+            app_version=config.APP_VERSION,
         )
 
     def _screenshots_dir(self) -> Path:
@@ -1508,6 +1509,12 @@ class F1Engine:
         if not parsed:
             return
         self._session_history[parsed["car_idx"]] = parsed
+        # Эталон темпа живёт здесь же: быстрейший круг поля берётся из этой
+        # самой карты (core/f1_benchmark.py). Пересобираем на каждом пакете, а
+        # не раз за сессию — соперник может улучшиться в любой момент, и
+        # эталон обязан за этим следовать.
+        self.f1_benchmark.update_from_field(
+            self._session_history, self._player_car_index, self._driver_name_at)
 
     def _nearest_rival_idx(self) -> int | None:
         """car_idx соперника, с которым реально идёт борьба — тот из
@@ -2222,11 +2229,15 @@ class F1Engine:
                     # лучший круг текущей сессии, см. _note_lap_reference.
                     self.coach_tracer.reset()
                     self.coach_reference_gate.reset()
-                    self.coach_reference = load_career_reference(self._track_id)
+                    # Эталон гасим синхронно (старая трасса — чужая цель), а
+                    # читаем архив в фоне: см. _start_coach_reference_load.
+                    self.coach_reference = None
+                    self._start_coach_reference_load(new_tid)
                     self.f1_benchmark.reset()
                     self._f1_comparison_progress.reset()
                     self._f1_context_line = None
-                    self._start_f1_benchmark_load(new_tid)
+                    # Загружать эталон больше неоткуда и не нужно: он приходит
+                    # из session history по ходу сессии (_update_session_history).
                     self.career_memory.reset()
                     self._career_comparison_progress.reset()
                     self._career_context_line = None
@@ -3268,16 +3279,51 @@ class F1Engine:
             return {"ok": False, "error": "Не удалось воспроизвести"}
         return {"ok": True}
 
-    def _start_f1_benchmark_load(self, track_id: int) -> None:
-        """Фоновая загрузка эталона трассы из Jolpica (сеть — только тут, не из потока телеметрии)."""
+    def _driver_name_at(self, car_idx: int) -> str:
+        """Отображаемое имя пилота по индексу машины — уже обогащённое и в
+        кириллице (см. core/f1_metadata.py). Пустая строка вместо исключения:
+        эталон темпа не должен падать из-за того, что участник ещё не приехал
+        в race_state."""
+        if car_idx is None or car_idx >= 22:
+            return ""
+        try:
+            return (self.race_state.driver(car_idx) or {}).get("name") or ""
+        except Exception:  # noqa: BLE001
+            return ""
+
+    def _start_coach_reference_load(self, track_id: int) -> None:
+        """Фоновая загрузка карьерного эталона коуча — быстрейшего записанного
+        круга на этой трассе.
+
+        Тот же приём и ровно та же причина, что у `_start_career_memory_load`
+        ниже: `load_career_reference` перебирает ВЕСЬ архив заездов с диска, а
+        звали его синхронно из потока телеметрии — единственного из трёх
+        соседей-загрузчиков, кто остался на горячем пути. На сегодняшних 25
+        файлах это незаметно, но архив ничем не чистится, а в файл сессии теперь
+        пишется ещё и карта гонки (позиции 22 машин по кругам), так что пауза
+        растёт с каждой гонкой."""
         def _run() -> None:
             try:
-                # Реальный год игровой сессии — приоритет над статичным config.F1_SEASON,
-                # иначе эталон трассы никогда не подстраивается под Season Pack/новый регламент.
-                self.f1_benchmark.load(track_id, self._game_year or int(config.F1_SEASON))
+                reference = load_career_reference(track_id)
             except Exception as exc:  # noqa: BLE001
-                _log.warning("F1 benchmark load failed: %s", exc)
-        self._spawn_thread(_run, name="f1-benchmark-load", task=True)
+                _log.warning("Coach reference load failed: %s", exc)
+                return
+            if reference is None:
+                return
+            # Пока читали диск, трасса могла смениться — тогда этот эталон уже
+            # не про ту трассу, на которой пилот стоит сейчас.
+            if track_id != self._track_id:
+                return
+            # И пилот мог успеть проехать круг быстрее карьерного рекорда.
+            # Без этой проверки фоновая загрузка ОТКАТИЛА БЫ цель назад, к
+            # более медленному кругу — обратное тому, что обещает
+            # _note_lap_reference («карьерный эталон сессионным не перебивается»
+            # означает «держим быстрейший из известных», а не «последний
+            # пришедший»).
+            current = self.coach_reference
+            if current is None or reference.lap_time_ms < current.lap_time_ms:
+                self.coach_reference = reference
+        self._spawn_thread(_run, name="coach-reference-load", task=True)
 
     def _start_career_memory_load(self, track_id: int) -> None:
         """Фоновая загрузка личной истории трассы из архива (диск, не сеть — но
@@ -3302,22 +3348,17 @@ class F1Engine:
             "f1_time_ms": cmp["f1_time_ms"], "player_best_ms": cmp["player_best_ms"],
             "event": cmp["event"], "year": cmp["year"], "source": cmp["source"],
             "sectors": cmp["sectors"], "sectors_source": cmp["sectors_source"],
-            "sectors_blocked": cmp["sectors_blocked"],
             "interpretation": cmp["interpretation"],
-            "comparison_disclaimer": cmp["comparison_disclaimer"],
         })
-        # Кем управляет игрок в игре — если это тот же пилот, что и реальный эталон
-        # (например, игрок выбрал машину Ферстаппена), f1_benchmark не должен
-        # называть его в третьем лице (см. core/f1_benchmark._is_player_reference).
-        player_name = (self.race_state.driver(self._player_car_index)["name"]
-                       if self._player_car_index < 22 else None)
-        self._f1_context_line = self.f1_benchmark.context_line(cmp, player_name)
+        # Проверки «не сам ли игрок этот пилот» больше нет: машина игрока
+        # исключена из поля в update_from_field, эталон всегда чужой.
+        self._f1_context_line = self.f1_benchmark.context_line(cmp)
         self._refresh_analytics_context()
         milestones = self._f1_comparison_progress.observe(cmp)
         if milestones.lap_improved:
             self._commentary_events.publish({
                 "event_code": "F1_BENCH", "priority": "normal",
-                "phrase": self.f1_benchmark.pb_line(cmp, player_name),
+                "phrase": self.f1_benchmark.pb_line(cmp),
                 "color": "#34D399", "driver": ""})
         if milestones.sector_improved is not None:
             best_n = milestones.sector_improved
@@ -3329,7 +3370,7 @@ class F1Engine:
     def _update_career_memory(self) -> None:
         """Каждый завершённый круг: гэп к ЛИЧНОМУ рекорду трассы → HUD; на новом
         личном рекорде (полный круг ИЛИ сектор) — озвучка. Независимая надстройка
-        от _update_f1_benchmark — разные эталоны (свой архив vs реальный F1),
+        от _update_f1_benchmark — разные эталоны (свой архив vs поле этой сессии),
         разные события (CAREER_PB/CAREER_SECTOR_PB vs F1_BENCH/F1_SECTOR_BENCH)."""
         if not self.career_memory.ready:
             return

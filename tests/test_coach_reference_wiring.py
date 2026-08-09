@@ -148,3 +148,72 @@ def test_empty_lap_metrics_are_ignored(engine):
     engine.coach_reference = None
     engine._note_lap_reference({}, lap_time_ms=91000)
     assert engine.coach_reference is None
+
+
+# ── Фоновая загрузка карьерного эталона ──────────────────────────────────────
+# Чтение архива ушло с потока телеметрии в фон (перебирается ВЕСЬ архив заездов
+# с диска). Вместе с фоном появились две гонки, которых у синхронного вызова
+# быть не могло, — обе проверяются ниже.
+
+def _join_last_task(engine, timeout: float = 5.0) -> None:
+    engine._task_threads[-1].join(timeout=timeout)
+
+
+def test_background_load_installs_the_career_reference(engine, monkeypatch):
+    monkeypatch.setattr(eng_mod, "load_career_reference",
+                        lambda tid: ReferenceLap(88000, _lap(_flat(3400)), "career"))
+    engine._track_id = 7
+    engine.coach_reference = None
+
+    engine._start_coach_reference_load(7)
+    _join_last_task(engine)
+
+    assert engine.coach_reference is not None
+    assert engine.coach_reference.lap_time_ms == 88000
+
+
+def test_background_load_is_dropped_if_the_track_changed_meanwhile(engine, monkeypatch):
+    """Пилот успел выйти в меню и выбрать другую трассу, пока читался диск.
+    Эталон с прошлой трассы — не просто устаревший, а прямо вредный: коуч начнёт
+    сравнивать повороты Монцы с повортами Спа."""
+    monkeypatch.setattr(eng_mod, "load_career_reference",
+                        lambda tid: ReferenceLap(88000, _lap(_flat(3400)), "career"))
+    engine._track_id = 9          # трасса уже другая
+    engine.coach_reference = None
+
+    engine._start_coach_reference_load(7)
+    _join_last_task(engine)
+
+    assert engine.coach_reference is None
+
+
+def test_background_load_does_not_roll_the_target_back(engine, monkeypatch):
+    """Пилот проехал круг быстрее карьерного рекорда, пока читался диск.
+    Поставить карьерный эталон поверх — откатить цель НАЗАД, к более медленному
+    кругу; `_note_lap_reference` обещает обратное."""
+    monkeypatch.setattr(eng_mod, "load_career_reference",
+                        lambda tid: ReferenceLap(95000, _lap(_flat(4200)), "career"))
+    engine._track_id = 7
+    engine._note_lap_reference(_lap(_flat(3600)), lap_time_ms=90000)
+
+    engine._start_coach_reference_load(7)
+    _join_last_task(engine)
+
+    assert engine.coach_reference.lap_time_ms == 90000
+    assert engine.coach_reference.source == "session"
+
+
+def test_background_load_failure_leaves_the_coach_without_a_reference(engine, monkeypatch):
+    """Битый архив не должен ронять поток и не должен оставлять мусор: коуч без
+    эталона просто ждёт лучший круг сессии."""
+    def _boom(_tid):
+        raise OSError("archive unreadable")
+
+    monkeypatch.setattr(eng_mod, "load_career_reference", _boom)
+    engine._track_id = 7
+    engine.coach_reference = None
+
+    engine._start_coach_reference_load(7)
+    _join_last_task(engine)
+
+    assert engine.coach_reference is None

@@ -44,12 +44,11 @@ def parse_corners(raw: dict | None) -> dict[int, CornerMetrics]:
 
 def load_career_reference(track_id: int) -> ReferenceLap | None:
     """Самый быстрый круг на трассе среди всех сессий с записанным эталоном."""
+    # iter_game_sessions, а не list_game_sessions + load_game_session: вторая
+    # пара разбирала весь архив ДВАЖДЫ (список уже читает каждый файл целиком).
     best: ReferenceLap | None = None
-    for summary in archive.list_game_sessions():
-        if summary.get("track_id") != track_id:
-            continue
-        data = archive.load_game_session(summary["path"])
-        if not data:
+    for _path, data in archive.iter_game_sessions():
+        if data.get("track_id") != track_id:
             continue
         raw = data.get("reference_lap") or {}
         lap_ms = raw.get("lap_time_ms") or 0

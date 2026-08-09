@@ -13,12 +13,14 @@ def _session(track_id: int, lap_ms: int, corners: dict) -> dict:
 
 def _patch(monkeypatch, sessions: list[dict]):
     """Архив подменяется целиком: живой каталог game_sessions/ тесты трогать не
-    должны."""
-    summaries = [{"path": str(i), "track_id": s["track_id"]}
-                 for i, s in enumerate(sessions)]
-    monkeypatch.setattr(store.archive, "list_game_sessions", lambda: summaries)
-    monkeypatch.setattr(store.archive, "load_game_session",
-                        lambda path: sessions[int(path)])
+    должны.
+
+    Подменяется `iter_game_sessions` — единственный проход по архиву, на который
+    перешёл загрузчик. Раньше здесь стояли `list_game_sessions` +
+    `load_game_session`, и это ровно отражало то, что архив разбирался дважды."""
+    monkeypatch.setattr(
+        store.archive, "iter_game_sessions",
+        lambda: iter([(f"{i}.json", s) for i, s in enumerate(sessions)]))
 
 
 def test_returns_fastest_lap_for_the_track(monkeypatch):
@@ -47,6 +49,22 @@ def test_json_string_keys_become_int_corner_ids(monkeypatch):
 def test_returns_none_when_track_never_visited(monkeypatch):
     _patch(monkeypatch, [_session(2, 80000, {"3": _CORNER})])
     assert store.load_career_reference(track_id=1) is None
+
+
+def test_the_archive_is_parsed_only_once(monkeypatch):
+    """Регрессия на причину правки, а не на её форму.
+
+    Перебор архива идёт по документам, которые уже разобраны, и второй заход за
+    тем же файлом означал бы, что двойное чтение вернулось. Архив ничем не
+    чистится, поэтому цена этого растёт с каждой гонкой."""
+    _patch(monkeypatch, [_session(1, 91000, {"3": _CORNER})])
+
+    def _forbidden(_path):
+        raise AssertionError("архив разбирается второй раз")
+
+    monkeypatch.setattr(store.archive, "load_game_session", _forbidden)
+
+    assert store.load_career_reference(track_id=1).lap_time_ms == 91000
 
 
 def test_sessions_without_reference_lap_are_skipped(monkeypatch):
