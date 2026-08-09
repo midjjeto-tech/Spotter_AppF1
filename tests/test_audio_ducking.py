@@ -135,6 +135,43 @@ def test_session_failure_on_restore_disables_ducking():
     assert game.volume == pytest.approx(before)
 
 
+def test_one_dead_session_does_not_strand_the_others():
+    """Главный инвариант при частичном отказе.
+
+    Пропуск в покрытии, найденный предрелизным ревью: тест на ОДНУ умирающую
+    сессию был, тест на ДВЕ живые был, а на «одна упала, вторая обязана
+    вернуться» — нет. `try` стоял вокруг всего цикла, поэтому вторая сессия
+    оставалась на приглушённой громкости, а следом `disabled = True` запрещал
+    любой новый заход: вернуть её было уже некому. Пользователь получал тихую
+    игру навсегда и шёл искать причину в настройках игры."""
+    dying = _DyingSession("F1_25.exe", 1.0, die_after=1)   # переживёт только duck
+    alive = _Session("F1_25.exe", 1.0)
+    d = GameDucker(backend=_Backend(dying, alive), level=0.4)
+
+    d.set_busy(True)
+    assert (dying.volume, alive.volume) == (pytest.approx(0.4), pytest.approx(0.4))
+
+    d.set_busy(False)
+
+    assert alive.volume == pytest.approx(1.0), "живая сессия осталась приглушённой"
+    assert d.disabled is True   # отказ всё ещё выключает фичу целиком
+
+
+def test_a_dead_session_first_in_the_list_does_not_block_the_rest():
+    """Порядок не должен решать. Тот же случай, но падающая сессия идёт ВТОРОЙ —
+    иначе тест выше проходил бы и на реализации, которая просто ловит исключение
+    после последнего элемента."""
+    alive = _Session("F1_25.exe", 1.0)
+    dying = _DyingSession("F1_25.exe", 1.0, die_after=1)
+    d = GameDucker(backend=_Backend(alive, dying), level=0.4)
+
+    d.set_busy(True)
+    d.set_busy(False)
+
+    assert alive.volume == pytest.approx(1.0)
+    assert d.disabled is True
+
+
 def test_mixer_enumeration_failure_disables_ducking():
     d = GameDucker(backend=_Backend(_Session("F1_25.exe", 1.0), fail_after=0),
                    level=0.4)

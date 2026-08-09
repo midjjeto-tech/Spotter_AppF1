@@ -94,8 +94,14 @@ class GameDucker:
         if not self._ducked:
             return
         ducked, self._ducked = self._ducked, []
-        try:
-            for session, original in ducked:
+        failed = False
+        for session, original in ducked:
+            # try ВОКРУГ ОДНОЙ сессии, а не вокруг всего цикла. Раньше падение
+            # на первой бросало все остальные приглушёнными, а следом
+            # `disabled = True` запрещал любой новый заход — вернуть их было уже
+            # некому, и игра оставалась тихой навсегда. Ровно то, что этот
+            # модуль обязан не допускать; см. `_fail`, где приём тот же.
+            try:
                 # Если пользователь сам подвинул ползунок, пока инженер говорил,
                 # возвращать своё значение поверх его выбора значит спорить с
                 # ним. Сверяем с тем, что оставили мы.
@@ -103,8 +109,13 @@ class GameDucker:
                 if abs(float(session.volume) - expected) > 1e-3:
                     continue
                 session.volume = original
-        except Exception:  # noqa: BLE001
-            _log.warning("ducking: не удалось вернуть громкость", exc_info=True)
+            except Exception:  # noqa: BLE001
+                failed = True
+                _log.warning("ducking: не удалось вернуть громкость сессии %r",
+                             getattr(session, "process_name", "?"), exc_info=True)
+        # Отключаемся ПОСЛЕ прохода по всем: отказ одной сессии — повод больше не
+        # трогать звук, но не повод бросить остальные приглушёнными.
+        if failed:
             self.disabled = True
 
     def _fail(self) -> None:
