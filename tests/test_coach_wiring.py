@@ -172,3 +172,35 @@ def test_coach_tick_survives_missing_track_data(engine, monkeypatch):
 def test_empty_motion_ex_payload_is_ignored(engine):
     engine._coach_tick({})
     assert engine.coach_log.map_rows() == []
+
+
+# ── Подсказка обязана называть место ─────────────────────────────────────────
+
+def test_advice_carries_the_corner_number_into_the_phrase(engine, monkeypatch):
+    """Без места пилот идёт искать ошибку по всему кругу. Номер поворота уходит
+    в банк отдельным полем — проверяем именно то, что уехало в рендер, а не то,
+    что лежит в черновике для UI."""
+    engine.settings["driving_coach_enabled"] = True
+    seen = {}
+    monkeypatch.setattr(engine._commentary_events, "publish", lambda d: None)
+    monkeypatch.setattr(
+        engine, "_render_engineer_phrase",
+        lambda draft, code, fields=None, *a, **kw: (seen.update(
+            code=code, fields=fields), "фраза")[1])
+
+    engine._publish_coach_advice(_mistake(lap=5, corner_id=7))
+
+    assert seen["code"] == "coach.lockup_front_left"
+    assert seen["fields"] == {"corner_no": "седьмом"}
+
+
+def test_a_mistake_outside_any_corner_stays_silent(engine, monkeypatch):
+    """Срыв на прямой — не привычка в повороте, и назвать место нечем. В эфир
+    он не идёт, но в карте дебрифа остаётся (её пишет corner_log, не этот путь)."""
+    engine.settings["driving_coach_enabled"] = True
+    drafts, codes = _capture(engine, monkeypatch)
+
+    engine._publish_coach_advice(_mistake(lap=5, corner_id=None))
+
+    assert drafts == []
+    assert codes == []

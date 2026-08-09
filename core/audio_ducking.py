@@ -42,13 +42,19 @@ class GameDucker:
     `set_busy` зовётся только из воркера очереди TTS."""
 
     def __init__(self, backend=None, level: float = DEFAULT_LEVEL,
-                 process_names: tuple[str, ...] = DEFAULT_PROCESS_NAMES) -> None:
+                 process_names: tuple[str, ...] = DEFAULT_PROCESS_NAMES,
+                 field=None) -> None:
         self._backend = backend
         self._level = max(0.0, min(1.0, level))
         self._names = tuple(n.lower() for n in process_names)
         #: сессия -> громкость, которую мы у неё застали
         self._ducked: list[tuple[object, float]] = []
         self.disabled = False
+        #: Полевой журнал (core/field_log.py) или None. Приглушение — фича, у
+        #: которой отказ выглядит как «ничего не произошло»: игра просто не
+        #: становится тише. Без записи, КАКИЕ сессии микшера нашлись, отличить
+        #: «не нашли процесс игры» от «нашли, но не сработало» невозможно.
+        self._field = field
 
     @property
     def active(self) -> bool:
@@ -79,8 +85,17 @@ class GameDucker:
             # серия реплик уводит игру в ноль.
             return
         try:
-            targets = [s for s in self._sessions()
+            sessions = self._sessions()
+            targets = [s for s in sessions
                        if str(getattr(s, "process_name", "")).lower() in self._names]
+            if self._field is not None:
+                # Список ВСЕХ процессов микшера, а не только совпавших: если игра
+                # не приглушилась, первый вопрос — под каким именем она вообще
+                # видна системе (F1 меняет имя файла каждый сезон).
+                self._field.record(
+                    "duck", matched=[getattr(s, "process_name", "?") for s in targets],
+                    all_sessions=[getattr(s, "process_name", "?") for s in sessions],
+                    looking_for=list(self._names), level=self._level)
             for session in targets:
                 original = float(session.volume)
                 self._ducked.append((session, original))
@@ -88,6 +103,8 @@ class GameDucker:
         except Exception:  # noqa: BLE001
             _log.warning("ducking: микшер недоступен, приглушение отключено",
                          exc_info=True)
+            if self._field is not None:
+                self._field.record("duck_failed", stage="enumerate_or_set")
             self._fail()
 
     def _restore(self) -> None:

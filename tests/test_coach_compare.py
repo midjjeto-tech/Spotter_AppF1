@@ -129,6 +129,59 @@ def test_corner_absent_from_reference_is_skipped():
     assert compare_lap(cur, ref, {}) is None
 
 
+# ── Причина важнее следствия ─────────────────────────────────────────────────
+# `duration` отвечает на вопрос ГДЕ, три остальные метрики — на вопрос ЧТО
+# ДЕЛАТЬ. Пока все четыре ранжировались вместе, коуч на реальном раскладе
+# говорил «этот поворот стоит тебе времени», ХОТЯ ЗНАЛ, что пилот тормозит рано.
+
+def test_the_cause_is_named_instead_of_the_lost_time():
+    """Пилот тормозит на 25 м раньше в седьмом и теряет там же 400 мс сверх
+    общего отставания. По отношению к порогам `duration` выигрывала (2.7 против
+    2.1), и подсказка выходила бесполезной: «теряешь время» пилот и сам
+    чувствует, а вот «тормоз можно оттянуть» — это указание."""
+    ref = _lap(_flat(8, 4000))
+    spec = _flat(8, 4300)
+    spec[7] = (700.0 - 25.0, 120.0, 740.0, 4700)
+    cur = _lap(spec)
+
+    advice = compare_lap(cur, ref, {})
+
+    assert advice is not None
+    assert advice.corner_id == 7
+    assert advice.metric == "brake"
+
+
+def test_lost_time_is_still_reported_when_no_cause_explains_it():
+    """Обратная сторона: если ни одна причинная метрика не вышла за свой порог,
+    молчать нельзя — «здесь уходит основное время» остаётся честным ответом
+    последней надежды."""
+    ref = _lap(_flat(8, 4000))
+    spec = _flat(8, 4000)
+    spec[5] = (500.0, 120.0, 540.0, 4800)   # только длительность, вводы как в эталоне
+    cur = _lap(spec)
+
+    advice = compare_lap(cur, ref, {})
+
+    assert advice is not None
+    assert advice.corner_id == 5
+    assert advice.metric == "duration"
+
+
+def test_a_weak_cause_still_beats_the_symptom():
+    """Причина сразу за своим порогом обыгрывает следствие далеко за своим — и
+    это осознанный размен: слабое, но применимое указание полезнее сильной
+    констатации. Если живой заезд покажет, что причины срабатывают слишком
+    охотно, поднимать надо ИХ пороги, а не возвращать соревнование."""
+    ref = _lap(_flat(8, 4000))
+    spec = _flat(8, 4000)
+    spec[2] = (200.0 - 13.0, 120.0, 240.0, 5000)   # 13 м при пороге 12
+    cur = _lap(spec)
+
+    advice = compare_lap(cur, ref, {})
+
+    assert advice.metric == "brake"
+
+
 def test_deltas_table_covers_every_common_corner():
     ref = _lap(_flat(8, 4000))
     cur = _lap(_flat(8, 4200))

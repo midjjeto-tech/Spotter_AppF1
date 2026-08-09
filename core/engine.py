@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import os
 import queue
+import sys
 import threading
 import time
 import uuid
@@ -149,6 +150,8 @@ from core.racefeed.engine import RaceFeedEngine
 from core.track_ai.loader import load_track
 from core.track_ai.track_manager import TrackManager
 from core.coach_ai.corner_log import CornerLog
+from core import field_log
+from core.coach_ai import slip as slip_mod
 from core.coach_ai.slip import SlipDetector
 from core.coach_ai.compare import compare_lap, corner_deltas
 from core.coach_ai.reference import LapTracer
@@ -170,6 +173,7 @@ from core.radio.message import (
     STATE_COMPLETED, STATE_PLAYING, STATE_SYNTHESIZING, RadioCancelReason,
     RadioMessage, build_message as build_radio_message,
 )
+from core.radio.corner_words import ordinal_prepositional
 from core.radio import resolver as radio_resolver
 from core.radio.session import RadioSession
 from core.radio.plumbing import attach as radio_plumbing
@@ -285,6 +289,12 @@ class F1Engine:
     def __init__(self, settings: dict | None = None):
         self._engine_lock = threading.RLock()
         self.settings = settings or {}
+        # Полевой журнал (core/field_log.py) — СРАЗУ после настроек и до всего
+        # остального: им пользуются подсистемы, которые поднимаются прямо в
+        # конструкторе (приглушение звука), и создать его позже значит получить
+        # AttributeError на ровном месте. Выключен, пока не включён
+        # SPOTTER_DIAG=1 или "field_diagnostics" в настройках.
+        self._field = field_log.create(self.settings)
         # Источник выбирается один раз; source-specific transport и decoding
         # скрыты за deep telemetry adapter.
         self._telemetry_source = self.settings.get("telemetry_source", "f1")
@@ -652,7 +662,7 @@ class F1Engine:
             return
 
         if current is None:
-            self.voice.game_ducker = GameDucker(level=level)
+            self.voice.game_ducker = GameDucker(level=level, field=self._field)
         else:
             current.set_level(level)
 
@@ -1734,6 +1744,8 @@ class F1Engine:
             "speed_kmh": self._player_speed_kmh,
             "surface": self._player_surface,
         }
+        self._field_observe_coach_frame(frame)
+
         now = time.time()
         for mistake in self.coach_slip.tick(
             frame,
@@ -1744,6 +1756,48 @@ class F1Engine:
             phase=track_ctx.phase if track_ctx else "straight",
         ):
             self._emit_coach_advice(mistake, now=now)
+
+    def _field_observe_coach_frame(self, frame: dict) -> None:
+        """Сырые сигналы коуча в полевой журнал — то, по чему КАЛИБРУЮТСЯ пороги.
+
+        Пороги `core/coach_ai/slip.py` не сверялись с живой телеметрией ни разу.
+        Если в заезде коуч промолчит, событийный лог не скажет НИЧЕГО: там просто
+        не будет строк. А по распределению видно, на сколько именно сигнал не
+        дотянул до порога — и надо ли двигать порог или сигнал вообще не тот.
+
+        Пороги передаются те же самые, из модуля детектора: разойтись они не
+        могут по построению."""
+        if not self._field.enabled:
+            return
+        try:
+            ratio = frame.get("slip_ratio") or {}
+            angle = frame.get("slip_angle") or {}
+            brake = float(frame.get("brake_pct") or 0.0)
+            throttle = float(frame.get("throttle_pct") or 0.0)
+            observe = self._field.observe
+
+            # Блокировка: интересен минимум slip_ratio ИМЕННО под тормозом —
+            # вне торможения отрицательный slip ничего не значит.
+            if brake >= slip_mod.LOCKUP_MIN_BRAKE_PCT:
+                for wheel in ("fl", "fr"):
+                    observe(f"lockup.slip_{wheel}", ratio.get(wheel, 0.0),
+                            (slip_mod.LOCKUP_SLIP,))
+            if throttle >= slip_mod.WHEELSPIN_MIN_THROTTLE_PCT:
+                for wheel in ("rl", "rr"):
+                    observe(f"wheelspin.slip_{wheel}", ratio.get(wheel, 0.0),
+                            (slip_mod.WHEELSPIN_SLIP,))
+            front = max((abs(angle.get(w, 0.0)) for w in ("fl", "fr")), default=0.0)
+            rear = max((abs(angle.get(w, 0.0)) for w in ("rl", "rr")), default=0.0)
+            observe("slip_angle.front", front, (slip_mod.UNDERSTEER_SLIP_ANGLE,))
+            observe("slip_angle.rear", rear, (slip_mod.OVERSTEER_SLIP_ANGLE,))
+            observe("input.steer", abs(float(frame.get("steer") or 0.0)),
+                    (slip_mod.UNDERSTEER_MIN_STEER,))
+            observe("input.yaw_rate", abs(float(frame.get("yaw_rate") or 0.0)))
+            observe("input.brake_pct", brake)
+            observe("input.throttle_pct", throttle)
+            observe("input.speed_kmh", float(frame.get("speed_kmh") or 0.0))
+        except Exception:  # noqa: BLE001 — диагностика не имеет права ронять тик
+            pass
 
     def _corner_names(self) -> dict[int, str]:
         if self._track_manager is None:
@@ -1775,15 +1829,38 @@ class F1Engine:
         self._coach_last_deltas = corner_deltas(metrics, reference.corners, names)
 
         advice = compare_lap(metrics, reference.corners, names)
+        # Полный расклад круга, а не только победитель: если коуч промолчал, надо
+        # видеть, какое отклонение было САМЫМ БОЛЬШИМ и насколько оно не дотянуло
+        # до порога. Иначе «порог завышен» и «сигнала нет» неразличимы.
+        self._field.record(
+            "coach_reference_lap", lap=lap,
+            reference_ms=reference.lap_time_ms, reference_source=reference.source,
+            corners_compared=len(set(metrics) & set(reference.corners)),
+            deltas=self._coach_last_deltas,
+            advice=None if advice is None else {
+                "corner_id": advice.corner_id, "metric": advice.metric,
+                "raw": advice.raw, "badness": advice.badness},
+        )
         if advice is None:
             return
         if not self.coach_reference_gate.observe(
                 (advice.metric, advice.corner_id), lap):
+            self._field.record("coach_silent", why="reference_repeat_rule",
+                               lap=lap, metric=advice.metric,
+                               corner_id=advice.corner_id)
             return
         if not self._get_setting("driving_coach_enabled", False):
+            self._field.record("coach_silent", why="coach_disabled_in_settings",
+                               lap=lap, metric=advice.metric)
             return
         code = _COACH_REFERENCE_CODE.get(advice.metric)
         if code is None:
+            return
+        # Здесь место критичнее, чем в фазе 1: сравнение считается на пересечении
+        # линии старт/финиш, и прежние «здесь» и «в этом повороте» звучали на
+        # прямой, указывая в никуда — поворот мог остаться почти круг назад.
+        corner_no = ordinal_prepositional(advice.corner_id)
+        if corner_no is None:
             return
         draft = {
             "event_code": "COACH_REFERENCE",
@@ -1793,7 +1870,8 @@ class F1Engine:
             "corner": advice.corner_name,
             "corner_id": advice.corner_id,
         }
-        draft["phrase"] = self._render_engineer_phrase(draft, code)
+        draft["phrase"] = self._render_engineer_phrase(
+            draft, code, {"corner_no": corner_no})
         if draft["phrase"]:
             self._commentary_events.publish(draft)
 
@@ -1845,9 +1923,20 @@ class F1Engine:
         """Записать ошибку в карту сессии и, если она повторяется, озвучить."""
         now = time.time() if now is None else now
         repeat = self.coach_log.add(mistake)
+        # Каждая обнаруженная ошибка попадает в журнал с ПРИЧИНОЙ молчания, а не
+        # только та, что дошла до эфира: «детектор сработал, но правило повтора
+        # не пустило» и «детектор вообще не сработал» — разные диагнозы с
+        # разными выводами, а по эфиру они неотличимы.
+        self._field.record(
+            "coach_mistake", mistake_kind=mistake.kind, wheel=mistake.wheel,
+            corner_id=mistake.corner_id, phase=mistake.phase, lap=mistake.lap,
+            peak=mistake.peak, duration_s=mistake.duration_s,
+            speak="pending" if repeat is not None else "gated_by_repeat_rule")
         if repeat is None:
             return
         if not self._get_setting("driving_coach_enabled", False):
+            self._field.record("coach_silent", why="coach_disabled_in_settings",
+                               mistake_kind=mistake.kind, lap=mistake.lap)
             return
         if (
             repeat.kind == "offtrack"
@@ -1856,6 +1945,8 @@ class F1Engine:
         ):
             # Тот же инцидент уже объявлен как трек-лимит: штраф важнее совета,
             # и второй раз про то же самое мы молчим.
+            self._field.record("coach_silent", why="track_limits_just_announced",
+                               mistake_kind=mistake.kind, lap=mistake.lap)
             return
         self._publish_coach_advice(repeat)
 
@@ -1869,6 +1960,15 @@ class F1Engine:
         code = _COACH_PHRASE_CODE.get((mistake.kind, mistake.wheel))
         if code is None:
             return
+        # Подсказка обязана называть МЕСТО: без него пилот идёт искать ошибку по
+        # всему кругу, а инженер так не говорит. Срыв вне поворота (на прямой) в
+        # эфир поэтому не идёт — он и не привычка в повороте; его место в карте
+        # дебрифа, куда corner_log записал его в любом случае.
+        corner_no = ordinal_prepositional(mistake.corner_id)
+        if corner_no is None:
+            self._field.record("coach_silent", why="no_corner_to_name",
+                               mistake_kind=mistake.kind, lap=mistake.lap)
+            return
         draft = {
             "event_code": "COACH_ADVICE",
             "priority": "normal",
@@ -1877,7 +1977,8 @@ class F1Engine:
             "corner": mistake.corner_name,
             "corner_id": mistake.corner_id,
         }
-        draft["phrase"] = self._render_engineer_phrase(draft, code)
+        draft["phrase"] = self._render_engineer_phrase(
+            draft, code, {"corner_no": corner_no})
         if draft["phrase"]:
             self._commentary_events.publish(draft)
 
@@ -2095,6 +2196,36 @@ class F1Engine:
                 return
             self._started = True
 
+        # Снимок окружения первой строкой журнала. Разбирая лог через неделю,
+        # невозможно вспомнить версию, настройки и был ли включён коуч — а
+        # половина вопросов «почему не сработало» закрывается именно этим.
+        self._field.start(
+            app_version=config.APP_VERSION,
+            frozen=bool(getattr(sys, "frozen", False)),
+            telemetry_source=self._get_setting("telemetry_source", "f1"),
+            udp=f"{config.UDP_IP}:{config.UDP_PORT}",
+            llm_provider=config.LLM_PROVIDER,
+            driving_coach_enabled=self._get_setting("driving_coach_enabled", False),
+            game_ducking_enabled=self._get_setting("game_ducking_enabled", False),
+            game_ducking_level=self._get_setting("game_ducking_level", 35),
+            remote_access_enabled=self._get_setting("remote_access_enabled", False),
+            radio_style=self._get_setting("radio_style", config.RADIO_STYLE_DEFAULT),
+            persona=self._get_setting("persona", config.PERSONA),
+            # Пороги коуча уезжают в лог ЦЕЛИКОМ: калибровать их по чужому
+            # заезду можно только зная, против каких чисел он снят.
+            coach_thresholds={
+                "lockup_slip": slip_mod.LOCKUP_SLIP,
+                "lockup_min_brake_pct": slip_mod.LOCKUP_MIN_BRAKE_PCT,
+                "wheelspin_slip": slip_mod.WHEELSPIN_SLIP,
+                "wheelspin_min_throttle_pct": slip_mod.WHEELSPIN_MIN_THROTTLE_PCT,
+                "understeer_slip_angle": slip_mod.UNDERSTEER_SLIP_ANGLE,
+                "understeer_min_steer": slip_mod.UNDERSTEER_MIN_STEER,
+                "understeer_max_yaw_rate": slip_mod.UNDERSTEER_MAX_YAW_RATE,
+                "oversteer_slip_angle": slip_mod.OVERSTEER_SLIP_ANGLE,
+                "min_event_duration_s": slip_mod.MIN_EVENT_DURATION_S,
+            },
+        )
+
         # Optional modules degrade independently: a missing voice/model/network
         # must not prevent the local UI from starting.
         for label, starter in (
@@ -2124,6 +2255,13 @@ class F1Engine:
                 return
             self._stopped = True
             self._stop_event.set()
+
+        # Журнал закрывается ПЕРВЫМ: он должен успеть дописать последнюю сводку
+        # и session_end до того, как остальная остановка что-нибудь уронит.
+        try:
+            self._field.stop()
+        except Exception:  # noqa: BLE001
+            pass
 
         deadline = time.monotonic() + max(0.0, timeout)
         telemetry = self._telemetry_instance
@@ -2426,6 +2564,11 @@ class F1Engine:
                         # Порядок важен: сначала кандидат в эталон, потом
                         # сравнение — иначе первый круг сессии сравнивался бы
                         # сам с собой и всегда давал бы нули.
+                        # Сводка сигналов — раз в круг, с привязкой к кругу:
+                        # чаще получится мусор, реже потеряется, на каком
+                        # круге пилот что делал.
+                        self._field.flush_stats(lap=self._prev_lap,
+                                                lap_time_ms=lms)
                         lap_metrics = self.coach_tracer.finish_lap()
                         self._note_lap_reference(lap_metrics, lms)
                         self._compare_lap_to_reference(lap_metrics, self._prev_lap)

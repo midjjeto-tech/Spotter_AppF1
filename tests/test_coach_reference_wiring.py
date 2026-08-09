@@ -150,6 +150,27 @@ def test_empty_lap_metrics_are_ignored(engine):
     assert engine.coach_reference is None
 
 
+def test_reference_advice_names_the_corner_it_is_about(engine, monkeypatch):
+    """Здесь место критичнее, чем в фазе 1: сравнение считается на пересечении
+    линии старт/финиш, поэтому прежние «здесь» и «в этом повороте» звучали на
+    прямой и указывали в никуда — поворот мог остаться почти круг назад."""
+    engine.settings["driving_coach_enabled"] = True
+    engine.coach_reference = ReferenceLap(90000, _lap(_flat(4000)), "career")
+    seen = {}
+    monkeypatch.setattr(engine._commentary_events, "publish", lambda d: None)
+    monkeypatch.setattr(
+        engine, "_render_engineer_phrase",
+        lambda draft, code, fields=None, *a, **kw: (seen.update(fields=fields),
+                                                    "фраза")[1])
+
+    metrics = _lap(_flat(4000))
+    metrics[4] = CornerMetrics(4, 400.0, 120.0, 440.0, 5200)
+    for lap in (1, 2, 3):
+        engine._compare_lap_to_reference(metrics, lap)
+
+    assert seen["fields"] == {"corner_no": "четвёртом"}
+
+
 # ── Фоновая загрузка карьерного эталона ──────────────────────────────────────
 # Чтение архива ушло с потока телеметрии в фон (перебирается ВЕСЬ архив заездов
 # с диска). Вместе с фоном появились две гонки, которых у синхронного вызова

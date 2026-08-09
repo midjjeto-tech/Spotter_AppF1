@@ -80,6 +80,11 @@ def test_non_safety_engineer_pools_have_session_scale_variety():
 #: заглавной, и открывать предложение им можно.
 _LOWERCASE_FIELDS = frozenset({
     "position", "gap", "gap_behind", "wear", "ers", "fuel", "laps", "minutes",
+    # «седьмом» у коуча — тоже строчная. Поле называется corner_no, а НЕ
+    # corner: в battle.* под именем corner ездит ИМЯ поворота («Tamburello 1»),
+    # с заглавной, и ему открывать предложение можно. Совпадение имён под
+    # разным смыслом этот же тест и поймал.
+    "corner_no",
 })
 
 _SENTENCE_START_TOKEN = re.compile(r"(?:^|[.!?]\s+)\{([^{}]+)\}")
@@ -689,11 +694,16 @@ def test_coach_reference_spec_is_never_critical(code):
 
 
 @pytest.mark.parametrize("code", _COACH_REF_CODES)
-def test_coach_reference_spec_needs_no_substitution(code):
+def test_coach_reference_spec_never_reads_out_a_magnitude(code):
     """Величину отклонения мы намеренно не зачитываем: «на двенадцать метров
-    раньше» пилот в повороте не применит, ему нужно направление. Значит и полей
-    для подстановки у этих спек быть не должно."""
+    раньше» пилот в повороте не применит, ему нужно направление.
+
+    Раньше этот тест требовал ОТСУТСТВИЯ полей вообще — и тем самым запрещал
+    заодно назвать МЕСТО. Это оказалось не мелочью: сравнение с эталоном
+    считается на пересечении линии старт/финиш, поэтому «здесь» и «в этом
+    повороте» звучали на прямой и указывали в никуда. Место теперь обязательно,
+    запрет на числа остался."""
     spec = phrases.spec_for(code)
-    assert not spec.required_fields
-    for variant in spec.variants:
-        assert "{" not in variant, f"{code}: {variant!r}"
+    assert spec.required_fields == frozenset({"corner_no"}), (
+        f"{code}: подсказка обязана называть поворот и ничего кроме")
+    assert not spec.volatile_fields, f"{code}: величине здесь не место"

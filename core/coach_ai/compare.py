@@ -36,6 +36,12 @@ _METRICS: dict[str, tuple[str, float, float]] = {
     "throttle":  ("throttle_point_m",  1.0,  15.0),   # м
 }
 
+#: ПРИЧИНЫ — то, что пилот может сделать иначе уже в следующем круге.
+_CAUSE_METRICS = ("brake", "min_speed", "throttle")
+#: СЛЕДСТВИЕ — «в этом повороте ты теряешь время». Само по себе не указание:
+#: пилот и так чувствует, что медленно, но не знает, что менять.
+_SYMPTOM_METRIC = "duration"
+
 
 def _raw_deltas(current: dict[int, CornerMetrics],
                 reference: dict[int, CornerMetrics],
@@ -59,13 +65,38 @@ def compare_lap(current: dict[int, CornerMetrics],
                 corner_names: dict[int, str]) -> CornerDelta | None:
     """Самое выраженное отклонение круга от эталона, либо None.
 
+    **Причина имеет приоритет над следствием, а не соревнуется с ним.** Раньше
+    все четыре метрики ранжировались вместе, и на реальном раскладе (пилот
+    тормозит на 25 м раньше в одном повороте) выигрывала `duration`: коуч
+    говорил «этот поворот стоит тебе времени», ХОТЯ ЗНАЛ, что причина —
+    раннее торможение. Тренер, который знает причину, обязан назвать её;
+    «теряешь время» — ответ последней надежды, когда объяснения нет.
+
+    Порог значимости у причины уже означает «это настоящее, применимое
+    отклонение», поэтому дополнительного веса ей не нужно. Пороги при этом НЕ
+    откалиброваны на живых данных — если после заезда окажется, что причины
+    срабатывают слишком охотно, поднимать надо их, а не возвращать
+    соревнование с `duration`."""
+    causal = _best_delta(current, reference, corner_names, _CAUSE_METRICS)
+    if causal is not None:
+        return causal
+    return _best_delta(current, reference, corner_names, (_SYMPTOM_METRIC,))
+
+
+def _best_delta(current: dict[int, CornerMetrics],
+                reference: dict[int, CornerMetrics],
+                corner_names: dict[int, str],
+                metrics: tuple[str, ...]) -> CornerDelta | None:
+    """Худшее отклонение среди указанных метрик.
+
     Метрики в разных единицах, поэтому ранжируются не по величине превышения, а
     по его отношению к собственному порогу значимости — иначе метры всегда
     обыгрывали бы километры в час."""
     best: CornerDelta | None = None
     best_ratio = 1.0     # ниже порога значимости не публикуем вовсе
 
-    for metric, (field, sign, threshold) in _METRICS.items():
+    for metric in metrics:
+        field, sign, threshold = _METRICS[metric]
         deltas = _raw_deltas(current, reference, field)
         if len(deltas) < MIN_COMPARABLE_CORNERS:
             continue
