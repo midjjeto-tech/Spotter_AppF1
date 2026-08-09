@@ -77,6 +77,7 @@ def collect(*, source_code: str, source_detail: str, connected: bool,
             voice_engine: str, voice_available: bool, yandex_healthy: bool,
             llm_provider: str, llm_connected: bool,
             mic_devices: int, hotkeys_ready: bool,
+            app_version: str = "",
             now: float | None = None) -> dict:
     """Снимок готовности. Все аргументы — уже добытые факты, без обращений вовне."""
     moment = time.time() if now is None else now
@@ -102,4 +103,7 @@ def collect(*, source_code: str, source_detail: str, connected: bool,
     # имеет права держать пользователя ради них.
     checks["ready"] = (checks["telemetry"]["status"] == "ok"
                        and checks["voice"]["status"] != "none")
+    # Версия — не проверка, а факт для поддержки, поэтому лежит рядом с
+    # проверками, а НЕ внутри них: попасть в `ready` она не должна.
+    checks["app_version"] = app_version
     return checks

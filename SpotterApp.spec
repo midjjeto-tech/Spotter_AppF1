@@ -100,11 +100,12 @@ hiddenimports = [
     'comtypes.client',
     'comtypes.gen',
     'comtypes.stream',
-    # analytics (lazy-imported — PyInstaller static analysis misses these)
-    'fastf1',
-    'fastf1.exceptions',
-    'fastf1.core',
-    'pandas',
+    # fastf1 и pandas убраны 2026-08-08. fastf1 удалён из проекта вместе с
+    # Real-F1 Benchmark (данные без коммерческого разрешения, см. NOTICE), а
+    # pandas тянулся ТОЛЬКО ради него через analytics/openf1_loader.py —
+    # после удаления его не импортирует ни один модуль (проверено grep'ом по
+    # core/, analytics/, web_server.py). Оставлять их в hiddenimports нельзя:
+    # на машине без fastf1 сборка упала бы на несуществующем пакете.
     'requests',
 ]
 
@@ -143,9 +144,9 @@ datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('soundfile')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 
-# pandas — fastf1 analytics
-tmp_ret = collect_all('pandas')
-datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
+# pandas отсюда убран 2026-08-08 вместе с fastf1 — см. комментарий в
+# hiddenimports выше. collect_all('pandas') тащил в сборку десятки мегабайт
+# ради пакета, который больше никто не импортирует.
 
 # gRPC — SpeechKit v3 Synthesizer (yandex_ai/client.py). Native extension
 # (_cygrpc) — collect_all alone has previously NOT been sufficient for native
@@ -166,7 +167,13 @@ a = Analysis(
     binaries=binaries,
     datas=datas,
     hiddenimports=hiddenimports,
-    hookspath=['hooks'],
+    # hookspath пуст намеренно: в hooks/ нет ни одного `hook-*.py`, только
+    # `rthook_piper.py` — а он RUNTIME-хук И ПРИНАДЛЕЖИТ ДРУГОЙ СБОРКЕ
+    # (PiperCLI.spec, там он резолвит espeak-ng-data внутри piper.exe). Не
+    # удалять файл, приняв его за наш мусор: без него сломается офлайн-голос.
+    # Прежний hookspath=['hooks'] ничего не подхватывал и лишь создавал
+    # впечатление, что подхватывает.
+    hookspath=[],
     hooksconfig={},
     # rthook_piper больше не нужен: espeak-ng-data живёт внутри piper.exe,
     # который собирается отдельно (PiperCLI.spec) и не делит с нами _MEIPASS.

@@ -55,6 +55,11 @@ def _show_startup_error(exc: Exception) -> None:
 
 def main() -> int:
     _setup_logging()
+    # Первой строкой каждого запуска: без неё по присланному логу невозможно
+    # сказать, какая сборка у пользователя, и разбор начинается с догадок.
+    logging.getLogger(__name__).info(
+        "Spotter App %s starting (frozen=%s)",
+        config.APP_VERSION, getattr(sys, "frozen", False))
     settings = _settings_store.load()
     runtime = AppRuntime(settings, port=API_PORT, base_dir=config.BASE_DIR)
     # IPC proxy only (UDP + subprocess handle) — the actual HUD webview lives

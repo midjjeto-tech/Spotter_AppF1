@@ -15,27 +15,31 @@ pycaw>=20240210
 piper-tts>=1.4.0
 onnxruntime>=1.20.0
 numpy>=1.24
-# pandas — жёсткая зависимость движка: core.engine -> analytics.loader ->
-# analytics.openf1_loader импортирует pandas на уровне модуля (без него
-# core.engine вообще не импортируется). fastf1 тянет свою pandas, но analytics
-# использует её напрямую, поэтому пин явный.
-pandas>=2.0
-# fastf1 — ленивый импорт в analytics/loader.py::_fastf1() (Real-F1 Benchmark).
-# Пин появился, когда из корня убрали вендорную копию Fast-F1-main/: она ничем
-# не импортировалась (сборка берёт пакет из site-packages через collect_all),
-# но создавала иллюзию, что зависимость «есть в проекте». В .venv её при этом
-# не было — бенчмарк молча деградировал в разработке и работал только в EXE,
-# собранном другим интерпретатором.
-fastf1>=3.4
+# pandas убран 2026-08-08. Он был жёсткой зависимостью движка ровно потому, что
+# core.engine -> analytics.loader -> analytics.openf1_loader импортировал его на
+# уровне модуля. openf1_loader удалён вместе с источником, и pandas не
+# импортирует больше ни один модуль проекта.
+# fastf1 удалён 2026-08-08 вместе с Real-F1 Benchmark: код пакета под MIT, но
+# данные приходят из неофициального источника Formula 1 без коммерческого
+# разрешения (см. NOTICE). Эталон темпа теперь берётся из телеметрии самой игры
+# (core/f1_benchmark.py), эталон разбора — из своего архива (analytics/loader.py).
 sounddevice>=0.4
 soundfile>=0.12
 
-# --- RAG (Retrieval-Augmented Generation) ---
-# sentence-transformers тянет torch (уже есть) + transformers + numpy (уже есть)
-# FAISS не нужен: numpy cosine search достаточен для базы ≤200 фактов
-sentence-transformers>=2.7
-# Для GPU-ускорения sentence-transformers:
-# torch --extra-index-url https://download.pytorch.org/whl/cu121
+# --- RAG (commentator/rag.py) — ЗАВИСИМОСТЬ УБРАНА 2026-08-09 ---
+# Было: sentence-transformers>=2.7 (тянет torch + transformers).
+#
+# В собранном приложении RAG не работал НИ РАЗУ и работать не мог: `torch` и
+# `transformers` стоят в excludes SpotterApp.spec, поэтому в EXE импорт всегда
+# падал и F1RAG молча уходил в disabled. То есть зависимость на несколько
+# гигабайт скачивал каждый, кто ставит из исходников, ради фичи, которая живёт
+# только в дереве разработки.
+#
+# Код и база (commentator/knowledge_base/f1_facts.json, 62 факта) оставлены:
+# они деградируют чисто (brain.py держит rag=None) и ничего не весят. Хотите
+# оживить фичу в релизе — не возвращайте sentence-transformers: под 62 факта
+# эмбеддинг-модель на ~470 МБ избыточна, дешевле переписать поиск на ключевые
+# слова, и тогда он поедет в EXE вообще без зависимостей.
 
 # --- Yandex Cloud (gRPC client for SpeechKit v3) ---
 yandexcloud>=0.398.0       # gRPC client for SpeechKit v3 (Synthesizer.UtteranceSynthesis)

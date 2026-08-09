@@ -31,8 +31,10 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # --- Runtime dependency gate (import names) ---
+# pandas выбыл 2026-08-08 вместе с fastf1: его импортировал только удалённый
+# analytics/openf1_loader.py (см. NOTICE и SpotterApp.spec).
 $deps = @("bottle","webview","win32gui","sounddevice","soundfile","piper",
-          "onnxruntime","numpy","psutil","aiohttp","pandas","grpc","yandexcloud",
+          "onnxruntime","numpy","psutil","aiohttp","grpc","yandexcloud",
           "pyttsx3","pycaw")
 $pipName = @{ webview = "pywebview"; win32gui = "pywin32"; piper = "piper-tts"; grpc = "grpcio" }
 $missing = @()
@@ -48,6 +50,32 @@ if ($missing.Count -gt 0) {
     Write-Host ("  " + $pyExe + " " + ($pyArgs -join " ") + " -m pip install " + ($pipPkgs -join " ")) -ForegroundColor Yellow
     exit 1
 }
+
+# --- Версия: config.py и установщик обязаны совпадать ---
+# Единственный источник правды - config.APP_VERSION, но Inno Setup питоновский
+# модуль прочитать не может, поэтому версия дублируется в SpotterApp.iss. Дубль
+# без проверки означает, что пользователь однажды назовёт версию из установщика,
+# а в логе будет стоять другая - и разбор начнётся с неверной сборки.
+$verPy = (& $pyExe @pyArgs -c "import sys; sys.path.insert(0, r'$PSScriptRoot'); import config; print(config.APP_VERSION)")
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "ERROR: не удалось прочитать config.APP_VERSION." -ForegroundColor Red
+    exit 1
+}
+$verPy = "$verPy".Trim()
+$issPath = Join-Path $PSScriptRoot "installer\SpotterApp.iss"
+$issHit = Select-String -Path $issPath -Pattern '^#define\s+AppVersion\s+"([^"]+)"'
+if (-not $issHit) {
+    Write-Host "ERROR: в $issPath не найден #define AppVersion." -ForegroundColor Red
+    exit 1
+}
+$verIss = $issHit.Matches[0].Groups[1].Value
+if ($verPy -ne $verIss) {
+    Write-Host "ERROR: версия разошлась." -ForegroundColor Red
+    Write-Host ("  config.py:       " + $verPy) -ForegroundColor Yellow
+    Write-Host ("  SpotterApp.iss:  " + $verIss) -ForegroundColor Yellow
+    exit 1
+}
+Write-Host ("Версия " + $verPy + ": config.py и установщик совпадают.") -ForegroundColor Green
 
 # --- Piper voices (offline fallback) must be present ---
 $piperDir = Join-Path $PSScriptRoot "models\piper"

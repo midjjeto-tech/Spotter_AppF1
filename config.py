@@ -24,6 +24,13 @@ PIPER_VOICES_DIR = os.path.join(PIPER_HOME, "voices")
 #: Голоса в дереве разработки (в дистрибутив не входят).
 PIPER_VOICES_DEV_DIR = os.path.join(BASE_DIR, "models", "piper")
 
+# Версия приложения — ЕДИНСТВЕННЫЙ источник правды. Уезжает в лог при старте, в
+# /api/diagnostics (поддержке нужно знать, какая сборка у пользователя) и
+# сверяется с AppVersion в installer/SpotterApp.iss гейтом build.ps1: Inno Setup
+# питоновский модуль прочитать не может, а разошедшиеся версии — это когда
+# пользователь называет одну, а в логе стоит другая.
+APP_VERSION = "0.1.0"
+
 # --- Телеметрия ---
 UDP_IP = "127.0.0.1"
 UDP_PORT = 20777
@@ -34,8 +41,9 @@ UDP_PORT = 20777
 API_PORT = 8765
 
 # --- LLM ---
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
-LLM_MODEL = "claude-haiku-4-5-20251001"
+# ANTHROPIC_API_KEY и LLM_MODEL убраны 2026-08-09: Anthropic заменён на
+# YandexGPT ещё в июне, SDK выкинут из зависимостей, и обе константы с тех пор
+# никем не читались — но выглядели как действующая настройка провайдера.
 
 # Провайдер «мозга» (генерация текста комментатора). Голос (TTS) от этого НЕ
 # зависит — он всегда Yandex SpeechKit (см. engine._start_yandex). "yandex" —
@@ -137,19 +145,16 @@ RADIO_ANALYTIC_CATEGORIES = frozenset({
     "secondary_analytics", "ambient", "tyres", "fuel", "ers",
 })
 
-# --- Метаданные F1 (Jolpica/Ergast API, как в Fast-F1) ---
-# Реальный календарный F1-сезон — управляет и TTL кэша Ergast (core/ergast_client.py:
-# "текущий сезон" = свежий кэш 1ч, иначе 30 дней архив), и дефолтным сезоном
-# Jolpica-обогащения резервных пилотов (core/f1_metadata.py). НЕ связан с Season Pack/
-# game_year напрямую — это просто "какой сейчас год по календарю", бампать раз в год.
+# --- Метаданные F1 ---
+# Реальный календарный F1-сезон: дефолтный год ростера в core/f1_metadata.py,
+# когда игра ещё не сообщила свой (game_year). НЕ связан с Season Pack напрямую —
+# это просто "какой сейчас год по календарю", бампать раз в год.
+#
+# Сетевых источников за этой константой больше нет: Jolpica/Ergast удалены
+# 2026-08-08 вместе с кэшем и TTL (некоммерческая лицензия, см. NOTICE).
+# Оставшиеся на диске папки ergast_cache/ и openf1_cache/ можно удалить руками —
+# приложение в них больше не заглядывает.
 F1_SEASON = "2026"
-
-# Дисковый кэш Jolpica (core/ergast_client.py). Имена/команды/национальности
-# пилотов кэшируются на диск, чтобы не дёргать API на каждый старт.
-ERGAST_CACHE_DIR = os.path.join(DATA_DIR, "ergast_cache")
-ERGAST_TTL_DAYS = 30                 # архивные сезоны меняться не будут
-ERGAST_TTL_CURRENT_SECONDS = 3600    # текущий сезон обновляем раз в час
-ERGAST_MIN_INTERVAL = 2.0            # rate-limit: мин. пауза между запросами (сек)
 ERGAST_MAX_RETRIES = 3               # попытки при сетевом сбое / 429 / 5xx
 ERGAST_TIMEOUT = 8.0                 # таймаут одного HTTP-запроса (сек)
 
@@ -196,11 +201,9 @@ YANDEX_STT_TOTAL_TIMEOUT = 5.0
 VOICE_QUESTION_MAX_SEC = 5.0    # максимальная длина записи вопроса push-to-talk
 MIC_TEST_SEC = 2.0              # длина тестовой записи микрофона (Settings → Voice)
 
-# --- OpenF1 (секторные эталоны реальных гонок, Real-F1 Benchmark — секторы) ---
-OPENF1_CACHE_DIR = os.path.join(DATA_DIR, "openf1_cache")
-OPENF1_TTL_DAYS = 3650          # практически бессрочно — завершённая гонка не меняется
-OPENF1_MIN_INTERVAL = 2.0
-OPENF1_MAX_RETRIES = 3
+# OpenF1 удалён 2026-08-08 вместе с его кэшем и лимитами: лицензия
+# CC BY-NC-SA 4.0 несовместима с продаваемой сборкой (см. NOTICE). Секторный
+# эталон теперь приходит из session history самой игры — core/f1_benchmark.py.
 OPENF1_TIMEOUT = 8.0
 
 # --- Sber GigaChat (альтернативный «мозг», активен при LLM_PROVIDER="gigachat") ---

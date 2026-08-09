@@ -157,3 +157,19 @@ def test_http_exposes_diagnostics(engine, tmp_path):
     payload = json.loads(route.call())
     assert payload["telemetry"]["udp_port"] == config.UDP_PORT
     assert set(payload) >= {"telemetry", "voice", "brain", "mic", "hotkeys", "ready"}
+
+
+def test_diagnostics_carry_the_app_version(engine):
+    """Поддержке нужна версия сборки, а не догадки по симптомам. Диагностика —
+    единственная ручка, которую визард и поддержка и так открывают."""
+    assert engine.get_diagnostics()["app_version"] == config.APP_VERSION
+
+
+def test_app_version_is_not_a_readiness_check(engine):
+    """Версия лежит РЯДОМ с проверками, а не среди них: строка версии не может
+    сделать приложение неготовым."""
+    diag = engine.get_diagnostics()
+
+    assert diag["ready"] is (diag["telemetry"]["status"] == "ok"
+                             and diag["voice"]["status"] != "none")
+    assert not isinstance(diag["app_version"], dict)
