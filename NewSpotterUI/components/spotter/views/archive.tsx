@@ -3,11 +3,9 @@
 import { useEffect, useState } from "react"
 import { PageHeader, Panel } from "../ui"
 import { Button } from "@/components/ui/button"
-import { getSessions, loadF1, type CompareResult, type SessionItem } from "@/lib/api"
+import { getSessions, compareOwn, type CompareResult, type SessionItem } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { Flag } from "lucide-react"
-
-const STYPE: Record<string, string> = { Гонка: "R", Квалификация: "Q", Спринт: "S" }
 
 // Фильтр списка сохранённых сессий по типу. Значения — ровно те, что отдаёт
 // analytics/archive.py::_SESSION_TYPE_NORMALIZE (race/qualifying/practice/sprint);
@@ -21,42 +19,30 @@ const TYPE_FILTERS: { id: TypeFilterId; label: string }[] = [
   { id: "practice", label: "Практика" },
 ]
 
-/** Ошибки /api/load_f1 (analytics/loader.py, analytics/openf1_loader.py,
- *  web_server.py) человеческим языком. `retry` отделяет «попробуйте позже» от
- *  «эта сессия не поддерживается в принципе» — раньше и то и другое приходило
- *  сырым кодом вида `no_data_for_session`. */
+/** Ошибки /api/compare_own (analytics/loader.py, web_server.py) человеческим
+ *  языком. `retry` отделяет «попробуйте позже» от «так не получится в
+ *  принципе» — раньше и то и другое приходило сырым кодом.
+ *
+ *  Коды источников реальной F1 (no_fastf1_data, openf1_live_session,
+ *  rate_limit и прочие) ушли вместе с самими источниками 2026-08-08: сети в
+ *  сравнении больше нет, а значит нет ни лимитов запросов, ни «гонка ещё
+ *  идёт». Осталась одна настоящая причина отказа — сравнивать не с чем. */
 const ERROR_TEXT: Record<string, { text: string; retry: boolean }> = {
-  no_fastf1_data: {
-    text: "Для этой трассы нет данных реального Гран-при — сопоставить не с чем.",
+  no_own_sessions_for_track: {
+    text: "На этой трассе записан только один заезд — сравнить пока не с чем. Проедьте ещё одну сессию здесь же.",
     retry: false,
   },
-  fastf1_not_installed: {
-    text: "Библиотека FastF1 не установлена — сравнение для сезонов до 2023 недоступно.",
+  unknown_track: {
+    text: "Трасса этого заезда не опознана — сопоставить не с чем.",
     retry: false,
-  },
-  no_data_for_session: {
-    text: "Такой сессии нет в данных выбранного года — проверьте год и тип сессии.",
-    retry: false,
-  },
-  openf1_live_session: {
-    text: "Гран-при ещё идёт или только что закончился — итоговые данные появятся позже.",
-    retry: true,
-  },
-  rate_limit: {
-    text: "Источник данных временно ограничил запросы — попробуйте через несколько минут.",
-    retry: true,
   },
 }
 
 function describeError(raw: string): { text: string; retry: boolean } {
   const known = ERROR_TEXT[raw]
   if (known) return known
-  // session_not_found: / load_error: / bad_request: — префиксные коды с хвостом
-  // исключения; показываем человеческую часть, хвост оставляем в title.
-  if (raw.startsWith("session_not_found"))
-    return { text: "Сессия не найдена в источнике данных — проверьте год и тип сессии.", retry: false }
-  if (raw.startsWith("load_error"))
-    return { text: "Не удалось загрузить данные Гран-при.", retry: true }
+  // bad_request: — префиксный код с хвостом исключения; показываем
+  // человеческую часть, хвост оставляем в title.
   if (raw.startsWith("bad_request"))
     return { text: "Некорректный запрос сравнения.", retry: false }
   return { text: "Не удалось выполнить сравнение.", retry: true }
@@ -73,16 +59,14 @@ function fmtMs(ms?: number | null): string {
 function fallbackInterpretation(gapMs?: number | null): string {
   if (gapMs == null) return "Разница времён недоступна."
   const value = `${(Math.abs(gapMs) / 1000).toFixed(3)} с`
-  if (gapMs < 0) return `Игровое время на ${value} меньше реального ориентира.`
-  if (gapMs > 0) return `Игровое время на ${value} больше реального ориентира.`
-  return "Игровое время совпало с реальным ориентиром."
+  if (gapMs < 0) return `Твоё время на ${value} меньше ориентира.`
+  if (gapMs > 0) return `Твоё время на ${value} больше ориентира.`
+  return "Твоё время совпало с ориентиром."
 }
 
 export function ArchiveView() {
   const [sessions, setSessions] = useState<SessionItem[]>([])
   const [selected, setSelected] = useState<string | null>(null)
-  const [year, setYear] = useState<"2025" | "2026">("2025")
-  const [stypeLabel, setStypeLabel] = useState("Гонка")
   const [result, setResult] = useState<CompareResult | null>(null)
   const [status, setStatus] = useState("")
   const [statusTitle, setStatusTitle] = useState("")
@@ -108,12 +92,13 @@ export function ArchiveView() {
       return
     }
     setLoading(true)
-    setStatus("Загрузка данных реального Гран-при… (~30с при первом запросе)")
+    // Сеть не задействована — эталон читается с диска, ждать нечего.
+    setStatus("Поиск вашего лучшего заезда на этой трассе…")
     setStatusTitle("")
     setStatusKind("busy")
     setResult(null)
     try {
-      const data = await loadF1({ year: Number.parseInt(year, 10), stype: STYPE[stypeLabel] ?? "R", game_session_path: selected })
+      const data = await compareOwn({ game_session_path: selected })
       if (data.error) {
         const described = describeError(data.error)
         setStatus(described.text)
@@ -136,7 +121,7 @@ export function ArchiveView() {
 
   return (
     <div>
-      <PageHeader title="Archive" subtitle="Сохранённые сессии и справочное сопоставление с реальным Гран-при" />
+      <PageHeader title="Archive" subtitle="Сохранённые сессии и сравнение с вашим лучшим заездом на трассе" />
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_minmax(0,380px)]">
         <Panel label="Ваши сессии" bodyClassName="p-0">
@@ -165,10 +150,7 @@ export function ArchiveView() {
                   <li key={r.path}>
                     <button
                       type="button"
-                      onClick={() => {
-                        setSelected(r.path)
-                        if (r.game_year) setYear(String(r.game_year).startsWith("2026") ? "2026" : "2025")
-                      }}
+                      onClick={() => setSelected(r.path)}
                       className={cn(
                         "flex w-full items-center gap-4 border-b border-border px-5 py-4 text-left last:border-0 hover:bg-secondary/40",
                         isSel && "bg-primary/8",
@@ -201,48 +183,24 @@ export function ArchiveView() {
           )}
         </Panel>
 
-        <Panel label="Сопоставить с реальным GP">
+        <Panel label="Сравнить со своим лучшим">
           <p className="mb-3 text-xs text-muted-foreground">
-            Сравните записанные времена как ориентир. Это не рейтинг мастерства относительно реального пилота.
+            Эталон — ваш самый быстрый заезд на этой же трассе. Условия заездов
+            различаются: топливо, резина, погода и настройки машины.
           </p>
           {/* Побочный эффект, который раньше нигде не был виден: web_server.py
               после сравнения зовёт engine.set_analytics_context(qwen_context) —
-              строка «КОНТЕКСТ GP» внизу уходит в живой комментарий и «Разбор»
+              строка «КОНТЕКСТ СРАВНЕНИЯ» внизу уходит в живой комментарий и «Разбор»
               до конца сессии, перезаписывая карьерный контекст. */}
           <p className="mb-4 rounded-md border border-border bg-secondary/50 px-3 py-2 text-[11px] leading-relaxed text-muted-foreground">
-            Сравнение не только показывает таблицу: его строка «Контекст GP» подставляется
+            Сравнение не только показывает таблицу: его строка «Контекст сравнения» подставляется
             комментатору и в «Разбор» до конца текущей сессии.
           </p>
 
-          <p className="label-mono mb-2 text-[10px] text-muted-foreground">Год</p>
-          <div className="mb-5 flex gap-2">
-            {(["2025", "2026"] as const).map((y) => (
-              <button
-                key={y}
-                type="button"
-                onClick={() => setYear(y)}
-                className={cn(
-                  "flex-1 rounded-md border px-4 py-2 font-heading text-sm font-bold transition-colors",
-                  year === y
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-secondary text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {y}
-              </button>
-            ))}
-          </div>
-
-          <p className="label-mono mb-2 text-[10px] text-muted-foreground">Тип сессии</p>
-          <select
-            value={stypeLabel}
-            onChange={(e) => setStypeLabel(e.target.value)}
-            className="mb-5 h-10 w-full rounded-md border border-input bg-secondary px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            <option>Гонка</option>
-            <option>Квалификация</option>
-            <option>Спринт</option>
-          </select>
+          {/* Селекторы года и типа сессии убраны вместе с источником: они
+              выбирали сезон и сессию РЕАЛЬНОГО чемпионата. Эталон теперь
+              определяется однозначно — свой лучший заезд на той же трассе, —
+              и выбирать пользователю нечего. */}
 
           <Button
             onClick={compare}
@@ -280,39 +238,17 @@ export function ArchiveView() {
 }
 
 function CompareResultView({ data }: { data: CompareResult }) {
-  const { f1_meta, compare } = data
+  const { compare } = data
   const sectors = compare.sectors
   const interpretation = compare.interpretation ?? fallbackInterpretation(compare.gap_ms)
   const disclaimer = compare.comparison_disclaimer
-    ?? "F1 25 и реальный Гран-при используют разные физику и условия. Разница времён не показывает, кто быстрее как пилот."
+    ?? "Условия заездов различаются: топливо, резина, погода и настройки машины."
   return (
-    <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
-      <Panel label={`${f1_meta.event || "Гран-при"} ${f1_meta.year || ""}`} bodyClassName="p-0">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border text-left">
-              <th className="px-4 py-2.5 label-mono text-[10px] font-medium text-muted-foreground">#</th>
-              <th className="px-2 py-2.5 label-mono text-[10px] font-medium text-muted-foreground">Пилот</th>
-              <th className="px-2 py-2.5 label-mono text-[10px] font-medium text-muted-foreground">Команда</th>
-              <th className="px-4 py-2.5 text-right label-mono text-[10px] font-medium text-muted-foreground">Отрыв</th>
-            </tr>
-          </thead>
-          <tbody>
-            {(f1_meta.results_top10 || []).map((r) => (
-              <tr key={r.pos} className="border-b border-border last:border-0">
-                <td className={cn("px-4 py-2 tabular", r.pos === 1 && "font-bold text-primary")}>{r.pos}</td>
-                <td className="px-2 py-2 text-foreground">{r.driver}</td>
-                <td className="px-2 py-2 text-muted-foreground">{r.team}</td>
-                <td className="px-4 py-2 text-right font-mono text-muted-foreground tabular">
-                  {r.gap_s != null ? `+${r.gap_s}s` : "—"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Panel>
-
-      <Panel label="Игровой круг и реальный ориентир">
+    // Таблица классификации реального Гран-при отсюда убрана вместе с
+    // источником: у собственного заезда нет «топ-10», сравнение идёт кругом
+    // против круга. Панель осталась одна и занимает всю ширину.
+    <div className="mt-5">
+      <Panel label="Этот заезд против вашего лучшего">
         {compare.partial && (
           <p className="mb-3 rounded-md bg-warning/10 px-3 py-2 text-[11px] text-warning">
             Нет полного набора секторных данных. Время круга показано только как справочная разница.
@@ -323,14 +259,14 @@ function CompareResultView({ data }: { data: CompareResult }) {
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="label-mono text-[9px] text-muted-foreground">F1 25 · ЛУЧШИЙ КРУГ</p>
+            <p className="label-mono text-[9px] text-muted-foreground">ЭТОТ ЗАЕЗД · ЛУЧШИЙ КРУГ</p>
             <p className="font-mono text-xl font-bold text-foreground">{fmtMs(compare.player_best_lap_ms)}</p>
             <p className="text-[10px] text-muted-foreground">круг {compare.player_best_lap_lap_number ?? "?"}</p>
           </div>
           <div>
-            <p className="label-mono text-[9px] text-muted-foreground">РЕАЛЬНЫЙ GP · ОРИЕНТИР</p>
+            <p className="label-mono text-[9px] text-muted-foreground">ВАШ ЛУЧШИЙ · ОРИЕНТИР</p>
             <p className="font-mono text-xl font-bold text-foreground">{fmtMs(compare.f1_fastest_ms)}</p>
-            <p className="text-[10px] text-muted-foreground">быстрейший круг · {compare.f1_best_lap_driver ?? "?"}</p>
+            <p className="text-[10px] text-muted-foreground">быстрейший круг на этой трассе</p>
           </div>
         </div>
         <p className="mt-4 rounded-md border border-border px-3 py-2 text-sm leading-relaxed text-foreground">
@@ -361,7 +297,7 @@ function CompareResultView({ data }: { data: CompareResult }) {
 
         {compare.qwen_context && (
           <p className="mt-4 border-t border-border pt-3 text-xs leading-relaxed text-muted-foreground">
-            <span className="label-mono mr-2 text-[9px]">КОНТЕКСТ GP</span>
+            <span className="label-mono mr-2 text-[9px]">КОНТЕКСТ СРАВНЕНИЯ</span>
             {compare.qwen_context}
           </p>
         )}

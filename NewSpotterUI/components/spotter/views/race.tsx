@@ -105,30 +105,20 @@ export function RaceView({ state }: { state: SpotterState | null }) {
               </div>
               {bench ? (
                 <div className="mt-3 rounded-md bg-secondary/60 p-3">
-                  {/* Год и Гран-при ориентира важны: при отсутствии данных
-                      текущего сезона бэкенд берёт прошлый (fallback-year), и
-                      без подписи было непонятно, с чем вообще сравнение. */}
+                  {/* Эталон — быстрейший круг поля ЭТОЙ сессии. Имя пилота
+                      важно: оно объясняет, с кем именно идёт сравнение, а
+                      пустым оно бывает, пока участник не приехал в race_state. */}
                   <p className="font-mono text-[10px] text-muted-foreground">
-                    СПРАВОЧНЫЙ ОРИЕНТИР GP · {bench.source === "pole" ? "ПОУЛ" : "БЫСТРЕЙШИЙ КРУГ"} · {bench.f1_driver}
+                    БЫСТРЕЙШИЙ КРУГ СЕССИИ{bench.f1_driver ? ` · ${bench.f1_driver}` : ""}
                   </p>
                   <p className="font-mono text-[10px] text-muted-foreground">
-                    {[bench.event, bench.year].filter(Boolean).join(" · ") || "ГП НЕ ОПРЕДЕЛЁН"}
-                    {" · "}
                     {fmtLap(bench.f1_time_ms)} против {fmtLap(bench.player_best_ms)}
                   </p>
                   <p className="mt-1 text-sm font-medium leading-relaxed text-foreground">
                     {bench.interpretation}
                   </p>
-                  <p className="mt-1 text-[10px] leading-relaxed text-muted-foreground">
-                    Это не означает, что вы быстрее или медленнее реального пилота.
-                  </p>
                   {sectors && (
                     <div className="mt-2">
-                      {bench.sectors_source === "seed" && (
-                        <p className="mb-1 font-mono text-[9px] text-muted-foreground">
-                          ИСТОРИЧЕСКИЕ ДАННЫЕ
-                        </p>
-                      )}
                       <p className="mb-1 font-mono text-[9px] text-muted-foreground">
                         РАЗНИЦА ЗАПИСАННЫХ ВРЕМЁН ПО СЕКТОРАМ
                       </p>
@@ -153,15 +143,10 @@ export function RaceView({ state }: { state: SpotterState | null }) {
                       </div>
                     </div>
                   )}
-                  {!sectors && bench.sectors_blocked && (
-                    <p className="mt-2 text-[11px] text-muted-foreground">
-                      Секторы недоступны — идёт live-сессия F1.
-                    </p>
-                  )}
                 </div>
               ) : (
                 <p className="mt-3 text-[11px] text-muted-foreground">
-                  Справочный ориентир реального GP подгрузится после первого круга. Условия игры и реальной гонки напрямую не сопоставимы.
+                  Ориентир появится, когда соперники проедут свой первый круг.
                 </p>
               )}
             </Panel>

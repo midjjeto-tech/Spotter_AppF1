@@ -19,8 +19,7 @@ import config
 from bottle import Bottle, HTTPResponse, request, response, static_file
 
 from analytics import archive as _archive
-from analytics.loader import load_f1_session, TRACK_ID_TO_GP
-from analytics.normalizer import normalize as _normalize
+from analytics.loader import load_own_reference_session
 from analytics.comparator import compare as _compare
 from core import overlay_layout as _layout
 from core.remote_access import RemoteAccessPolicy, bind_host
@@ -433,13 +432,19 @@ def create_app(engine, settings: dict, base_dir: str) -> Bottle:
         response.content_type = "application/json"
         return json.dumps(_archive.list_game_sessions(), ensure_ascii=False)
 
-    @app.route("/api/load_f1", method="POST")
-    def api_load_f1():
+    @app.route("/api/compare_own", method="POST")
+    def api_compare_own():
+        """Сравнить разбираемый заезд с самым быстрым СВОИМ на этой трассе.
+
+        Раньше здесь грузилась реальная сессия F1 (OpenF1/FastF1) — источник
+        удалён как непригодный для коммерческого распространения, см. NOTICE и
+        analytics/loader.py. Параметры `year`/`stype` из тела запроса больше не
+        читаются: выбирать сезон реального чемпионата стало не из чего, эталон
+        определяется однозначно — свой лучший заезд на той же трассе.
+        """
         response.content_type = "application/json"
         try:
             body = json.loads(request.body.read().decode("utf-8"))
-            year = int(body.get("year", 2025))
-            stype = str(body.get("stype", "R"))
             game_path = body.get("game_session_path", "")
         except Exception as exc:
             response.status = 400
@@ -451,19 +456,13 @@ def create_app(engine, settings: dict, base_dir: str) -> Bottle:
         except (TypeError, ValueError):
             track_id = -1
 
-        session, err = load_f1_session(track_id, year, stype)
+        f1_data, err = load_own_reference_session(track_id, exclude_path=game_path)
         if err:
             response.status = 400
             return json.dumps({"error": err}, ensure_ascii=False)
 
-        f1_data = _normalize(session)
-        entry = TRACK_ID_TO_GP.get(track_id)
-        if entry:
-            f1_data["event"] = entry[1]
-        _archive.save_f1(track_id, year, stype, f1_data)
-
         compare_result = _compare(game, f1_data)
-        cpath = _archive.save_compare(game_path or "no_game", track_id, year, stype, compare_result)
+        cpath = _archive.save_compare(game_path or "no_game", track_id, compare_result)
 
         try:
             engine.set_analytics_context(compare_result.get("qwen_context"))

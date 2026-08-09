@@ -794,24 +794,26 @@ export type YandexStatus = { connected: boolean; code: string; message: string }
 
 export type F1SectorGap = { player_ms: number; gap_ms: number }
 
+// Эталон темпа — быстрейший круг ПОЛЯ текущей сессии (core/f1_benchmark.py).
+// До 2026-08-08 здесь лежало сравнение с реальным Гран-при (Jolpica + OpenF1);
+// источник удалён как непригодный для продаваемой сборки, см. NOTICE.
 export type F1BenchmarkState = {
   gap_ms: number
+  // Пилот, чей круг стал эталоном. Пустая строка — участник ещё не приехал
+  // в race_state, время уже есть, а имени нет.
   f1_driver: string
   f1_time_ms: number
   player_best_ms: number
+  // Всегда null: «событие» и «год» описывали реальный Гран-при. Ключи
+  // сохранены, потому что бэкенд отдаёт их безусловно.
   event: string | null
   year: number | null
-  source: "fastest_lap" | "pole"
+  source: "field"
   sectors: Record<"1" | "2" | "3", F1SectorGap> | null
-  // "api" — живые/кэшированные данные OpenF1; "seed" — зашитый статический
-  // фолбэк (см. core/openf1_seed.py), не свежие данные текущего сезона; null —
-  // секторов нет вообще.
-  sectors_source: "api" | "seed" | null
-  // true — секторов нет ИМЕННО из-за 401 (идёт live-сессия F1, OpenF1 блокирует
-  // анонимный доступ) — отличать от «трассы нет в данных»/обычного сбоя сети.
-  sectors_blocked: boolean
+  // "field" — секторы той же машины, что дала эталонный круг; null — полного
+  // набора s1/s2/s3 у неё нет (частичный намеренно не показываем).
+  sectors_source: "field" | null
   interpretation: string
-  comparison_disclaimer: string
 }
 
 export type CareerMemoryState = {
@@ -1031,8 +1033,11 @@ export const testMic = () =>
 
 export const getSessions = () => http("/api/sessions").then((r) => asJson<SessionItem[]>(r))
 
-export const loadF1 = (body: { year: number; stype: string; game_session_path: string }) =>
-  post("/api/load_f1", body).then((r) => asJson<CompareResult>(r))
+// Сравнение разбираемого заезда с самым быстрым СВОИМ на той же трассе.
+// Раньше здесь грузилась реальная сессия F1 и требовались год и тип сессии —
+// выбирать больше не из чего, эталон определяется однозначно (см. NOTICE).
+export const compareOwn = (body: { game_session_path: string }) =>
+  post("/api/compare_own", body).then((r) => asJson<CompareResult>(r))
 
 export const getYandexStatus = () => http("/api/yandex/status").then((r) => asJson<YandexStatus>(r))
 

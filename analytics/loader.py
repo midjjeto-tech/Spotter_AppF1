@@ -1,7 +1,23 @@
+"""
+analytics/loader.py
+===================
+Эталон для послегоночного сравнения — СВОЙ прошлый заезд на той же трассе.
+
+ИСТОЧНИК СМЕНИЛСЯ 2026-08-08. Раньше здесь грузилась реальная сессия Формулы-1
+через OpenF1 (сезоны с 2023) или FastF1 (раньше 2023). Обе службы разрешают
+только некоммерческое использование, а данные FastF1 приходят из неофициального
+источника F1 без коммерческого разрешения вовсе (см. NOTICE) — для продаваемой
+сборки это блокер. Сети здесь больше нет.
+
+Сравнивать архивный заезд теперь не с чем, кроме собственной истории, и это
+честнее: чужой Гран-при шёл на другой физике и другом регламенте, а свой
+прошлый заезд отличается только тем, что реально сравнимо — темпом пилота.
+Формат отдаваемого словаря НЕ менялся (`fastest_lap` с секторами), поэтому
+analytics/comparator.py::compare() принимает его без единой правки.
+"""
 from __future__ import annotations
-from pathlib import Path
-import config
-from analytics.openf1_loader import load_openf1_session
+
+from analytics import archive
 
 # m_trackId — фиксированный enum игры (НЕ порядок календаря), подтверждён официальной
 # EA/Codemasters UDP-спекой и независимыми парсерами (f1-2019-telemetry docs, f1-24-udp).
@@ -42,68 +58,65 @@ TRACK_ID_TO_GP: dict[int, tuple[str, str]] = {
     32: ("Lusail",            "Qatar Grand Prix"),
 }
 
-_CACHE = Path(config.DATA_DIR) / "fastf1_cache"
-_CACHE.mkdir(parents=True, exist_ok=True)
 
-_fastf1_cache_enabled = False
+def _best_lap_of(session: dict) -> dict | None:
+    """Лучший круг игрока в сохранённой сессии. None — валидных кругов нет.
+
+    Секторы отдаём только полным набором: частичный дал бы гэп по одному
+    сектору и молчание по двум, что читается как «там всё в порядке»."""
+    valid = [l for l in (session.get("player_laps") or [])
+             if (l.get("last_lap_ms") or 0) > 0]
+    if not valid:
+        return None
+    best = min(valid, key=lambda l: l["last_lap_ms"])
+    out: dict = {"time_ms": best["last_lap_ms"], "lap": best.get("lap")}
+    if all((best.get(f"s{n}_ms") or 0) > 0 for n in (1, 2, 3)):
+        for n in (1, 2, 3):
+            out[f"s{n}_ms"] = best[f"s{n}_ms"]
+    return out
 
 
-def _ensure_fastf1():
-    """Lazy-import fastf1 and enable its disk cache once."""
-    global _fastf1_cache_enabled
-    import fastf1  # noqa: PLC0415 — intentionally lazy
-    if not _fastf1_cache_enabled:
-        fastf1.Cache.enable_cache(str(_CACHE))
-        _fastf1_cache_enabled = True
-    return fastf1
+def load_own_reference_session(track_id: int,
+                               exclude_path: str | None = None
+                               ) -> tuple[dict | None, str | None]:
+    """Самый быстрый СВОЙ заезд на этой трассе. Возвращает (данные, ошибка).
 
+    `exclude_path` — сессия, которую как раз разбирают: сравнивать её с самой
+    собой бессмысленно (гэп всегда ноль), поэтому она исключается из поиска.
 
-def load_f1_session(track_id: int, year: int = 2025,
-                    session_type: str = "R") -> tuple[object | None, str | None]:
-    """Returns (session, error). session=None on failure."""
+    Формат результата совместим с прежним ответом реальной сессии F1, чтобы
+    comparator и фронтенд не знали о смене источника: ключ `fastest_lap` с
+    временем круга и (если есть) секторами.
+    """
     entry = TRACK_ID_TO_GP.get(track_id)
     if entry is None:
-        return None, "no_fastf1_data"
+        return None, "unknown_track"
 
-    # OpenF1 provides free historical data from 2023 onwards and is already the
-    # application's source for real-F1 sector benchmarks. Prefer it for modern
-    # seasons: the upstream F1 live-timing host can be region-blocked (HTTP 403)
-    # while FastF1's experimental mirror may not contain the requested session.
-    # Calling FastF1 in that state produces one warning per internal data channel
-    # and still returns an empty Session because those exceptions are swallowed.
-    if year >= 2023:
-        return load_openf1_session(track_id, year, session_type)
+    best_lap: dict | None = None
+    best_meta: dict | None = None
+    for summary in archive.list_game_sessions():
+        if summary.get("track_id") != track_id:
+            continue
+        path = summary.get("path")
+        if exclude_path and str(path) == str(exclude_path):
+            continue
+        data = archive.load_game_session(path)
+        if not data:
+            continue
+        lap = _best_lap_of(data)
+        if lap is None:
+            continue
+        if best_lap is None or lap["time_ms"] < best_lap["time_ms"]:
+            best_lap = lap
+            best_meta = {"timestamp": data.get("timestamp", ""),
+                         "session_type": data.get("session_type", ""),
+                         "path": str(path)}
 
-    _, gp_name = entry
-    try:
-        ff1 = _ensure_fastf1()
-    except ImportError:
-        return None, "fastf1_not_installed"
-    try:
-        session = ff1.get_session(year, gp_name, session_type)
-    except Exception as exc:
-        return None, f"session_not_found: {exc}"
-    try:
-        session.load(laps=True, telemetry=False, weather=True, messages=True)
-    except Exception as exc:
-        # Check for rate limit by class name — avoids importing fastf1.exceptions
-        # here (that import is unnecessary and, when fastf1 is absent, would itself
-        # raise ImportError and be misreported below as a bogus "load_error").
-        if "RateLimitExceededError" in type(exc).__name__:
-            return None, "rate_limit"
-        return None, f"load_error: {exc}"
+    if best_lap is None:
+        return None, "no_own_sessions_for_track"
 
-    # fastf1 ловит SessionNotAvailableError на КАЖДОМ под-запросе (session_info,
-    # driver_info, laps, weather, race_control...) внутри себя и не пробрасывает
-    # исключение наружу — session.load() выше отработает "успешно" даже если
-    # реально не получено ни результатов, ни кругов. Без этой проверки
-    # api_load_f1 в web_server.py считает это успехом и отдаёт фронтенду пустой
-    # f1_data (results_top10=[], f1_fastest_ms=None) вместо явной ошибки.
-    results = getattr(session, "results", None)
-    laps = getattr(session, "laps", None)
-    no_results = results is None or results.empty
-    no_laps = laps is None or laps.empty
-    if no_results and no_laps:
-        return None, "no_data_for_session"
-
-    return session, None
+    return {
+        "fastest_lap": {"driver": "твой прошлый заезд", **best_lap},
+        "event": entry[1],
+        "reference_session": best_meta,
+    }, None

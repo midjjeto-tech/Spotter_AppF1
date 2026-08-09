@@ -1,58 +1,39 @@
 """
 core/f1_benchmark.py
 ====================
-Живой бенчмарк темпа игрока против РЕАЛЬНОГО F1 (killer-фича #2).
+Живой бенчмарк темпа игрока против ПОЛЯ текущей сессии (killer-фича #2).
 
-Эталон — быстрейший круг реального GP этой трассы из Jolpica (фолбэк — поул).
-Сравнение по ВРЕМЕНИ КРУГА (Ergast не отдаёт сектора). Секторный эталон — ОТДЕЛЬНО,
-из OpenF1 («лучшие секторы гонки», не привязаны к тому же пилоту/кругу, что и
-полный-круга-эталон — см. design spec docs/superpowers/specs/2026-07-02-f1-sector-benchmark-design.md).
-Чистый юнит: хранит эталон и считает гэп; сеть только в `load` (engine зовёт её в фоновом потоке).
+ИСТОЧНИК СМЕНИЛСЯ 2026-08-08, И ЭТО НЕ КОМПРОМИСС. Раньше эталоном был
+быстрейший круг реального Гран-при из Jolpica плюс секторы из OpenF1. Обе
+службы разрешают только некоммерческое использование (CC BY-NC-SA 4.0, см.
+NOTICE) — для продаваемой сборки это блокер. Сети здесь больше нет.
 
-Ergast отдаёт ЛАТИНСКИЕ фамилии — мапим в кириллицу (core.transliterate.KNOWN_SURNAMES)
-перед склонением через core.ru_names, иначе TTS произнесёт латиницу и без падежа.
+Новый эталон приходит из самой игры: пакет Session History (id 11) отдаёт по
+КАЖДОЙ машине best_lap_ms и best_sector_ms (core/packets.py::
+parse_session_history), движок копит их в _session_history. Берём быстрейшую
+машину поля, кроме самого игрока.
+
+Сравнение при этом стало ЧЕСТНЕЕ, а не беднее. Реальный Гран-при шёл на другой
+физике, другом топливе, другой резине и другом состоянии трассы — из-за этого
+приходилось таскать дисклеймер о несопоставимости и специально следить, чтобы
+разница времён не читалась как оценка мастерства. Круг соперника в той же
+сессии сопоставим напрямую: та же трасса, та же погода, тот же регламент.
+
+Отличие от core/career_memory.py: там эталон СВОЙ и исторический (архив прошлых
+заездов), здесь — ЧУЖОЙ и сиюминутный (поле этой сессии). Вопросы разные:
+«прогрессирую ли я» против «отстаю ли я от соперников прямо сейчас». Поэтому
+модули независимы и события у них разные (CAREER_PB против F1_BENCH).
+
+Чистый юнит: хранит эталон и считает гэп. Ни сети, ни диска, ни потоков.
 """
 from __future__ import annotations
 
 import logging
 
-from analytics.loader import TRACK_ID_TO_GP
-from core import transliterate
-from core.ergast_client import JolpicaClient
-from core.openf1_seed import SECTOR_SEED
-from core.ru_names import decline, surname_of
-from core.f1_comparison_language import (
-    COMPARISON_DISCLAIMER,
-    SHORT_COMPARISON_DISCLAIMER,
-    describe_time_difference,
-)
+from core.ru_names import decline
+from core.f1_comparison_language import describe_time_difference
 
 _log = logging.getLogger(__name__)
-
-# track_id (m_trackId, фиксированный enum игры — см. analytics/loader.TRACK_ID_TO_GP)
-# → ergast circuitId. Только текущий календарь; legacy-трассы (Paul Ricard/Hockenheim/
-# Sochi/Hanoi/short-варианты) сюда не включены — load() для них корректно вернёт False.
-TRACK_ID_TO_CIRCUIT: dict[int, str] = {
-    0: "albert_park", 2: "shanghai", 3: "bahrain", 4: "catalunya", 5: "monaco",
-    6: "villeneuve", 7: "silverstone", 9: "hungaroring", 10: "spa", 11: "monza",
-    12: "marina_bay", 13: "suzuka", 14: "yas_marina", 15: "americas",
-    16: "interlagos", 17: "red_bull_ring", 19: "rodriguez", 20: "baku",
-    26: "zandvoort", 27: "imola", 29: "jeddah", 30: "miami", 31: "vegas",
-    32: "losail",
-}
-
-# Первый год нового регламентного цикла (2026: -30% прижимной силы, -55%
-# сопротивления, без DRS — принципиально другая машина). Эталон трассы НЕ
-# должен откатываться на год из другой эры (см. load()) — иначе гэп игрока
-# сравнивается с физически несопоставимым временем круга. При объявлении
-# следующего сброса регламента — обновить эту константу.
-_NEW_ERA_START_YEAR = 2026
-
-
-def _ru_driver(latin: str | None) -> str:
-    if not latin:
-        return ""
-    return transliterate.known_surname(latin) or transliterate.to_cyrillic(latin)
 
 
 def _fmt_lap(ms: int | None) -> str:
@@ -65,23 +46,8 @@ def _fmt_lap(ms: int | None) -> str:
 
 
 class F1Benchmark:
-    def __init__(self, client=None, openf1_client=None):
-        self._client = client
-        self._openf1_client = openf1_client
+    def __init__(self):
         self.reference: dict | None = None
-
-    @property
-    def _c(self):
-        if self._client is None:
-            self._client = JolpicaClient()
-        return self._client
-
-    @property
-    def _openf1(self):
-        if self._openf1_client is None:
-            from core.openf1_client import OpenF1Client
-            self._openf1_client = OpenF1Client()
-        return self._openf1_client
 
     @property
     def ready(self) -> bool:
@@ -90,70 +56,68 @@ class F1Benchmark:
     def reset(self) -> None:
         self.reference = None
 
-    def load(self, track_id: int, year: int) -> bool:
-        """Загрузить эталон трассы: fastest lap (year, year-1), иначе поул. True если найден.
-        Дополнительно (не критично для основного результата) тянет секторный эталон
-        из OpenF1 — сбой не влияет на возврат True/False (см. _load_sectors)."""
-        circuit = TRACK_ID_TO_CIRCUIT.get(track_id)
-        if not circuit:
+    def update_from_field(self, history: dict[int, dict],
+                          player_idx: int | None,
+                          name_of) -> bool:
+        """Пересобрать эталон из накопленной истории сессии. True — эталон
+        появился или сменился.
+
+        `history`: car_idx → результат parse_session_history.
+        `name_of`: car_idx → отображаемое имя пилота (движок берёт его из
+        race_state, там имя уже прошло обогащение и кириллицу).
+
+        Машина игрока ИСКЛЮЧАЕТСЯ. Сравнивать игрока с самим собой бессмысленно
+        (гэп всегда ноль), а «личный рекорд трассы» — задача career_memory.
+
+        Круги без времени пропускаем: в session history пустой слот приходит
+        нулём, и без фильтра ноль победил бы любой реальный круг.
+        """
+        best_idx: int | None = None
+        best_ms: int | None = None
+        for car_idx, entry in (history or {}).items():
+            if player_idx is not None and car_idx == player_idx:
+                continue
+            lap_ms = (entry or {}).get("best_lap_ms")
+            if not lap_ms or lap_ms <= 0:
+                continue
+            if best_ms is None or lap_ms < best_ms:
+                best_ms, best_idx = lap_ms, car_idx
+
+        if best_idx is None:
             return False
-        event = TRACK_ID_TO_GP.get(track_id, ("", ""))[1]
-        years = [year]
-        # year-1 фолбэк (для трасс, ещё не прошедших в текущем сезоне) — только
-        # внутри той же регламентной эры. 2026 никогда не откатывается на 2025:
-        # другой регламент делает время круга физически несопоставимым.
-        prev_same_era = (year - 1 >= _NEW_ERA_START_YEAR) == (year >= _NEW_ERA_START_YEAR)
-        if year > 2024 and prev_same_era:
-            years.append(year - 1)
-        for y in years:
-            fl = self._c.get_circuit_fastest_lap(y, circuit)
-            if fl:
-                self.reference = {"driver": _ru_driver(fl["driver"]), "time_ms": fl["time_ms"],
-                                  "year": y, "event": event, "source": "fastest_lap"}
-                self._load_sectors(circuit, y)
-                return True
-        for y in years:
-            pole = self._c.get_circuit_pole(y, circuit)
-            if pole:
-                self.reference = {"driver": _ru_driver(pole["driver"]), "time_ms": pole["time_ms"],
-                                  "year": y, "event": event, "source": "pole"}
-                self._load_sectors(circuit, y)
-                return True
-        return False
 
-    def _load_sectors(self, circuit: str, year: int) -> None:
-        """Секторный эталон OpenF1 — надстройка поверх основного эталона.
-        OpenF1Client сам гасит сетевые сбои (возвращает None) — здесь трансляция
-        в self.reference["sector_ms"] + запись источника/причины отсутствия:
+        # Секторы берём У ТОЙ ЖЕ машины, что дала эталонный круг, и только
+        # полным набором 1/2/3. Частичный набор дал бы гэп по одному сектору и
+        # молчание по двум — читается как «там ты в порядке», хотя данных
+        # просто нет.
+        sectors = (history[best_idx] or {}).get("best_sector_ms") or {}
+        sector_ms = {n: sectors[n] for n in (1, 2, 3)} if all(
+            sectors.get(n) for n in (1, 2, 3)) else None
 
-        - живые/кэшированные данные есть → sector_ms=словарь, sectors_source="api"
-        - данных нет, НО известен статический сид (core/openf1_seed.py) для этой
-          трассы → sector_ms=сид, sectors_source="seed" (используется, только если
-          нет НИ живых, НИ кэшированных данных — реальные данные всегда в приоритете)
-        - данных нет вообще → sector_ms=None, sectors_source=None
-        sectors_blocked=True, если ПОСЛЕДНЯЯ сетевая попытка получила 401 (live-сессия
-        F1 блокирует анонимный доступ) — отдельно от «трассы просто нет в данных»,
-        чтобы HUD мог объяснить пользователю ПОЧЕМУ секторов нет (см. race.tsx)."""
-        session_key = self._openf1.get_session_key(year, circuit)
-        sectors = self._openf1.get_best_sectors(session_key)
-        self.reference["sectors_blocked"] = self._openf1.blocked_by_live_session
-        if sectors is not None:
-            self.reference["sector_ms"] = sectors
-            self.reference["sectors_source"] = "api"
-            return
-        seed = SECTOR_SEED.get(circuit)
-        if seed:
-            self.reference["sector_ms"] = seed["sectors"]
-            self.reference["sectors_source"] = "seed"
-        else:
-            self.reference["sector_ms"] = None
-            self.reference["sectors_source"] = None
+        new_ref = {
+            "driver": name_of(best_idx) or "",
+            "time_ms": best_ms,
+            "car_idx": best_idx,
+            "sector_ms": sector_ms,
+            "sectors_source": "field" if sector_ms else None,
+            "source": "field",
+            # Ключи контракта, оставшиеся от эталона реального Гран-при. Смысла
+            # под новым источником у них нет (сессия и есть «событие»), но
+            # потребители (HUD, ui_state) читают их безусловно — держим None,
+            # а не выкидываем ключ.
+            "event": None,
+            "year": None,
+        }
+        if self.reference == new_ref:
+            return False
+        self.reference = new_ref
+        return True
 
     def compare(self, player_laps: list[dict]) -> dict | None:
         """Гэп лучшего круга игрока к эталону. None если не готов / нет валидных кругов.
-        Ключи "sectors"/"sectors_source"/"sectors_blocked" присутствуют ВСЕГДА
-        (словарь/None, "api"|"seed"|None, bool) — контракт для HUD/Voice/Story,
-        чтобы не делать hasattr-проверки у потребителей."""
+        Ключи "sectors"/"sectors_source" присутствуют ВСЕГДА (словарь/None,
+        "field"|None) — контракт для HUD/Voice/Story, чтобы не делать
+        hasattr-проверки у потребителей."""
         if not self.ready:
             return None
         valid = [l for l in player_laps if (l.get("last_lap_ms") or 0) > 0]
@@ -172,10 +136,8 @@ class F1Benchmark:
             "source": ref["source"],
             "sectors": self._sector_gaps(best, ref.get("sector_ms")),
             "sectors_source": ref.get("sectors_source"),
-            "sectors_blocked": ref.get("sectors_blocked", False),
             "interpretation": describe_time_difference(
                 best["last_lap_ms"] - ref["time_ms"], decimals=3),
-            "comparison_disclaimer": COMPARISON_DISCLAIMER,
         }
 
     def _sector_gaps(self, best_lap: dict, ref_sectors: dict[int, int] | None) -> dict | None:
@@ -192,9 +154,10 @@ class F1Benchmark:
 
     def race_weak_sector(self, player_laps: list[dict]) -> int | None:
         """Сектор с наибольшим СРЕДНИМ гэпом к эталону среди кругов гонки (для
-        Post-Race Story: weak_sector_vs_f1 — НЕ то же самое, что coach_ai.weak_sector,
-        который про собственный темп игрока, а не про реальный F1). None — эталонных
-        секторов нет ИЛИ ни один круг не дал валидных s1/s2/s3.
+        Post-Race Story: weak_sector_vs_f1). Не путать с coach_ai.weak_sector:
+        там база сравнения — собственный лучший круг игрока, здесь — круг
+        быстрейшего соперника. None — эталонных секторов нет ИЛИ ни один круг
+        не дал валидных s1/s2/s3.
         Пит-круги (pit_lap=True) исключаются из усреднения — их секторные времена
         искажены пит-лейном, а не отражают реальный темп на трассе.
         При равенстве средних гэпов между секторами возвращается сектор с наименьшим
@@ -217,52 +180,28 @@ class F1Benchmark:
         avg_gap = {n: totals[n] / counts[n] for n in (1, 2, 3)}
         return max(avg_gap, key=lambda n: avg_gap[n])
 
-    def _ref_word(self, case: str = "nom") -> str:
-        """"поул"/"быстрейший круг" (им.) или "поула"/"быстрейшего круга" (род.).
-        Родительный нужен там, где слово стоит после "от"/"быстрее" — раньше
-        всегда возвращался именительный, что давало "от быстрейший круг X"."""
-        is_pole = (self.reference or {}).get("source") == "pole"
-        if case == "gen":
-            return "поула" if is_pole else "быстрейшего круга"
-        return "поул" if is_pole else "быстрейший круг"
+    def context_line(self, cmp: dict) -> str:
+        """Строка-сверка для контекста LLM (не озвучивается напрямую).
 
-    def _is_player_reference(self, cmp: dict, player_name: str | None) -> bool:
-        """True если пилот-эталон реального Гран-при — тот же, за кого сейчас
-        играет пользователь (по фамилии). В этом случае нельзя называть его в
-        третьем лице ("ты быстрее Ферстаппена"), когда игрок и есть Ферстаппен."""
-        return bool(player_name) and surname_of(player_name) == cmp["f1_driver"]
+        Проверки «а не сам ли игрок этот пилот» больше нет и не нужно: машина
+        игрока исключена из поля в update_from_field, эталон всегда чужой.
+        """
+        drv = decline(cmp["f1_driver"], "gen") if cmp["f1_driver"] else "лидера"
+        return (f"Эталон сессии — быстрейший круг {drv} {_fmt_lap(cmp['f1_time_ms'])}. "
+                f"Твой лучший {_fmt_lap(cmp['player_best_ms'])}. "
+                f"{describe_time_difference(cmp['gap_ms'])}")
 
-    def context_line(self, cmp: dict, player_name: str | None = None) -> str:
-        """Строка-сверка для контекста LLM (не озвучивается напрямую)."""
-        if self._is_player_reference(cmp, player_name):
-            return (f"Эталон трассы — твой же {self._ref_word()} в реальном {cmp['event']} "
-                    f"{_fmt_lap(cmp['f1_time_ms'])}. Твой лучший {_fmt_lap(cmp['player_best_ms'])}. "
-                    f"{describe_time_difference(cmp['gap_ms'])} "
-                    f"{SHORT_COMPARISON_DISCLAIMER}")
-        drv = decline(cmp["f1_driver"], "gen")
-        return (f"Эталон трассы — {self._ref_word()} {drv} {_fmt_lap(cmp['f1_time_ms'])} "
-                f"({cmp['event']}). Твой лучший {_fmt_lap(cmp['player_best_ms'])}. "
-                f"{describe_time_difference(cmp['gap_ms'])} "
-                f"{SHORT_COMPARISON_DISCLAIMER}")
-
-    def pb_line(self, cmp: dict, player_name: str | None = None) -> str:
-        """Озвучиваемая реплика на личном рекорде круга (гэп словами, без сырого времени круга).
-
-        Если игрок в игре управляет машиной того же пилота, что и реальный
-        эталон (player_name), не называем эталон по фамилии в третьем лице —
-        иначе фраза звучит как обращение к постороннему ("ты быстрее
-        Ферстаппена"), хотя игрок и есть Ферстаппен."""
+    def pb_line(self, cmp: dict) -> str:
+        """Озвучиваемая реплика на личном рекорде круга (гэп словами, без сырого
+        времени круга)."""
         difference = describe_time_difference(cmp["gap_ms"])
-        if self._is_player_reference(cmp, player_name):
-            return (f"Личный рекорд круга! {difference} Ориентир — твой же "
-                    f"{self._ref_word()} в реальном Гран-при. Условия напрямую "
-                    f"не сопоставимы.")
+        if not cmp["f1_driver"]:
+            return f"Личный рекорд круга! {difference} Ориентир — быстрейший круг сессии."
         drv = decline(cmp["f1_driver"], "gen")
-        return (f"Личный рекорд круга! {difference} Ориентир — "
-                f"{self._ref_word()} {drv}. Условия напрямую не сопоставимы.")
+        return (f"Личный рекорд круга! {difference} "
+                f"Ориентир — быстрейший круг {drv}.")
 
     def sector_pb_line(self, sector_n: int, sector_cmp: dict) -> str:
         """Озвучиваемая реплика на личном рекорде СЕКТОРА (не путать с pb_line — там полный круг)."""
         difference = describe_time_difference(sector_cmp["gap_ms"])
-        return (f"Сектор {sector_n} — твой лучший в сессии. {difference} "
-                f"Условия напрямую не сопоставимы.")
+        return f"Сектор {sector_n} — твой лучший в сессии. {difference}"
