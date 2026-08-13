@@ -489,7 +489,8 @@ class Voice:
             urgency: str | None = None,
             message_id: str | None = None,
             prepare: Callable[[], str | None] | None = None,
-            still_valid: Callable[[], bool] | None = None) -> bool:
+            still_valid: Callable[[], bool] | None = None,
+            category: str | None = None) -> bool:
         """Ставит фразу в очередь воспроизведения.
 
         Возвращает True, если фраза ПРИНЯТА, и False, если очередь отказала
@@ -508,6 +509,9 @@ class Voice:
         Возвращает готовый текст либо None («уже неактуально»). Когда передан,
         `text` служит только фолбэком для логов.
         still_valid: повторная проверка перед playback, после сетевого синтеза.
+        category: категория реплики (core/radio/policy.py). Нужна очереди,
+        чтобы critical не обрывал звучащую реплику той же категории — иначе
+        предупреждения споттера рвут друг друга на полуслове.
 
         Диагностическое логирование (2026-07-20): раньше ни текст, ни
         приоритет произнесённой фразы нигде не попадали в лог (только
@@ -526,7 +530,8 @@ class Voice:
             result = self._queue.enqueue(
                 text, priority=priority, persona=persona,
                 urgency=urgency, message_id=message_id,
-                prepare=prepare, still_valid=still_valid)
+                prepare=prepare, still_valid=still_valid,
+                category=category)
             # Отказ больше не молчит. Раньше очередь съедала фразу в
             # `except queue.Full: pass`: ни лога, ни возвращаемого значения — при
             # всплеске событий инженер проглатывал команду, и по логу это было

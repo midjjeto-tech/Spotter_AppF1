@@ -4,6 +4,7 @@
 он вызывается В НУЖНОМ МЕСТЕ: воркером очереди, после всех ожиданий, и что
 сообщение не остаётся в неизвестном состоянии.
 """
+import json
 import threading
 import time
 
@@ -109,6 +110,41 @@ def test_value_changed_while_waiting_in_the_queue_uses_the_new_value(engine):
 
     assert text is not None and "14" in text
     assert "60" not in text
+
+
+def test_resolved_text_reaches_the_ui_not_just_the_synthesizer(engine):
+    """Регрессия: голос называл число, а в карточке оставался сырой `{ers}`.
+
+    Проверяется ПРОВОДКА, а не резолвер: `with_phrase` существовал и был покрыт
+    юнит-тестом, но на пути к синтезу его никто не звал — резолв уезжал в TTS и
+    терялся, а `to_ui_dict` отдавал исходный шаблон. Поэтому здесь смотрим не на
+    возврат `prepare()`, а на то, что реально уходит наружу."""
+    engine._player_ers_percent = 42.0
+    message = _msg(engine, "Батарея {ers}.")
+
+    engine._make_prepare(message)()
+
+    projected = json.dumps(engine.radio_session.to_ui_dict(), ensure_ascii=False)
+    assert "{ers}" not in projected
+    assert "42" in projected
+
+
+def test_resolved_text_survives_the_later_state_transitions(engine):
+    """Связывание живёт в снимке, а не в одном переходе.
+
+    `_radio_lifecycle` канонический: playing/completed строятся из него. Если
+    привязать текст только к моменту синтеза, следующий же переход вернул бы
+    в кадр шаблон."""
+    engine._player_ers_percent = 42.0
+    message = _msg(engine, "Батарея {ers}.")
+
+    engine._make_prepare(message)()
+    engine._on_playback_event("playing", message.id)
+    engine._on_playback_event("completed", message.id)
+
+    projected = json.dumps(engine.radio_session.to_ui_dict(), ensure_ascii=False)
+    assert "{ers}" not in projected
+    assert "42" in projected
 
 
 def test_a_worker_exception_does_not_kill_the_queue():

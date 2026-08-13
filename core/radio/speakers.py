@@ -59,6 +59,12 @@ class SpeakerProfile:
     accent: str
     voice_persona: str | None
     allowed_channels: frozenset[str]
+    #: Пол персонажа: "m" | "f". Здесь он потому, что задаёт его ИМЯ в кадре, а
+    #: имя живёт здесь. Голос обязан совпадать — сверку держит тест
+    #: (tests/test_voice_cast.py): подпись «ЛЕВ ТИХОНОВ» женским голосом
+    #: доезжала до живой гонки, потому что имя и голос лежат в разных файлах и
+    #: по отдельности оба выглядят верными.
+    gender: str = "m"
 
     @property
     def portrait_url(self) -> str | None:
@@ -125,10 +131,12 @@ DRIVER = SpeakerProfile(
 # `NewSpotterUI/lib/spotter-data.ts::personas`. Роль у всех одна — аналитик:
 # меняется голос и характер, а не должность.
 
-def _analyst(speaker_id: str, display_name: str) -> SpeakerProfile:
+def _analyst(speaker_id: str, display_name: str,
+             gender: str = "m") -> SpeakerProfile:
     return SpeakerProfile(
         speaker_id=speaker_id,
         display_name=display_name,
+        gender=gender,
         role="RACE ANALYST",
         short_label="Комментатор",
         portrait=f"{speaker_id}.webp",

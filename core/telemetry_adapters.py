@@ -104,6 +104,9 @@ class F1TelemetryAdapter:
         self._retry_interval = max(0.0, float(retry_interval))
         self._transport: Telemetry | None = None
         self._closed = threading.Event()
+        #: {packet_id: сколько пришло}. Публичный: читает и обнуляет движок
+        #: раз в круг, когда сбрасывает перепись в полевой журнал.
+        self.packet_census: dict[int, int] = {}
 
     def listen(self, stop_event: threading.Event | None = None) -> Iterator[TelemetryMessage]:
         """Поток сообщений источника, переживающий занятый порт.
@@ -169,6 +172,12 @@ class F1TelemetryAdapter:
         player = header.get("player_car_index", 255)
         game_year = header.get("game_year", 0)
         packet_format = header.get("packet_format", 0)
+        # Перепись пакетов: сколько каких пришло ОТ ИГРЫ, до всякого разбора.
+        # Без неё вопрос «пакет 13 вообще приходит?» неотличим от «пакет 13
+        # приходит, но парсер отдаёт нули» — а это разные починки: первая в
+        # настройках игры, вторая в офсетах. Счётчик потребляет движок и
+        # сбрасывает в полевой журнал раз в круг.
+        self.packet_census[packet_id] = self.packet_census.get(packet_id, 0) + 1
         # The Season Pack runs inside F1 25 (m_gameYear may stay 25) while its
         # official UDP protocol identifies the 2026 season via packetFormat.
         telemetry_year = 2026 if packet_format >= 2026 else game_year
@@ -256,6 +265,11 @@ class IRacingTelemetryAdapter:
         self._transport: IRacingTelemetry | None = None
         self._closed = threading.Event()
         self._previous: dict | None = None
+        #: У iRacing нет пакетов с номерами — снимок общей памяти приходит
+        #: целиком. Перепись всё равно ведётся, под одним синтетическим ключом:
+        #: отчёт диагностики так отличает «источник молчит» от «источник
+        #: работает, но не отдаёт того, что нужно коучу».
+        self.packet_census: dict[int, int] = {}
 
     def listen(self, stop_event: threading.Event | None = None) -> Iterator[TelemetryMessage]:
         # Без pyirsdk источник отдаёт connected=False вечно и молча. Это верная
@@ -279,7 +293,11 @@ class IRacingTelemetryAdapter:
             if self._transport is transport:
                 self._transport = None
 
+    IRACING_SNAPSHOT = -1
+
     def _decode(self, data: dict) -> Iterator[TelemetryMessage]:
+        self.packet_census[self.IRACING_SNAPSHOT] = (
+            self.packet_census.get(self.IRACING_SNAPSHOT, 0) + 1)
         player = data.get("PlayerCarIdx", 255)
         lap_info = self._decoder.parse_lap_data(data)
         player_lap = self._decoder.parse_player_lap(data, player) if player < 255 else {}

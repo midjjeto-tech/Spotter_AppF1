@@ -28,10 +28,23 @@ export function VoiceView({ state }: { state: SpotterState | null }) {
   const [micDevice, setMicDevice] = useState<string | null>(null)
   const [micTesting, setMicTesting] = useState(false)
   const [micTestResult, setMicTestResult] = useState<{ ok: boolean; error?: string } | null>(null)
+  // Отказ теста рации виден пользователю. Раньше testVoice() звали и результат
+  // выбрасывали: во время сессии кнопка молча ничего не делала бы.
+  const [testError, setTestError] = useState<string | null>(null)
   const [globalVol, setGlobalVol] = useState(80)
   const [personaVols, setPersonaVols] = useState<Record<string, number>>({
     tv: 80, hype: 90, calm: 75, toxic: 80,
   })
+
+  const runVoiceTest = async () => {
+    setTestError(null)
+    try {
+      const r = await testVoice()
+      if (!r.ok) setTestError(r.error ?? "Не удалось")
+    } catch {
+      setTestError("Приложение не ответило")
+    }
+  }
 
   useEffect(() => {
     if (state?.settings?.persona) setActive(state.settings.persona)
@@ -348,10 +361,15 @@ export function VoiceView({ state }: { state: SpotterState | null }) {
                   <Dot state={voiceReady ? "on" : "off"} /> {voiceReady ? "ГОТОВ · РУССКИЙ" : "НЕ ГОТОВ"}
                 </span>
               )}
+              {testError ? (
+                <span className="label-mono rounded-md bg-warning/10 px-2.5 py-1 text-[10px] text-warning">
+                  {testError}
+                </span>
+              ) : null}
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => testVoice()}
+                onClick={runVoiceTest}
                 className="h-8 border-border bg-secondary text-foreground hover:bg-elevated"
               >
                 <Play className="h-3.5 w-3.5" /> Тест

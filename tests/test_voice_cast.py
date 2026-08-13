@@ -60,15 +60,32 @@ def test_first_free_fails_loudly_when_no_voice_is_available():
     существующий ради запрета коллизий, молча их производил. Теперь отказ
     явный: тихая коллизия хуже громкой ошибки."""
     with pytest.raises(voice_cast.VoiceCastError):
-        voice_cast._first_free(("alexander", "kirill"), {"alexander", "kirill"})
+        voice_cast._first_free(("alexander", "kirill"),
+                               {"alexander", "kirill"}, "m")
 
 
-def test_engineer_preferences_have_at_least_two_unique_voices():
-    """Инженер разрешается вторым — до него занят один голос. Длины мало:
-    список из двух ОДИНАКОВЫХ голосов формально проходит проверку длины, а
-    фактически оставляет инженера без запасного."""
+def test_engineer_preferences_cover_the_worst_case_for_their_gender():
+    """Инженер разрешается вторым — до него занят ровно один голос,
+    комментаторский.
+
+    Раньше правило звучало «минимум два голоса у каждого персонажа». С учётом
+    пола оно стало неверным: голоса разных полов больше не конкурируют, и
+    считать нужно только СВОИ. Комментатор всегда мужской (это отдельный тест
+    ниже), поэтому:
+
+      - мужскому персонажу нужно два мужских голоса — один может быть занят;
+      - женскому хватает одного, забрать его больше некому.
+
+    Формулировка изменилась, гарантия — нет: «после занятого одного остаётся
+    свободный». Плюс её теперь подтверждает прямой перебор всех 12 сочетаний,
+    а не арифметика на словах."""
     for character in voice_cast.CHARACTERS.values():
-        assert len(set(character.voices)) >= 2, character.character_id
+        own = {v for v in character.voices
+               if voices.gender_of(v) == character.gender}
+        need = 2 if character.gender == "m" else 1
+        assert len(own) >= need, (
+            f"{character.character_id}: голосов своего пола {len(own)}, "
+            f"нужно {need}")
 
 
 def test_spotter_preferences_have_at_least_three_unique_voices():
@@ -318,14 +335,72 @@ def test_voice_status_reports_the_actual_cast_not_catalogue_defaults():
     assert reported[voice_cast.SLOT_ENGINEER]["premium"] is True
 
 
-def test_voice_status_shows_the_substituted_voice_for_sokolova():
-    """Известная слабость каста: при persona=calm марина занята комментатором,
-    и Соколова звучит мужским запасным. Интерфейс обязан это показывать, иначе
-    пользователь выбирает одного инженера, а слышит другого без объяснений."""
+def test_sokolova_keeps_her_own_voice_next_to_the_calm_persona():
+    """Бывшая «известная слабость каста», закрытая: раньше persona=calm забирала
+    `marina` себе, и Соколова звучала мужским запасным.
+
+    Причина была не в раздаче, а в самой персоне: `calm` подписана «ЛЕВ
+    ТИХОНОВ» и женский голос ей не полагался вовсе. Персона переведена на
+    мужской, единственный женский премиальный голос закреплён за единственным
+    женским персонажем."""
     from voice.voice_manager import voice_status
 
     cast = voice_cast.resolve("calm", "sokolova")
     reported = voice_status(True, True, cast)["voices"]
 
-    assert reported[voice_cast.SLOT_ENGINEER]["voice"] == "alexander"
-    assert reported["calm"]["voice"] == "marina"
+    assert reported[voice_cast.SLOT_ENGINEER]["voice"] == "marina"
+    assert voices.gender_of(reported["calm"]["voice"]) == "m"
+
+
+# ── Пол персонажа и пол голоса ───────────────────────────────────────────────
+
+@pytest.mark.parametrize("persona", ALL_PERSONAS)
+def test_analyst_voice_matches_the_gender_of_the_name_in_frame(persona):
+    """Главный инвариант этого блока и ровно тот баг, что доехал до гонки:
+    «ЛЕВ ТИХОНОВ» говорил голосом `marina`.
+
+    Имя живёт в speakers.py, голос — в voices.py, по отдельности обе константы
+    выглядят правильными. Связывает их только эта проверка."""
+    from core.radio import speakers
+
+    profile = speakers.profile_for(speakers.CHANNEL_COMMENTATOR, persona)
+    voice = voices.resolve(persona)["voice"]
+
+    assert voices.gender_of(voice) == profile.gender, (
+        f"персона {persona!r} подписана {profile.display_name!r} "
+        f"({profile.gender}), а звучит голосом {voice!r} "
+        f"({voices.gender_of(voice)})")
+
+
+@pytest.mark.parametrize("persona,character",
+                         list(itertools.product(ALL_PERSONAS, voice_cast.CHARACTERS)))
+def test_engineer_voice_matches_the_character_gender(persona, character):
+    """То же для инженера, при любом сочетании с персоной комментатора: раздача
+    не имеет права выдать женскому персонажу мужской голос как «запасной»."""
+    cast = voice_cast.resolve(persona, character)
+    voice = cast[voice_cast.SLOT_ENGINEER]["voice"]
+
+    assert voices.gender_of(voice) == voice_cast.character(character).gender
+
+
+def test_every_voice_in_the_cast_has_a_known_gender():
+    """Голос без записи в `VOICE_GENDER` раздача обязана отвергнуть, а не
+    пропустить: незнакомый пол — это не «мужской по умолчанию»."""
+    listed = set(voice_cast.SPOTTER_VOICES)
+    for char in voice_cast.CHARACTERS.values():
+        listed.update(char.voices)
+    for persona in ALL_PERSONAS:
+        listed.add(voices.resolve(persona)["voice"])
+
+    unknown = {v for v in listed if voices.gender_of(v) is None}
+    assert not unknown, f"пол не задан у голосов: {sorted(unknown)}"
+
+
+def test_a_taken_female_voice_raises_instead_of_silently_going_male():
+    """Смысл модуля — запрет тихих коллизий, и подмена пола из той же семьи.
+    Соколовой оставлен ровно один голос: занят — громкая ошибка."""
+    with pytest.raises(voice_cast.VoiceCastError):
+        voice_cast._first_free(("marina",), {"marina"}, "f")
+
+    with pytest.raises(voice_cast.VoiceCastError):
+        voice_cast._first_free(("alexander", "kirill"), set(), "f")

@@ -63,6 +63,9 @@ class _Backend:
     def hide(self, hwnd):
         self.calls.append(("hide", hwnd))
 
+    def apply_shape(self, hwnd, primitives):
+        self.calls.append(("shape", hwnd, primitives))
+
     def focus(self, hwnd):
         self.calls.append(("focus", hwnd))
 
@@ -256,10 +259,19 @@ def test_overlay_is_positioned_while_hidden_before_first_show():
     ]
 
 
-def _fake_layout_store(monkeypatch, saved=None, scales=None):
-    """Replace the on-disk layout store with an in-memory one."""
+def _fake_layout_store(monkeypatch, saved=None, scales=None, enabled=None):
+    """Replace the on-disk layout store with an in-memory one.
+
+    `enabled` — тот же словарь, что передал тест: чтобы выключить виджет прямо
+    посреди прогона, тест мутирует его и двигает отметку версии, как это сделал
+    бы главный процесс на диске.
+    """
     store = dict(saved or {})
     sizes = dict(scales or {})
+    flags = enabled if enabled is not None else {}
+    monkeypatch.setattr(
+        overlay_window_module.overlay_layout, "load_enabled",
+        lambda widget_id: flags.get(widget_id, True))
     # Отметка версии: по ней контроллер решает, перечитывать ли документ. В
     # памяти её двигает сам тест — так же, как на диске это делает чужой процесс.
     stamps = {"value": 0.0}
@@ -360,6 +372,237 @@ def test_dragging_the_hud_in_edit_mode_persists_its_offset(monkeypatch):
     assert store[controller.spec.widget_id] == (400, 350)
     # The HUD is left where the user dropped it — no repositioning this tick.
     assert not any(call[0] == "prepare" for call in backend.calls)
+
+
+def test_drag_in_the_same_tick_does_not_swallow_a_new_scale(monkeypatch):
+    """Подхват перетаскивания не должен объявлять применённым новый размер.
+
+    Размещение на этом тике пропускается — окно остаётся прежних габаритов. Если
+    записать в `_placed_over` целевой размер, следующий тик сравнит цель сам с
+    собой, решит, что делать нечего, и виджет навсегда останется в старом
+    размере: масштаб уедет на диск, а окно его не получит никогда.
+    """
+    _store, sizes, stamps = _fake_layout_store(monkeypatch)
+    game = GameWindow(hwnd=456, left=100, top=50, width=1600, height=900)
+    spec = HUD_WIDGETS["lap"]
+    # Окно уже переехало под курсором и всё ещё БАЗОВОГО размера.
+    dragged = GameWindow(
+        hwnd=123, left=500, top=400, width=spec.width, height=spec.height)
+    backend = _Backend(game=game, foreground=123, rect=dragged)
+    controller = OverlayWindowController(_Window(), backend=backend)
+    controller._hwnd = 123
+    controller._initialized = True
+    controller._visible = True
+    controller._placed_over = controller.spec.place_over(game)
+    controller._edit_mode = True
+
+    # В этот же тик главное окно записало новый масштаб.
+    sizes[controller.spec.widget_id] = 0.6
+    stamps["value"] = 1.0
+    controller.sync_once()
+
+    assert not any(call[0] == "prepare" for call in backend.calls)
+    assert controller._placed_over.width == spec.width  # что на экране, то и тут
+
+    # Следующий тик обязан довести размер до окна.
+    backend.rect = None
+    controller.sync_once()
+
+    target = next(c[2] for c in backend.calls if c[0] == "prepare")
+    assert target.width == round(spec.width * 0.6)
+    assert target.height == round(spec.height * 0.6)
+
+
+def _showing_controller(monkeypatch, widget="radar", **store_kwargs):
+    """Контроллер над видимой игрой, готовый к одному тику."""
+    game = GameWindow(hwnd=456, left=100, top=50, width=1600, height=900)
+    parts = _fake_layout_store(monkeypatch, **store_kwargs)
+    backend = _Backend(game=game, foreground=456)
+    controller = OverlayWindowController(
+        _Window(), spec=HUD_WIDGETS[widget], backend=backend)
+    controller._hwnd = 123
+    controller._initialized = True
+    return controller, backend, parts
+
+
+def test_window_is_clipped_to_the_shape_the_page_reports(monkeypatch):
+    """Круглый радар не должен таскать за собой чёрный квадрат окна.
+
+    Прозрачности по пикселям этот стек не даёт, поэтому лишнее убирается
+    регионом окна — а форму знает только страница: она зависит от темы и от
+    состояния виджета.
+    """
+    controller, backend, _ = _showing_controller(monkeypatch)
+
+    controller.apply_page_shape(
+        {"visible": True, "shapes": [
+            {"kind": "ellipse", "x": 24, "y": 24, "w": 252, "h": 252}]})
+    controller.sync_once()
+
+    shape = next(call for call in backend.calls if call[0] == "shape")
+    assert [item.kind for item in shape[2]] == ["ellipse"]
+    assert shape[2][0].box == (24, 24, 276, 276)
+
+
+def test_shape_follows_the_window_when_the_scale_changes(monkeypatch):
+    """Регион задан в пикселях окна: на новых габаритах он обрезал бы не то."""
+    controller, backend, (_store, sizes, stamps) = _showing_controller(monkeypatch)
+    controller.apply_page_shape(
+        {"visible": True, "shapes": [
+            {"kind": "ellipse", "x": 0, "y": 0, "w": 300, "h": 300}]})
+    controller.sync_once()
+
+    sizes["radar"] = 0.6
+    stamps["value"] = 1.0
+    backend.calls.clear()
+    controller.sync_once()
+
+    shape = next(call for call in backend.calls if call[0] == "shape")
+    assert shape[2][0].box == (0, 0, 180, 180)
+
+
+def test_unchanged_shape_is_not_re_applied_every_tick(monkeypatch):
+    """Форма меняется от смены темы, а не от гонки — тикать по ней незачем."""
+    controller, backend, _ = _showing_controller(monkeypatch)
+    controller.apply_page_shape(
+        {"visible": True, "shapes": [{"kind": "rect", "x": 0, "y": 0, "w": 300, "h": 300}]})
+    controller.sync_once()
+    backend.calls.clear()
+
+    controller.sync_once()
+
+    assert not any(call[0] == "shape" for call in backend.calls)
+
+
+def test_a_silent_page_leaves_the_window_rectangular(monkeypatch):
+    """Старая сборка webui/ или превью в браузере ничего не сообщают.
+
+    Такое окно обязано вести себя ровно как до появления формы — прямоугольным
+    и видимым, а не исчезнуть с экрана.
+    """
+    controller, backend, _ = _showing_controller(monkeypatch)
+
+    controller.sync_once()
+
+    assert not any(call[0] == "shape" for call in backend.calls)
+    assert any(call[0] == "show" for call in backend.calls)
+
+
+def test_shape_is_re_applied_after_the_window_is_shown_again(monkeypatch):
+    """Регион живёт на HWND и теряется при переоткрытии окна.
+
+    Показ идёт не только из контроллера: pywebview зовёт form.Show()/Activate()
+    напрямую при каждой навигации WebView2 и при восстановлении после сбоя.
+    Кэш «эта форма уже применена» после такого показа описывает окно, которого
+    больше нет, и `_refresh_shape` молча выходил по совпадению — окно навсегда
+    оставалось прямоугольным. Для рации это 60 пикселей чёрного фона под
+    карточкой поверх трассы, которые сами уже не чинились.
+    """
+    controller, backend, _ = _showing_controller(monkeypatch, widget="radio")
+    controller.apply_page_shape(
+        {"visible": True, "shapes": [
+            {"kind": "rect", "x": 0, "y": 10, "w": 430, "h": 108}]})
+    controller.sync_once()
+    assert any(call[0] == "shape" for call in backend.calls)
+
+    # Окно переоткрыли в обход контроллера — ровно то, что делает pywebview.
+    controller._visible = False
+    backend.calls.clear()
+    controller.sync_once()
+
+    assert any(call[0] == "shape" for call in backend.calls), (
+        "форма не переприменена после переоткрытия окна")
+
+
+def test_an_empty_shape_does_not_strip_the_region_off_the_window(monkeypatch):
+    """«Фигур нет» — это отсутствие сведений, а не форма «окно целиком».
+
+    Пустой список приходит в переходные моменты: реплика началась, карточка
+    ещё не смонтирована и мерить нечего. Применить его значит позвать
+    SetWindowRgn(0) и снять регион — а окно рации заметно больше карточки
+    (178 против 108 измеренных пикселей), и снятый регион показывает поверх
+    трассы разницу чёрным прямоугольником. Окно при этом появиться ОБЯЗАНО
+    (соседний тест), поэтому чинится не показ, а снятие формы."""
+    controller, backend, _ = _showing_controller(monkeypatch, widget="radio")
+    controller.apply_page_shape(
+        {"visible": True, "shapes": [
+            {"kind": "rect", "x": 0, "y": 10, "w": 430, "h": 108}]})
+    controller.sync_once()
+
+    backend.calls.clear()
+    controller.apply_page_shape({"visible": True, "shapes": []})
+    controller.sync_once()
+
+    stripped = [call for call in backend.calls
+                if call[0] == "shape" and not call[2]]
+    assert not stripped, "регион снят с окна на пустой форме"
+
+
+def test_widget_with_nothing_to_show_leaves_the_screen(monkeypatch):
+    """Окно рации в покое держало тёмную карточку поверх игры всё время."""
+    controller, backend, _ = _showing_controller(monkeypatch, widget="radio")
+
+    controller.apply_page_shape({"visible": False, "shapes": []})
+    controller.sync_once()
+
+    assert not any(call[0] == "show" for call in backend.calls)
+    assert ("hide", 123) in backend.calls
+
+    # Реплика началась — окно обязано вернуться.
+    backend.calls.clear()
+    controller.apply_page_shape({"visible": True, "shapes": []})
+    controller.sync_once()
+
+    assert any(call[0] == "show" for call in backend.calls)
+
+
+def test_disabled_widget_hides_itself_without_waiting_to_be_closed(monkeypatch):
+    """Между снятием галочки и закрытием процесса проходит до двух секунд."""
+    flags: dict[str, bool] = {}
+    controller, backend, (_store, _sizes, stamps) = _showing_controller(
+        monkeypatch, widget="lap", enabled=flags)
+    controller.sync_once()
+    assert any(call[0] == "show" for call in backend.calls)
+
+    flags["lap"] = False
+    stamps["value"] = 1.0
+    backend.calls.clear()
+    controller.sync_once()
+
+    assert not any(call[0] == "show" for call in backend.calls)
+    assert ("hide", 123) in backend.calls
+
+
+def test_refused_window_size_is_logged_instead_of_passing_silently(caplog):
+    """Windows не возвращает ошибку, когда зажимает размер окна своим порогом.
+
+    Ровно так виджеты и застряли в базовом размере при масштабе 0.6: страница
+    ужималась, окно — нет, и заметить это можно было только глазами на
+    скриншоте. Расхождение обязано попадать в лог.
+    """
+    game = GameWindow(hwnd=456, left=100, top=50, width=1600, height=900)
+    spec = HUD_WIDGETS["lap"]
+    # Окно «осталось» базовым, хотя контроллер просил другое.
+    refused = GameWindow(
+        hwnd=123, left=0, top=0, width=spec.width * 2, height=spec.height * 2)
+    backend = _Backend(game=game, foreground=456, rect=refused)
+    controller = OverlayWindowController(_Window(), backend=backend)
+    controller._hwnd = 123
+    controller._initialized = True
+
+    with caplog.at_level("WARNING", logger=overlay_window_module.__name__):
+        controller.sync_once()
+
+    assert "refused the size" in caplog.text
+    assert f"{spec.width * 2}x{spec.height * 2}" in caplog.text
+
+    # Одно и то же расхождение не заливает лог на каждом размещении.
+    caplog.clear()
+    with caplog.at_level("WARNING", logger=overlay_window_module.__name__):
+        controller._visible = False
+        controller.sync_once()
+
+    assert caplog.text == ""
 
 
 def test_saved_offset_survives_alt_tab_instead_of_snapping_home(monkeypatch):

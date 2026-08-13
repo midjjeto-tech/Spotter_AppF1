@@ -35,8 +35,20 @@ class F1RAG:
     запросы до готовности возвращают пустую строку без блокировки.
     """
 
+    #: Состояние для интерфейса. Строка, а не bool: «выключен» и «почему
+    #: выключен» — разные вопросы, и пользователю нужен второй. Одного
+    #: WARNING в логе при старте оказалось мало: комментатор всю гонку работал
+    #: без базы знаний, а снаружи это выглядело как штатная работа. Молчаливая
+    #: деградация в этом проекте запрещена.
+    STATUS_LOADING = "loading"
+    STATUS_OK = "ok"
+    STATUS_NO_PACKAGE = "no-package"
+    STATUS_NO_FACTS = "no-facts"
+    STATUS_ERROR = "error"
+
     def __init__(self, facts_path: Path | None = None, model_name: str = _MODEL_NAME):
         self._available = False
+        self._status = self.STATUS_LOADING
         self._facts: list[str] = []
         self._embeddings: np.ndarray | None = None  # [N, dim] float32, L2-норма = 1
         self._model = None
@@ -77,15 +89,25 @@ class F1RAG:
         try:
             from sentence_transformers import SentenceTransformer  # noqa: F401
         except ImportError as exc:
-            _log.warning(
-                "F1RAG disabled (sentence-transformers not installed: %s). "
-                "Run: pip install sentence-transformers", exc,
+            # Совет «pip install» здесь давать НЕЛЬЗЯ: в собранном приложении
+            # он невыполним, а торчащий в логе призыв установить пакет выглядит
+            # как поломка, хотя это решение проекта. torch и transformers
+            # исключены из EXE намеренно (SpotterApp.spec, excludes; build.ps1
+            # роняет сборку, если они туда просочились), потому что тянут
+            # CUDA-стек на машину, где идёт сама игра. В обычном окружении
+            # пакет ставится и RAG включается сам.
+            _log.info(
+                "F1RAG выключен: нет sentence-transformers (%s). В собранном "
+                "приложении это штатно — torch исключён из сборки намеренно; "
+                "комментатор работает без базы знаний F1.", exc,
             )
+            self._status = self.STATUS_NO_PACKAGE
             self._ready.set()
             return
 
         if not self._facts_path.exists():
             _log.warning("F1RAG: knowledge base not found: %s", self._facts_path)
+            self._status = self.STATUS_NO_FACTS
             self._ready.set()
             return
 
@@ -99,6 +121,7 @@ class F1RAG:
                 for entry in raw
             ]
             if not self._facts:
+                self._status = self.STATUS_NO_FACTS
                 self._ready.set()
                 return
 
@@ -109,12 +132,21 @@ class F1RAG:
             if self._stop_event.is_set():
                 return
             self._available = True
+            self._status = self.STATUS_OK
             _log.info("F1RAG ready: %d facts, dim=%d",
                       len(self._facts), self._embeddings.shape[1])
         except Exception as exc:
             _log.warning("F1RAG init failed: %s", exc)
+            self._status = self.STATUS_ERROR
         finally:
             self._ready.set()
+
+    @property
+    def status(self) -> str:
+        """Одно из `STATUS_*`. Читается из другого потока, чем пишется, но
+        присваивание строки атомарно, а точность в пределах тика опроса тут
+        избыточна — блокировка была бы дороже пользы."""
+        return self._status
 
     def _build_or_load_embeddings(self) -> np.ndarray:
         _CACHE_DIR.mkdir(parents=True, exist_ok=True)

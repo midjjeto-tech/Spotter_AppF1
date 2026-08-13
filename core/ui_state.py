@@ -67,6 +67,9 @@ def initial_ui_state(
             "tyre_advice": "ok", "lap_count": 0, "advice": None,
         },
         "rivals": {"rivals": [], "rival_count": 0, "nearby_count": 0},
+        # Положение игрока в поле по секторам (core/sector_standing.py).
+        # None до первого завершённого круга — экран прячет блок целиком.
+        "field_pace": None,
         "broadcast_mode_enabled": False,
         "race_story": None,
         "voice_query": None,
@@ -247,12 +250,18 @@ class UIStateProjection:
         rivals: dict,
         track_ai: dict | None,
         track_name: str | None,
+        field_pace: dict | None = None,
     ) -> None:
         with self.lock:
             self._state["race_ai"] = deepcopy(race_ai)
             self._state["strategy_ai"] = deepcopy(strategy_ai)
             self._state["coach_ai"] = deepcopy(coach_ai)
             self._state["rivals"] = deepcopy(rivals)
+            # None означает «ещё не считали», и затирать им уже посчитанную
+            # раскладку нельзя: секция обновляется раз в круг, а сама проекция
+            # пересобирается на каждом снимке телеметрии.
+            if field_pace is not None:
+                self._state["field_pace"] = deepcopy(field_pace)
             if track_ai is not None:
                 projected = deepcopy(track_ai)
                 projected["track_name"] = track_name

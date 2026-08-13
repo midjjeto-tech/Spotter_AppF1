@@ -17,6 +17,8 @@ commentator/brain.py
 
 from __future__ import annotations
 
+import logging
+
 from commentator import templates
 from commentator.ai_provider import AIProvider
 from commentator.memory import PhraseMemory
@@ -26,6 +28,8 @@ try:
     from commentator.rag import F1RAG
 except Exception:  # noqa: BLE001 — любая ошибка импорта не ломает приложение
     F1RAG = None  # type: ignore[assignment,misc]
+
+_log = logging.getLogger(__name__)
 
 # Модель не всегда умеет вернуть по-настоящему ПУСТОЙ ответ на просьбу молчать:
 # иногда она отвечает сентинелом ТИШИНА (так и просим в personas.py) или эхом
@@ -67,6 +71,16 @@ class Commentator:
         self.memory = PhraseMemory()
         self.rag = F1RAG() if F1RAG is not None else None
 
+    def rag_status(self) -> str:
+        """Состояние базы знаний для интерфейса.
+
+        `no-module` отличается от `no-package`: первое означает, что сам модуль
+        rag.py не импортировался (сборка без него), второе — что нет
+        sentence-transformers. Снаружи это разные починки."""
+        if self.rag is None:
+            return "no-module"
+        return self.rag.status
+
     def start(self) -> None:
         if self.rag is not None:
             self.rag.start()
@@ -102,9 +116,10 @@ class Commentator:
         if self.broadcast_director is not None:
             msg = self.broadcast_director.generate(event, self.ai, self.persona, ai_ok)
             if msg is not None:
-                if msg.text:
-                    self.memory.append(msg.text, code)
-                return msg.text
+                text = self._reject_repeat(msg.text, code) if msg.text else msg.text
+                if text:
+                    self.memory.append(text, code)
+                return text
         from commentator import radio as _radio
         race_ai_data = dict(event.get("race_ai_data") or {})
         race_ai_data["driver"] = event.get("driver") or "Соперник"
@@ -115,6 +130,22 @@ class Commentator:
         if phrase:
             self.memory.append(phrase, code)
         return phrase
+
+    def _reject_repeat(self, phrase: str, code: str) -> str:
+        """Дословный повтор недавней реплики → тишина ('').
+
+        Тишина здесь не потеря: пустая строка уже означает «сказать нечего» по
+        всему пути генерации, и вызывающий кладёт событие в ленту как `muted`.
+        Молча это не происходит — строка в логе есть.
+
+        Фильтр стоит ТОЛЬКО на выходе LLM. Банк формулировок и шаблоны — путь
+        отказа, у них своя вариативность (`core/radio/variety.py`), и глушить их
+        значит оставить пилота вообще без ответа там, где модель уже не ответила.
+        """
+        if not self.memory.is_repeat(phrase):
+            return phrase
+        _log.info("commentator: дословный повтор подавлен (%s): %r", code, phrase)
+        return ""
 
     def _render_template(self, event: dict, code: str) -> str:
         """Шаблонная фраза + учёт в памяти — общий хвост для bypass-ветки
@@ -145,6 +176,8 @@ class Commentator:
             if phrase is not None:
                 if phrase and _is_silence(phrase):
                     phrase = ""          # сентинел/эхо инструкции = осознанная тишина
+                if phrase:
+                    phrase = self._reject_repeat(phrase, code)
                 if phrase:  # непустая = реальная фраза, запоминаем
                     self.memory.append(phrase, code)
                 return phrase            # '' = осознанная тишина; иначе — фраза ИИ

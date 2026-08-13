@@ -7,7 +7,7 @@ import pytest
 
 import core.engine as eng_mod
 from core.coach_ai.models import CornerMetrics
-from core.coach_ai.reference_store import ReferenceLap
+from core.coach_ai.reference_store import ReferenceLap, TrackHistory
 from core.engine import F1Engine
 
 
@@ -181,8 +181,9 @@ def _join_last_task(engine, timeout: float = 5.0) -> None:
 
 
 def test_background_load_installs_the_career_reference(engine, monkeypatch):
-    monkeypatch.setattr(eng_mod, "load_career_reference",
-                        lambda tid: ReferenceLap(88000, _lap(_flat(3400)), "career"))
+    monkeypatch.setattr(eng_mod, "load_track_history",
+                        lambda tid: TrackHistory(
+                            ReferenceLap(88000, _lap(_flat(3400)), "career")))
     engine._track_id = 7
     engine.coach_reference = None
 
@@ -197,8 +198,9 @@ def test_background_load_is_dropped_if_the_track_changed_meanwhile(engine, monke
     """Пилот успел выйти в меню и выбрать другую трассу, пока читался диск.
     Эталон с прошлой трассы — не просто устаревший, а прямо вредный: коуч начнёт
     сравнивать повороты Монцы с повортами Спа."""
-    monkeypatch.setattr(eng_mod, "load_career_reference",
-                        lambda tid: ReferenceLap(88000, _lap(_flat(3400)), "career"))
+    monkeypatch.setattr(eng_mod, "load_track_history",
+                        lambda tid: TrackHistory(
+                            ReferenceLap(88000, _lap(_flat(3400)), "career")))
     engine._track_id = 9          # трасса уже другая
     engine.coach_reference = None
 
@@ -212,8 +214,9 @@ def test_background_load_does_not_roll_the_target_back(engine, monkeypatch):
     """Пилот проехал круг быстрее карьерного рекорда, пока читался диск.
     Поставить карьерный эталон поверх — откатить цель НАЗАД, к более медленному
     кругу; `_note_lap_reference` обещает обратное."""
-    monkeypatch.setattr(eng_mod, "load_career_reference",
-                        lambda tid: ReferenceLap(95000, _lap(_flat(4200)), "career"))
+    monkeypatch.setattr(eng_mod, "load_track_history",
+                        lambda tid: TrackHistory(
+                            ReferenceLap(95000, _lap(_flat(4200)), "career")))
     engine._track_id = 7
     engine._note_lap_reference(_lap(_flat(3600)), lap_time_ms=90000)
 
@@ -230,7 +233,7 @@ def test_background_load_failure_leaves_the_coach_without_a_reference(engine, mo
     def _boom(_tid):
         raise OSError("archive unreadable")
 
-    monkeypatch.setattr(eng_mod, "load_career_reference", _boom)
+    monkeypatch.setattr(eng_mod, "load_track_history", _boom)
     engine._track_id = 7
     engine.coach_reference = None
 

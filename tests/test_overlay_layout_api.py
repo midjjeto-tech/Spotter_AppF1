@@ -80,6 +80,37 @@ def test_scale_round_trips_through_the_api(app):
     assert overlay_layout.load_scale("tower") == 1.4
 
 
+def test_enabled_round_trips_through_the_api(app):
+    """Выключение виджета — тот же документ, что позиция и размер."""
+    status, payload = call(
+        app, "/api/overlay/layout", "POST", {"widget": "radar", "enabled": False})
+
+    assert status.startswith("200")
+    assert payload["widgets"]["radar"]["enabled"] is False
+    assert overlay_layout.load_enabled("radar") is False
+
+    _status, payload = call(
+        app, "/api/overlay/layout", "POST", {"widget": "radar", "enabled": True})
+
+    assert payload["widgets"]["radar"]["enabled"] is True
+
+
+def test_switching_a_widget_off_does_not_reset_its_size(app):
+    """Пилот ждёт вернувшийся виджет прежним, а не сброшенным."""
+    call(app, "/api/overlay/layout", "POST", {"widget": "tower", "scale": 1.4})
+
+    _status, payload = call(
+        app, "/api/overlay/layout", "POST", {"widget": "tower", "enabled": False})
+
+    assert payload["widgets"]["tower"]["scale"] == 1.4
+
+
+def test_every_widget_starts_switched_on(app):
+    _status, payload = call(app, "/api/overlay/layout")
+
+    assert all(entry["enabled"] is True for entry in payload["widgets"].values())
+
+
 def test_unknown_widget_is_rejected_instead_of_creating_a_file(app):
     status, payload = call(
         app, "/api/overlay/layout", "POST", {"widget": "нет-такого", "scale": 1.2})

@@ -26,6 +26,18 @@ PROXIMITY_CODES: frozenset[str] = frozenset({
     "OVTK", "ATTACK", "BATTLE", "ATTACK_ZONE",
 })
 
+# Контакт — тоже «одна ситуация», но опознаётся он не дистанцией, а УЧАСТНИКАМИ.
+# За гонку 2026-08-11 пришло 32 COLL, и один инцидент дал десяток пересказов.
+#
+# Важно понимать границу: вызывающий (core/engine.py) применяет этот дедуп
+# только к некритическим событиям, а чужие аварии приходят критическими и сюда
+# не попадают вовсе. Их дословные повторы ловит другой рубеж —
+# `commentator/memory.py::PhraseMemory.is_repeat`. Здесь закрывается контакт
+# игрока (COLL/COLL_LIGHT), который повторно приезжает той же телеметрией.
+COLLISION_CODES: frozenset[str] = frozenset({
+    "COLL", "COLL_LIGHT", "COLL_HEAVY",
+})
+
 
 def gap_band(gap_ms: int | None) -> str | None:
     """Дистанция (мс) → грубая полоса. None если дистанции нет."""
@@ -64,7 +76,22 @@ class SituationDedup:
 
         Берём ДОМИНИРУЮЩИЙ (ближайший) бой: машина впереди или сзади; если рядом
         никого — отрыв до лидера. Сигнатура = (сторона, сосед, band)."""
-        if event.get("event_code", "") not in PROXIMITY_CODES:
+        code = event.get("event_code", "")
+
+        # Контакт опознаётся участниками, а не дистанцией: отрыв в момент
+        # столкновения ничего не говорит о том, ТОТ ЖЕ это инцидент или новый, а
+        # пара «кто с кем» — говорит. Пару берём неупорядоченной: «Леклер задел
+        # Хэмилтона» и «Хэмилтон задел Леклера» — один и тот же контакт.
+        if code in COLLISION_CODES:
+            pair = frozenset(
+                str(event.get(key) or "").strip().lower()
+                for key in ("driver", "target")
+            ) - {""}
+            if not pair:
+                return None
+            return ("collision", pair)
+
+        if code not in PROXIMITY_CODES:
             return None
 
         candidates: list[tuple[str, str | None, int]] = []

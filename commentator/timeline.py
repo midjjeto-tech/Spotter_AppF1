@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from collections import deque
 
-from core.ru_names import glossary as _name_glossary
+from core.ru_names import glossary as _name_glossary, surname_of
 
 
 def _fmt_laptime(ms: int | None) -> str | None:
@@ -34,6 +34,22 @@ def _fmt_gap(ms: int | None) -> str | None:
     if not ms or ms <= 0:
         return None
     return f"{ms / 1000.0:.1f}с"
+
+
+def _player_line(first_name: str, full_name: str | None) -> str:
+    """Строка ПИЛОТ: кто такой игрок и под каким именем он в остальном контексте.
+
+    Одного имени мало: в ленте событий игрок назван ФАМИЛИЕЙ, соседи и лидер —
+    полными именами, и модель, которой дали только «Шарль», берёт фамилию у
+    ближайшего названного гонщика. Поэтому здесь обе формы и обе роли явно.
+    Фамилии нет (кастомный пилот в одно слово) — остаётся прежняя короткая
+    строка, придумывать за игру нечего.
+    """
+    surname = surname_of(full_name) if full_name else None
+    if not surname or surname == first_name:
+        return f"ПИЛОТ: {first_name}."
+    return (f"ПИЛОТ: {full_name} — это ИГРОК, вся телеметрия ниже про него. "
+            f"В событиях он «{surname}»; обращаться к нему — «{first_name}».")
 
 
 class RaceTimeline:
@@ -164,14 +180,23 @@ class RaceTimeline:
             return None
         return "→".join(f"P{p}" for p in seq[-5:])
 
-    def render(self, trigger: dict | None = None, player_name: str | None = None) -> str:
+    def render(self, trigger: dict | None = None, player_name: str | None = None,
+               player_full_name: str | None = None) -> str:
         """Компактный текстовый контекст для LLM: ситуация + динамика + события.
 
         trigger — событие, спровоцировавшее запрос (для событийного режима); в
         ambient-режиме None. player_name — имя игрока (core.ru_names.first_name_of),
         None если неизвестно — тогда строки ПИЛОТ не будет, и персона "calm" не
         должна ничего придумывать (см. commentator/personas.py). Пустой таймлайн ->
-        минимальный контекст «нет данных»."""
+        минимальный контекст «нет данных».
+
+        player_full_name — полное имя того же человека. Без него строка была
+        «ПИЛОТ: Шарль.», а рядом стояли «лидер Джордж Расселл» полным именем и
+        события, где игрок назван «Леклер»; связать одно с другим модели нечем,
+        и разбор живого заезда 2026-08-11 показал результат: игрока весь заезд
+        звали Расселлом, вплоть до «Шарль Расселл борется за позицию». Имя и
+        фамилия нужны обе и в РАЗНЫХ ролях: фамилией о нём говорят, именем к
+        нему обращаются."""
         if not self._snapshots and not self._events:
             return "Гонка ещё не началась — данных телеметрии нет."
 
@@ -179,7 +204,7 @@ class RaceTimeline:
         cur = self._snapshots[-1] if self._snapshots else {}
 
         if player_name:
-            lines.append(f"ПИЛОТ: {player_name}.")
+            lines.append(_player_line(player_name, player_full_name))
 
         # --- Текущая ситуация ---
         lap = cur.get("lap")
@@ -303,7 +328,8 @@ class RaceTimeline:
             lines.append(f"ТОЛЬКО ЧТО: {trigger.get('event_code')} {who}{tgt}".strip())
 
         # --- Склонение имён (шпаргалка для LLM: копируй формы, не угадывай) ---
-        gloss = _name_glossary(self._context_names(cur, trigger))
+        gloss = _name_glossary(
+            self._context_names(cur, trigger, player_full_name))
         if gloss:
             lines.append(
                 "СКЛОНЕНИЕ ИМЁН (бери фамилии ТОЛЬКО в этих формах):\n" + gloss
@@ -311,9 +337,16 @@ class RaceTimeline:
 
         return "\n".join(lines)
 
-    def _context_names(self, cur: dict, trigger: dict | None) -> list[str]:
+    def _context_names(self, cur: dict, trigger: dict | None,
+                       player_full_name: str | None = None) -> list[str]:
         """Имена пилотов, упомянутых в текущем контексте — для шпаргалки склонений."""
         names: list[str] = []
+        # Игрок — первым. Раньше его фамилия попадала в шпаргалку только
+        # случайно (если он оказывался соседом или участником события), и
+        # склонять её модель была вынуждена наугад — при том что говорит она
+        # про игрока чаще, чем про кого-либо ещё.
+        if player_full_name:
+            names.append(player_full_name)
         for key in ("leader", "ahead", "behind"):
             if cur.get(key):
                 names.append(cur[key])

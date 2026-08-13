@@ -17,10 +17,13 @@ docs/superpowers/plans/2026-08-06-driving-coach-phase1.md). До калибро�
 """
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 
 from core.coach_ai.models import CornerMistake
 from core.packets import SURFACE_ON_TRACK
+
+_log = logging.getLogger(__name__)
 
 # ── Пороги (НЕ откалиброваны, см. Task 13) ───────────────────────────────────
 LOCKUP_SLIP = -0.25                # slip_ratio ниже этого при нажатом тормозе
@@ -33,6 +36,14 @@ UNDERSTEER_MAX_YAW_RATE = 0.10     # кузов не доворачивает, �
 OVERSTEER_SLIP_ANGLE = 0.15        # задние, рад
 OFFTRACK_MIN_WHEELS = 2            # поребрик за выезд не считается
 MIN_EVENT_DURATION_S = 0.20        # короче — шум подвески, не потеря сцепления
+
+#: Дольше — это уже не дискретная ошибка в повороте. Разбор живого заезда
+#: 2026-08-11 дал `lockup` длиной 9,7 с и `oversteer` 3,2 с: сигнал держался
+#: (или пропал вместе с телеметрией), автомат не закрывался, и событие
+#: получало прописку там, где НАЧАЛОСЬ, — на прямой. Такие срывы не просто
+#: бесполезны для урока: девятисекундное событие проезжает несколько поворотов
+#: и уносит их привязку с собой. Отбрасываем и пишем в лог.
+MAX_EVENT_DURATION_S = 3.0
 
 _REAR = ("rl", "rr")
 _FRONT = ("fl", "fr")
@@ -56,11 +67,17 @@ class SlipDetector:
 
     def __init__(self) -> None:
         self._ongoing: dict[str, _Ongoing] = {}
+        #: Виды, чей срыв был отброшен как зависший. Пока сигнал не отпустит,
+        #: новый срыв того же вида не открывается: иначе выброшенное событие
+        #: тут же порождало бы следующее из того же самого залипшего сигнала —
+        #: и вместо одной мусорной записи мы получали бы поток.
+        self._suppressed: set[str] = set()
 
     def reset(self) -> None:
         """Смена сессии или флэшбек: незакрытые события выбрасываются, а не
         дозакрываются — их место на трассе уже неактуально."""
         self._ongoing.clear()
+        self._suppressed.clear()
 
     def tick(
         self,
@@ -77,13 +94,22 @@ class SlipDetector:
         Место и фаза берутся на НАЧАЛЕ срыва, а не на конце: пилот ошибается на
         входе в поворот, а отпускает уже в апексе — «блокировка в апексе»
         отправила бы его чинить не то место.
+
+        Открытые срывы принудительно закрываются на смене круга и по
+        `MAX_EVENT_DURATION_S`: без этого автомат зависал, и событие уезжало на
+        чужой круг с пропиской на прямой.
         """
         finished: list[CornerMistake] = []
+        self._expire(now, lap)
         for kind, wheel, magnitude in self._candidates(frame):
             if magnitude is None:
+                # Сигнал отпустил — снимаем и подавление, и открытое событие.
+                self._suppressed.discard(kind)
                 done = self._close(kind, now)
                 if done is not None:
                     finished.append(done)
+                continue
+            if kind in self._suppressed:
                 continue
             cur = self._ongoing.get(kind)
             if cur is None:
@@ -96,6 +122,26 @@ class SlipDetector:
                 cur.peak = magnitude
                 cur.wheel = wheel
         return finished
+
+    def _expire(self, now: float, lap: int) -> None:
+        """Выбросить зависшие срывы. Ничего не возвращает намеренно: такое
+        событие нельзя ни озвучить, ни положить в урок — у него недостоверны и
+        длительность, и место. Но и потеряться молча оно не должно."""
+        for kind, cur in list(self._ongoing.items()):
+            duration = now - cur.started_at
+            too_long = duration > MAX_EVENT_DURATION_S
+            crossed_line = lap != cur.lap
+            if not (too_long or crossed_line):
+                continue
+            del self._ongoing[kind]
+            if too_long:
+                # Смена круга — событие штатное, сигнал при этом здоров.
+                # Залипший сигнал — нет, и открывать по нему новое нельзя.
+                self._suppressed.add(kind)
+            _log.info(
+                "coach: срыв %s отброшен — %s (длительность %.1fс, круг %s→%s)",
+                kind, "слишком длинный" if too_long else "пересёк линию круга",
+                duration, cur.lap, lap)
 
     def _close(self, kind: str, now: float) -> CornerMistake | None:
         cur = self._ongoing.pop(kind, None)

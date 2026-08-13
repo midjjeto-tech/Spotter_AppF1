@@ -76,6 +76,20 @@ _URGENCY_RANK: dict[str, int] = {
 }
 _DEFAULT_RANK = _URGENCY_RANK["normal"]
 
+# Категории, реплики которых НЕ рвут звучащую реплику той же категории.
+# Продублировано из core/radio/policy.py по той же причине, что _URGENCY_RANK
+# выше: new_tts не должен зависеть от core.
+#
+# Зачем это нужно. Споттер приходит с priority="critical", а critical рвёт
+# playback безусловно — включая playback другого предупреждения споттера. В
+# плотной группе стороны меняются каждые пару секунд, и разбор живого заезда
+# 2026-08-11 показал, чем это кончается: 222 реплики за 33 минуты гонки, из них
+# 63 оборваны на полуслове. Обрывать инженера и комментатора споттер по-прежнему
+# вправе — это безопасность; обрывать САМОГО СЕБЯ смысла нет, второе
+# предупреждение всё равно ждёт своей очереди и живёт по своему ttl (2 с), так
+# что опоздавшее отсеется само.
+_NO_SELF_INTERRUPT: frozenset[str] = frozenset({"spotter_side"})
+
 
 @dataclass(frozen=True, slots=True)
 class _Item:
@@ -98,6 +112,10 @@ class _Item:
     #: `current_item` — тем же приёмом, что и `still_valid`, не меняя сигнатуру
     #: колбэка. Поле последнее: `_Item` создаётся позиционно.
     urgency: str | None = None
+    #: Категория реплики (`core/radio/policy.py::category_for`). Нужна, чтобы
+    #: critical не рвал звучащую реплику ТОЙ ЖЕ категории — см.
+    #: `_NO_SELF_INTERRUPT`. Поле последнее: `_Item` создаётся позиционно.
+    category: str | None = None
 
     def resolve_text(self) -> str | None:
         """Текст для синтеза, либо None если сообщение потеряло актуальность."""
@@ -146,13 +164,16 @@ class TTSQueue:
                 urgency: str | None = None,
                 message_id: str | None = None,
                 prepare: Callable[[], str | None] | None = None,
-                still_valid: Callable[[], bool] | None = None) -> EnqueueResult:
+                still_valid: Callable[[], bool] | None = None,
+                category: str | None = None) -> EnqueueResult:
         """Поставить фразу в очередь. Возвращает ИСХОД, который нельзя терять.
 
         `priority` — прежнее двухуровневое поле ("normal" | "critical"), от него
         зависит вытеснение ожидающих и прерывание звучащего. `urgency` — новая
         четырёхуровневая шкала (core/radio/policy.py); если не передана,
         выводится из `priority`, поэтому старые вызывающие работают как раньше.
+        `category` — категория реплики оттуда же; не передана = поведение как
+        раньше (critical рвёт всё).
         """
         rank = self._rank(priority, urgency)
 
@@ -166,14 +187,20 @@ class TTSQueue:
                 # после этого пуста, поэтому critical физически не может
                 # получить REJECTED_FULL — гарантия «critical нельзя молча
                 # потерять» держится на этом, плюс на локе выше.
+                #
+                # Единственное исключение — реплика той же категории из
+                # _NO_SELF_INTERRUPT: её playback договаривает. Вытеснение
+                # ОЖИДАЮЩИХ при этом остаётся: свежее предупреждение важнее
+                # протухшего, и гарантия выше не страдает — элемент всё равно
+                # ставится в очередь.
                 dropped = self._drain_locked()
-                if self._stop_fn is not None:
+                if self._stop_fn is not None and not self._would_interrupt_peer(category):
                     try:
                         self._stop_fn()
                     except Exception:  # noqa: BLE001
                         pass
                 self._put_locked(rank, text, persona, message_id,
-                                 prepare, still_valid, urgency)
+                                 prepare, still_valid, urgency, category)
                 if dropped:
                     _log.info(
                         "TTSQueue: critical preempted %d pending phrase(s)",
@@ -206,6 +233,23 @@ class TTSQueue:
                 EnqueueOutcome.ACCEPTED_EVICTED,
                 (victim.message_id,) if victim.message_id else ())
 
+    def _would_interrupt_peer(self, category: str | None) -> bool:
+        """True, если прерывание оборвало бы реплику той же категории.
+
+        Читаем `_current_item` из чужого потока намеренно: воркер строго
+        последователен, а гонка здесь безобидна в обе стороны. Прочли None или
+        уже сменившийся элемент — просто прервём, то есть откатимся к прежнему
+        поведению; лишней тишины это не создаёт.
+        """
+        if category is None or category not in _NO_SELF_INTERRUPT:
+            return False
+        current = self._current_item
+        if current is None or current.category != category:
+            return False
+        _log.info("TTSQueue: critical %s не рвёт звучащую реплику той же "
+                  "категории", category)
+        return True
+
     @staticmethod
     def _rank(priority: str, urgency: str | None) -> int:
         if urgency is not None:
@@ -216,10 +260,11 @@ class TTSQueue:
                     message_id: str | None,
                     prepare: Callable[[], str | None] | None = None,
                     still_valid: Callable[[], bool] | None = None,
-                    urgency: str | None = None) -> None:
+                    urgency: str | None = None,
+                    category: str | None = None) -> None:
         self._seq += 1
         item = _Item(rank, self._seq, text, persona, message_id,
-                     prepare, still_valid, urgency)
+                     prepare, still_valid, urgency, category)
         # put_nowait не может бросить Full: вызывающие ветки уже освободили
         # место (проверка qsize / вытеснение / полный сброс под тем же локом).
         self._queue.put_nowait((rank, item.seq, item))

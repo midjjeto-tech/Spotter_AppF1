@@ -1,4 +1,5 @@
 import app
+from core import overlay_layout
 
 
 class _Event:
@@ -90,9 +91,14 @@ def test_overlay_creates_one_compact_widget_window(monkeypatch):
             self.window = window
             self.spec = spec
             self.title = title
+            self.shapes = []
 
         def start(self):
             overlay_starts.append(True)
+
+        def apply_page_shape(self, payload):
+            self.shapes.append(payload)
+            return True
 
         def stop(self):
             pass
@@ -140,9 +146,32 @@ def test_overlay_creates_one_compact_widget_window(monkeypatch):
     assert kwargs.get("hidden", False) is False
     assert kwargs["width"] < 800
     assert kwargs["height"] < 400
+    # Нижний порог окна обязан пропускать САМЫЙ МАЛЕНЬКИЙ легальный размер.
+    # pywebview кладёт min_size в MinimumSize формы, форма отвечает им на
+    # WM_GETMINMAXINFO, и Windows молча зажимает SetWindowPos меньше порога:
+    # с порогом в базовый размер масштаб 0.6 уменьшал только содержимое
+    # страницы, а окно оставалось прежним и светило чёрным фоном поверх игры.
+    spec = app.HUD_WIDGETS["inputs"]
+    assert kwargs["min_size"][0] <= spec.width * overlay_layout.MIN_SCALE
+    assert kwargs["min_size"][1] <= spec.height * overlay_layout.MIN_SCALE
     # pywebview's loaded event is not a reliable startup seam for a hidden,
     # off-screen WebView2 window. The controller must start from webview.start's
     # GUI hook so its native monitor always comes up.
     assert len(gui_start_callbacks) == 1
     assert gui_start_callbacks[0] is not None
     assert overlay_starts == [True]
+
+    # Мост в страницу обязан быть проложен И подключён к контроллеру: без него
+    # окно останется чёрным прямоугольником вокруг круглого радара, а пустая
+    # рация — тёмной карточкой поверх игры. Проверяется именно проводка,
+    # потому что сам мост тривиален, а забыть присвоить контроллер — легко.
+    bridge = kwargs["js_api"]
+    payload = {"visible": True, "shapes": [{"kind": "rect", "x": 0, "y": 0, "w": 1, "h": 1}]}
+    assert bridge.set_shape(payload) is True
+    assert bridge._controller.shapes == [payload]
+    # Публичных атрибутов у моста быть НЕ ДОЛЖНО, кроме самих методов:
+    # pywebview рекурсивно обходит их, чтобы выставить в JS, и на ссылке
+    # `controller` уходил в объектный граф WinForms до «maximum recursion
+    # depth exceeded». Тест держит это свойство, потому что вернуть публичное
+    # имя обратно — правка на один символ, а ломается вся форма окна.
+    assert [name for name in dir(bridge) if not name.startswith("_")] == ["set_shape"]

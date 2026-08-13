@@ -31,14 +31,34 @@ def test_spotter_codes_route_to_spotter_channel(code):
     "TYRE_WARN", "PENA", "RDFL",
     "SAFETY_CAR_DEPLOYED", "SAFETY_CAR_ENDING", "SAFETY_CAR_CLEAR",
     "USER_Q", "PRE_RACE_PEP_TALK",
+    "CAREER_PB", "CAREER_SECTOR_PB", "F1_BENCH", "F1_SECTOR_BENCH",
 ])
 def test_engineer_codes_route_to_engineer_channel(code):
     assert policy.channel_for({"event_code": code}) == policy.CHANNEL_ENGINEER
 
 
+def test_personal_records_are_spoken_by_the_engineer():
+    """Реплика на «ты» звучит голосом того, кто на «ты» и говорит.
+
+    Живой заезд 2026-08-09: «Лучший круг в этой гонке! Отставание 16.3 секунды
+    от личного рекорда трассы.» и «Сектор 2 — твой лучший в сессии.» уезжали на
+    канал комментатора — то есть при персоне `calm` их произносил женский голос
+    Марины, пока инженером был выбран Игорь Волков. Пилот слышал, как его
+    напарник посреди заезда меняет пол.
+
+    Канал здесь несёт не только голос, но и подпись в карточке оверлея
+    (`speaker_label_for`), поэтому проверяем оба следствия.
+    """
+    for code in ("CAREER_PB", "CAREER_SECTOR_PB", "F1_BENCH", "F1_SECTOR_BENCH"):
+        channel = policy.channel_for({"event_code": code})
+        assert channel == policy.CHANNEL_ENGINEER, code
+        assert policy.voice_persona_for(channel) == "engineer", code
+        assert policy.speaker_label_for(channel) == "Инженер", code
+
+
 @pytest.mark.parametrize("code", [
     "OVTK", "FTLP", "COLL", "RTMT", "RCWN", "CHQF", "SSTA", "AMBIENT",
-    "ATTACK", "BATTLE", "MILESTONE", "CAREER_PB", "F1_BENCH", "STORY",
+    "ATTACK", "BATTLE", "MILESTONE", "STORY",
     "FINAL_LAP", "CHAMPIONSHIP",
 ])
 def test_remaining_codes_route_to_commentator(code):

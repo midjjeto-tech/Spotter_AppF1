@@ -32,6 +32,7 @@ class TrackLimitsTracker:
     def __init__(self) -> None:
         self._last_count: int | None = None
         self._last_announcement_t: float = 0.0
+        self._penalties: int = 0
 
     def check_warning(self, count: int, now: float) -> str | None:
         """Один тик LapData. count — текущее значение
@@ -56,8 +57,25 @@ class TrackLimitsTracker:
         вызывающий не должен ставить компаньон-реплику в очередь ещё раз."""
         should_announce = now - self._last_announcement_t >= SUPPRESSION_WINDOW_S
         self._last_announcement_t = now
+        # Счёт ведём БЕЗУСЛОВНО, по той же причине, что и метку выше: штраф
+        # случился независимо от того, объявляли мы его или промолчали. Иначе
+        # подавленный компаньон обнулял бы эскалацию, и второй штраф звучал бы
+        # как первый.
+        self._penalties += 1
         return should_announce
+
+    def penalty_tier(self) -> int:
+        """Ступень компаньон-реплики: 1, 2 или 3+ (`track_limits.penalty_N`).
+
+        Считаем ШТРАФЫ за сессию, а не предупреждения игры: игра обнуляет
+        m_cornerCuttingWarnings, когда превращает предупреждения в штраф (в
+        логе живого заезда счётчик ходит 2→3→2), и ступень по нему прыгала бы
+        туда-сюда. Число штрафов монотонно — ровно то, что должен слышать
+        пилот.
+        """
+        return min(max(self._penalties, 1), 3)
 
     def reset(self) -> None:
         self._last_count = None
         self._last_announcement_t = 0.0
+        self._penalties = 0

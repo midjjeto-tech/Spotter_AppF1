@@ -10,6 +10,7 @@ class SessionRecorder:
         self._coach_top: list[dict] = []
         self._reference_lap: dict | None = None
         self._garage: dict | None = None
+        self._lesson: dict | None = None
         self._race_map: dict | None = None
         self._done = False
 
@@ -19,6 +20,7 @@ class SessionRecorder:
         self._coach_top = []
         self._reference_lap = None
         self._garage = None
+        self._lesson = None
         self._race_map = None
         self._done = False
 
@@ -44,6 +46,15 @@ class SessionRecorder:
             "lap_time_ms": lap_time_ms,
             "corners": {str(cid): body for cid, body in corners.items()},
         }
+
+    def set_coach_lesson(self, lesson: dict | None) -> None:
+        """Разбор сессии: потенциал круга, куда ушло время, что дальше.
+
+        Уезжает в файл заезда не только ради экрана «Итоги»: следующий визит на
+        эту трассу читает его отсюда (`core/coach_ai/reference_store.py`) и
+        показывает пилоту, сдвинулось ли то, над чем работали в прошлый раз.
+        Без этого каждая сессия начинается с чистого листа."""
+        self._lesson = dict(lesson) if lesson else None
 
     def set_coach_map(self, rows: list[dict], top_corners: list[dict]) -> None:
         """Карта ошибок пилотажа за сессию.
@@ -82,6 +93,7 @@ class SessionRecorder:
                 "coach_top_corners": list(self._coach_top),
                 "reference_lap": self._reference_lap,
                 "garage": self._garage,
+                "coach_lesson": self._lesson,
                 "race_map": self._race_map}
         try:
             return archive.save_game_session(data)

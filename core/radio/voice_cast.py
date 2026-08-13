@@ -54,6 +54,10 @@ class EngineerCharacter:
     #: Минимум ДВА голоса — инженер разрешается вторым (см. шапку модуля).
     voices: tuple[str, ...]
     speed: float
+    #: Пол персонажа: "m" | "f". Голос обязан ему соответствовать — раздача
+    #: пропускает несовпадающие (см. `_first_free`). Без этого поля Соколова
+    #: получала `alexander`, когда `marina` уходила комментатору.
+    gender: str = "m"
     #: Доля реплик, начинающихся с обращения по имени. Часть характера:
     #: наставник зовёт по имени чаще сухого профессионала. Ноль означает
     #: «никогда»; выше 0.5 не поднимать — обращение в каждой второй фразе
@@ -67,13 +71,19 @@ VOLKOV = EngineerCharacter(
     voices=("alexander", "kirill"),
     speed=1.0,
     address_rate=0.12,
+    gender="m",
 )
 SOKOLOVA = EngineerCharacter(
     character_id="sokolova",
     display_name="МАРИНА СОКОЛОВА",
-    voices=("marina", "alexander"),
+    # Женский премиальный голос ровно один, поэтому запасного варианта у неё
+    # нет и быть не может: список короче правила «N-й по счёту» намеренно, и
+    # занятая `marina` обязана дать громкий `VoiceCastError`, а не тихую
+    # подмену мужским голосом. Комментатор `marina` больше не забирает.
+    voices=("marina",),
     speed=0.95,
     address_rate=0.30,
+    gender="f",
 )
 GROM = EngineerCharacter(
     character_id="grom",
@@ -81,6 +91,7 @@ GROM = EngineerCharacter(
     voices=("anton", "kirill"),
     speed=1.1,
     address_rate=0.15,
+    gender="m",
 )
 
 CHARACTERS: MappingProxyType[str, EngineerCharacter] = MappingProxyType({
@@ -93,6 +104,9 @@ DEFAULT_CHARACTER = VOLKOV.character_id
 #: Споттер: три голоса — необходимость, а не запас (см. шапку).
 SPOTTER_VOICES: tuple[str, ...] = ("kirill", "anton", "alexander")
 SPOTTER_SPEED = 1.1
+#: Споттер мужской у всех пользователей — выбора голоса ему не даётся вовсе
+#: (см. шапку), поэтому пол тут константа, а не настройка.
+SPOTTER_GENDER = "m"
 
 #: Роли говорят ровно нейтрально: «характер» несёт ТЕКСТ и темп, не legacy-роль
 #: SpeechKit. Премиальные нейроголоса эмоции всё равно не поддерживают
@@ -148,12 +162,23 @@ class VoiceCastError(RuntimeError):
     коллизий не было, и тихая коллизия хуже громкой ошибки."""
 
 
-def _first_free(preferences: tuple[str, ...], taken: set[str]) -> str:
+def _first_free(preferences: tuple[str, ...], taken: set[str],
+                gender: str) -> str:
+    """Первый свободный голос НУЖНОГО пола из списка предпочтений.
+
+    Пол проверяется здесь, а не доверяется составу списков, по той же причине,
+    по которой здесь проверяется занятость: список правит человек, и
+    несовпадение обязано быть громким. Незнакомый голос (нет в `VOICE_GENDER`)
+    считается несовпадающим — «пол неизвестен» это не «сойдёт»."""
     for voice in preferences:
-        if voice not in taken:
-            return voice
+        if voice in taken:
+            continue
+        if voices.gender_of(voice) != gender:
+            continue
+        return voice
     raise VoiceCastError(
-        f"свободного голоса нет: preferences={preferences!r}, taken={taken!r}")
+        f"свободного голоса нет: preferences={preferences!r}, "
+        f"taken={taken!r}, gender={gender!r}")
 
 
 def resolve(persona: str, character_id: str | None = None) -> dict[str, dict]:
@@ -168,10 +193,10 @@ def resolve(persona: str, character_id: str | None = None) -> dict[str, dict]:
     taken = {commentator_voice}
 
     engineer = character(character_id)
-    engineer_voice = _first_free(engineer.voices, taken)
+    engineer_voice = _first_free(engineer.voices, taken, engineer.gender)
     taken.add(engineer_voice)
 
-    spotter_voice = _first_free(SPOTTER_VOICES, taken)
+    spotter_voice = _first_free(SPOTTER_VOICES, taken, SPOTTER_GENDER)
 
     return {
         SLOT_ENGINEER: {

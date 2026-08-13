@@ -42,14 +42,35 @@ def parse_corners(raw: dict | None) -> dict[int, CornerMetrics]:
     return out
 
 
-def load_career_reference(track_id: int) -> ReferenceLap | None:
-    """Самый быстрый круг на трассе среди всех сессий с записанным эталоном."""
+@dataclass
+class TrackHistory:
+    """Всё, что архив помнит про эту трассу.
+
+    Две вещи в одной структуре, потому что достаются они одним и тем же
+    проходом по архиву: эталон — цель, прошлый разбор — точка отсчёта прогресса.
+    Раздельные загрузчики означали бы два полных чтения диска ради одного
+    события «сменилась трасса»."""
+    reference: ReferenceLap | None = None
+    last_lesson: dict | None = None
+
+
+def load_track_history(track_id: int) -> TrackHistory:
+    """Эталон и последний разбор на этой трассе — за один проход по архиву."""
     # iter_game_sessions, а не list_game_sessions + load_game_session: вторая
     # пара разбирала весь архив ДВАЖДЫ (список уже читает каждый файл целиком).
+    # Порядок — новые первыми, поэтому первый найденный разбор и есть прошлый
+    # визит; эталону же порядок безразличен, ему нужен минимум по всем.
     best: ReferenceLap | None = None
+    lesson: dict | None = None
     for _path, data in archive.iter_game_sessions():
         if data.get("track_id") != track_id:
             continue
+
+        if lesson is None:
+            candidate = data.get("coach_lesson")
+            if isinstance(candidate, dict) and candidate:
+                lesson = candidate
+
         raw = data.get("reference_lap") or {}
         lap_ms = raw.get("lap_time_ms") or 0
         if lap_ms <= 0:
@@ -60,4 +81,9 @@ def load_career_reference(track_id: int) -> ReferenceLap | None:
         if best is None or lap_ms < best.lap_time_ms:
             best = ReferenceLap(lap_time_ms=lap_ms, corners=corners,
                                 source="career")
-    return best
+    return TrackHistory(reference=best, last_lesson=lesson)
+
+
+def load_career_reference(track_id: int) -> ReferenceLap | None:
+    """Самый быстрый круг на трассе среди всех сессий с записанным эталоном."""
+    return load_track_history(track_id).reference

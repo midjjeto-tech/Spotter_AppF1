@@ -220,3 +220,51 @@ def test_track_manager_to_dict_keys():
     d = ctx.to_dict()
     for key in ("corner", "corner_id", "corner_type", "phase", "sector", "attack_zone", "defense_advice"):
         assert key in d
+
+
+# ---------------------------------------------------------------------------
+# Зона торможения — дистанция, а не доля круга.
+# Разбор живого заезда 2026-08-11: 0.018 круга = 97 м на Майами, а блокировка
+# колеса на 224 км/ч случалась раньше и попадала в «straight», теряя поворот.
+# ---------------------------------------------------------------------------
+
+def test_braking_offset_is_a_distance_not_a_share_of_the_lap():
+    from core.track_ai.corners import BRAKING_ZONE_M, braking_offset_for
+    # Одна и та же дистанция торможения — разная доля круга.
+    monaco, spa = braking_offset_for(3337.0), braking_offset_for(7004.0)
+    assert monaco > spa
+    assert monaco * 3337.0 == pytest.approx(BRAKING_ZONE_M)
+    assert spa * 7004.0 == pytest.approx(BRAKING_ZONE_M)
+
+
+def test_braking_offset_falls_back_when_track_length_is_unknown():
+    from core.track_ai.corners import BRAKING_OFFSET, braking_offset_for
+    assert braking_offset_for(0.0) == BRAKING_OFFSET
+    assert braking_offset_for(-1.0) == BRAKING_OFFSET
+
+
+def test_braking_zone_does_not_reach_into_the_previous_corner():
+    """Повороты вплотную: торможение в связке принадлежит ПЕРВОМУ повороту."""
+    corners = [_chicane(id=1, start=0.30, end=0.38),
+               _hairpin(id=2, start=0.40, end=0.45)]
+    # Широкая зона (0.05) без ограничителя утащила бы точку 0.37 ко второму
+    # повороту, хотя машина ещё внутри первого.
+    c = get_corner(0.37, corners, 0.05)
+    assert c is not None and c.id == 1
+    # Сразу за выходом из первого — уже торможение во второй.
+    c = get_corner(0.385, corners, 0.05)
+    assert c is not None and c.id == 2
+
+
+def test_braking_zone_of_the_first_corner_reaches_across_the_start_line():
+    """Тормозят в первый поворот ещё на стартовой прямой, до линии круга."""
+    corners = [_hairpin(id=1, start=0.01, end=0.05),
+               _chicane(id=2, start=0.30, end=0.38)]
+    c = get_corner(0.985, corners, 0.03)
+    assert c is not None and c.id == 1
+    # Середина круга по-прежнему прямая.
+    assert get_corner(0.60, corners, 0.03) is None
+
+
+def test_no_corners_is_not_a_crash():
+    assert get_corner(0.5, [], 0.03) is None

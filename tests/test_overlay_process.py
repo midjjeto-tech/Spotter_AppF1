@@ -34,10 +34,22 @@ class _Socket:
         self.sent.append((payload, address))
 
 
-def test_overlay_process_uses_separate_python_process_and_authenticated_commands(monkeypatch):
+def _fake_widget_flags(monkeypatch, disabled=()):
+    """Галочки «виджет нужен» из памяти, а не с диска разработчика."""
+    flags = {widget_id: widget_id not in set(disabled) for widget_id in HUD_WIDGETS}
+    stamps = {widget_id: 0.0 for widget_id in HUD_WIDGETS}
+    monkeypatch.setattr(
+        "core.overlay_process.overlay_layout.load_enabled",
+        lambda widget_id: flags.get(widget_id, True))
+    monkeypatch.setattr(
+        "core.overlay_process.overlay_layout.revision",
+        lambda widget_id: stamps.get(widget_id, 0.0))
+    return flags, stamps
+
+
+def _fake_launcher(monkeypatch):
     launched = []
     processes = []
-    _Socket.sent = []
 
     def launch(command, **kwargs):
         process = _Process()
@@ -45,11 +57,23 @@ def test_overlay_process_uses_separate_python_process_and_authenticated_commands
         launched.append((command, kwargs))
         return process
 
-    monkeypatch.setattr(
-        "core.overlay_process.subprocess.Popen",
-        launch,
-    )
+    monkeypatch.setattr("core.overlay_process.subprocess.Popen", launch)
     monkeypatch.setattr("core.overlay_process.socket.socket", lambda *_args: _Socket())
+    return launched, processes
+
+
+def _widget_of(command):
+    return command[command.index("--overlay-widget") + 1]
+
+
+def _port_of(command):
+    return int(command[command.index("--overlay-port") + 1])
+
+
+def test_overlay_process_uses_separate_python_process_and_authenticated_commands(monkeypatch):
+    _Socket.sent = []
+    _fake_widget_flags(monkeypatch)
+    launched, processes = _fake_launcher(monkeypatch)
 
     controller = OverlayProcessController(
         entrypoint=r"G:\Spotter App\app.pyw",
@@ -84,6 +108,116 @@ def test_overlay_process_uses_separate_python_process_and_authenticated_commands
         assert (b"secret:toggle", ("127.0.0.1", port)) in _Socket.sent
         assert (b"secret:close", ("127.0.0.1", port)) in _Socket.sent
     assert all(process.waited == [2.0] for process in processes)
+
+
+def _controller(**kwargs):
+    return OverlayProcessController(
+        entrypoint=r"G:\Spotter App\app.pyw",
+        port=8766,
+        token="secret",
+        parent_pid=42,
+        python_executable=r"C:\Python312\pythonw.exe",
+        frozen=False,
+        **kwargs,
+    )
+
+
+def test_switched_off_widget_costs_no_process_and_leaves_ports_alone(monkeypatch):
+    """Смысл выключения — не занимать память на машине, которая тянет F1 25.
+
+    И отдельно: порт обязан оставаться привязанным к МЕСТУ виджета в
+    HUD_WIDGETS. Считай мы смещение по запущенным, пропуск одного сдвинул бы
+    порты всех следующих, и Ctrl+Alt+O уходил бы не в те окна.
+    """
+    _Socket.sent = []
+    order = list(HUD_WIDGETS)
+    off, after = order[1], order[2]
+    _fake_widget_flags(monkeypatch, disabled=[off])
+    launched, _processes = _fake_launcher(monkeypatch)
+
+    controller = _controller()
+    controller._start_enabled()
+
+    started = {_widget_of(command): _port_of(command) for command, _kwargs in launched}
+    assert off not in started
+    assert len(started) == len(HUD_WIDGETS) - 1
+    assert started[after] == 8766 + order.index(after)
+
+
+def test_switching_a_widget_off_closes_exactly_that_process(monkeypatch):
+    """Галочка снимается во время гонки — перезапуск приложения не нужен."""
+    _Socket.sent = []
+    order = list(HUD_WIDGETS)
+    victim = order[3]
+    flags, stamps = _fake_widget_flags(monkeypatch)
+    launched, processes = _fake_launcher(monkeypatch)
+
+    controller = _controller()
+    controller._start_enabled()
+    started = len(launched)
+
+    flags[victim] = False
+    stamps[victim] = 1.0
+    controller.sync_enabled()
+
+    assert (b"secret:close", ("127.0.0.1", 8766 + order.index(victim))) in _Socket.sent
+    assert sum(1 for _payload, _address in _Socket.sent) == 1  # соседей не трогали
+    assert len(launched) == started  # и никого не поднимали заново
+
+
+def test_switching_a_widget_back_on_starts_it_again(monkeypatch):
+    _Socket.sent = []
+    order = list(HUD_WIDGETS)
+    victim = order[3]
+    flags, stamps = _fake_widget_flags(monkeypatch, disabled=[victim])
+    launched, _processes = _fake_launcher(monkeypatch)
+
+    controller = _controller()
+    controller._start_enabled()
+    assert victim not in {_widget_of(command) for command, _kwargs in launched}
+
+    flags[victim] = True
+    stamps[victim] = 1.0
+    controller.sync_enabled()
+
+    revived = [command for command, _kwargs in launched if _widget_of(command) == victim]
+    assert len(revived) == 1
+    assert _port_of(revived[0]) == 8766 + order.index(victim)
+
+
+def test_unchanged_flags_do_not_re_read_the_documents(monkeypatch):
+    """Галочку трогают раз в сезон, а обход идёт каждые пару секунд."""
+    _Socket.sent = []
+    _fake_widget_flags(monkeypatch)
+    _fake_launcher(monkeypatch)
+    reads = []
+    monkeypatch.setattr(
+        "core.overlay_process.overlay_layout.load_enabled",
+        lambda widget_id: reads.append(widget_id) or True)
+
+    controller = _controller()
+    controller.sync_enabled()  # первый обход запоминает отметки
+    reads.clear()
+
+    controller.sync_enabled()
+
+    assert reads == []
+
+
+def test_shutdown_stops_the_supervisor_from_reviving_widgets(monkeypatch):
+    """Иначе супервизор поднимал бы окна ровно в момент закрытия приложения."""
+    _Socket.sent = []
+    _fake_widget_flags(monkeypatch)
+    launched, _processes = _fake_launcher(monkeypatch)
+
+    controller = _controller()
+    controller._start_enabled()
+    controller.close()
+    launched.clear()
+
+    controller.sync_enabled()
+
+    assert launched == []
 
 
 class _Overlay:

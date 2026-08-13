@@ -74,12 +74,53 @@ const _STYLE_LABELS: Record<string, string> = {
   fading:      "↓ спад",
 }
 
+// Причина потери коротким словом. Два источника в одном словаре: срывы
+// (core/coach_ai/slip.py) и отклонения техники от эталона (compare.py). Полная
+// формулировка приезжает с бэкенда в `evidence` — здесь только ярлык.
+const _CAUSE_LABELS: Record<string, string> = {
+  lockup:     "блокировка",
+  wheelspin:  "пробуксовка",
+  understeer: "снос",
+  oversteer:  "занос",
+  offtrack:   "выезд",
+  brake:      "раннее торможение",
+  min_speed:  "медленный апекс",
+  throttle:   "поздний газ",
+}
+
+/** 92 400 → «1:32,40». Формат тот же, что в core/coach_ai/lesson.py — но там
+ *  он для текста вердикта и архива, здесь для чисел на экране. */
+function lapTime(ms: number | null | undefined): string {
+  if (ms == null || ms <= 0) return "—"
+  const minutes = Math.floor(ms / 60000)
+  const seconds = Math.floor((ms % 60000) / 1000)
+  const hundredths = Math.floor((ms % 1000) / 10)
+  const pad = (n: number) => String(n).padStart(2, "0")
+  return minutes > 0
+    ? `${minutes}:${pad(seconds)},${pad(hundredths)}`
+    : `${seconds},${pad(hundredths)}`
+}
+
+/** 420 → «0,42 с». Без хвостового нуля: «0,40 с» читается как точность, которой
+ *  у замера нет. */
+function seconds(ms: number | null | undefined): string {
+  if (ms == null) return "—"
+  const text = (Math.abs(ms) / 1000).toFixed(2).replace(/0$/, "").replace(/\.$/, "")
+  return `${text.replace(".", ",")} с`
+}
+
 export function DebriefView({ state }: { state: SpotterState | null }) {
   const t = state?.telemetry
   const coach = state?.coach_ai
   const topCorners = coach?.top_corners ?? []
   const referenceDeltas = coach?.reference_deltas ?? []
   const garage = coach?.garage
+  const health = coach?.health ?? null
+  const fieldPace = state?.field_pace ?? null
+  const lesson = coach?.lesson ?? null
+  // Работа берётся из разбора, а не из соседнего поля: в архиве живёт только
+  // `lesson`, и экран, читающий файл заезда, обязан показать то же самое.
+  const focus = lesson?.focus ?? coach?.focus ?? null
   const strategy = state?.strategy_ai
   const rivals = state?.rivals
   const events = (state?.feed ?? []).slice(0, 5).map(feedToEvent)
@@ -179,6 +220,221 @@ export function DebriefView({ state }: { state: SpotterState | null }) {
         )}
       </Panel>
 
+      {/* Урок (фаза 4) — вердикт сессии, а не таблица.
+          Стоит первым и на всю ширину сознательно: до него дебриф показывал
+          цифры (консистентность, слабый сектор, счётчик ошибок), из которых
+          пилот сам должен был сделать вывод. Три вопроса, на которые он
+          отвечает: сколько осталось в круге, где именно и что делать дальше.
+          Блок отсутствует целиком, пока данных нет — прочерк читается как
+          поломка. */}
+      {lesson && (
+        <Panel label="Урок" action={
+          <div className="flex items-center gap-1.5">
+            <Target className="h-3 w-3 text-muted-foreground" />
+            <span className="label-mono text-[10px] text-muted-foreground">
+              {focus ? `в работе: поворот ${focus.corner_id}` : "разбор сессии"}
+            </span>
+          </div>
+        }>
+          <div className="grid grid-cols-3 gap-5">
+            <Readout label="ЛУЧШИЙ КРУГ" value={lapTime(lesson.best_lap_ms)} />
+            <Readout
+              label="ПОТЕНЦИАЛ"
+              value={lapTime(lesson.potential_ms)}
+              accent={lesson.potential_ms != null}
+            />
+            <Readout label="ЗАПАС" value={seconds(lesson.gain_ms)} />
+          </div>
+
+          <p className="mt-3 text-xs leading-relaxed text-foreground/90">
+            {lesson.headline}
+          </p>
+
+          {/* Куда ушло время — в миллисекундах и долях, а не по счётчику
+              срывов: три блокировки в медленной шпильке могут стоить меньше
+              одной ошибки на быстром выходе. */}
+          {lesson.losses.length > 0 && (
+            <div className="mt-4 flex flex-col gap-2">
+              {lesson.losses.map((loss) => (
+                <div key={loss.corner_id} className="rounded-md bg-secondary/60 px-3 py-2.5">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <span className="text-xs font-medium text-foreground">
+                      Поворот {loss.corner_id}
+                      {loss.cause && (
+                        <span className="ml-2 text-[11px] font-normal text-muted-foreground">
+                          {_CAUSE_LABELS[loss.cause] ?? loss.cause}
+                        </span>
+                      )}
+                    </span>
+                    <span className="label-mono text-[11px] text-foreground/90">
+                      {seconds(loss.cost_ms)}
+                      <span className="ml-2 text-muted-foreground">
+                        {Math.round(loss.share * 100)}%
+                      </span>
+                    </span>
+                  </div>
+                  {/* Доля — полоской: три числа в столбик сравнивать глазами
+                      дольше, чем три полоски. */}
+                  <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-background/60">
+                    <div
+                      className="h-full rounded-full bg-primary/70"
+                      style={{ width: `${Math.min(100, Math.round(loss.share * 100))}%` }}
+                    />
+                  </div>
+                  {loss.evidence && (
+                    <p className="mt-1.5 text-[11px] text-muted-foreground">{loss.evidence}</p>
+                  )}
+                </div>
+              ))}
+              {lesson.concentration < 0.99 && (
+                <p className="text-[11px] text-muted-foreground">
+                  Остальное — {seconds(Math.round(lesson.total_loss_ms * (1 - lesson.concentration)))}
+                  {" — размазано по кругу."}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Работа сессии: видно, помогает ли то, что пилот меняет. Без этого
+              он не знает, работает ли изменение, и через два заезда перестаёт
+              слушать. */}
+          {focus && (
+            <div className="mt-4 rounded-md border border-primary/30 bg-primary/5 px-3 py-2.5">
+              <div className="flex items-baseline justify-between gap-4">
+                <span className="text-xs font-medium text-foreground">
+                  В работе: поворот {focus.corner_id}
+                  <span className="ml-2 text-[11px] font-normal text-muted-foreground">
+                    {focus.status === "improving" ? "получается" : "работаем"}
+                  </span>
+                </span>
+                <span className="label-mono text-[11px] text-foreground/90">
+                  {seconds(focus.baseline_ms)} → {seconds(focus.current_ms)}
+                  {focus.gain_ms > 0 && (
+                    <span className="ml-2 text-primary">−{seconds(focus.gain_ms)}</span>
+                  )}
+                </span>
+              </div>
+              {focus.evidence && (
+                <p className="mt-1 text-[11px] text-muted-foreground">{focus.evidence}</p>
+              )}
+            </div>
+          )}
+
+          {/* Одна вещь на следующий раз. Не список из семи пунктов, который
+              никто не выполнит. */}
+          {lesson.next_step && (
+            <p className="mt-4 rounded-md bg-secondary/60 px-3 py-2.5 text-xs leading-relaxed text-foreground/90">
+              {lesson.next_step}
+            </p>
+          )}
+
+          {/* Прогресс с прошлого визита — единственное, ради чего пилот вообще
+              тренируется. Появляется только на знакомой трассе. */}
+          {lesson.progress && (
+            <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
+              {lesson.progress.text}
+            </p>
+          )}
+
+          {/* Та же потеря в разрезе типов поворотов. Появляется только когда
+              типов больше одного: «100% в медленных» на трассе из одних
+              медленных — не вывод, а описание трассы. */}
+          {(lesson.by_type?.length ?? 0) > 1 && (
+            <div className="mt-4">
+              <SectionLabel>Куда по характеру поворотов</SectionLabel>
+              <div className="mt-2 flex flex-col gap-1.5">
+                {lesson.by_type!.map((t) => (
+                  <div
+                    key={t.corner_type}
+                    className="flex items-baseline justify-between gap-4 text-xs"
+                  >
+                    <span className="text-foreground">
+                      {t.label}
+                      <span className="ml-2 text-[11px] text-muted-foreground">
+                        {t.corners} шт.
+                      </span>
+                    </span>
+                    <span className="label-mono text-[11px] text-muted-foreground">
+                      {seconds(t.cost_ms)} · {Math.round(t.share * 100)}%
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {lesson.potential_clamped && (
+            <p className="mt-2 text-[11px] text-muted-foreground">
+              В одном из поворотов запас ограничен двумя секундами: разница с
+              собственным лучшим проездом там слишком велика, чтобы обещать её
+              на круге.
+            </p>
+          )}
+        </Panel>
+      )}
+
+      {/* В поле — где пилот относительно ВСЕГО пелотона по секторам.
+          Соседний вопрос к «Уроку», а не тот же: коуч меряет пилота против
+          него самого и доходит до поворота и причины, здесь — против них, и
+          разрешение грубее. Первое лечится техникой, второе бывает и вопросом
+          машины, поэтому блоки раздельные. */}
+      {fieldPace && fieldPace.sectors.length > 0 && (
+        <Panel label="В поле" action={
+          <div className="flex items-center gap-1.5">
+            <Users className="h-3 w-3 text-muted-foreground" />
+            <span className="label-mono text-[10px] text-muted-foreground">
+              {fieldPace.lap_rank != null
+                ? `по кругу ${fieldPace.lap_rank} из ${fieldPace.lap_field_size}`
+                : "по секторам"}
+            </span>
+          </div>
+        }>
+          <div className="flex flex-col gap-2">
+            {fieldPace.sectors.map((s) => {
+              const worst = fieldPace.weakest?.sector === s.sector
+              return (
+                <div
+                  key={s.sector}
+                  className={`rounded-md px-3 py-2.5 ${
+                    worst ? "border border-primary/30 bg-primary/5" : "bg-secondary/60"
+                  }`}
+                >
+                  <div className="flex items-baseline justify-between gap-4">
+                    <span className="text-xs font-medium text-foreground">
+                      Сектор {s.sector}
+                      <span className="ml-2 text-[11px] font-normal text-muted-foreground">
+                        {s.rank} из {s.field_size}
+                      </span>
+                    </span>
+                    <span className="label-mono text-[11px] text-foreground/90">
+                      {s.gap_ms > 0 ? `+${seconds(s.gap_ms)}` : "лучший в поле"}
+                    </span>
+                  </div>
+                  {/* Кто держит лучший сектор — только на экране: в эфире имя
+                      потребовало бы падежа, а падеж свободной строкой банк
+                      фраз не выражает. */}
+                  {s.best_holder && s.gap_ms > 0 && (
+                    <p className="mt-1 text-[11px] text-muted-foreground">
+                      Лучший — {s.best_holder}: {lapTime(s.best_ms)}
+                    </p>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+          {fieldPace.weakest ? (
+            <p className="mt-3 text-[11px] text-muted-foreground">
+              Больше всего до поля уходит в {fieldPace.weakest.sector}-м секторе —
+              {" "}{seconds(fieldPace.weakest.gap_ms)} за круг.
+            </p>
+          ) : (
+            <p className="mt-3 text-[11px] text-muted-foreground">
+              Ни в одном секторе отрыв до поля не превышает десятой доли секунды.
+            </p>
+          )}
+        </Panel>
+      )}
+
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {/* Result */}
         <Panel label="Итог сессии" action={
@@ -241,6 +497,34 @@ export function DebriefView({ state }: { state: SpotterState | null }) {
             <p className="mt-2 text-xs text-muted-foreground">
               Данные коуча появятся после первых 3 кругов.
             </p>
+          )}
+
+          {/* Почему коуч молчит.
+              Молчащий коуч выглядит одинаково при выключенном тумблере,
+              неповторяющейся ошибке, не доехавшей телеметрии движения и
+              завышенном пороге — четыре разных диагноза с четырьмя разными
+              действиями, и раньше различить их можно было только чтением кода.
+              Блок появляется, только когда есть что объяснить: у говорящего
+              коуча `reason` пуст, и сеять сомнение в работающей функции
+              незачем. */}
+          {health?.reason && (
+            <div className={`mt-3 rounded-md px-3 py-2.5 ${
+              health.signal === "ok" || health.signal === "warming_up"
+                ? "bg-secondary/60"
+                : "border border-amber-500/40 bg-amber-500/5"
+            }`}>
+              <div className="flex items-baseline justify-between gap-3">
+                <span className="label-mono text-[10px] text-muted-foreground">
+                  ПОЧЕМУ МОЛЧИТ
+                </span>
+                <span className="label-mono text-[10px] text-muted-foreground">
+                  срывов {health.mistakes} · сказано {health.spoken}
+                </span>
+              </div>
+              <p className="mt-1.5 text-xs leading-relaxed text-foreground/90">
+                {health.reason}
+              </p>
+            </div>
           )}
         </Panel>
 
@@ -318,7 +602,7 @@ export function DebriefView({ state }: { state: SpotterState | null }) {
             резины или советы. Голосом это не звучит нигде — сетап посреди
             заезда не меняется. */}
         {(garage?.tyre_load?.worst_wheel || garage?.tyre_load?.hottest_wheel
-          || (garage?.hints?.length ?? 0) > 0) && (
+          || (garage?.hints?.length ?? 0) > 0 || garage?.balance) && (
           <Panel label="Гараж" action={
             <div className="flex items-center gap-1.5">
               <Wrench className="h-3 w-3 text-muted-foreground" />
@@ -345,6 +629,20 @@ export function DebriefView({ state }: { state: SpotterState | null }) {
                   {garage.tyre_load.temp_spread_c.toFixed(0)}
                   {"°."}
                 </p>
+              )}
+              {/* Подпись баланса: снос на медленных и снос на быстрых имеют
+                  РАЗНЫЕ причины — прижимная сила растёт с квадратом скорости.
+                  Числа здесь не называются намеренно: величина зависит от
+                  трассы и от того, что уже стоит в сетапе. */}
+              {garage?.balance && (
+                <div className="rounded-md border border-primary/30 bg-primary/5 px-3 py-2.5">
+                  <p className="text-xs font-medium text-foreground">
+                    {garage.balance.advice}
+                  </p>
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    {garage.balance.evidence}
+                  </p>
+                </div>
               )}
               {garage?.hints?.map((h) => (
                 <div key={h.parameter} className="rounded-md bg-secondary/60 px-3 py-2.5">

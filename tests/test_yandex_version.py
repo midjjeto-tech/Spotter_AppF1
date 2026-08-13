@@ -15,6 +15,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+import config
 from core import settings as settings_mod
 
 
@@ -354,12 +355,29 @@ class TestV1PremiumVoiceRemap:
         finally:
             cl.stop()
 
-    def test_v1_voice_fallback_dict_matches_premium_defaults(self):
+    def test_v1_voice_fallback_dict_covers_every_voice_that_can_be_requested(self):
+        """Покрытие считается по ОБОИМ источникам голоса, а не по одному.
+
+        Раньше набор брался только из `DEFAULT_PERSONA_VOICE`, и это работало
+        случайно: каждый голос каста заодно был чьим-то дефолтом персоны. Как
+        только `marina` перестала быть голосом персоны `calm` (оставшись
+        голосом инженера Соколовой), проверка развалилась — и правильно, потому
+        что непокрытый премиальный голос на пути v1 означает HTTP 400 и тишину
+        вместо реплики. Голоса приезжают в синтез и через оверрайды каста
+        (`voice_cast.resolve` -> `Voice.set_voice_overrides`), поэтому в набор
+        входят оба."""
         from yandex_ai.speech import _V1_VOICE_FALLBACK
         from yandex_ai import voices
+        from core.radio import voice_cast
 
-        premium_voices_in_use = {spec["voice"] for spec in voices.DEFAULT_PERSONA_VOICE.values()}
-        assert set(_V1_VOICE_FALLBACK.keys()) == premium_voices_in_use
+        in_use = {spec["voice"] for spec in voices.DEFAULT_PERSONA_VOICE.values()}
+        in_use.update(voice_cast.SPOTTER_VOICES)
+        for character in voice_cast.CHARACTERS.values():
+            in_use.update(character.voices)
+        premium_voices_in_use = {v for v in in_use if v in voices.PREMIUM_VOICES}
+
+        missing = premium_voices_in_use - set(_V1_VOICE_FALLBACK)
+        assert not missing, f"нет отката на v1 для голосов: {sorted(missing)}"
         for legacy_voice in _V1_VOICE_FALLBACK.values():
             assert legacy_voice not in _V1_VOICE_FALLBACK  # target must not itself need remapping
             assert legacy_voice in voices.AVAILABLE_VOICES
@@ -793,3 +811,97 @@ class TestV3GrpcAudioParsing:
 
         roles = [h.role for h in captured["request"].hints if h.role]
         assert roles == []
+
+
+# ---------------------------------------------------------------------------
+# Предохранитель v3 (yandex_ai/speech.py)
+# ---------------------------------------------------------------------------
+
+class TestV3CircuitBreaker:
+    """Проводка предохранителя, а не арифметика счётчика.
+
+    Живой лог гонки: 13 подряд `future timeout (15s)` на v3, и каждая фраза
+    платила таймаут заново. Предохранитель обязан прекратить это после
+    нескольких неудач — и, как следствие, перестать чередовать премиальный
+    голос с легаси-подменой на одном и том же персонаже.
+    """
+
+    def _speech(self, outcomes):
+        """outcomes — исходы попыток v3 по порядку. v1 всегда молчит, чтобы в
+        `calls` были видны только маршруты, а не успехи."""
+        from yandex_ai.speech import YandexSpeech
+
+        speech = YandexSpeech(mock.Mock())
+        speech.set_tts_version("v3")
+        calls: list[str] = []
+        pending = list(outcomes)
+
+        def fake_try_once(text, voice, emotion, speed, sr, version):
+            calls.append(version)
+            if version != "v3":
+                return None
+            ok = pending.pop(0) if pending else False
+            return np.ones(8, dtype=np.float32) if ok else None
+
+        speech._try_once = fake_try_once
+        return speech, calls
+
+    def test_v3_is_skipped_entirely_once_the_breaker_opens(self):
+        speech, calls = self._speech([False] * 10)
+
+        for _ in range(config.YANDEX_TTS_V3_FAILURE_THRESHOLD):
+            speech.synthesize("тест", "engineer")
+        assert calls.count("v3") == config.YANDEX_TTS_V3_FAILURE_THRESHOLD
+
+        calls.clear()
+        speech.synthesize("тест", "engineer")
+        assert "v3" not in calls, "после размыкания v3 не должна пробоваться вовсе"
+        assert calls == ["v1"]
+
+    def test_a_success_resets_the_counter_before_it_trips(self):
+        """Считаются ПОДРЯД идущие неудачи: одиночные сбои сети не должны
+        накапливаться всю гонку и однажды разомкнуть цепь на ровном месте."""
+        speech, calls = self._speech([False, False, True, False, False])
+
+        for _ in range(5):
+            speech.synthesize("тест", "engineer")
+
+        assert calls.count("v3") == 5, "цепь не должна была разомкнуться"
+
+    def test_the_breaker_closes_again_after_the_cooldown(self, monkeypatch):
+        speech, calls = self._speech([False] * 3 + [True])
+        for _ in range(config.YANDEX_TTS_V3_FAILURE_THRESHOLD):
+            speech.synthesize("тест", "engineer")
+
+        import time as time_mod
+        base = time_mod.monotonic()
+        monkeypatch.setattr(
+            "yandex_ai.speech.time.monotonic",
+            lambda: base + config.YANDEX_TTS_V3_BREAKER_COOLDOWN + 1.0)
+
+        calls.clear()
+        speech.synthesize("тест", "engineer")
+        assert "v3" in calls, "после остывания v3 обязана получить новый шанс"
+
+    def test_while_open_every_phrase_takes_the_same_route(self):
+        """Смысл для пользователя: тембр перестаёт скакать. Пофразный откат
+        давал одному персонажу то премиальный голос, то легаси-подмену."""
+        speech, calls = self._speech([False] * 3)
+        for _ in range(config.YANDEX_TTS_V3_FAILURE_THRESHOLD):
+            speech.synthesize("тест", "engineer")
+
+        calls.clear()
+        for _ in range(6):
+            speech.synthesize("тест", "engineer")
+
+        assert set(calls) == {"v1"}, f"маршрут скачет: {calls}"
+
+    def test_reset_clears_a_tripped_breaker(self):
+        speech, calls = self._speech([False] * 3)
+        for _ in range(config.YANDEX_TTS_V3_FAILURE_THRESHOLD):
+            speech.synthesize("тест", "engineer")
+
+        speech.reset_v3_breaker()
+        calls.clear()
+        speech.synthesize("тест", "engineer")
+        assert "v3" in calls

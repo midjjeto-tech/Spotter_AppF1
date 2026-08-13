@@ -451,6 +451,111 @@ export type CoachAIState = {
   /** Отчёт «Гараж» (фаза 3): во что стиль обошёлся машине. Компактен по
    *  построению, поэтому едет целиком. */
   garage?: CoachGarageReport
+  /** Разбор сессии (фаза 4): потенциал круга, куда ушло время, что дальше.
+   *  Пересчитывается РАЗ В КРУГ на бэкенде; null — данных ещё нет, и блок на
+   *  экране должен отсутствовать целиком, а не показывать прочерки. */
+  lesson?: CoachLesson | null
+  /** Работа сессии: один поворот, над которым коуч работает прямо сейчас.
+   *  Дублируется внутри `lesson.focus` — здесь для живого экрана, там для
+   *  архива, куда разбор уезжает целиком. */
+  focus?: CoachFocus | null
+  /** Почему коуч молчит. Едет ВСЕГДА, в том числе с выключенным тумблером. */
+  health?: CoachHealth
+}
+
+/** Положение игрока в ОДНОМ секторе относительно всего поля.
+ *  Строится core/sector_standing.py из Session History (пакет 11). */
+export type SectorStanding = {
+  sector: 1 | 2 | 3
+  player_ms: number
+  best_ms: number
+  /** null — имя ещё не приехало из метаданных пилотов. */
+  best_holder: string | null
+  rank: number
+  field_size: number
+  /** Никогда не отрицательный: лидер сектора имеет нулевой отрыв, а не минус. */
+  gap_ms: number
+}
+
+/** Раскладка по секторам относительно поля.
+ *
+ *  Отдельная секция, а НЕ поле внутри `coach_ai`, и это не оформление: коуч
+ *  отвечает «где ты теряешь относительно СЕБЯ» с разрешением до поворота и
+ *  причины, здесь — «относительно НИХ» с разрешением до сектора. Первое лечится
+ *  техникой, второе бывает и вопросом машины. */
+export type FieldPace = {
+  sectors: SectorStanding[]
+  /** Наибольший отрыв до лучшего в поле — там, где лежит время. null, когда
+   *  все отрывы ниже произносимого порога. */
+  weakest: SectorStanding | null
+  strongest: SectorStanding | null
+  lap_rank: number | null
+  lap_field_size: number
+  lap_gap_ms: number | null
+}
+
+/** Один поворот в разборе: цена в миллисекундах за круг, доля от всей потери и
+ *  ПРИЧИНА. Поворот без причины показывается как факт, но заданием не
+ *  становится — указание, которое нельзя применить, не отличается от молчания.
+ *  Строится core/coach_ai/diagnosis.py. */
+export type CoachLoss = {
+  corner_id: number
+  corner_name: string | null
+  cost_ms: number
+  share: number
+  laps: number
+  cause: string | null
+  cause_kind: "mistake" | "technique" | null
+  occurrences: number
+  evidence: string
+}
+
+/** Работа сессии (core/coach_ai/focus.py). `baseline_ms` — цена в момент, когда
+ *  поворот взяли в работу; по разнице с `current_ms` видно, помогает ли то, что
+ *  пилот меняет. */
+export type CoachFocus = {
+  corner_id: number
+  corner_name: string | null
+  cause: string | null
+  cause_kind: "mistake" | "technique" | null
+  evidence: string
+  baseline_ms: number
+  current_ms: number
+  gain_ms: number
+  since_lap: number
+  status: "working" | "improving"
+}
+
+/** Прогресс относительно прошлого визита на эту трассу. Читается из файла
+ *  прошлого заезда (core/coach_ai/reference_store.py::load_track_history). */
+export type CoachProgress = {
+  previous_best_lap_ms: number | null
+  best_delta_ms: number | null
+  focus_corner_id: number | null
+  focus_then_ms: number | null
+  focus_now_ms: number | null
+  text: string
+}
+
+/** Вердикт сессии (core/coach_ai/lesson.py). `potential_ms` — круг, собранный
+ *  из СВОИХ ЖЕ лучших поворотов: не чужой темп и не мечта, каждый кусок пилот
+ *  уже проехал сам. */
+export type CoachLesson = {
+  best_lap_ms: number | null
+  potential_ms: number | null
+  gain_ms: number | null
+  potential_clamped: boolean
+  total_loss_ms: number
+  /** Доля показанных поворотов в общей потере — остальное размазано по кругу. */
+  concentration: number
+  losses: CoachLoss[]
+  headline: string
+  next_step: string | null
+  focus: CoachFocus | null
+  progress?: CoachProgress
+  /** Та же потеря в разрезе типов поворотов: «в седьмом» лечится техникой,
+   *  «во всех медленных» — машиной. */
+  by_type?: CoachTypeLoss[]
 }
 
 /** Перекос износа и нагрева резины. Износ сравнивается ВНУТРИ оси, нагрев — по
@@ -474,10 +579,58 @@ export type CoachSetupHint = {
   evidence: string
 }
 
+/** Подпись машины: одинаковое поведение в непохожих местах трассы.
+ *
+ *  Прижимная сила растёт с квадратом скорости, поэтому снос на МЕДЛЕННЫХ
+ *  поворотах и снос на БЫСТРЫХ имеют разные причины — механику и аэродинамику.
+ *  Модуль говорит, куда смотреть, и намеренно не называет чисел: величина
+ *  зависит от трассы и от того, что уже стоит в сетапе.
+ *  Строится core/coach_ai/corner_types.py::balance_signature. */
+export type CoachBalanceSignature = {
+  kind: "understeer" | "oversteer"
+  domain: "mechanical" | "aero"
+  corners_affected: number
+  corners_total: number
+  evidence: string
+  advice: string
+}
+
 export type CoachGarageReport = {
   tyre_load: CoachTyreLoad | null
   setup: Record<string, number | Record<string, number>>
   hints: CoachSetupHint[]
+  balance?: CoachBalanceSignature | null
+}
+
+/** Состояние самого коуча: почему он молчит.
+ *
+ *  Молчащий коуч выглядит одинаково при выключенном тумблере, неповторяющейся
+ *  ошибке, не доехавшей телеметрии движения и завышенном пороге — четыре разных
+ *  диагноза с четырьмя разными действиями. `reason` — готовая фраза; null
+ *  означает «объяснять нечего», а не «неизвестно».
+ *  Строится core/coach_ai/health.py. */
+export type CoachHealth = {
+  signal: "ok" | "no_frames" | "flat" | "implausible" | "warming_up"
+  frames: number
+  moving_frames: number
+  mistakes: number
+  spoken: number
+  silence: Record<string, number>
+  reason: string | null
+  enabled: boolean
+  thresholds: Record<string, number>
+  peak_slip_ratio: number
+  peak_slip_angle: number
+}
+
+/** Потеря по всем поворотам одного типа. `label` приходит с бэкенда готовым —
+ *  второй копии словаря типов в UI быть не должно. */
+export type CoachTypeLoss = {
+  corner_type: string
+  cost_ms: number
+  corners: number
+  share: number
+  label: string
 }
 
 export type RivalEntry = {
@@ -627,6 +780,10 @@ export type SpotterState = {
   radio?: RadioSection
   feed: FeedItem[]
   llm_engine: string
+  /** База знаний комментатора: "ok" | "loading" | "no-package" | "no-facts"
+   *  | "error" | "no-module". Приезжает всегда — выключенный RAG иначе виден
+   *  только в логе, а снаружи неотличим от работающего. */
+  rag_status?: string
   /** "f1" | "iracing" — какой источник телеметрии реально слушает движок. */
   telemetry_source?: string
   udp_ip?: string
@@ -647,6 +804,8 @@ export type SpotterState = {
   track_ai?: TrackAIState
   strategy_ai?: StrategyAIState
   coach_ai?: CoachAIState
+  /** Положение в поле по секторам. null до первого завершённого круга. */
+  field_pace?: FieldPace | null
   rivals?: RivalsState
   yandex_ok?: boolean
   race_story?: RaceStory | null
@@ -1064,8 +1223,14 @@ export const getOverlay = () => http("/api/overlay").then((r) => asJson<OverlayS
 // Живёт отдельно от /api/settings: раскладку пишут восемь процессов виджетов, а
 // сохранение настроек переписывает весь документ целиком (core/overlay_layout.py).
 
-/** Геометрия одного виджета. Смещение отсутствует, пока его не двигали. */
-export type OverlayWidgetGeometry = { dx?: number; dy?: number; scale: number }
+/** Геометрия одного виджета. Смещение отсутствует, пока его не двигали.
+ *  `enabled=false` — виджет выключен: его процесс не поднимается вовсе. */
+export type OverlayWidgetGeometry = {
+  dx?: number
+  dy?: number
+  scale: number
+  enabled?: boolean
+}
 
 export type OverlayLayoutState = {
   /** Имя последнего сохранённого или применённого пресета. */
@@ -1081,6 +1246,10 @@ export const getOverlayLayout = () =>
 
 export const setOverlayScale = (widget: string, scale: number) =>
   post("/api/overlay/layout", { widget, scale }).then((r) =>
+    asJson<OverlayLayoutState & { ok: boolean; error?: string }>(r))
+
+export const setOverlayEnabled = (widget: string, enabled: boolean) =>
+  post("/api/overlay/layout", { widget, enabled }).then((r) =>
     asJson<OverlayLayoutState & { ok: boolean; error?: string }>(r))
 
 export const resetOverlayLayout = () =>

@@ -55,6 +55,10 @@ class RaceEngineer:
     def note_track_limits_penalty(self, now: float) -> bool:
         return self.track_limits_tracker.note_penalty(now)
 
+    def track_limits_penalty_tier(self) -> int:
+        """Ступень компаньон-реплики к трек-лимитному штрафу (1..3)."""
+        return self.track_limits_tracker.penalty_tier()
+
     def drs_advisory(
         self,
         gap_front_ms: int | None,

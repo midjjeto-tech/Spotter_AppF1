@@ -109,6 +109,9 @@ def _put(widget_id: str, **changes: object) -> None:
     # ключей, и старые файлы без `scale` ничем не отличаются от новых.
     if clamp_scale(payload.get("scale", DEFAULT_SCALE)) == DEFAULT_SCALE:
         payload.pop("scale", None)
+    # То же и с «виджет включён»: в файле остаётся только выключение.
+    if payload.get("enabled", True) is not False:
+        payload.pop("enabled", None)
     try:
         _write_json(_path(widget_id), payload)
     except Exception:  # noqa: BLE001 - a lost position must not break the HUD
@@ -127,6 +130,17 @@ def load(widget_id: str) -> tuple[int, int] | None:
 def load_scale(widget_id: str) -> float:
     """Return the saved size multiplier, 1.0 when unset."""
     return clamp_scale(_read(widget_id).get("scale", DEFAULT_SCALE))
+
+
+def load_enabled(widget_id: str) -> bool:
+    """Нужен ли пилоту этот виджет. По умолчанию — да.
+
+    Хранится здесь, а не в настройках, по той же причине, что позиция и размер:
+    документ виджета мержится, и восемь процессов не затирают друг друга. Запись
+    появляется в файле только когда виджет ВЫКЛЮЧИЛИ — типичный документ
+    остаётся коротким, а старые файлы неотличимы от новых.
+    """
+    return _read(widget_id).get("enabled", True) is not False
 
 
 def revision(widget_id: str) -> float:
@@ -150,6 +164,11 @@ def save(widget_id: str, dx: int, dy: int) -> None:
 def save_scale(widget_id: str, scale: object) -> None:
     """Persist one widget's size multiplier, leaving its position alone."""
     _put(widget_id, scale=clamp_scale(scale))
+
+
+def save_enabled(widget_id: str, enabled: object) -> None:
+    """Включить или выключить виджет, не трогая его позицию и размер."""
+    _put(widget_id, enabled=bool(enabled))
 
 
 def reset(widget_ids: Iterable[str]) -> None:
@@ -193,7 +212,10 @@ def snapshot(widget_ids: Iterable[str]) -> dict:
     result: dict[str, dict] = {}
     for widget_id in widget_ids:
         offset = load(widget_id)
-        entry: dict[str, float | int] = {"scale": load_scale(widget_id)}
+        entry: dict[str, float | int | bool] = {
+            "scale": load_scale(widget_id),
+            "enabled": load_enabled(widget_id),
+        }
         if offset is not None:
             entry["dx"], entry["dy"] = offset
         result[widget_id] = entry
@@ -233,7 +255,13 @@ def apply_preset(name: str) -> bool:
     for widget_id, entry in stored.items():
         if not isinstance(entry, dict):
             continue
-        changes: dict[str, object] = {"scale": clamp_scale(entry.get("scale"))}
+        changes: dict[str, object] = {
+            "scale": clamp_scale(entry.get("scale")),
+            # Пресет «Стрим» может выключать башню, а «Гонка» — возвращать.
+            # Отсутствие ключа у пресетов, сохранённых до этой возможности,
+            # читается как «включён» — то есть как было.
+            "enabled": entry.get("enabled", True) is not False,
+        }
         try:
             changes["dx"] = int(entry["dx"])
             changes["dy"] = int(entry["dy"])

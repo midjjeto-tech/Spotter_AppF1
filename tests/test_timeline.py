@@ -292,3 +292,51 @@ def test_pit_stop_phase_line_coexists_with_lap_ratio_phase():
     out = t.render()
     assert "концовка" in out
     assert "ФАЗА: ПИТ-СТОП" in out
+
+
+# --------------------------------------------------------------------------- #
+# Личность игрока в контексте для LLM.
+# Разбор живого заезда 2026-08-11: строка была «ПИЛОТ: Шарль.», рядом стояли
+# «лидер Джордж Расселл» и события про «Леклера» — и модель весь заезд звала
+# игрока Расселлом, вплоть до «Шарль Расселл борется за позицию».
+# --------------------------------------------------------------------------- #
+
+def _race_with_neighbours() -> RaceTimeline:
+    t = RaceTimeline()
+    t.record_snapshot(
+        lap=12, position=5, total_laps=15, leader="Джордж Расселл",
+        grid=[{"position": 1, "name": "Джордж Расселл"},
+              {"position": 4, "name": "Оскар Пиастри"},
+              {"position": 5, "name": "Шарль Леклер"},
+              {"position": 6, "name": "Льюис Хэмилтон"}])
+    t.record_event({"event_code": "OVTK", "driver": "Леклер", "target": "Пиастри"})
+    return t
+
+
+def test_player_line_links_first_name_to_surname():
+    out = _race_with_neighbours().render(
+        player_name="Шарль", player_full_name="Шарль Леклер")
+    player_line = next(l for l in out.splitlines() if l.startswith("ПИЛОТ:"))
+    assert "Шарль Леклер" in player_line
+    assert "ИГРОК" in player_line
+    assert "Леклер" in player_line     # под каким именем он в событиях
+    assert "Шарль" in player_line      # как к нему обращаться
+
+
+def test_player_surname_enters_declension_glossary():
+    """Раньше фамилия игрока попадала в шпаргалку только случайно — если он
+    оказывался соседом или участником события."""
+    t = RaceTimeline()
+    t.record_snapshot(lap=3, position=8, total_laps=15, leader="Джордж Расселл")
+    out = t.render(player_name="Шарль", player_full_name="Шарль Леклер")
+    gloss = out.split("СКЛОНЕНИЕ ИМЁН")[1]
+    assert "Леклера" in gloss          # родительный падеж — значит имя разобрано
+    assert gloss.strip().startswith("(бери фамилии ТОЛЬКО в этих формах):\nЛеклер")
+
+
+def test_player_line_falls_back_for_single_word_name():
+    """Кастомный пилот без фамилии — придумывать за игру нечего."""
+    t = RaceTimeline()
+    t.record_snapshot(lap=3, position=8, total_laps=15)
+    out = t.render(player_name="Артём", player_full_name="Артём")
+    assert "ПИЛОТ: Артём." in out

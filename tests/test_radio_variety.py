@@ -96,12 +96,47 @@ def test_single_variant_pool_does_not_loop_forever():
     assert variety.index_for("x.single", "k2", 0, 1) == 0
 
 
-def test_shortest_mode_is_not_touched():
-    """Режим «коротко» — обещание вернуть САМЫЙ ЛАКОНИЧНЫЙ вариант. Анти-повтор
-    его сдвигать не имеет права, иначе настройка начнёт врать."""
-    a = phrases.render("drs.in_range", selector_key="s1", shortest=True)
-    b = phrases.render("drs.in_range", selector_key="s2", shortest=True)
-    assert a == b
+def test_shortest_mode_stays_short():
+    """Режим «коротко» обещает лаконичность, а не одну строку на весь заезд.
+
+    Раньше здесь стоял обратный контракт: `shortest=True` возвращал строго
+    минимальный вариант и селектор игнорировал. Обещание он выполнял, но ценой,
+    которую никто не выбирал: пул из шести формулировок схлопывался в ОДНУ на
+    всю гонку, и «Коротко» само по себе воспроизводило ту же жалобу, ради
+    которой чинился селектор (см. tests/test_engine_phrase_variety.py).
+
+    Замер по банку на момент правки: экономия строгого минимума — 1,05 слова из
+    5,0 средних, разброс длин внутри пула невелик (медиана 2 слова). Поэтому
+    режим выбирает из ОКНА самых коротких, а не из одной строки: платим
+    полсловом, получаем ~4 варианта вместо одного в 155 пулах из 161.
+    """
+    said = {phrases.render("drs.in_range", selector_key=f"s{i}", shortest=True)
+            for i in range(8)}
+    assert len(said) > 1, said
+
+    pool = phrases.variants_for(phrases.spec_for("drs.in_range"), None)
+    limit = min(len(v.split()) for v in pool) + phrases.SHORTEST_WINDOW_WORDS
+    assert all(len(v.split()) <= limit for v in said), said
+
+
+def test_shortest_mode_never_picks_the_long_wording():
+    """Обещание лаконичности проверяем на самой длинной строке пула поимённо:
+    окно её пускать не должно ни при каком ключе."""
+    pool = phrases.variants_for(phrases.spec_for("box.exit"), "volkov")
+    longest = max(pool, key=lambda v: len(v.split()))
+    said = {phrases.render("box.exit", selector_key=f"k{i}",
+                           shortest=True, character="volkov")
+            for i in range(12)}
+    assert longest not in said, longest
+
+
+def test_shortest_mode_keeps_the_situation_pinned():
+    """Закрепление за ситуацией «коротко» не отменяет: повторная телеметрия по
+    той же ситуации обязана дать ту же строку в любом режиме."""
+    first = phrases.render("drs.in_range", selector_key="sit-7", shortest=True)
+    for _ in range(5):
+        assert phrases.render(
+            "drs.in_range", selector_key="sit-7", shortest=True) == first
 
 
 def test_memory_is_bounded():

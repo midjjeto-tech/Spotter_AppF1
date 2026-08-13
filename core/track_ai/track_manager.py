@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from core.race_ai.sectors import get_sector
-from core.track_ai.corners import get_corner, get_phase
+from core.track_ai.corners import braking_offset_for, get_corner, get_phase
 from core.track_ai.models import Corner, TrackContext, TrackInfo
 from core.track_ai.racing_line import get_advice
 from core.track_ai.zones import is_attack_zone
@@ -37,7 +37,8 @@ class TrackManager:
             return None
 
         lap_pct = (lap_dist_m % self._track.length_m) / self._track.length_m
-        corner = get_corner(lap_pct, self._track.corners)
+        corner = get_corner(lap_pct, self._track.corners,
+                            braking_offset_for(self._track.length_m))
         phase  = get_phase(lap_pct, corner) if corner else "straight"
         sector = get_sector(lap_pct)
         attack = is_attack_zone(corner, phase, drs_active)

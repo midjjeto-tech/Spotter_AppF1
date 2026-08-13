@@ -14,6 +14,8 @@ import concurrent.futures
 import json
 import logging
 import queue
+import threading
+import time
 
 import numpy as np
 
@@ -42,9 +44,50 @@ class YandexSpeech:
         self._client = client
         self._overrides = persona_overrides or {}
         self._version: str = "v1"   # "v1" or "v3"; set by engine via set_tts_version()
+        # Предохранитель v3 (см. config.YANDEX_TTS_V3_FAILURE_THRESHOLD).
+        # Лок нужен: synthesize() зовут из воркера очереди озвучки, а он не один.
+        self._v3_lock = threading.Lock()
+        self._v3_failures = 0
+        self._v3_blocked_until = 0.0
 
     def set_overrides(self, overrides: dict | None) -> None:
         self._overrides = overrides or {}
+
+    # ── Предохранитель v3 ────────────────────────────────────────────────────
+
+    def _v3_blocked(self) -> bool:
+        """Открыт ли предохранитель — то есть стоит ли вообще пробовать v3.
+
+        Монотонные часы, а не wall clock: перевод системного времени не должен
+        ни продлевать остывание, ни обнулять его."""
+        with self._v3_lock:
+            return time.monotonic() < self._v3_blocked_until
+
+    def _note_v3_result(self, ok: bool) -> None:
+        """Учесть исход попытки v3 и при необходимости разомкнуть цепь."""
+        with self._v3_lock:
+            if ok:
+                if self._v3_blocked_until or self._v3_failures:
+                    _log.info("YandexSpeech: v3 снова отвечает — предохранитель сброшен")
+                self._v3_failures = 0
+                self._v3_blocked_until = 0.0
+                return
+            self._v3_failures += 1
+            if self._v3_failures < config.YANDEX_TTS_V3_FAILURE_THRESHOLD:
+                return
+            self._v3_blocked_until = (time.monotonic()
+                                      + config.YANDEX_TTS_V3_BREAKER_COOLDOWN)
+            self._v3_failures = 0
+            _log.warning(
+                "YandexSpeech: %d неудачи v3 подряд — уходим на v1 на %.0f с "
+                "(перестаём платить таймаут каждой фразой)",
+                config.YANDEX_TTS_V3_FAILURE_THRESHOLD,
+                config.YANDEX_TTS_V3_BREAKER_COOLDOWN)
+
+    def reset_v3_breaker(self) -> None:
+        """Снять блокировку принудительно — смена настроек озвучки и новая
+        сессия не должны наследовать остывание прошлой."""
+        self._note_v3_result(True)
 
     def set_tts_version(self, version: str) -> None:
         """Select active TTS backend version. Ignored if value not in
@@ -352,12 +395,23 @@ class YandexSpeech:
         speed = float(spec["speed"]) * float(speed_scale)
         version = self._version
 
+        # Предохранитель разомкнут — v3 не трогаем вовсе и не платим её таймаут.
+        # Это же держит тембр: пока цепь открыта, все реплики идут одним
+        # маршрутом, а не через раз премиальным голосом и легаси-подменой.
+        if version in ("v3", "v3-grpc") and self._v3_blocked():
+            _log.info(
+                "YandexSpeech synthesize: v3 на остывании — сразу v1 "
+                "(persona=%s voice=%s)", persona, spec["voice"])
+            version = "v1"
+
         _log.info(
             "YandexSpeech synthesize: version=%s persona=%s voice=%s emotion=%s",
             version, persona, spec["voice"], spec["emotion"],
         )
 
         audio = self._try_once(text, spec["voice"], spec["emotion"], speed, sr, version)
+        if version in ("v3", "v3-grpc"):
+            self._note_v3_result(audio is not None and len(audio) > 0)
 
         if audio is not None and len(audio) > 0:
             _log.info("YandexSpeech OK: version=%s persona=%s voice=%s (%d samples)",

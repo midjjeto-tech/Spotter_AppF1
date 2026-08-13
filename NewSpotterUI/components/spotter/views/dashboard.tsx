@@ -77,6 +77,19 @@ export function DashboardView({
   // Локальное оптимистичное зеркало настроек — отзывчивые тогглы, сверяемся с опросом.
   const [local, setLocal] = useState({ commentary: false, voice: false, critical: true, ambient: true, engineerChatter: true, broadcast: false, racefeed: false, position: "auto" })
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle")
+  // Отказ теста рации виден: во время сессии бэкенд не пускает тест в живой
+  // эфир, и кнопка без этого молча ничего не делала бы.
+  const [testError, setTestError] = useState<string | null>(null)
+
+  const runVoiceTest = async () => {
+    setTestError(null)
+    try {
+      const r = await testVoice()
+      if (!r.ok) setTestError(r.error ?? "Не удалось")
+    } catch {
+      setTestError("Приложение не ответило")
+    }
+  }
   useEffect(() => {
     if (s) {
       setLocal({
@@ -198,7 +211,7 @@ export function DashboardView({
           <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
             <Button
               variant="outline"
-              onClick={() => testVoice()}
+              onClick={runVoiceTest}
               disabled={!state}
               className="h-10 border-border bg-secondary text-foreground hover:bg-elevated disabled:opacity-40"
             >
@@ -221,6 +234,10 @@ export function DashboardView({
               <Trash2 className="h-4 w-4" /> Очистить ленту
             </Button>
           </div>
+
+          {testError ? (
+            <p className="mt-2 text-xs text-warning">{testError}</p>
+          ) : null}
 
           <Button
             onClick={() => apply("commentary", "commentary_enabled")(!local.commentary)}

@@ -63,6 +63,18 @@ def test_remote_url_contains_a_lan_address_and_the_token(engine):
     assert "127.0.0.1" not in info["url"], "адрес loopback бесполезен на телефоне"
 
 
+def test_remote_url_leads_to_the_phone_screen(engine):
+    """Ссылка ведёт на телефонный экран, а не на десктопный корень.
+
+    Десктопная вёрстка на телефоне непригодна замеряно: сайдбар `w-60` не
+    сжимается, и при 375px на контент остаётся 87 пикселей. Отправить туда
+    пользователя — вернуть ровно ту жалобу, из-за которой экран и появился."""
+    engine.apply_settings({"remote_access_enabled": True})
+    engine.set_bound_host("0.0.0.0")
+
+    assert "/phone.html?token=" in engine.get_remote_access_info()["url"]
+
+
 def test_no_url_until_the_socket_is_actually_open_to_the_network(engine):
     """Случай из живой проверки: настройку включили на РАБОТАЮЩЕМ приложении.
 

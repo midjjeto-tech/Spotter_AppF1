@@ -88,6 +88,36 @@ def main() -> int:
     return exit_code
 
 
+class _OverlayPageBridge:
+    """Канал «страница → окно»: форма виджета и «есть ли что показывать».
+
+    Push, а не опрос: опрашивать страницу из потока монитора нельзя — он
+    отвечает за размещение HUD, а `evaluate_js` блокируется до ответа WebView2,
+    и подвисшая страница заморозила бы позиционирование всех виджетов.
+
+    Контроллер появляется ПОСЛЕ окна (окно нужно ему конструктором), поэтому
+    мост создаётся пустым и получает контроллер следом. До этого момента вызовы
+    со страницы просто игнорируются: окно всё равно ещё прямоугольное и
+    спрятанное.
+
+    Имя `_controller` — с подчёркиванием ОБЯЗАТЕЛЬНО. pywebview обходит все
+    публичные атрибуты объекта js_api рекурсивно, чтобы выставить их методы в
+    JS (`webview/util.py::get_functions`), а подчёркнутые пропускает. С
+    публичным именем обход уходил в объектный граф WinForms и падал на
+    «maximum recursion depth exceeded» — поймано живым щупом, в тестах с
+    заглушкой окна такого графа просто нет.
+    """
+
+    def __init__(self) -> None:
+        self._controller = None
+
+    def set_shape(self, payload=None) -> bool:
+        controller = self._controller
+        if controller is None:
+            return False
+        return controller.apply_page_shape(payload)
+
+
 def overlay_main(*, port: int, token: str, parent_pid: int, widget: str) -> int:
     """Run one compact HUD widget in its own one-window WebView2 process."""
     spec = HUD_WIDGETS.get(widget)
@@ -96,6 +126,7 @@ def overlay_main(*, port: int, token: str, parent_pid: int, widget: str) -> int:
     _setup_logging(f"spotter-overlay-{widget}.log")
     overlay = None
     control = None
+    bridge = _OverlayPageBridge()
     try:
         overlay_window = webview.create_window(
             spec.title,
@@ -104,7 +135,24 @@ def overlay_main(*, port: int, token: str, parent_pid: int, widget: str) -> int:
             height=spec.height,
             x=-32000,
             y=-32000,
-            min_size=(spec.width, spec.height),
+            # Нижнего порога у окна быть НЕ ДОЛЖНО. pywebview кладёт `min_size`
+            # в MinimumSize формы, форма отвечает им на WM_GETMINMAXINFO — и
+            # Windows МОЛЧА зажимает любой SetWindowPos меньше порога. С прежним
+            # `min_size=(spec.width, spec.height)` это ломало ровно уменьшение:
+            # place_over(game, 0.6) считал радару 180×180, prepare() их просил,
+            # окно оставалось 300×300 (замерено вживую), содержимое страницы
+            # честно ужималось трансформацией — и в освободившихся 40% окна
+            # светил чёрный фон поверх трассы.
+            #
+            # Порог здесь не защищает ни от чего: окно не тянут руками
+            # (frameless + resizable=False), его габариты целиком считает
+            # OverlayWindowController, а разрешённый диапазон масштаба держит
+            # overlay_layout.clamp_scale (0.6–2.0) — единственное место, где
+            # порогу и место. Ставить сюда base × MIN_SCALE нельзя: MinimumSize
+            # домножается на DPI окна (GetDpiForWindow/96), а цели контроллера
+            # — физические пиксели клиентской области игры, так что при масштабе
+            # экрана 125% тот же зажим вернулся бы, но уже только у части людей.
+            min_size=(1, 1),
             resizable=False,
             frameless=True,
             easy_drag=True,
@@ -122,12 +170,14 @@ def overlay_main(*, port: int, token: str, parent_pid: int, widget: str) -> int:
             background_color=OVERLAY_BACKGROUND,
             transparent=False,
             text_select=False,
+            js_api=bridge,
         )
         overlay = OverlayWindowController(
             overlay_window,
             spec=spec,
             title=spec.title,
         )
+        bridge._controller = overlay
         control = OverlayCommandServer(
             overlay,
             port=port,

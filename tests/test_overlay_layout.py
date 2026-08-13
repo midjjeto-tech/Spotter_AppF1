@@ -113,6 +113,65 @@ def test_scale_is_clamped_and_junk_degrades_to_default(monkeypatch, tmp_path):
     assert overlay_layout.load_scale("radar") == overlay_layout.DEFAULT_SCALE
 
 
+def test_enabled_defaults_to_true_and_is_written_only_when_switched_off(
+    monkeypatch, tmp_path,
+):
+    """В файле остаётся только выключение — включённый виджет и есть норма."""
+    target = _use_tmp_dir(monkeypatch, tmp_path)
+
+    assert overlay_layout.load_enabled("tower") is True
+
+    overlay_layout.save_enabled("tower", False)
+    assert overlay_layout.load_enabled("tower") is False
+    assert json.loads((target / "tower.json").read_text(encoding="utf-8")) == {
+        "enabled": False}
+
+    overlay_layout.save_enabled("tower", True)
+    assert overlay_layout.load_enabled("tower") is True
+    assert json.loads((target / "tower.json").read_text(encoding="utf-8")) == {}
+
+
+def test_switching_a_widget_off_keeps_its_position_and_size(monkeypatch, tmp_path):
+    """Выключение — не сброс: вернув галочку, пилот ждёт виджет на месте."""
+    _use_tmp_dir(monkeypatch, tmp_path)
+    overlay_layout.save("radar", 400, 350)
+    overlay_layout.save_scale("radar", 1.4)
+
+    overlay_layout.save_enabled("radar", False)
+
+    assert overlay_layout.load("radar") == (400, 350)
+    assert overlay_layout.load_scale("radar") == 1.4
+
+
+def test_preset_carries_the_switched_off_widgets(monkeypatch, tmp_path):
+    """«Стрим» может гасить башню, «Гонка» — возвращать."""
+    _use_tmp_dir(monkeypatch, tmp_path)
+    overlay_layout.save_enabled("tower", False)
+    overlay_layout.save_preset("Стрим", ["tower", "lap"])
+
+    overlay_layout.save_enabled("tower", True)
+    assert overlay_layout.apply_preset("Стрим") is True
+
+    assert overlay_layout.load_enabled("tower") is False
+    assert overlay_layout.load_enabled("lap") is True
+
+
+def test_preset_saved_before_the_switch_existed_enables_everything(
+    monkeypatch, tmp_path,
+):
+    """У старых пресетов ключа нет, и читаться он обязан как «включён»."""
+    target = _use_tmp_dir(monkeypatch, tmp_path)
+    target.mkdir(parents=True, exist_ok=True)
+    (target / "presets.json").write_text(
+        json.dumps({"active": "Гонка", "presets": {"Гонка": {"tower": {"scale": 1.2}}}}),
+        encoding="utf-8")
+    overlay_layout.save_enabled("tower", False)
+
+    assert overlay_layout.apply_preset("Гонка") is True
+
+    assert overlay_layout.load_enabled("tower") is True
+
+
 def test_revision_changes_when_the_document_is_rewritten(monkeypatch, tmp_path):
     # По этой отметке процесс виджета замечает чужую правку без разбора JSON.
     _use_tmp_dir(monkeypatch, tmp_path)

@@ -189,3 +189,70 @@ def test_lockup_and_understeer_are_tracked_independently():
     _feed(d, both, seconds=0.5, clock=c)
     events = _feed(d, _frame(), seconds=0.3, clock=c)
     assert {e.kind for e in events} == {"lockup", "understeer"}
+
+
+# --------------------------------------------------------------------------- #
+# Зависшие срывы.
+# Разбор живого заезда 2026-08-11: в карте ошибок лежал `lockup` длиной 9,7 с и
+# `oversteer` 3,2 с. Автомат не закрывался, а место и фаза пишутся на НАЧАЛЕ
+# срыва — поэтому девятисекундное событие получало прописку на прямой и уносило
+# с собой привязку всех поворотов, через которые проехало.
+# --------------------------------------------------------------------------- #
+
+def test_slip_longer_than_the_cap_is_discarded():
+    from core.coach_ai.slip import MAX_EVENT_DURATION_S
+    d, c = SlipDetector(), _Clock()
+    braking = _frame(brake_pct=100.0,
+                     slip_ratio={"rl": 0.0, "rr": 0.0, "fl": -0.5, "fr": -0.05})
+
+    during = _feed(d, braking, seconds=MAX_EVENT_DURATION_S + 1.0, clock=c)
+    after = _feed(d, _frame(), seconds=0.3, clock=c)
+
+    assert during == []
+    assert after == [], "девятисекундная «блокировка» — сбитый замер, не ошибка"
+
+
+def test_slip_is_discarded_when_the_lap_changes_under_it():
+    """Событие не имеет права переползти через линию старта на чужой круг."""
+    d, c = SlipDetector(), _Clock()
+    braking = _frame(brake_pct=100.0,
+                     slip_ratio={"rl": 0.0, "rr": 0.0, "fl": -0.5, "fr": -0.05})
+
+    _feed(d, braking, seconds=0.4, clock=c, lap=1)
+    after = _feed(d, _frame(), seconds=0.3, clock=c, lap=2)
+
+    assert after == []
+
+
+def test_a_normal_slip_still_survives_both_guards():
+    """Предохранители не должны съесть обычную ошибку."""
+    d, c = SlipDetector(), _Clock()
+    braking = _frame(brake_pct=100.0,
+                     slip_ratio={"rl": 0.0, "rr": 0.0, "fl": -0.5, "fr": -0.05})
+
+    _feed(d, braking, seconds=0.5, clock=c, lap=4)
+    after = _feed(d, _frame(), seconds=0.1, clock=c, lap=4)
+
+    assert len(after) == 1
+    assert after[0].kind == "lockup"
+    assert after[0].corner_id == 3
+
+
+def test_a_stuck_signal_produces_one_discard_not_a_stream():
+    """Отброшенный срыв не должен тут же порождать следующий из того же
+    залипшего сигнала — иначе вместо одной мусорной записи будет поток."""
+    from core.coach_ai.slip import MAX_EVENT_DURATION_S
+    d, c = SlipDetector(), _Clock()
+    braking = _frame(brake_pct=100.0,
+                     slip_ratio={"rl": 0.0, "rr": 0.0, "fl": -0.5, "fr": -0.05})
+
+    # Сигнал держится втрое дольше предела и не отпускает.
+    events = _feed(d, braking, seconds=MAX_EVENT_DURATION_S * 3, clock=c)
+    assert events == []
+
+    # Отпустил — подавление снимается, следующая настоящая ошибка проходит.
+    _feed(d, _frame(), seconds=0.3, clock=c)
+    _feed(d, braking, seconds=0.5, clock=c)
+    after = _feed(d, _frame(), seconds=0.1, clock=c)
+    assert len(after) == 1
+    assert after[0].kind == "lockup"

@@ -22,7 +22,8 @@ from analytics import archive as _archive
 from analytics.loader import load_own_reference_session
 from analytics.comparator import compare as _compare
 from core import overlay_layout as _layout
-from core.remote_access import RemoteAccessPolicy, bind_host
+from core.remote_access import (COOKIE_MAX_AGE, COOKIE_NAME,
+                                RemoteAccessPolicy, bind_host, is_loopback)
 from core.overlay_window import HUD_WIDGETS as _HUD_WIDGETS
 
 #: Порядок важен только для UI — список виджетов, у которых есть геометрия.
@@ -130,8 +131,14 @@ def create_app(engine, settings: dict, base_dir: str) -> Bottle:
             enabled=bool(settings.get("remote_access_enabled", False)),
             token=str(settings.get("remote_access_token", "")),
         )
+        # Три источника, потому что путей у токена ровно три и каждый нужен:
+        # заголовок ставит `lib/api.ts` на fetch-ах, query приезжает один раз
+        # по ссылке из панели, а куку браузер прикладывает САМ — и только она
+        # доносит токен до стилей, скриптов и шрифтов. Без неё телефон получал
+        # документ и 401 на каждый его подресурс (см. COOKIE_NAME).
         token = (request.get_header("X-Spotter-Token")
                  or request.query.get("token")
+                 or request.get_cookie(COOKIE_NAME)
                  or None)
         # REMOTE_ADDR из environ, а НЕ `request.remote_addr`: последний в Bottle
         # читает заголовок `X-Forwarded-For` раньше адреса сокета (см.
@@ -142,11 +149,50 @@ def create_app(engine, settings: dict, base_dir: str) -> Bottle:
         # запись настроек — причём БЕЗ токена и даже при выключенной фиче.
         # Прокси перед этим сервером не бывает (он локальный), поэтому доверять
         # заголовку незачем в принципе.
-        if not policy.allows(request.environ.get("REMOTE_ADDR"), request.path,
-                             request.method, token):
+        client = request.environ.get("REMOTE_ADDR")
+        if not policy.allows(client, request.path, request.method, token):
             # Тело без подробностей: чужому клиенту незачем знать, выключена
             # фича, неверен токен или ручка запрещена в принципе.
             raise HTTPResponse(status=401, body="unauthorized")
+        # Ссылка из панели сработала — дальше пусть токен носит браузер.
+        # Локальному клиенту кука не нужна: он разрешён всегда.
+        if not is_loopback(client) and policy.accepts_token(request.query.get("token")):
+            request.environ["spotter.issue_cookie"] = request.query.get("token")
+
+    # Кука ставится плагином — на САМ объект ответа, а не на глобальный
+    # `response`, и это не стилистика. В Bottle 0.13 `HTTPResponse.apply()`
+    # перезатирает `_headers` и `_cookies` глобального ответа ЦЕЛИКОМ, и
+    # вызывается дважды: в `_handle()` и ещё раз в `_cast()` — то есть уже
+    # после хука `after_request`. `static_file()` возвращает как раз
+    # `HTTPResponse`, поэтому кука, поставленная в любом из хуков, молча
+    # пропадала бы ровно на том ответе, который обязан её принести — на
+    # документе. Плагин же оборачивает сам маршрут и работает ДО первого
+    # `apply()`, а тот переносит куку с объекта ответа на глобальный.
+    # Плагин, а не пара маршрутов: забытый маршрут здесь означает страницу,
+    # которая грузится один раз и умирает после F5.
+    def _issue_remote_cookie(callback):
+        def wrapper(*args, **kwargs):
+            result = callback(*args, **kwargs)
+            token = request.environ.get("spotter.issue_cookie")
+            if token:
+                target = result if isinstance(result, HTTPResponse) else response
+                target.set_cookie(
+                    COOKIE_NAME, token,
+                    path="/",
+                    max_age=COOKIE_MAX_AGE,
+                    # Скриптам кука не нужна: свой токен фронт держит в
+                    # localStorage, а HttpOnly убирает её из досягаемости
+                    # чужого кода на странице.
+                    httponly=True,
+                    # Запрос со стороннего сайта куку не унесёт.
+                    samesite="strict",
+                    # `secure` НЕ ставим осознанно: второй экран живёт по HTTP
+                    # в локальной сети, и с ним кука не уехала бы вообще.
+                )
+            return result
+        return wrapper
+
+    app.install(_issue_remote_cookie)
 
     # UI — статический экспорт Next.js в webui/ (исходники в NewSpotterUI).
     # Фоллбэк на base_dir сохранён на случай старого одиночного index.html.
@@ -337,6 +383,11 @@ def create_app(engine, settings: dict, base_dir: str) -> Bottle:
             return _json({"ok": False, "error": "unknown widget"})
         if "scale" in body:
             _layout.save_scale(widget, body.get("scale"))
+        if "enabled" in body:
+            # Дальше это доедет само: процесс виджета прячется по своей отметке
+            # файла, а главный процесс закрывает или поднимает его в
+            # OverlayProcessController.sync_enabled.
+            _layout.save_enabled(widget, body.get("enabled"))
         if "dx" in body and "dy" in body:
             try:
                 _layout.save(widget, int(body["dx"]), int(body["dy"]))

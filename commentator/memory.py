@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import threading
 import time
 from pathlib import Path
@@ -27,6 +28,21 @@ _log = logging.getLogger(__name__)
 _MAX_ENTRIES = 20
 _MAX_AGE_SEC = 7200    # 2 часа — покрывает полный заезд F1
 _CONTEXT_WINDOW = 5    # шире окно: модель меняет не только строку, но и ритм/заход
+
+# Окно, внутри которого дословный повтор считается браком. Комментатор,
+# повторяющий ту же фразу через минуту, звучит сломанным; через полчаса — нет.
+_REPEAT_WINDOW_SEC = 300.0
+
+_PUNCT_RE = re.compile(r"[^\w\s]", re.UNICODE)
+_SPACE_RE = re.compile(r"\s+", re.UNICODE)
+
+
+def normalize(phrase: str) -> str:
+    """Текст → форма для сравнения «это то же самое»: регистр, пунктуация и
+    пробелы не должны делать повтор новой фразой. Ё считаем за е — модель
+    печатает то так, то так."""
+    text = _PUNCT_RE.sub(" ", (phrase or "").lower().replace("ё", "е"))
+    return _SPACE_RE.sub(" ", text).strip()
 
 
 class PhraseMemory:
@@ -71,6 +87,32 @@ class PhraseMemory:
         n = n if n is not None else self._context_window
         with self._lock:
             return [e["phrase"] for e in self._entries[-n:]]
+
+    def is_repeat(self, phrase: str, *, window_sec: float = _REPEAT_WINDOW_SEC) -> bool:
+        """True — эту фразу уже говорили только что, слово в слово.
+
+        Зачем нужен ЖЁСТКИЙ фильтр, когда есть `recent()`. Тот работает
+        подсказкой в промпте («НЕДАВНО СКАЗАНО»), то есть просьбой к модели, и
+        модель её игнорирует: в живом заезде 2026-08-11 одна и та же реплика про
+        столкновение прозвучала четырежды (15:05:05, 15:06:37, 15:07:04,
+        15:07:12) — дословно, при том что предыдущие фразы стояли в промпте.
+        Просьба остаётся (она улучшает и ритм, и заход), но последнее слово
+        теперь за проверкой факта.
+
+        Сравнение по нормализованному тексту и только внутри окна: тот же
+        оборот через полчаса — нормальная речь, а не поломка.
+        """
+        needle = normalize(phrase)
+        if not needle:
+            return False
+        cutoff = time.time() - window_sec
+        with self._lock:
+            for entry in reversed(self._entries):
+                if entry.get("ts", 0.0) < cutoff:
+                    break
+                if normalize(entry.get("phrase", "")) == needle:
+                    return True
+        return False
 
     def clear(self) -> None:
         """Очистить память (вызывать при старте новой сессии/гонки)."""

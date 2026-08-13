@@ -29,7 +29,12 @@ MIN_COMPARABLE_CORNERS = 5
 #: метрика -> (поле CornerMetrics, знак «плохого», порог значимости).
 #: Знак приводит превышение к правилу «положительное = хуже эталона»: тормозить
 #: позже и проходить апекс быстрее — это прогресс, а не ошибка.
-_METRICS: dict[str, tuple[str, float, float]] = {
+#:
+#: Публичная: этой же таблицей пользуется `core/coach_ai/cost.py`, когда ищет
+#: РУТИННОЕ отклонение по кругам. Второй копии порогов у коуча быть не должно —
+#: разойдясь, они дали бы «причина есть» в одном модуле и «причины нет» в
+#: соседнем на одних и тех же данных.
+METRICS: dict[str, tuple[str, float, float]] = {
     "duration":  ("duration_ms",       1.0, 150.0),   # мс
     "brake":     ("brake_point_m",    -1.0,  12.0),   # м
     "min_speed": ("min_speed_kmh",    -1.0,   6.0),   # км/ч
@@ -37,10 +42,10 @@ _METRICS: dict[str, tuple[str, float, float]] = {
 }
 
 #: ПРИЧИНЫ — то, что пилот может сделать иначе уже в следующем круге.
-_CAUSE_METRICS = ("brake", "min_speed", "throttle")
+CAUSE_METRICS = ("brake", "min_speed", "throttle")
 #: СЛЕДСТВИЕ — «в этом повороте ты теряешь время». Само по себе не указание:
 #: пилот и так чувствует, что медленно, но не знает, что менять.
-_SYMPTOM_METRIC = "duration"
+SYMPTOM_METRIC = "duration"
 
 
 def _raw_deltas(current: dict[int, CornerMetrics],
@@ -77,10 +82,10 @@ def compare_lap(current: dict[int, CornerMetrics],
     откалиброваны на живых данных — если после заезда окажется, что причины
     срабатывают слишком охотно, поднимать надо их, а не возвращать
     соревнование с `duration`."""
-    causal = _best_delta(current, reference, corner_names, _CAUSE_METRICS)
+    causal = _best_delta(current, reference, corner_names, CAUSE_METRICS)
     if causal is not None:
         return causal
-    return _best_delta(current, reference, corner_names, (_SYMPTOM_METRIC,))
+    return _best_delta(current, reference, corner_names, (SYMPTOM_METRIC,))
 
 
 def _best_delta(current: dict[int, CornerMetrics],
@@ -96,7 +101,7 @@ def _best_delta(current: dict[int, CornerMetrics],
     best_ratio = 1.0     # ниже порога значимости не публикуем вовсе
 
     for metric in metrics:
-        field, sign, threshold = _METRICS[metric]
+        field, sign, threshold = METRICS[metric]
         deltas = _raw_deltas(current, reference, field)
         if len(deltas) < MIN_COMPARABLE_CORNERS:
             continue
@@ -127,7 +132,7 @@ def corner_deltas(current: dict[int, CornerMetrics],
         cur, ref = current[corner_id], reference[corner_id]
         row: dict = {"corner_id": corner_id,
                      "corner_name": corner_names.get(corner_id)}
-        for metric, (field, _sign, _threshold) in _METRICS.items():
+        for metric, (field, _sign, _threshold) in METRICS.items():
             a, b = getattr(cur, field), getattr(ref, field)
             key = "duration_ms" if metric == "duration" else f"{metric}_delta"
             row[key] = (None if a is None or b is None

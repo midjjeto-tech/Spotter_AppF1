@@ -115,6 +115,7 @@ export function Slider({
   min = 0,
   max = 100,
   label,
+  disabled = false,
 }: {
   value: number
   onChange: (v: number) => void
@@ -122,6 +123,7 @@ export function Slider({
   min?: number
   max?: number
   label?: string
+  disabled?: boolean
 }) {
   return (
     <input
@@ -129,10 +131,14 @@ export function Slider({
       min={min}
       max={max}
       value={value}
+      disabled={disabled}
       aria-label={label}
       onChange={(e) => onChange(Number(e.target.value))}
       onPointerUp={(e) => onPointerUp?.(Number((e.target as HTMLInputElement).value))}
-      className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-secondary accent-primary"
+      className={cn(
+        "h-1.5 w-full appearance-none rounded-full bg-secondary accent-primary",
+        disabled ? "cursor-not-allowed opacity-40" : "cursor-pointer",
+      )}
     />
   )
 }

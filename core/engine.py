@@ -140,6 +140,26 @@ _COACH_REFERENCE_CODE: dict[str, str] = {
     "throttle": "coach.ref_throttle_late",
     "duration": "coach.ref_losing_time",
 }
+
+# Событие работы сессии -> семантический код банка (фаза 4).
+_COACH_FOCUS_CODE: dict[str, str] = {
+    "set": "coach.focus_set",
+    "progress": "coach.focus_progress",
+    "fixed": "coach.focus_fixed",
+}
+
+#: По скольким последним кругам меряется работа сессии. Итог сессии считается по
+#: всем кругам (он едет в разбор), а работа — по окну: медиана всей сессии почти
+#: не двигается, когда пилот исправился на десятом круге из двадцати, и коуч,
+#: меряющий прогресс по итогу, похвалил бы уже на финише — когда похвала ничего
+#: не стоит.
+COACH_FOCUS_WINDOW_LAPS = 6
+
+# Положение в поле по секторам -> семантический код банка.
+_FIELD_SECTOR_CODE: dict[str, str] = {
+    "weak": "field.sector_weak",
+    "strong": "field.sector_strong",
+}
 from core.strategy_ai.safety_car import derive_safety_car_event
 from core.coach_ai import DriverCoach
 from core.rivals import RivalTracker
@@ -154,8 +174,15 @@ from core import field_log
 from core.coach_ai import slip as slip_mod
 from core.coach_ai.slip import SlipDetector
 from core.coach_ai.compare import compare_lap, corner_deltas
+from core.coach_ai.cost import CornerHistory
+from core.coach_ai.corner_types import balance_signature, by_corner_type
+from core.coach_ai.diagnosis import diagnose as diagnose_corners
+from core.coach_ai.focus import SessionFocus
+from core.coach_ai.health import CoachHealth
+from core.coach_ai.lesson import build_lesson
 from core.coach_ai.reference import LapTracer
-from core.coach_ai.reference_store import ReferenceLap, load_career_reference
+from core import sector_standing
+from core.coach_ai.reference_store import ReferenceLap, load_track_history
 from core.coach_ai.repeat import RepeatGate
 from core.coach_ai.setup_advice import build_hints as build_setup_hints
 from core.coach_ai.tyre_load import TyreLoadTracker
@@ -165,7 +192,7 @@ from core.remote_access import (
     generate_token as generate_remote_token, lan_address as _lan_address,
     lan_candidates as _lan_candidates)
 from core.session_guard import SessionGuard
-from core.num_to_words import ru_plural
+from core.num_to_words import ru_plural, seconds_phrase
 from core.situation_dedup import (
     EngineerTopicDedup, SituationDedup, gap_band as situation_gap_band)
 from core.commentary_events import CommentaryEvents
@@ -177,7 +204,7 @@ from core.radio.message import (
 from core.radio.corner_words import ordinal_prepositional
 from core.radio import resolver as radio_resolver
 from core.radio.session import RadioSession
-from core.radio.plumbing import attach as radio_plumbing
+from core.radio.plumbing import attach as radio_plumbing, field as radio_field
 from core.radio.voice_cast import SLOT_ENGINEER
 from core.radio import voice_cast
 
@@ -240,6 +267,19 @@ SPEAKER_ENGINEER = "engineer"
 # Повреждения кузова: порог "заметности" (%) для голосовой реплики — ниже не
 # считаем поводом объявлять (мелкие царапины — постоянный шум телеметрии).
 _DAMAGE_NOTICEABLE_THRESHOLD = 20
+
+# Градация контакта (2026-08-11). Игра шлёт COLL на любое касание и тяжести не
+# сообщает, поэтому её приходится выводить из ПОСЛЕДСТВИЯ: насколько выросли
+# повреждения за короткое окно после удара. Модель окна взята у RaceFeed
+# (core/racefeed/editorial.py::INCIDENT_WINDOW_S), но окно здесь на порядок
+# короче: лента может подождать 30 секунд, живой комментатор — нет.
+#
+# Пороги в тех же процентах, что и _DAMAGE_NOTICEABLE_THRESHOLD, но считаются
+# по ПРИРОСТУ, а не по абсолютному значению: разбитое в прошлом круге крыло не
+# должно превращать сегодняшнюю притирку в аварию.
+_CONTACT_WINDOW_S = 2.5
+_CONTACT_LIGHT_DAMAGE = 5     # ниже — притёрлись, говорить не о чем
+_CONTACT_HEAVY_DAMAGE = 25    # выше — это уже настоящая авария
 # Hero events that get an in-game screenshot attached to their RaceFeed post.
 _HERO_SCREENSHOT_CODES = frozenset({
     "OVTK", "COLL", "PENA", "RTMT", "FTLP", "CHAMPIONSHIP",
@@ -398,6 +438,25 @@ class F1Engine:
         self.coach_reference: ReferenceLap | None = None
         self.coach_reference_gate = RepeatGate()
         self._coach_last_deltas: list[dict] = []
+        # Фаза 4: цена ошибки, работа сессии и разбор. Здесь наблюдения фаз 1-3
+        # превращаются в тренировку — одна задача за раз и подтверждение, что
+        # она сделана. Разбор пересобирается РАЗ В КРУГ и кладётся сюда готовым:
+        # /api/state опрашивают восемь окон оверлея каждые 250 мс, считать там
+        # медианы по всей сессии нельзя.
+        self.coach_history = CornerHistory()
+        self.coach_focus = SessionFocus()
+        self._coach_lesson: dict | None = None
+        self._coach_previous_lesson: dict | None = None
+        # Положение в поле по секторам. Гейт повтора тот же, что у коуча
+        # (core/coach_ai/repeat.py) — правило «о чём стоит сказать вслух» одно
+        # на приложение, и третий потребитель ровно то, ради чего его вынесли
+        # в отдельный модуль.
+        self._field_pace: sector_standing.FieldPace | None = None
+        self._field_pace_gate = RepeatGate()
+        # Состояние самого коуча: есть ли сигнал, сколько нашли, сколько сказали
+        # и почему промолчали. Живёт независимо от тумблера — «выключен» это
+        # тоже ответ на вопрос «почему молчит».
+        self.coach_health = CoachHealth()
         self._player_lap_time_ms: int = 0
         # Фаза 3: во что стиль обходится машине. Живого канала у неё нет —
         # сетап посреди заезда не меняется, всё уходит в дебриф и файл сессии.
@@ -467,6 +526,10 @@ class F1Engine:
         self._damage_announced: dict[str, bool] = {
             "wing": False, "floor": False, "gearbox": False, "engine": False,
         }
+        # Контакт игрока, ждущий последствия (см. _CONTACT_WINDOW_S). Один, а не
+        # очередь: два касания за 2.5 секунды — это один эпизод, и второе лишь
+        # продлевает наблюдение, а не заводит вторую реплику.
+        self._pending_contact: dict | None = None
 
         # Race Situation Intelligence Layer
         self.race_analyzer = RaceAnalyzer()
@@ -479,6 +542,12 @@ class F1Engine:
         # инженера, которые приходят от девяти независимых трекеров.
         self._engineer_topic_dedup = EngineerTopicDedup(
             config.SITUATION_DEDUP_COOLDOWN)
+        # Когда в последний раз объявляли про КОНКРЕТНОГО соседа с конкретной
+        # стороны (ключ из core/radio/situations.py). Отдельный словарь, а не
+        # SituationDedup: тот помнит ровно одну последнюю ситуацию, а рядом с
+        # игроком одновременно бывают две машины — левая и правая, и подавление
+        # одной не должно глушить другую. См. _spotter_situation_allows.
+        self._spotter_situation_seen: dict[str, float] = {}
         self._flashback_until: float = 0.0
 
         # Post-Race Story Mode
@@ -528,6 +597,10 @@ class F1Engine:
         # столкнулась бы с первой ситуацией прошлой. Своя, а не из RaceFeed:
         # тот выключен по умолчанию, а радио работает всегда.
         self._radio_session_id: str = self._new_radio_session_id()
+        # Счётчик ВЫСКАЗЫВАНИЙ по коду для реплик без ситуации — см.
+        # `_phrase_selector`. Только они: у ситуации личность уже есть, и
+        # считать её высказывания незачем.
+        self._phrase_utterances: dict[str, int] = {}
         # Состояния радио-сообщений по id. Пока это диагностический журнал и seam
         # для Task 5 (история радио в UI); ограничен по размеру, чтобы за длинную
         # гонку не расти без предела.
@@ -671,8 +744,12 @@ class F1Engine:
             # и какой из них видит телефон, приложение знать не может.
             "candidates": candidates,
             "restart_required": not listening_outside,
+            # Ведём на ТЕЛЕФОННЫЙ экран, а не на десктопный `/`: у руля нужны
+            # позиция, гэпы, шины и реплика инженера, а не «Настройки» с
+            # «Логами». Десктопный корень с телефона по-прежнему открывается —
+            # просто не рекламируется. Маршрут — NewSpotterUI/app/phone/.
             "url": ("" if not listening_outside
-                    else f"http://{host}:{config.API_PORT}/?token={token}"),
+                    else f"http://{host}:{config.API_PORT}/phone.html?token={token}"),
         }
 
     def _apply_game_ducking(self) -> None:
@@ -1329,6 +1406,72 @@ class F1Engine:
             elif severity < _DAMAGE_NOTICEABLE_THRESHOLD:
                 self._damage_announced[category] = False
 
+    # ── Градация контакта ────────────────────────────────────────────────────
+
+    def _total_damage(self) -> int:
+        """Сумма повреждений по четырём категориям; 0, пока данных нет."""
+        dmg = self._player_damage or {}
+        return sum(int(dmg.get(key) or 0) for key in
+                   ("wing_damage", "floor_damage",
+                    "gearbox_damage", "engine_damage"))
+
+    def _defer_contact(self, event: dict, now: float) -> None:
+        """Отложить COLL игрока до появления последствия.
+
+        В момент удара судить не по чему: тяжести в пакете нет, а повреждения
+        приезжают следующими пакетами. Повторный контакт внутри окна ПРОДЛЕВАЕТ
+        наблюдение и не заводит вторую реплику — серия притирок в одном повороте
+        это один эпизод, а не три."""
+        pending = self._pending_contact
+        if pending is not None:
+            pending["deadline"] = now + _CONTACT_WINDOW_S
+            return
+        self._pending_contact = {
+            "event": event,
+            "deadline": now + _CONTACT_WINDOW_S,
+            "damage_before": self._total_damage(),
+            "position_before": self._positions.get(self._player_car_index),
+        }
+
+    def _grade_contact(self, now: float) -> None:
+        """Окно истекло — оценить последствие и опубликовать с честным весом.
+
+        Три исхода вместо прежнего единственного «авария, важность 90»:
+        притирка без последствий, контакт с потерей и настоящая авария.
+        Считается ПРИРОСТ повреждения, а не абсолют: разбитое кругом раньше
+        крыло не должно превращать сегодняшнюю притирку в катастрофу."""
+        pending = self._pending_contact
+        if pending is None or now < pending["deadline"]:
+            return
+        self._pending_contact = None
+
+        delta = max(0, self._total_damage() - pending["damage_before"])
+        before = pending["position_before"]
+        after = self._positions.get(self._player_car_index)
+        lost_position = (isinstance(before, int) and isinstance(after, int)
+                         and after > before)
+
+        if delta >= _CONTACT_HEAVY_DAMAGE:
+            code, priority = "COLL_HEAVY", "critical"
+        elif delta >= _CONTACT_LIGHT_DAMAGE or lost_position:
+            code, priority = "COLL", "normal"
+        else:
+            code, priority = "COLL_LIGHT", "normal"
+
+        _log.info("контакт оценён: %s (прирост повреждений %d%%, позиция %s→%s)",
+                  code, delta, before, after)
+        # `contact_graded` — служебный флаг, поэтому уезжает в namespace
+        # `event["radio"]`, а не в корень: оттуда он не попадёт ни в facts для
+        # LLM, ни в отпечаток RaceFeed. Он же не даёт событию уйти на второй
+        # круг отложенной оценки.
+        self._handle_race_event({
+            **pending["event"],
+            "event_code": code,
+            "priority": priority,
+            "damage_delta": delta,
+            **radio_plumbing(contact_graded=True),
+        })
+
     def _update_tyre_sets(self, parsed: dict) -> None:
         """Tyre Sets (packet 12) — ПОЦИКЛОВОЙ пакет, одна машина за раз
         (parse_tyre_sets возвращает данные ДЛЯ ТОЙ машины, что была в
@@ -1736,8 +1879,40 @@ class F1Engine:
             **radio_plumbing(
                 neighbour_idx=self._spotter_neighbour_idx(code, radar)),
         }
+        if not self._spotter_situation_allows(draft, code):
+            return
         draft["phrase"] = self._render_engineer_phrase(draft, phrase_code)
         self._commentary_events.publish(draft)
+
+    def _spotter_situation_allows(self, draft: dict, code: str) -> bool:
+        """False = про ЭТУ машину с ЭТОЙ стороны только что говорили.
+
+        Ключ уже считается проектом — `spotter:{side}:vehicle_{idx}` из
+        `core/radio/situations.py`; до сих пор он использовался только как
+        селектор варианта фразы (`_phrase_selector`). Здесь тот же ключ
+        работает подавлением: сосед, висящий рядом и колеблющийся на границе
+        порога, не переобъявляется, а появление ДРУГОГО соседа проходит сразу —
+        у него другой ключ.
+
+        `SPOTTER_CLEAR` не подавляется никогда: `MIN_REPEAT_S` в
+        `core/strategy_ai/spotter.py` и так не даёт ему дребезжать, а
+        промолчать о снятии опасности хуже, чем повториться.
+        """
+        if code == "SPOTTER_CLEAR":
+            return True
+        key = situation_dedupe_key(draft, lap=self._player_lap,
+                                   session_id=self._radio_session_id,
+                                   timeline_revision=self._timeline_revision)
+        if key is None:
+            return True
+        now = time.time()
+        last = self._spotter_situation_seen.get(key)
+        if last is not None and now - last < config.SPOTTER_SITUATION_COOLDOWN:
+            _log.info("spotter: %s подавлен, та же ситуация %.1fс назад",
+                      code, now - last)
+            return False
+        self._spotter_situation_seen[key] = now
+        return True
 
     def _coach_tick(self, motion_ex: dict) -> None:
         """Вызывается на каждом PACKET_MOTION_EX.
@@ -1775,6 +1950,10 @@ class F1Engine:
             "surface": self._player_surface,
         }
         self._field_observe_coach_frame(frame)
+        # Здоровье сигнала считается по тому же кадру, что и срывы: вопрос
+        # «данные вообще приходят?» имеет смысл только про те данные, по которым
+        # работает детектор.
+        self.coach_health.observe_frame(frame)
 
         now = time.time()
         for mistake in self.coach_slip.tick(
@@ -1834,6 +2013,24 @@ class F1Engine:
             return {}
         return {c.id: c.name for c in self._track_manager.corners()}
 
+    def _corner_types(self) -> dict[int, str]:
+        """Тип каждого поворота активной трассы (slow/medium/fast/chicane/
+        hairpin). Разметка лежит в `tracks/*.json` с самого начала и работала
+        только на споттера; коучу она даёт разницу между «теряешь в седьмом» и
+        «теряешь во всех медленных» — то есть между техникой и подписью машины."""
+        if self._track_manager is None:
+            return {}
+        return {c.id: c.type for c in self._track_manager.corners()}
+
+    def _corner_type_census(self) -> dict[str, int]:
+        """Сколько поворотов каждого типа на активной трассе — для отчёта
+        диагностики: по нему видно, годится ли трасса для вывода про баланс
+        (нужно минимум три поворота одного типа)."""
+        census: dict[str, int] = {}
+        for corner_type in self._corner_types().values():
+            census[corner_type] = census.get(corner_type, 0) + 1
+        return census
+
     def _note_lap_reference(self, metrics: dict, lap_time_ms: int) -> None:
         """Кандидат в эталон — лучший круг сессии.
 
@@ -1875,13 +2072,24 @@ class F1Engine:
             return
         if not self.coach_reference_gate.observe(
                 (advice.metric, advice.corner_id), lap):
-            self._field.record("coach_silent", why="reference_repeat_rule",
-                               lap=lap, metric=advice.metric,
+            self._coach_silent("reference_repeat_rule", lap=lap, metric=advice.metric,
                                corner_id=advice.corner_id)
             return
+        # Пока в работе есть поворот, коуч не рассказывает про другой. Каждая
+        # такая реплика верна по отдельности, а вместе они — тот самый шум, из-за
+        # которого пилот перестаёт слушать: тренер занимается ОДНОЙ вещью.
+        #
+        # Глушится только фаза 2 — она про технику, то есть про то же, чем
+        # занят фокус. Срывы фазы 1 (блокировка, занос) остаются: это реакция на
+        # случившееся, а не второе мнение о том, над чем работать.
+        focus = self.coach_focus.state
+        if focus is not None and focus.corner_id != advice.corner_id:
+            self._coach_silent("off_focus", lap=lap,
+                               metric=advice.metric, corner_id=advice.corner_id,
+                               focus_corner_id=focus.corner_id)
+            return
         if not self._get_setting("driving_coach_enabled", False):
-            self._field.record("coach_silent", why="coach_disabled_in_settings",
-                               lap=lap, metric=advice.metric)
+            self._coach_silent("coach_disabled_in_settings", lap=lap, metric=advice.metric)
             return
         code = _COACH_REFERENCE_CODE.get(advice.metric)
         if code is None:
@@ -1904,6 +2112,213 @@ class F1Engine:
             draft, code, {"corner_no": corner_no})
         if draft["phrase"]:
             self._commentary_events.publish(draft)
+            self.coach_health.note_spoken()
+
+    def _coach_observe_lap(self, lap: int, lap_time_ms: int,
+                           metrics: dict) -> None:
+        """Круг завершён: пересчитать цену ошибок, работу сессии и разбор.
+
+        Зовётся ТОЛЬКО на не-пит-кругах: после въезда на пит-лейн метрики
+        оставшихся поворотов описывают проезд по другой траектории, и цена,
+        посчитанная по ним, назначила бы главной проблемой сессии пит-лейн.
+
+        Считаются ДВА расклада, и путать их нельзя:
+
+            окно последних кругов — то, как пилот едет СЕЙЧАС. По нему работает
+                фокус: исправление должно быть замечено через два-три круга, а
+                не на финише;
+            вся сессия — итог. Он едет в разбор и в файл заезда.
+        """
+        self.coach_history.add_lap(lap, lap_time_ms, metrics)
+        reference = self.coach_reference
+        if reference is None:
+            return
+
+        names = self._corner_names()
+        mistakes = self.coach_log.map_rows()
+
+        recent = diagnose_corners(
+            self.coach_history.costs(reference.corners, names,
+                                     window=COACH_FOCUS_WINDOW_LAPS),
+            mistakes,
+            self.coach_history.metric_badness(reference.corners,
+                                              window=COACH_FOCUS_WINDOW_LAPS))
+        event = self.coach_focus.update(recent, lap)
+
+        session = diagnose_corners(
+            self.coach_history.costs(reference.corners, names),
+            mistakes,
+            self.coach_history.metric_badness(reference.corners))
+        self._coach_lesson = build_lesson(
+            session, self.coach_history.potential(), self.coach_focus.state,
+            self._coach_previous_lesson)
+        if self._coach_lesson is not None:
+            # Разрез по типам поворотов рядом с разрезом по поворотам: одна и та
+            # же потеря, два разных вопроса. «В седьмом» лечится техникой, «во
+            # всех медленных» — машиной.
+            self._coach_lesson["by_type"] = [
+                row.to_dict()
+                for row in by_corner_type(session, self._corner_types())
+            ]
+
+        self._field.record(
+            "coach_lesson", lap=lap,
+            focus=self.coach_focus.to_dict(),
+            focus_event=None if event is None else event.kind,
+            top=[row.to_dict() for row in session[:3]],
+            potential=(self._coach_lesson or {}).get("potential_ms"))
+
+        if event is not None:
+            self._publish_focus_event(event)
+
+    def _flush_packet_census(self, lap: int) -> None:
+        """Сколько каких пакетов пришло ОТ ИГРЫ за круг — в полевой журнал.
+
+        Это первая проверка любого разбора: «пакет 13 не приходит» и «пакет 13
+        приходит, но парсер отдаёт нули» — разные починки (настройки игры против
+        офсетов), а по молчанию коуча они неотличимы. Ключи целочисленные, чтобы
+        отчёт мог назвать пакет по имени, не гадая по строке."""
+        adapter = self._telemetry_instance
+        census = getattr(adapter, "packet_census", None)
+        if not census:
+            return
+        snapshot = dict(census)
+        census.clear()
+        self._field.record("packets", lap=lap,
+                           counts={str(k): v for k, v in sorted(snapshot.items())})
+
+    def _coach_silent(self, reason: str, **fields) -> None:
+        """Коуч промолчал — ОДНА точка на все причины.
+
+        Раньше причина уезжала только в полевой журнал, то есть была видна
+        разработчику при `SPOTTER_DIAG=1` и не видна пилоту никогда. А вопрос
+        «почему он молчит» — пилотский: молчащий коуч выглядит одинаково при
+        выключенном тумблере, неповторяющейся ошибке, не доехавшей телеметрии и
+        завышенном пороге. Теперь один вызов кормит и журнал, и экран — разойтись
+        они не могут по построению."""
+        self.coach_health.note_silence(reason)
+        self._field.record("coach_silent", why=reason, **fields)
+
+    def _field_pace_tick(self, lap: int) -> None:
+        """Круг завершён: пересчитать положение в поле по секторам и, если тема
+        держится, сказать.
+
+        **Гейта «только гонка» здесь НЕТ, и это главное отличие от сводки по
+        разрывам** (`_gap_digest_tick`, `session_type != "race"` → выход).
+        Сравнивать секторы важнее всего именно в квалификации: там пилот весь
+        заезд занят ровно одним — искать, где он медленнее поля. Сводка про
+        разрывы в квалификации бессмысленна, а эта раскладка — наоборот.
+
+        Раскладка считается ВСЕГДА, независимо от тумблера и правила повтора:
+        она нужна экрану. Молчание относится только к эфиру."""
+        self._field_pace = sector_standing.build(
+            self._session_history, self._player_car_index, self._driver_name_at)
+        pace = self._field_pace
+        if pace is None:
+            return
+
+        topic, standing = self._field_pace_topic(pace)
+        if standing is None:
+            return
+        self._field.record(
+            "field_pace", lap=lap, topic=topic, sector=standing.sector,
+            rank=standing.rank, field_size=standing.field_size,
+            gap_ms=standing.gap_ms)
+
+        if not self._field_pace_gate.observe((topic, standing.sector), lap):
+            self._field.record("field_pace_silent", why="repeat_rule", lap=lap,
+                               topic=topic, sector=standing.sector)
+            return
+        if not self._get_setting("engineer_chatter_enabled", True):
+            self._field.record("field_pace_silent", why="chatter_disabled",
+                               lap=lap, topic=topic)
+            return
+        self._publish_field_pace(topic, standing)
+
+    @staticmethod
+    def _field_pace_topic(pace) -> tuple[str, object | None]:
+        """О чём говорить: о слабом секторе, а если слабого нет — о сильном.
+
+        Порядок не косметический. Слабое место — это работа, сильное —
+        подтверждение; подтверждение без работы уместно (пилот везде хорош),
+        а работа, отложенная ради похвалы, — нет."""
+        if pace.weakest is not None:
+            return "weak", pace.weakest
+        if pace.strongest is not None and pace.strongest.is_best:
+            # Хвалим только за первое место в поле: «ты четвёртый в секторе, и
+            # это твоя сильная сторона» звучит как утешение.
+            return "strong", pace.strongest
+        return "strong", None
+
+    def _publish_field_pace(self, topic: str, standing) -> None:
+        code = _FIELD_SECTOR_CODE.get(topic)
+        sector_no = ordinal_prepositional(standing.sector)
+        if code is None or sector_no is None:
+            return
+        fields = {"sector_no": sector_no,
+                  "rank": radio_resolver.position_word(standing.rank)}
+        if topic == "weak":
+            spoken = seconds_phrase(standing.gap_ms)
+            if spoken is None:
+                # Отрыв ниже произносимого. Раскладку на экране это не трогает.
+                self._field.record("field_pace_silent", why="gap_below_spoken",
+                                   sector=standing.sector)
+                return
+            fields["loss"] = spoken
+        draft = {
+            "event_code": "FIELD_SECTOR",
+            "priority": "normal",
+            "speaker": SPEAKER_ENGINEER,
+            "driver": "", "color": "#38BDF8",
+        }
+        draft["phrase"] = self._render_engineer_phrase(draft, code, fields)
+        if draft["phrase"]:
+            self._commentary_events.publish(draft)
+
+    def _publish_focus_event(self, event) -> None:
+        """Реплика про работу сессии: взяли, стало лучше, закрыли.
+
+        Величина ЗВУЧИТ, в отличие от подсказок фазы 2 — и это не послабление к
+        запрету там, а другая величина: отклонение («на двенадцать метров
+        раньше») пилот в повороте не применит, а цена («уходит три десятых за
+        круг») отвечает на вопрос, почему этим вообще стоит заняться."""
+        if not self._get_setting("driving_coach_enabled", False):
+            self._coach_silent("coach_disabled_in_settings", focus_event=event.kind, lap=event.lap)
+            return
+        code = _COACH_FOCUS_CODE.get(event.kind)
+        corner_no = ordinal_prepositional(event.corner_id)
+        if code is None or corner_no is None:
+            self._coach_silent("no_corner_to_name", focus_event=event.kind, lap=event.lap)
+            return
+
+        fields = {"corner_no": corner_no}
+        if event.kind == "set":
+            spoken = seconds_phrase(event.cost_ms)
+            if spoken is None:
+                # Цена ниже произносимого — молчим целиком, а не читаем фразу с
+                # дырой на месте числа.
+                self._coach_silent("loss_below_spoken", focus_event=event.kind, lap=event.lap)
+                return
+            fields["loss"] = spoken
+        elif event.kind == "progress":
+            spoken = seconds_phrase(event.gain_ms)
+            if spoken is None:
+                self._coach_silent("gain_below_spoken", focus_event=event.kind, lap=event.lap)
+                return
+            fields["gain"] = spoken
+
+        draft = {
+            "event_code": "COACH_FOCUS",
+            "priority": "normal",
+            "speaker": SPEAKER_ENGINEER,
+            "driver": "", "color": "#38BDF8",
+            "corner": event.corner_name,
+            "corner_id": event.corner_id,
+        }
+        draft["phrase"] = self._render_engineer_phrase(draft, code, fields)
+        if draft["phrase"]:
+            self._commentary_events.publish(draft)
+            self.coach_health.note_spoken()
 
     def _record_race_map_lap(self, lap: int, player_pit: bool) -> None:
         """Снимок позиций на завершении круга ИГРОКОМ.
@@ -1934,14 +2349,20 @@ class F1Engine:
         а про стадию износа резины в эфире уже говорит strategy_ai. Отчёт живёт
         только на экране и в файле сессии."""
         load = self.tyre_load.report()
+        mistakes = self.coach_log.map_rows()
+        # Подпись баланса — то, чего фазе 3 не хватило для советов по гаражу.
+        # Она говорит, КУДА смотреть (механика или аэродинамика), и по-прежнему
+        # не называет чисел: величина зависит от трассы и от того, что уже стоит
+        # в сетапе. См. core/coach_ai/corner_types.py.
+        signature = balance_signature(mistakes, self._corner_types())
         return {
             "tyre_load": load.to_dict() if load is not None else None,
             "setup": dict(self._player_setup),
             "hints": [
                 hint.to_dict()
-                for hint in build_setup_hints(
-                    self.coach_log.map_rows(), self._player_setup)
+                for hint in build_setup_hints(mistakes, self._player_setup)
             ],
+            "balance": signature.to_dict() if signature is not None else None,
         }
 
     def _note_track_limits_announcement(self, now: float) -> None:
@@ -1962,11 +2383,13 @@ class F1Engine:
             corner_id=mistake.corner_id, phase=mistake.phase, lap=mistake.lap,
             peak=mistake.peak, duration_s=mistake.duration_s,
             speak="pending" if repeat is not None else "gated_by_repeat_rule")
+        # «Срывы есть, но не повторяются» и «срывов нет» — разные диагнозы с
+        # разными действиями, и по эфиру они неотличимы.
+        self.coach_health.note_mistake(repeated=repeat is not None)
         if repeat is None:
             return
         if not self._get_setting("driving_coach_enabled", False):
-            self._field.record("coach_silent", why="coach_disabled_in_settings",
-                               mistake_kind=mistake.kind, lap=mistake.lap)
+            self._coach_silent("coach_disabled_in_settings", mistake_kind=mistake.kind, lap=mistake.lap)
             return
         if (
             repeat.kind == "offtrack"
@@ -1975,8 +2398,7 @@ class F1Engine:
         ):
             # Тот же инцидент уже объявлен как трек-лимит: штраф важнее совета,
             # и второй раз про то же самое мы молчим.
-            self._field.record("coach_silent", why="track_limits_just_announced",
-                               mistake_kind=mistake.kind, lap=mistake.lap)
+            self._coach_silent("track_limits_just_announced", mistake_kind=mistake.kind, lap=mistake.lap)
             return
         self._publish_coach_advice(repeat)
 
@@ -1996,8 +2418,7 @@ class F1Engine:
         # дебрифа, куда corner_log записал его в любом случае.
         corner_no = ordinal_prepositional(mistake.corner_id)
         if corner_no is None:
-            self._field.record("coach_silent", why="no_corner_to_name",
-                               mistake_kind=mistake.kind, lap=mistake.lap)
+            self._coach_silent("no_corner_to_name", mistake_kind=mistake.kind, lap=mistake.lap)
             return
         draft = {
             "event_code": "COACH_ADVICE",
@@ -2011,6 +2432,7 @@ class F1Engine:
             draft, code, {"corner_no": corner_no})
         if draft["phrase"]:
             self._commentary_events.publish(draft)
+            self.coach_health.note_spoken()
 
     @staticmethod
     def _spotter_neighbour_idx(code: str, radar: list[dict]) -> int | None:
@@ -2136,6 +2558,15 @@ class F1Engine:
         if mode == "all":
             return True
 
+        # Притирка без последствий голоса не получает вовсе. Порога озвучки по
+        # важности в проекте нет — `_should_voice` пропускает всё, — поэтому
+        # низкой цифры мало: событие всё равно прозвучало бы, просто позже.
+        # Возврат False здесь кладёт его в ленту как `muted`: факт виден
+        # пользователю, но эфир не занимает. В режиме `all` (выше) пользователь
+        # явно попросил всё — там оно звучит.
+        if event.get("event_code") == "COLL_LIGHT":
+            return False
+
         if mode == "player":
             if self._player_car_index >= 22:
                 return event.get("priority") == "critical"
@@ -2150,6 +2581,14 @@ class F1Engine:
         if event.get("priority") == "critical" or event.get("battle"):
             return True
         if event.get("event_code") == "FTLP":  # быстрейший круг всегда интересен
+            return True
+        # Столкновение соперников — новость независимо от того, замешан ли
+        # игрок. Раньше оно проходило этот фильтр «зайцем», как побочный эффект
+        # безусловного `priority=critical` у COLL; когда critical убрали
+        # (packets.py, 2026-08-11), освещение чужих аварий пропало бы молча.
+        # Соразмерность тона обеспечивает не фильтр, а вес: без игрока событие
+        # получает 65 и директиву «контакт», а не 90 и «авария».
+        if event.get("event_code") in ("COLL", "COLL_HEAVY"):
             return True
         if self._player_car_index < 22 and self._event_involves(event, self._player_car_index):
             return True
@@ -2400,6 +2839,23 @@ class F1Engine:
                     # Эталон гасим синхронно (старая трасса — чужая цель), а
                     # читаем архив в фоне: см. _start_coach_reference_load.
                     self.coach_reference = None
+                    # Всё, что меряется ОТНОСИТЕЛЬНО эталона, обнуляется вместе
+                    # с ним: цена поворота с прошлой трассы и работа над её
+                    # седьмым поворотом на новой трассе означали бы другое место.
+                    self.coach_history.reset()
+                    self.coach_focus.reset()
+                    self._coach_lesson = None
+                    self._coach_previous_lesson = None
+                    self._field_pace = None
+                    self._field_pace_gate.reset()
+                    # Трасса и её разметка — в журнал: без поворотов коуч не
+                    # назовёт место и не построит разбор, а по молчанию это
+                    # неотличимо от «ошибок не было».
+                    self._field.record(
+                        "track", track_id=new_tid, track=city,
+                        corners=len(self._track_manager.corners())
+                        if self._track_manager is not None else 0,
+                        types=self._corner_type_census())
                     self._start_coach_reference_load(new_tid)
                     self.f1_benchmark.reset()
                     self._f1_comparison_progress.reset()
@@ -2599,10 +3055,21 @@ class F1Engine:
                         # круге пилот что делал.
                         self._field.flush_stats(lap=self._prev_lap,
                                                 lap_time_ms=lms)
+                        self._flush_packet_census(self._prev_lap)
+                        lap_was_pit = self._current_lap_pit
                         lap_metrics = self.coach_tracer.finish_lap()
                         self._note_lap_reference(lap_metrics, lms)
                         self._compare_lap_to_reference(lap_metrics, self._prev_lap)
-                        lap_was_pit = self._current_lap_pit
+                        # Пит-круг не кормит ни цену ошибок, ни потенциал: после
+                        # въезда на пит-лейн метрики оставшихся поворотов
+                        # описывают проезд по другой траектории.
+                        if not lap_was_pit:
+                            self._coach_observe_lap(self._prev_lap, lms,
+                                                    lap_metrics)
+                        # Положение в поле считается и на пит-круге: лучшие
+                        # секторы сессии заезд в боксы не портит — они уже
+                        # установлены, а Session History их только хранит.
+                        self._field_pace_tick(self._prev_lap)
                         self._record_race_map_lap(self._prev_lap, lap_was_pit)
                         self.recorder.on_lap_complete(
                             lap_num=self._prev_lap,
@@ -2932,7 +3399,23 @@ class F1Engine:
                 # Отчёт «Гараж» компактен по построению (перекос + сетап +
                 # максимум два совета), поэтому его можно слать целиком.
                 "garage": self._garage_report(),
+                # Разбор и работа сессии: посчитаны РАЗ В КРУГ, здесь только
+                # читаются. Компактны по построению — три строки потерь и
+                # вердикт, — поэтому едут целиком, как «Гараж».
+                "lesson": self._coach_lesson,
+                "focus": self.coach_focus.to_dict(),
+                # Состояние самого коуча. Едет ВСЕГДА, в том числе с выключенным
+                # тумблером: «выключен» — это тоже ответ на вопрос, почему он
+                # молчит, и единственный способ его получить, не читая код.
+                "health": self.coach_health.to_dict(
+                    coach_enabled=self._get_setting("driving_coach_enabled", False)),
             },
+            # Положение в поле по секторам — отдельная секция, а НЕ поле внутри
+            # coach_ai: коуч отвечает «где ты теряешь относительно себя», это —
+            # «относительно них», и складывать два разных вопроса в один ключ
+            # значит гарантировать путаницу на экране.
+            field_pace=(self._field_pace.to_dict()
+                        if self._field_pace is not None else None),
             rivals=self.rival_tracker.get_state(),
             track_ai=track_ctx.to_dict() if track_ctx is not None else None,
             track_name=(
@@ -2996,10 +3479,16 @@ class F1Engine:
         радио (см. commentator/personas.py). None, если имя неизвестно — тогда
         персона не должна ничего придумывать."""
         trigger = None if event.get("event_code") == "AMBIENT" else event
-        player_name = (first_name_of(self.race_state.driver(self._player_car_index)["name"])
-                       if self._player_car_index < 22 else None)
+        full_name = (self.race_state.driver(self._player_car_index)["name"]
+                     if self._player_car_index < 22 else None)
+        player_name = first_name_of(full_name)
         with self._engine_lock:
-            return self.timeline.render(trigger, player_name=player_name)
+            # Полное имя — отдельным параметром, а не вместо первого. Обращение
+            # по радио остаётся по ИМЕНИ («Шарль, …»), но LLM обязан знать, что
+            # тот же человек в ленте событий назван ФАМИЛИЕЙ: без этой связки он
+            # разваливает игрока на двух персонажей (разбор заезда 2026-08-11).
+            return self.timeline.render(trigger, player_name=player_name,
+                                        player_full_name=full_name)
 
     def _neighbor_names(self) -> tuple[str | None, str | None]:
         """Имена машин впереди/сзади игрока по текущим позициям (для дедупа ситуаций)."""
@@ -3024,6 +3513,10 @@ class F1Engine:
         self.race_analyzer.reset_transient()
         self._situation_dedup.reset()
         self._engineer_topic_dedup.reset()
+        # Ключ споттера и так несёт `timeline_revision`, поэтому после отката
+        # он другой и подавление не переносится — чистим ради того, чтобы
+        # словарь не копил ключи отменённых веток.
+        self._spotter_situation_seen.clear()
         self._strategy_module.reset("flashback")
         self._race_engineer.reset("flashback")
         self._session_history.clear()
@@ -3477,15 +3970,20 @@ class F1Engine:
         растёт с каждой гонкой."""
         def _run() -> None:
             try:
-                reference = load_career_reference(track_id)
+                history = load_track_history(track_id)
             except Exception as exc:  # noqa: BLE001
                 _log.warning("Coach reference load failed: %s", exc)
                 return
-            if reference is None:
-                return
-            # Пока читали диск, трасса могла смениться — тогда этот эталон уже
-            # не про ту трассу, на которой пилот стоит сейчас.
+            # Пока читали диск, трасса могла смениться — тогда и эталон, и
+            # прошлый разбор уже не про ту трассу, на которой пилот стоит сейчас.
             if track_id != self._track_id:
+                return
+            # Прошлый разбор на этой трассе — точка отсчёта прогресса. Ставится
+            # независимо от эталона: заезд без записанного эталона всё равно мог
+            # оставить разбор, и наоборот.
+            self._coach_previous_lesson = history.last_lesson
+            reference = history.reference
+            if reference is None:
                 return
             # И пилот мог успеть проехать круг быстрее карьерного рекорда.
             # Без этой проверки фоновая загрузка ОТКАТИЛА БЫ цель назад, к
@@ -3664,6 +4162,12 @@ class F1Engine:
             self._handle_race_event(message.event)
 
     def _consume_telemetry_delta(self, delta: TelemetryDelta) -> None:
+        # Отложенный контакт дозревает здесь: окно закрывается по приходу
+        # следующих пакетов, а не по таймеру. Своего потока эта проверка не
+        # стоит — телеметрия идёт постоянно, и точность в пределах тика тут
+        # избыточна.
+        if self._pending_contact is not None:
+            self._grade_contact(time.monotonic())
         if delta.kind in {
             "session", "lap_data", "car_telemetry", "car_status", "car_damage",
         }:
@@ -3713,6 +4217,16 @@ class F1Engine:
             self._player_drs_active = True
         elif _ec == "DRSD":
             self._player_drs_active = False
+
+        # Контакт с участием игрока не публикуется сразу: тяжести в пакете нет,
+        # и раньше ЛЮБОЕ касание уходило к LLM как «авария» с важностью 90.
+        # Ждём последствия (_CONTACT_WINDOW_S) и публикуем с честным весом. Уже
+        # оценённое событие проходит насквозь — иначе оценка зациклилась бы.
+        if (_ec == "COLL"
+                and not radio_field(event, "contact_graded")
+                and self._event_involves(event, self._player_car_index)):
+            self._defer_contact(event, time.monotonic())
+            return
 
         # Phase B (Safety Car/VSC/красный флаг): подменяем raw SCAR на
         # синтетический event_code ДО enrich()/record_event(), чтобы весь
@@ -3809,7 +4323,12 @@ class F1Engine:
             # прозвучало, и новый заезд обязан начинаться с чистого листа
             # (иначе первая реплика гонки сдвигается из-за прошлой).
             radio_variety.reset()
+            # Нумерация высказываний без ситуации живёт по тем же правилам:
+            # новый заезд начинает счёт заново, иначе прошлая гонка сместила бы
+            # первую похвалу этой.
+            self._phrase_utterances.clear()
             self._engineer_topic_dedup.reset()
+            self._spotter_situation_seen.clear()
             # Новый заезд — соперники впереди другие, а те же самые машины к
             # этому моменту в другом состоянии. Без сброса инженер молчал бы про
             # свежую резину, потому что «уже говорил» — в прошлой гонке.
@@ -3825,10 +4344,23 @@ class F1Engine:
             self.tyre_load.reset()
             self.race_map.reset()
             # Эталон (coach_reference) НЕ сбрасывается: он привязан к трассе, а
-            # не к сессии, и переживает смену практики на квалификацию.
+            # не к сессии, и переживает смену практики на квалификацию. То же
+            # про прошлый разбор (_coach_previous_lesson) — он тоже про трассу.
             self.coach_tracer.reset()
             self.coach_reference_gate.reset()
             self._coach_last_deltas = []
+            # А вот цена ошибок, работа и разбор — сессионные: круги квалификации
+            # и круги гонки складывать в одну медиану нельзя, у них разное
+            # топливо и разная задача.
+            self.coach_history.reset()
+            self.coach_focus.reset()
+            self._coach_lesson = None
+            # Лучшие секторы поля принадлежат КОНКРЕТНОЙ сессии: секторы
+            # практики в квалификации означали бы не тот темп. Сам
+            # _session_history чистится ниже вместе с остальным состоянием.
+            self._field_pace = None
+            self._field_pace_gate.reset()
+            self.coach_health.reset()
             with self._engine_lock:
                 self.timeline.reset()
             self._session_events = []
@@ -3838,6 +4370,7 @@ class F1Engine:
             self._damage_announced = {
                 "wing": False, "floor": False, "gearbox": False, "engine": False,
             }
+            self._pending_contact = None
             self._strategy_module.reset("session_started")
             self._ui_state.reset_session_view()
             self._race_engineer.reset("session_started")
@@ -3899,6 +4432,10 @@ class F1Engine:
             self._strategy_module.reset("session_ended")
             self._ui_state.set_strategy(self._strategy_module.analyzer.get_state())
             self._race_engineer.reset("session_ended")
+            # Инвариант: трекер споттера забыл — движок забыл вместе с ним.
+            # Иначе первое предупреждение следующей сессии могло бы попасть под
+            # кулдаун, оставшийся от предыдущей.
+            self._spotter_situation_seen.clear()
             self._session_history.clear()
             track_name = TRACK_ID_TO_GP.get(self._track_id, ("Unknown", "Unknown"))[0]
             pidx = self._player_car_index
@@ -3912,6 +4449,10 @@ class F1Engine:
             # Отчёт «Гараж» — рядом с картой ошибок: он собран из неё и из
             # сетапа, отдельной сущностью в архиве быть не должен.
             self.recorder.set_garage_report(self._garage_report())
+            # Разбор — в файл заезда: его читает не только экран «Итоги», но и
+            # следующий визит на эту трассу, чтобы показать, сдвинулось ли то,
+            # над чем работали в прошлый раз.
+            self.recorder.set_coach_lesson(self._coach_lesson)
             # Карта гонки — в тот же файл: архив должен показывать её и через
             # месяц, когда живого состояния давно нет.
             self.recorder.set_race_map(self.get_race_map())
@@ -3982,13 +4523,21 @@ class F1Engine:
                           "chatter_enabled=%s", should_announce,
                           self._get_setting("engineer_chatter_enabled", True))
                 if should_announce and self._get_setting("engineer_chatter_enabled", True):
-                    self._commentary_events.publish({
+                    # Формулировка живёт в банке, а не здесь. Ступень — по числу
+                    # трек-лимитных штрафов за сессию: одна и та же строка,
+                    # захардкоженная в этом месте, за гонку 2026-08-11
+                    # прозвучала восемь раз дословно.
+                    tier = self._race_engineer.track_limits_penalty_tier()
+                    draft = {
                         "event_code": "ENGINEER_PENA_TRACK_LIMITS",
                         "priority": "normal",
-                        "phrase": "Это за трек-лимиты — аккуратнее на выходе из поворота.",
                         "speaker": SPEAKER_ENGINEER, "driver": "", "color": "#38BDF8",
                         "bypass_speak_threshold": True,
-                    })
+                    }
+                    draft["phrase"] = self._render_engineer_phrase(
+                        draft, f"track_limits.penalty_{tier}")
+                    if draft["phrase"]:
+                        self._commentary_events.publish(draft)
 
         if self._is_paused() or not self._should_commentate(enriched):
             self._ui_state.append_feed({
@@ -4224,6 +4773,10 @@ class F1Engine:
                     persona=self._voice_slot_for(event, message),
                     urgency=None if message is None else message.urgency,
                     message_id=None if message is None else message.id,
+                    # Категория — чтобы предупреждение споттера не обрывало
+                    # звучащее предупреждение споттера (new_tts/queue_handler.py,
+                    # _NO_SELF_INTERRUPT).
+                    category=None if message is None else message.category,
                     # Финальный резолв уезжает в воркер очереди: только там
                     # позади ВСЕ значимые ожидания, а впереди cache key и сеть.
                     prepare=None if message is None
@@ -4233,9 +4786,12 @@ class F1Engine:
                 self._commentary_runtime.note_spoken(time.time())
             else:
                 # Не озвучиваем — сообщение всё равно не должно остаться в
-                # неизвестном состоянии.
+                # неизвестном состоянии. Текст берём тот же, что уехал в кадр:
+                # немой путь мимо `_make_prepare`, и без этого в карточке и в
+                # ленте остался бы сырой `{gap}`.
                 if message is not None:
-                    self._note_radio_state(message, STATE_COMPLETED)
+                    self._note_radio_state(message, STATE_COMPLETED,
+                                           phrase=display)
 
             last_speak_time = time.time()
 
@@ -4320,7 +4876,8 @@ class F1Engine:
             if isinstance(resolved, radio_resolver.Cancellation):
                 self._note_radio_cancel(message, resolved.reason, resolved.detail)
                 return None
-            self._note_radio_state(message, STATE_SYNTHESIZING)
+            self._note_radio_state(message, STATE_SYNTHESIZING,
+                                   phrase=resolved.text)
             return resolved.text
         return prepare
 
@@ -4337,16 +4894,26 @@ class F1Engine:
             return True
         return still_valid
 
-    def _note_radio_state(self, message, state: str) -> None:
+    def _note_radio_state(self, message, state: str,
+                          *, phrase: str | None = None) -> None:
         """Запомнить переход состояния радио-сообщения.
 
         Пока это диагностический журнал и seam для Task 5 (история радио и UI).
         Терминальное состояние повторно не меняется — переходы валидирует сама
-        модель, а здесь гасим уже закрытые сообщения."""
+        модель, а здесь гасим уже закрытые сообщения.
+
+        `phrase` — текст ПОСЛЕ позднего связывания. Записывается в снимок здесь,
+        а не остаётся в воркере синтеза, потому что снимок в `_radio_lifecycle`
+        канонический: все следующие переходы (playing, completed) читают его, и
+        карточка рации берёт текст оттуда же (`RadioMessage.to_ui_dict`). Без
+        этой привязки голос называл число, а в кадре оставался сырой `{gap}` —
+        озвучка и показ расходились молча."""
         with self._radio_lifecycle_lock:
             current = self._radio_lifecycle.get(message.id, message)
             if current.is_terminal:
                 return
+            if phrase and phrase != current.phrase:
+                current = current.with_phrase(phrase)
             try:
                 updated = current.with_state(state, now=time.time())
             except ValueError:
@@ -4458,13 +5025,29 @@ class F1Engine:
 
         `dedupe_key` события, если ситуация опознана: тогда повторная телеметрия
         по ней даёт ТУ ЖЕ формулировку, а не переписывает уже произнесённую.
-        Иначе — сессия плюс код события."""
-        return (
-            situation_dedupe_key(draft, lap=self._player_lap,
-                                 session_id=self._radio_session_id,
-                                 timeline_revision=self._timeline_revision)
-            or f"{self._radio_session_id}:{draft.get('event_code', '')}"
-        )
+
+        Ситуации нет — по контракту `core/radio/situations.py` это
+        «самостоятельная новость» (похвала, рекорд круга, DRS, смена лидера):
+        её не группируют, не закрывают и не дедупят по ситуации. Закреплять
+        вариант, стало быть, НЕ ЗА ЧЕМ, и ключом идёт порядковый номер
+        высказывания.
+
+        Раньше здесь стояла константа `{session_id}:{event_code}`, и это была
+        главная поломка живого заезда 2026-08-09: crc32 от константы даёт один
+        индекс, пул из шести формулировок схлопывался в одну, и инженер 21 раз
+        подряд говорил «Чисто сделано. Дальше по плану.». Анти-повтор
+        (`core/radio/variety.py`) помочь не мог — он закрепляет решение за
+        ключом, а ключ был один на весь заезд. Тест:
+        tests/test_engine_phrase_variety.py."""
+        key = situation_dedupe_key(draft, lap=self._player_lap,
+                                   session_id=self._radio_session_id,
+                                   timeline_revision=self._timeline_revision)
+        if key is not None:
+            return key
+        code = str(draft.get("event_code", ""))
+        seq = self._phrase_utterances.get(code, 0) + 1
+        self._phrase_utterances[code] = seq
+        return f"{self._radio_session_id}:{code}:{seq}"
 
     @staticmethod
     def _new_radio_session_id() -> str:
@@ -4669,6 +5252,12 @@ class F1Engine:
             "telemetry_source": self._telemetry_source,
             "udp_ip": config.UDP_IP,
             "udp_port": config.UDP_PORT,
+            # База знаний комментатора. Едет ВСЕГДА, по тому же правилу, что и
+            # состояние коуча ниже: «выключена» — это тоже ответ на вопрос,
+            # почему комментатор эрудирован ровно настолько. Раньше про
+            # выключенный RAG знал только один WARNING в логе при старте, и
+            # снаружи гонка без базы знаний выглядела штатной.
+            "rag_status": self.commentator.rag_status(),
             "tts_engine": self.voice.engine_name,
             "tts_active": self.voice.last_engine,
             "tts_fallback": self.voice.last_fallback,
@@ -4729,6 +5318,13 @@ class F1Engine:
         """Queue the UI voice test as an owned short-lived task."""
         if not self.voice.is_available:
             return {"ok": False, "error": self.voice.status_message}
+        if self._session_active:
+            # Тест идёт в тот же эфир, что и гонка: в заезде 2026-08-11 «Проверка
+            # радио. Голос работает, поехали!» прозвучала посреди гонки четыре
+            # раза, дважды подряд разными голосами. Отказ структурированный —
+            # UI показывает причину, а не молчит.
+            return {"ok": False,
+                    "error": "Идёт сессия — проверьте голос в боксах или в меню игры"}
         thread = self._spawn_thread(
             self.voice.test_say,
             args=("Проверка радио. Голос работает, поехали!",),

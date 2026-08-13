@@ -85,6 +85,11 @@ _LOWERCASE_FIELDS = frozenset({
     # с заглавной, и ему открывать предложение можно. Совпадение имён под
     # разным смыслом этот же тест и поймал.
     "corner_no",
+    # Цена и отыгрыш у коуча: «три десятых», «полсекунды» — тоже строчные
+    # (core/num_to_words.py::seconds_phrase).
+    "loss", "gain",
+    # Положение в поле: «в третьем секторе» и «восемнадцатый».
+    "sector_no", "rank",
 })
 
 _SENTENCE_START_TOKEN = re.compile(r"(?:^|[.!?]\s+)\{([^{}]+)\}")
@@ -691,6 +696,110 @@ def test_coach_reference_spec_has_enough_variants(code):
 @pytest.mark.parametrize("code", _COACH_REF_CODES)
 def test_coach_reference_spec_is_never_critical(code):
     assert phrases.spec_for(code).urgency != policy.URGENCY_CRITICAL
+
+
+# ── Коуч, фаза 4: работа сессии ──────────────────────────────────────────────
+
+_COACH_FOCUS_CODES = [
+    "coach.focus_set", "coach.focus_progress", "coach.focus_fixed",
+]
+
+
+@pytest.mark.parametrize("code", _COACH_FOCUS_CODES)
+def test_coach_focus_spec_exists(code):
+    assert code in phrases.codes()
+
+
+@pytest.mark.parametrize("code", _COACH_FOCUS_CODES)
+def test_coach_focus_spec_is_never_critical(code):
+    """Работа над ошибкой не имеет права перебивать споттера или box-call."""
+    assert phrases.spec_for(code).urgency != policy.URGENCY_CRITICAL
+
+
+@pytest.mark.parametrize("code", _COACH_FOCUS_CODES)
+def test_coach_focus_spec_always_names_the_corner(code):
+    """Работа без места — это не работа: пилот пойдёт искать её по всему кругу."""
+    assert "corner_no" in phrases.spec_for(code).required_fields
+
+
+def test_coach_focus_speaks_the_price_unlike_the_reference_hints():
+    """Цена ЗВУЧИТ — и это не послабление к запрету на величину в coach.ref_*.
+
+    Там запрещено отклонение («на двенадцать метров раньше»): его пилот в
+    повороте не применит. Здесь звучит цена в секундах — она отвечает на вопрос
+    «почему этим стоит заняться», без которого коуч остаётся набором верных по
+    отдельности замечаний. Тест сторожит именно РАЗНИЦУ: если однажды исчезнет
+    цена у focus_set или появится величина у ref_*, упадёт он.
+    """
+    assert "loss" in phrases.spec_for("coach.focus_set").required_fields
+    assert "gain" in phrases.spec_for("coach.focus_progress").required_fields
+    for code in _COACH_REF_CODES:
+        assert phrases.spec_for(code).required_fields == frozenset({"corner_no"})
+
+
+def test_coach_focus_closing_line_carries_no_number():
+    """«Закрыли» — про факт, а не про величину: остаток по определению мал."""
+    assert phrases.spec_for("coach.focus_fixed").required_fields == frozenset(
+        {"corner_no"})
+
+
+# ── Положение в поле по секторам ─────────────────────────────────────────────
+
+_FIELD_CODES = ["field.sector_weak", "field.sector_strong"]
+
+
+@pytest.mark.parametrize("code", _FIELD_CODES)
+def test_field_spec_exists(code):
+    assert code in phrases.codes()
+
+
+@pytest.mark.parametrize("code", _FIELD_CODES)
+def test_field_spec_is_never_critical(code):
+    assert phrases.spec_for(code).urgency != policy.URGENCY_CRITICAL
+
+
+@pytest.mark.parametrize("code", _FIELD_CODES)
+def test_field_spec_always_names_the_sector_and_the_place(code):
+    """Место без сектора и сектор без места по отдельности не значат ничего."""
+    required = phrases.spec_for(code).required_fields
+    assert "sector_no" in required
+    assert "rank" in required
+
+
+def test_field_specs_never_name_the_sector_leader():
+    """Имя потребовало бы падежа, а падеж свободной строкой банк не выражает.
+
+    На экране имя есть — там его читают глазами, а не слушают."""
+    for code in _FIELD_CODES:
+        assert "driver" not in phrases.spec_for(code).all_fields
+        assert "rival" not in phrases.spec_for(code).all_fields
+
+
+@pytest.mark.parametrize("code", _FIELD_CODES)
+def test_field_line_renders_into_a_whole_sentence(code):
+    spec = phrases.spec_for(code)
+    available = {"sector_no": "третьем", "rank": "восемнадцатый",
+                 "loss": "полсекунды"}
+    fields = {k: v for k, v in available.items() if k in spec.required_fields}
+    for selector in range(len(spec.variants) * 3):
+        text = phrases.render(code, fields, selector_key=str(selector))
+        assert "{" not in text and "}" not in text, text
+        assert "в третьем секторе" in text.lower(), text
+
+
+@pytest.mark.parametrize("code", _COACH_FOCUS_CODES)
+def test_coach_focus_renders_into_a_whole_sentence(code):
+    spec = phrases.spec_for(code)
+    available = {"corner_no": "седьмом", "loss": "три десятых",
+                 "gain": "две десятых"}
+    fields = {k: v for k, v in available.items() if k in spec.required_fields}
+    for selector in range(len(spec.variants) * 3):
+        text = phrases.render(code, fields, selector_key=str(selector))
+        assert "{" not in text and "}" not in text, text
+        # Токен стоит только после предлога «в» — падеж у него один,
+        # предложный (core/radio/corner_words.py). Регистр не в счёт: вариант
+        # может начинаться этим предлогом.
+        assert "в седьмом" in text.lower(), text
 
 
 @pytest.mark.parametrize("code", _COACH_REF_CODES)

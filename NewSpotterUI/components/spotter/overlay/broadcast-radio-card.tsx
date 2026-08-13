@@ -195,6 +195,10 @@ export function BroadcastRadioCard({ view }: { view: RadioCardView }) {
     <div
       // Один короткий pulse на появлении критической реплики и ничего больше:
       // постоянное мигание поверх гонки — это то, что ТЗ §7 прямо запрещает.
+      //
+      // `data-overlay-shape`: в игровом оверлее окно обрезается по этой
+      // карточке, иначе вокруг её скруглений и под ней виден чёрный фон окна.
+      data-overlay-shape
       className={cn("flex overflow-hidden", critical && !reduced && "animate-in fade-in")}
       style={{
         width: view.width ?? (compact ? CARD.compactWidth : CARD.width),

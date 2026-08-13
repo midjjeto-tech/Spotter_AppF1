@@ -89,3 +89,40 @@ def _lockup():
     return CornerMistake(kind="lockup", wheel="fl", corner_id=3,
                          corner_name="Turn 3", phase="braking", lap=_lockup.lap,
                          peak=0.5, duration_s=0.3, speed_kmh=180)
+
+
+# ── Подпись баланса (тип поворота -> механика или аэродинамика) ──────────────
+
+def test_balance_signature_reaches_the_garage_report(engine, monkeypatch):
+    """Разметка типов лежала в tracks/*.json с самого начала и работала только
+    на споттера. Проверяем, что теперь она доезжает до гаража."""
+    from core.track_ai.models import Corner
+
+    corners = [
+        Corner(id=i, name=f"Turn {i}",
+               start=0.1 * i, end=0.1 * i + 0.05,
+               type="slow" if i <= 4 else "fast",
+               direction="left", attack_side="inside", defense_side="inside")
+        for i in range(1, 9)
+    ]
+    monkeypatch.setattr(engine, "_track_manager",
+                        type("TM", (), {"corners": lambda self: corners})())
+    monkeypatch.setattr(engine.coach_log, "map_rows", lambda: [
+        {"corner_id": c, "kind": "understeer", "lap": 1} for c in (1, 2, 3)
+    ])
+
+    balance = engine._garage_report()["balance"]
+
+    assert balance is not None
+    assert balance["domain"] == "mechanical"
+    assert "3 из 4" in balance["evidence"]
+
+
+def test_no_track_map_means_no_balance_verdict(engine, monkeypatch):
+    """Без разметки типов сказать «во всех медленных» нечем."""
+    monkeypatch.setattr(engine, "_track_manager", None)
+    monkeypatch.setattr(engine.coach_log, "map_rows", lambda: [
+        {"corner_id": c, "kind": "understeer", "lap": 1} for c in (1, 2, 3)
+    ])
+
+    assert engine._garage_report()["balance"] is None

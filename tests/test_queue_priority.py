@@ -133,3 +133,67 @@ def test_critical_enqueue_carries_persona():
         time.sleep(0.01)
     assert seen == [("боксы", "calm")]
     q.stop()
+
+
+# --------------------------------------------------------------------------- #
+# Critical не рвёт звучащую реплику ТОЙ ЖЕ категории (_NO_SELF_INTERRUPT).
+# Разбор живого заезда 2026-08-11: 63 обрыва на полуслове за 33 минуты гонки,
+# потому что каждое предупреждение споттера рвало предыдущее предупреждение
+# споттера. Право рвать ИНЖЕНЕРА И КОММЕНТАТОРА при этом сохраняется — споттер
+# остаётся безопасностью.
+# --------------------------------------------------------------------------- #
+
+def _busy_queue(stopped):
+    """Очередь, воркер которой заведомо занят первой репликой."""
+    started = threading.Event()
+    release = threading.Event()
+
+    def speak(t, p):
+        started.set()
+        release.wait(timeout=2.0)
+
+    q = TTSQueue(speak_fn=speak, stop_fn=lambda: stopped.append(1))
+    return q, started, release
+
+
+def test_spotter_does_not_interrupt_another_spotter():
+    stopped = []
+    q, started, release = _busy_queue(stopped)
+    q.enqueue("машина слева", priority="critical", category="spotter_side")
+    assert started.wait(timeout=2.0)
+    # Первая постановка тоже звала stop_fn — играть тогда было нечего. Считаем
+    # ПРИРОСТ: важно, что второе предупреждение не оборвало первое.
+    before = len(stopped)
+
+    q.enqueue("машина справа", priority="critical", category="spotter_side")
+
+    assert len(stopped) == before   # звучащее предупреждение договорило
+    release.set()
+    q.stop()
+
+
+def test_spotter_still_interrupts_other_categories():
+    stopped = []
+    q, started, release = _busy_queue(stopped)
+    q.enqueue("длинный комментарий", priority="normal", category="position")
+    assert started.wait(timeout=2.0)
+
+    q.enqueue("машина слева", priority="critical", category="spotter_side")
+
+    assert stopped == [1]         # безопасность рвёт болтовню
+    release.set()
+    q.stop()
+
+
+def test_critical_without_category_interrupts_as_before():
+    """Старые вызывающие (category не передан) работают как раньше."""
+    stopped = []
+    q, started, release = _busy_queue(stopped)
+    q.enqueue("что-то", priority="critical")
+    assert started.wait(timeout=2.0)
+
+    q.enqueue("срочное", priority="critical")
+
+    assert stopped == [1, 1]
+    release.set()
+    q.stop()

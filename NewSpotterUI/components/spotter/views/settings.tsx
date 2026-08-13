@@ -8,6 +8,18 @@ import { getGigachatStatus, getRemoteAccess, getYandexStatus, resetSettings, sav
 import { cn } from "@/lib/utils"
 import { AlertTriangle, MessageSquare, Mic, Radio, Rss, Smartphone, Volume2, Waves } from "lucide-react"
 
+/** Состояние базы знаний человеческим языком. Причина, а не «включено/выключено»:
+ *  «нет пакета» и «нет файла фактов» чинятся по-разному, и подсказать это должен
+ *  интерфейс, а не чтение лога. */
+const RAG_STATUS_LABEL: Record<string, string> = {
+  ok: "подключена",
+  loading: "загружается…",
+  "no-package": "выключена (нет пакета)",
+  "no-facts": "выключена (нет базы фактов)",
+  "no-module": "выключена (нет модуля)",
+  error: "ошибка загрузки",
+}
+
 export function SettingsView({
   state,
   onOpenOnboarding,
@@ -375,6 +387,21 @@ export function SettingsView({
           {state?.llm_engine === "Шаблоны" && (
             <p className="mb-3 rounded-md border border-warning/30 bg-warning/10 px-2.5 py-1.5 text-xs text-warning">
               Yandex недоступен — комментарий идёт по заготовленным фразам, не от AI.
+            </p>
+          )}
+          {/* База знаний. Показывается ВСЕГДА, а не только при поломке: без
+              этой строки выключенный RAG виден лишь в одном WARNING при старте,
+              и гонка без базы знаний снаружи неотличима от штатной. */}
+          <Field label="База знаний" hint="Факты об F1 в контексте комментатора">
+            <span className="font-mono text-sm text-foreground">
+              {RAG_STATUS_LABEL[state?.rag_status ?? ""] ?? "—"}
+            </span>
+          </Field>
+          {state?.rag_status === "no-package" && (
+            <p className="mb-3 rounded-md border border-warning/30 bg-warning/10 px-2.5 py-1.5 text-xs text-warning">
+              Комментатор работает без базы знаний — фактов об F1 в его контексте нет.
+              Включается установкой <span className="font-mono">sentence-transformers</span>;
+              пакет тянет за собой torch, поэтому по умолчанию не ставится.
             </p>
           )}
           <Field label="Ключ" hint="Задаётся в блоке Yandex Cloud">

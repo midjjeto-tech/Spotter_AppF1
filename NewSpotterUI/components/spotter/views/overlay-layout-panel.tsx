@@ -17,6 +17,7 @@ import {
   getOverlayLayout,
   overlayPreset,
   resetOverlayLayout,
+  setOverlayEnabled,
   setOverlayScale,
   type OverlayLayoutState,
 } from "@/lib/api"
@@ -59,6 +60,30 @@ export function OverlayLayoutPanel() {
   }, [pull])
 
   const scaleOf = (id: string) => layout?.widgets?.[id]?.scale ?? 1
+  const enabledOf = (id: string) => layout?.widgets?.[id]?.enabled !== false
+
+  const toggleWidget = async (id: string, next: boolean) => {
+    // Оптимистично: галочка обязана отзываться мгновенно, а окно виджета
+    // появится или уйдёт в течение секунды-двух — он читает тот же файл.
+    setLayout((current) =>
+      current
+        ? {
+            ...current,
+            widgets: {
+              ...current.widgets,
+              [id]: { ...current.widgets[id], enabled: next },
+            },
+          }
+        : current,
+    )
+    try {
+      setLayout(await setOverlayEnabled(id, next))
+      setError(null)
+    } catch {
+      setError("Не удалось включить или выключить виджет")
+      void pull()
+    }
+  }
 
   const previewScale = (id: string, percent: number) => {
     editing.current = true
@@ -133,21 +158,40 @@ export function OverlayLayoutPanel() {
         <div className="space-y-3">
           {WIDGETS.map((widget) => {
             const percent = Math.round(scaleOf(widget.id) * 100)
+            const on = enabledOf(widget.id)
             return (
-              <div key={widget.id} className="grid grid-cols-[110px_1fr_52px] items-center gap-3">
-                <div className="min-w-0">
+              <div
+                key={widget.id}
+                className="grid grid-cols-[28px_110px_1fr_52px] items-center gap-3"
+              >
+                <input
+                  type="checkbox"
+                  checked={on}
+                  onChange={(event) => void toggleWidget(widget.id, event.target.checked)}
+                  aria-label={`Показывать виджет «${widget.label}»`}
+                  className="h-4 w-4 cursor-pointer accent-primary"
+                />
+                <div className={cn("min-w-0", !on && "opacity-45")}>
                   <p className="truncate text-sm text-foreground">{widget.label}</p>
-                  <p className="truncate text-[11px] text-muted-foreground">{widget.hint}</p>
+                  <p className="truncate text-[11px] text-muted-foreground">
+                    {on ? widget.hint : "Выключен — окно не запускается"}
+                  </p>
                 </div>
                 <Slider
                   value={percent}
                   min={min}
                   max={max}
+                  disabled={!on}
                   label={`Размер: ${widget.label}`}
                   onChange={(value) => previewScale(widget.id, value)}
                   onPointerUp={(value) => void commitScale(widget.id, value)}
                 />
-                <span className="text-right font-mono text-sm tabular-nums text-foreground">
+                <span
+                  className={cn(
+                    "text-right font-mono text-sm tabular-nums text-foreground",
+                    !on && "opacity-45",
+                  )}
+                >
                   {(percent / 100).toFixed(2)}×
                 </span>
               </div>

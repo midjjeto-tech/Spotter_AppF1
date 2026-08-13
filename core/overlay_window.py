@@ -14,7 +14,7 @@ import threading
 import time
 from typing import Callable
 
-from core import overlay_layout
+from core import overlay_layout, overlay_shape
 
 _log = logging.getLogger(__name__)
 
@@ -323,6 +323,25 @@ class _Win32OverlayBackend:
         except Exception:  # noqa: BLE001 - drag tracking is best-effort
             return None
 
+    def apply_shape(self, hwnd: int, primitives) -> None:
+        """Обрезать окно по форме виджета: вне формы будет видно трассу.
+
+        Единственный доступный здесь способ убрать чёрный фон окна из-под
+        круглого радара и скруглённой таблетки: прозрачности по пикселям этот
+        стек не даёт (история попыток — в `app.pyw`), а регион даёт — замерено
+        на живом окне, углы после эллипса показывают то, что под окном.
+
+        Пустой список означает «прямоугольное окно» — ровно поведение до этой
+        функции. `WS_EX_LAYERED` при этом трогать НЕЛЬЗЯ: со снятым стилем окно
+        пропадает целиком (тоже замерено).
+        """
+        import ctypes
+
+        region = overlay_shape.build_region(primitives)
+        # Успешный SetWindowRgn забирает регион себе — удалять его после этого
+        # нельзя. Ноль означает «региона нет».
+        ctypes.windll.user32.SetWindowRgn(hwnd, region or 0, True)
+
     def place(self, hwnd: int, game: GameWindow) -> None:
         """Compatibility helper; the controller uses prepare/clip/show."""
         self.prepare(hwnd, game)
@@ -372,7 +391,25 @@ class OverlayWindowController:
         # поэтому рядом хранится отметка файла, по которой изменение замечается
         # без разбора JSON на каждом тике.
         self._scale: float = overlay_layout.load_scale(self.spec.widget_id)
+        # Выключенный виджет прячется САМ, не дожидаясь, пока главное окно
+        # закроет его процесс: между снятием галочки и закрытием проходит до
+        # двух секунд, и всё это время он висел бы поверх игры.
+        self._enabled: bool = overlay_layout.load_enabled(self.spec.widget_id)
         self._layout_revision: float = overlay_layout.revision(self.spec.widget_id)
+        # Последнее расхождение «просили / получили» по габаритам окна. Нужно
+        # только чтобы не писать одну и ту же жалобу в лог на каждом размещении.
+        self._size_refusal: tuple[int, int, int, int] | None = None
+        # Форма окна и «есть ли что показывать» — их сообщает САМА страница
+        # (см. `apply_page_shape`). Значения по умолчанию описывают сегодняшнее
+        # поведение: прямоугольное окно, которое всегда на экране. Страница,
+        # которая ничего не сообщила (старая сборка webui/, превью в браузере),
+        # поэтому ничего и не теряет.
+        self._page_shape: object = None
+        self._page_visible = True
+        self._applied_shape: tuple[overlay_shape.Primitive, ...] = ()
+        # Будит поток монитора, когда страница что-то сообщила: ждать до 250 мс,
+        # чтобы показать карточку рации, значит опоздать к началу реплики.
+        self._wake = threading.Event()
         self._started = False
         self._initialized = False
         self._lock = threading.Lock()
@@ -460,8 +497,33 @@ class OverlayWindowController:
         except Exception:  # noqa: BLE001 - background colour is best-effort
             _log.exception("Unable to prime overlay backdrop colour")
 
+    def apply_page_shape(self, payload: object) -> bool:
+        """Принять от страницы её форму и признак «есть что показывать».
+
+        Форму знает только страница: она зависит от темы (фаска, радиус
+        карточки рации) и от состояния (карточка рации есть или нет). Копия
+        этой геометрии в Python молча разъехалась бы с вёрсткой.
+
+        Вызывается из потока WebView2, поэтому здесь только запись значений и
+        побудка монитора — вся работа с окном остаётся в его потоке.
+        """
+        shapes: object = None
+        visible = True
+        if isinstance(payload, dict):
+            shapes = payload.get("shapes")
+            if "visible" in payload:
+                visible = bool(payload.get("visible"))
+        with self._lock:
+            self._page_shape = shapes
+            self._page_visible = visible
+        self._wake.set()
+        return True
+
     def stop(self, timeout: float = 1.0) -> None:
         self._stop_event.set()
+        # Монитор ждёт на побудке, а не на стоп-событии: без этого выход
+        # занимал бы лишний тик.
+        self._wake.set()
         thread = self._thread
         if thread is not None and thread is not threading.current_thread():
             thread.join(timeout=max(0.0, timeout))
@@ -502,6 +564,7 @@ class OverlayWindowController:
         self._layout_revision = revision
         self._offset = overlay_layout.load(self.spec.widget_id)
         self._scale = overlay_layout.load_scale(self.spec.widget_id)
+        self._enabled = overlay_layout.load_enabled(self.spec.widget_id)
 
     def _target_for(self, game: GameWindow) -> GameWindow:
         """The widget's rectangle: its saved position, else the default spot.
@@ -558,7 +621,20 @@ class OverlayWindowController:
             )
         # Record the clamped equivalent so the next tick compares equal and the
         # HUD is left alone instead of being nudged by a pixel.
-        self._placed_over = self._target_for(game)
+        #
+        # Габариты берутся из НАСТОЯЩЕГО окна, а не из цели: размещение на этом
+        # тике пропускается, и записать сюда целевой размер значило бы объявить
+        # применённым масштаб, которого окно ещё не получало. Следующий тик
+        # увидел бы `target == _placed_over` и не переставил бы окно уже
+        # никогда — виджет навсегда остался бы в старом размере.
+        target = self._target_for(game)
+        self._placed_over = GameWindow(
+            hwnd=target.hwnd,
+            left=target.left,
+            top=target.top,
+            width=rect.width,
+            height=rect.height,
+        )
         return True
 
     def sync_once(self) -> None:
@@ -570,8 +646,16 @@ class OverlayWindowController:
 
         game = self._backend.find_game_window()
         foreground = self._backend.root_window(self._backend.foreground_window())
+        with self._lock:
+            page_visible = self._page_visible
         should_show = bool(
             game
+            and self._enabled
+            # Виджету нечего показать — окна на экране быть не должно вовсе.
+            # Раньше окно рации держало тёмную карточку поверх игры всё время,
+            # хотя её содержимое в покое пустое. Правило видимости знает только
+            # страница (там же, где решается, рисовать карточку или нет).
+            and page_visible
             and (
                 foreground == game.hwnd
                 or (self.edit_mode and foreground == hwnd)
@@ -593,6 +677,23 @@ class OverlayWindowController:
                 self._backend.show(hwnd)
                 self._visible = True
                 self._placed_over = target
+                self._verify_size(hwnd, target)
+                # Кэш применённой формы сбрасывается вместе с показом окна.
+                #
+                # `SetWindowRgn` живёт на HWND, и пересоздание/переоткрытие окна
+                # его теряет. Показ идёт не только отсюда: pywebview зовёт
+                # form.Show()/Activate() напрямую при каждой навигации WebView2
+                # и при восстановлении после сбоя (см. комментарий в ветке
+                # `else` ниже — там этот же обход уже учтён для видимости).
+                # Без сброса `_refresh_shape` сравнивал бы новую форму со
+                # СТАРОЙ записью «уже применено» и молча выходил, оставив окно
+                # прямоугольным: под карточкой рации светили бы 60 пикселей
+                # чёрного фона поверх трассы, и починиться это могло только
+                # случайной сменой размера карточки.
+                self._applied_shape = ()
+            # После размещения, а не до: регион задан в пикселях окна, и на
+            # старых габаритах он обрезал бы уже не то.
+            self._refresh_shape(hwnd, target)
         else:
             # Unconditional, not "elif self._visible is not False": pywebview's
             # EdgeChrome backend calls form.Show()/Activate() directly on every
@@ -604,6 +705,74 @@ class OverlayWindowController:
             # of being corrected within one poll_interval.
             self._backend.hide(hwnd)
             self._visible = False
+
+    def _refresh_shape(self, hwnd: int, target: GameWindow) -> None:
+        """Пересчитать форму под текущие габариты и применить, если изменилась.
+
+        Дешёвая на холостом ходу: пересчёт — арифметика по нескольким фигурам,
+        а до окна дело доходит только когда форма реально другая (сменилась
+        тема, появилась карточка рации, потянули размер).
+        """
+        with self._lock:
+            raw = self._page_shape
+        primitives = overlay_shape.scale_primitives(
+            raw,
+            width=target.width,
+            height=target.height,
+            base_width=self.spec.width,
+            base_height=self.spec.height,
+        )
+        if not primitives:
+            # «Фигур нет» — это отсутствие сведений, а не форма «окно целиком».
+            #
+            # Страница присылает пустой список в переходные моменты: реплика
+            # только началась, карточка ещё не смонтирована и мерить нечего
+            # (см. test_widget_with_nothing_to_show_leaves_the_screen — окно в
+            # этот момент обязано вернуться). Применить пустую форму значит
+            # позвать SetWindowRgn(0) и СНЯТЬ регион с окна, а окно у виджета с
+            # прозрачной оболочкой заметно больше содержимого: у рации карточка
+            # занимает 108 пикселей из 178, и снятый регион выводит поверх
+            # трассы остальные 70 чёрным прямоугольником — тот самый «обрубок».
+            #
+            # Поэтому старый регион сохраняется до прихода нового. Единственная
+            # ситуация, когда региона нет вовсе, — окно, которому его ещё ни
+            # разу не задавали: прямоугольное окно молчащей страницы, прежнее
+            # и намеренное поведение.
+            return
+        if primitives == self._applied_shape:
+            return
+        try:
+            self._backend.apply_shape(hwnd, primitives)
+        except Exception:  # noqa: BLE001 - без формы окно просто прямоугольное
+            _log.exception("Unable to apply overlay window shape")
+            return
+        self._applied_shape = primitives
+
+    def _verify_size(self, hwnd: int, target: GameWindow) -> None:
+        """Пожаловаться, когда окно не приняло запрошенные габариты.
+
+        Отказ не возвращает ошибки: окно отвечает на WM_GETMINMAXINFO своим
+        порогом, и SetWindowPos молча зажимается. Именно так виджеты и застряли
+        в базовом размере при масштабе 0.6 — увидеть это можно было только
+        глазами на скриншоте поверх игры. Проверка стоит один GetWindowRect и
+        только на пути размещения (редкий), а одинаковое расхождение пишется в
+        лог один раз, а не на каждом тике.
+        """
+        rect = self._backend.window_rect(hwnd)
+        if rect is None:
+            return
+        if (rect.width, rect.height) == (target.width, target.height):
+            self._size_refusal = None
+            return
+        refusal = (target.width, target.height, rect.width, rect.height)
+        if refusal == self._size_refusal:
+            return
+        self._size_refusal = refusal
+        _log.warning(
+            "Overlay %s asked for %dx%d but the window stayed %dx%d — the OS "
+            "refused the size (a window minimum still in force?)",
+            self.spec.widget_id, *refusal,
+        )
 
     def close(self) -> None:
         self.stop()
@@ -618,7 +787,11 @@ class OverlayWindowController:
                 self.sync_once()
             except Exception:  # noqa: BLE001 - retry after transient Win32 errors
                 _log.exception("Unable to synchronize overlay with game window")
-            self._stop_event.wait(self._poll_interval)
+            # Обычный шаг — по таймеру, но сообщение страницы («карточка рации
+            # появилась») будит цикл сразу: ждать четверть секунды, чтобы
+            # показать реплику, значит опоздать к её началу.
+            self._wake.wait(self._poll_interval)
+            self._wake.clear()
 
     def _resolve_hwnd(self) -> int:
         if self._hwnd:

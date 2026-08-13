@@ -3,7 +3,8 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from core.num_to_words import normalize, _decimal_to_words, _to_f, _int_word, ru_plural
+from core.num_to_words import (normalize, seconds_phrase, _decimal_to_words,
+                               _to_f, _int_word, ru_plural)
 
 
 # ------------------------------------------------------------------ #
@@ -158,3 +159,54 @@ def test_normalize_no_crash_on_empty():
 def test_normalize_no_crash_on_plain_text():
     text = "Старт дан. Гонка началась."
     assert normalize(text) == text
+
+
+# ------------------------------------------------------------------ #
+# seconds_phrase — величина времени для эфира (коуч, фаза 4)
+# ------------------------------------------------------------------ #
+
+def test_seconds_phrase_tenths_agree_in_gender():
+    """«одна десятая», но «две десятых» — согласование ломается на первых двух."""
+    assert seconds_phrase(100) == "одна десятая"
+    assert seconds_phrase(200) == "две десятых"
+    assert seconds_phrase(300) == "три десятых"
+
+
+def test_seconds_phrase_says_half_a_second_like_a_human():
+    """«пять десятых» вслух не говорит никто."""
+    assert seconds_phrase(500) == "полсекунды"
+
+
+def test_seconds_phrase_rounds_to_the_nearest_tenth():
+    assert seconds_phrase(349) == "три десятых"
+    assert seconds_phrase(351) == "четыре десятых"
+
+
+def test_seconds_phrase_is_silent_below_a_tenth():
+    """Фраза с дырой хуже непрозвучавшей: вызывающий обязан промолчать."""
+    assert seconds_phrase(99) is None
+    assert seconds_phrase(0) is None
+    assert seconds_phrase(None) is None
+
+
+def test_seconds_phrase_whole_seconds_agree_with_the_noun():
+    assert seconds_phrase(1000) == "1 секунда"
+    assert seconds_phrase(2000) == "2 секунды"
+    assert seconds_phrase(5000) == "5 секунд"
+
+
+def test_seconds_phrase_fractional_seconds_use_the_gap_convention():
+    """Запятая, как у {gap} в core/radio/resolver.py: русский синтез читает её
+    сам, и второго способа произносить ту же величину быть не должно."""
+    assert seconds_phrase(1200) == "1,2 секунды"
+    assert seconds_phrase(2400) == "2,4 секунды"
+
+
+def test_seconds_phrase_at_the_tenth_boundary_does_not_produce_ten_tenths():
+    """«десять десятых» — это секунда, и сказать надо так."""
+    assert seconds_phrase(960) == "1 секунда"
+
+
+def test_seconds_phrase_ignores_the_sign():
+    """Отыгранное и потерянное произносятся одинаково: знак несёт фраза."""
+    assert seconds_phrase(-300) == seconds_phrase(300)

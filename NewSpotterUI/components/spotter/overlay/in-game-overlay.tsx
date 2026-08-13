@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Radio } from "lucide-react"
 import {
   getOverlay,
@@ -122,6 +122,54 @@ const DEFAULT_LAYOUT: Layout = {
   // держать одинаковый отступ 290, иначе позиция в оконном режиме и в
   // одностраничном preview разойдутся.
   radio: { x: 745, y: 612 },
+}
+
+// Ширина фаски нижнего-левого угла. Одно число на два применения: срез рисует
+// `clipPath` панели, и он же вырезается из ОКНА — иначе в срезе была бы не
+// трасса, а чёрный фон окна, ради которого весь этот механизм и заведён.
+const BEVEL_PX = 11
+
+/** Примитив формы окна в БАЗОВЫХ координатах виджета (core/overlay_shape.py). */
+type ShapePrimitive =
+  | { kind: "rect" | "ellipse"; x: number; y: number; w: number; h: number }
+  | { kind: "round-rect"; x: number; y: number; w: number; h: number; r: number }
+  | { kind: "polygon"; points: [number, number][] }
+
+/**
+ * Форма окна собирается ИЗМЕРЕНИЕМ вёрстки, а не повтором её чисел.
+ *
+ * Окна оверлея непрозрачны (`OVERLAY_BACKGROUND`), поэтому всё, что виджет не
+ * закрасил, было чёрным прямоугольником поверх трассы: круглый радар таскал
+ * квадрат, таблетка приборов — углы. Python обрезает окно по этой форме
+ * (`SetWindowRgn`), но знать её он не может — она зависит от темы (фаска,
+ * радиус карточки) и от состояния. Список чисел на стороне Python молча
+ * разошёлся бы с CSS; измерение расходиться не умеет.
+ */
+function measureShape(host: HTMLElement, scale: number): ShapePrimitive[] {
+  const base = host.getBoundingClientRect()
+  const shapes: ShapePrimitive[] = []
+  const nodes = host.querySelectorAll<HTMLElement>("[data-overlay-shape]")
+  for (const node of Array.from(nodes)) {
+    const box = node.getBoundingClientRect()
+    const x = (box.left - base.left) / scale
+    const y = (box.top - base.top) / scale
+    const w = box.width / scale
+    const h = box.height / scale
+    if (w <= 0 || h <= 0) continue
+    if (node.dataset.overlayShape === "ellipse") {
+      shapes.push({ kind: "ellipse", x, y, w, h })
+      continue
+    }
+    // Радиус берётся из вычисленного стиля: `rounded-full` даёт 9999px, и
+    // Python сам подрежет его до половины стороны.
+    const raw = window.getComputedStyle(node).borderTopLeftRadius
+    const parsed = Number.parseFloat(raw) || 0
+    const radius = raw.endsWith("%") ? (parsed / 100) * Math.min(w, h) : parsed
+    shapes.push(radius > 0
+      ? { kind: "round-rect", x, y, w, h, r: radius }
+      : { kind: "rect", x, y, w, h })
+  }
+  return shapes
 }
 
 function fittedDefaultLayout(): Layout {
@@ -520,6 +568,7 @@ function Widget({
   onScaleCommit,
   standalone = false,
   transparentShell = false,
+  visible = true,
   rev = 0,
   children,
 }: {
@@ -535,6 +584,9 @@ function Widget({
   standalone?: boolean
   /** The pill and the radar paint their own shape, so no box around them. */
   transparentShell?: boolean
+  /** Есть ли виджету что показать. `false` убирает его окно с экрана целиком:
+   *  карточка рации в покое пуста, но её окно всё равно висело поверх игры. */
+  visible?: boolean
   /** Обороты в процентах — для полосы rev-lights приборной темы. */
   rev?: number
   children: React.ReactNode
@@ -542,6 +594,8 @@ function Widget({
   const drag = useRef<{ pointerId: number; dx: number; dy: number } | null>(null)
   const base = WIDGET_SIZE[id]
   const theme = useOverlayTheme()
+  const shell = useRef<HTMLElement | null>(null)
+  const reported = useRef("")
   // Виджеты, рисующие собственную форму (таблетка, радар), из темы берут только
   // цвета: фаска и полоса оборотов относятся к КОРОБКЕ панели, а коробки у них
   // нет — деталь повисла бы в пустоте поверх игры.
@@ -561,6 +615,46 @@ function Widget({
     event.currentTarget.setPointerCapture(event.pointerId)
   }
 
+  // Форма и «есть что показать» уезжают в Python на КАЖДЫЙ рендер, но по каналу
+  // — только когда изменились: страница перерисовывается четырежды в секунду от
+  // телеметрии, а форма меняется от смены темы и появления карточки.
+  useEffect(() => {
+    if (!standalone) return
+    const node = shell.current
+    if (!node) return
+    // Мост есть только у окна виджета. В превью главного окна и в браузере
+    // его нет — там форма никому не нужна, окно там не нативное.
+    const api = (window as unknown as {
+      pywebview?: { api?: { set_shape?: (payload: unknown) => Promise<unknown> } }
+    }).pywebview?.api
+    if (!api?.set_shape) return
+
+    const shapes: ShapePrimitive[] = editMode
+      // В режиме редактирования окно прямоугольное: рамка и уголок размера
+      // живут по краям коробки, и обрезка по кругу спрятала бы ровно то, за
+      // что виджет двигают и тянут. Заодно видно настоящий след виджета.
+      ? [{ kind: "rect", x: 0, y: 0, w: base.width, h: base.height }]
+      : boxed
+      ? theme.bevel
+        // Срез угла панели вырезается и из окна — иначе в нём был бы чёрный
+        // фон окна, а не трасса.
+        ? [{
+            kind: "polygon",
+            points: [
+              [0, 0], [base.width, 0], [base.width, base.height],
+              [BEVEL_PX, base.height], [0, base.height - BEVEL_PX],
+            ],
+          }]
+        : [{ kind: "rect", x: 0, y: 0, w: base.width, h: base.height }]
+      : measureShape(node, scale)
+
+    const payload = { visible, shapes }
+    const encoded = JSON.stringify(payload)
+    if (encoded === reported.current) return
+    reported.current = encoded
+    void api.set_shape(payload)
+  })
+
   const moveDrag = (event: React.PointerEvent<HTMLElement>) => {
     if (!drag.current || drag.current.pointerId !== event.pointerId) return
     const width = event.currentTarget.offsetWidth
@@ -573,6 +667,7 @@ function Widget({
 
   return (
     <section
+      ref={shell}
       data-overlay-widget={id}
       data-overlay-scale={scale}
       className={cn(
@@ -596,7 +691,7 @@ function Widget({
         // Раньше оба были одним цветом, и срез было бы нечем прочитать.
         clipPath:
           boxed && theme.bevel
-            ? "polygon(0 0, 100% 0, 100% 100%, 11px 100%, 0 calc(100% - 11px))"
+            ? `polygon(0 0, 100% 0, 100% 100%, ${BEVEL_PX}px 100%, 0 calc(100% - ${BEVEL_PX}px))`
             : undefined,
       }}
       onPointerDown={beginDrag}
@@ -750,6 +845,7 @@ function DashboardHud({ overlay, state }: { overlay: OverlayState | null; state:
     <div className="relative h-[116px] w-[470px]">
       {/* Rev-light tab, inset so it meets the pill's shoulders like the original */}
       <div
+        data-overlay-shape
         className="absolute left-[49px] right-[49px] top-0 h-3 rounded-t-[4px] border"
         style={{ backgroundColor: "#172130", borderColor: PILL_BORDER }}
       >
@@ -757,6 +853,7 @@ function DashboardHud({ overlay, state }: { overlay: OverlayState | null; state:
       </div>
 
       <div
+        data-overlay-shape
         className="absolute inset-x-0 top-3 flex h-[98px] items-center rounded-full border-2"
         style={{
           borderColor: PILL_BORDER,
@@ -1095,6 +1192,9 @@ function TrackRadar({ contacts }: { contacts: OverlayRadarContact[] }) {
       style={{ opacity: contacts.length > 0 ? 1 : 0.3 }}
     >
       <div
+        // Окно радара обрезается ровно по этому кругу: раньше вокруг него
+        // лежал чёрный квадрат 300×300 поверх трассы.
+        data-overlay-shape="ellipse"
         className="absolute inset-6 rounded-full border-2 transition-colors"
         style={{
           borderColor: alongside ? DANGER : "#343444",
@@ -1132,7 +1232,9 @@ function TrackRadar({ contacts }: { contacts: OverlayRadarContact[] }) {
       })}
       {alongside && (
         <span
-          className="font-broadcast absolute bottom-[18px] left-1/2 -translate-x-1/2 rounded-[2px] px-2 py-[2px] text-[9px] font-black uppercase italic tracking-[.16em] text-white"
+          // Внутри круга, а не под ним: окно обрезано по кругу, и на прежних
+          // 18 px бейдж срезало бы наполовину.
+          className="font-broadcast absolute bottom-[34px] left-1/2 -translate-x-1/2 rounded-[2px] px-2 py-[2px] text-[9px] font-black uppercase italic tracking-[.16em] text-white"
           style={{ backgroundColor: DANGER }}
         >
           Alongside
@@ -1462,6 +1564,7 @@ function RadioPanel({
   if (!view && pttState === "error") {
     return (
       <div
+        data-overlay-shape
         className="flex items-center gap-2 px-3 py-2"
         style={{
           backgroundColor: RADIO_SURFACE.bg,
@@ -1518,6 +1621,7 @@ export function InGameOverlay() {
   const [routeReady, setRouteReady] = useState(false)
   const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT)
   const [scales, setScales] = useState<Partial<Record<WidgetId, number>>>({})
+  const [disabled, setDisabled] = useState<Set<WidgetId>>(() => new Set())
   const [radioUntil, setRadioUntil] = useState(0)
   const previousQuery = useRef<string | null>(null)
   // ts последней показанной текстовой реплики — чтобы не продлевать показ
@@ -1674,6 +1778,12 @@ export function InGameOverlay() {
           }
           return incoming
         })
+        // Выключенные виджеты не рисуются и в превью: иначе картинка обещала
+        // бы то, чего в игре уже нет.
+        setDisabled(new Set(
+          (Object.keys(WIDGET_SIZE) as WidgetId[])
+            .filter((id) => next.widgets?.[id]?.enabled === false),
+        ))
       } catch {
         // Раскладка недоступна — виджеты остаются в масштабе 1.0. Это ровно то
         // же поведение, что было до появления масштаба, и падать здесь нечему.
@@ -1709,6 +1819,7 @@ export function InGameOverlay() {
     radioActive === "playing" || radioActive === "synthesizing" ||
     Date.now() < radioUntil
   const towerRows = useMemo(() => overlay?.relative ?? [], [overlay?.relative])
+  const radarBusy = Boolean(overlay?.radar.length)
 
   const themeId = resolveThemeId(themeOverride ?? state?.settings?.overlay_theme)
   // Пока канал в эфире, акцент оформления становится цветом говорящего — и
@@ -1759,7 +1870,9 @@ export function InGameOverlay() {
         return <Widget {...common}><div style={full}><InputTraces inputs={overlay?.inputs} /></div></Widget>
       case "radar":
         return (
-          <Widget {...common} transparentShell>
+          // Радар без соседей — тусклый круг ни о чём: в отдельном окне он
+          // просто уходит с экрана, как уже уходил в этом превью.
+          <Widget {...common} transparentShell visible={editMode || radarBusy}>
             <div style={full}><TrackRadar contacts={overlay?.radar ?? []} /></div>
           </Widget>
         )
@@ -1768,7 +1881,14 @@ export function InGameOverlay() {
       case "engineer":
         return <Widget {...common}><div style={full}><EngineerPanel overlay={overlay} /></div></Widget>
       case "radio":
-        return <Widget {...common}><div style={full}><RadioPanel state={state} query={query} editMode={editMode} /></div></Widget>
+        return (
+          // Карточка рисует свою поверхность со скруглениями — коробка вокруг
+          // неё была бы тёмным прямоугольником поверх игры, ведь карточка ниже
+          // окна. В покое окна нет вовсе.
+          <Widget {...common} transparentShell visible={showRadio}>
+            <div style={full}><RadioPanel state={state} query={query} editMode={editMode} /></div>
+          </Widget>
+        )
     }
   }
 
@@ -1824,14 +1944,11 @@ export function InGameOverlay() {
         </div>
       )}
 
-      {renderWidget("hud")}
-      {renderWidget("lap")}
-      {renderWidget("tower")}
-      {renderWidget("inputs")}
-      {renderWidget("pu")}
-      {renderWidget("engineer")}
-      {(editMode || Boolean(overlay?.radar.length)) && renderWidget("radar")}
-      {showRadio && renderWidget("radio")}
+      {(["hud", "lap", "tower", "inputs", "pu", "engineer"] as WidgetId[])
+        .filter((id) => !disabled.has(id))
+        .map((id) => <Fragment key={id}>{renderWidget(id)}</Fragment>)}
+      {(editMode || radarBusy) && !disabled.has("radar") && renderWidget("radar")}
+      {showRadio && !disabled.has("radio") && renderWidget("radio")}
     </main>
     </OverlayThemeProvider>
   )

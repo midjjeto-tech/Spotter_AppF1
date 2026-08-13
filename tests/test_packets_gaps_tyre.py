@@ -35,6 +35,35 @@ def test_lap_delta_ms_minutes_plus_ms():
     assert packets._lap_delta_ms(buf2, base, 14, 16) == 1800
 
 
+@pytest.mark.parametrize("ms_part", [60000, 65053, 65520, 65535])
+def test_lap_delta_ms_sentinel_is_none(ms_part):
+    """ms_part >= 60000 — заглушка игры, а не отрыв.
+
+    Инвариант формата: целые минуты лежат отдельным байтом, поэтому остаток
+    физически меньше минуты. Разбор живого заезда 2026-08-11 дал девять таких
+    значений (65053-65520), и они уезжали в стратега как настоящие отрывы.
+    """
+    base = 4
+    buf = _buf(base + 32)
+    struct.pack_into("<H", buf, base + 14, ms_part)
+    buf[base + 16] = 0
+    assert packets._lap_delta_ms(buf, base, 14, 16) is None
+
+
+def test_lap_delta_ms_sentinel_reaches_parsers_as_none():
+    """Заглушка не должна превращаться в отрыв ни у игрока, ни у поля."""
+    buf = _buf(HEADER_SIZE + 22 * LAP_DATA_SIZE)
+    base1 = HEADER_SIZE + 1 * LAP_DATA_SIZE
+    buf[base1 + 32] = 2
+    struct.pack_into("<H", buf, base1 + 14, 65519)   # отрыв впереди — мусор
+    struct.pack_into("<H", buf, base1 + 17, 65519)   # отрыв до лидера — мусор
+
+    assert packets.parse_lap_data(buf)["gaps_front"][1] is None
+    player = packets.parse_player_lap(buf, 1)
+    assert player["gap_front_ms"] is None
+    assert player["gap_leader_ms"] is None
+
+
 # --------------------------------------------------------------------------- #
 # parse_lap_data — позиции, лидер, отрыв до машины впереди для всех машин
 # --------------------------------------------------------------------------- #
@@ -385,7 +414,11 @@ def test_parse_event_collision():
     assert out["event_code"] == "COLL"
     assert out["vehicle1_idx"] == 3
     assert out["vehicle2_idx"] == 7
-    assert out["priority"] == "critical"
+    # НЕ critical (2026-08-11). Парсер не знает тяжести — её нет в пакете, —
+    # поэтому раздавать `critical` всем касаниям подряд он права не имеет:
+    # отсюда бралась важность 90 и директива LLM «авария» на любую притирку.
+    # Вес ставится позже, по последствию (core/engine.py::_grade_contact).
+    assert out["priority"] == "normal"
 
 
 # --------------------------------------------------------------------------- #

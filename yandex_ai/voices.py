@@ -50,7 +50,12 @@ AVAILABLE_VOICES: dict[str, list[str]] = {
 DEFAULT_PERSONA_VOICE: dict[str, dict] = {
     "tv":    {"voice": "alexander", "emotion": "neutral", "speed": 1.05},
     "hype":  {"voice": "anton",     "emotion": "neutral", "speed": 1.15},
-    "calm":  {"voice": "marina",    "emotion": "neutral", "speed": 0.95},
+    # Мужской голос, потому что персона подписана «ЛЕВ ТИХОНОВ»
+    # (core/radio/speakers.py). Был `marina` — женский, и спокойный аналитик
+    # весь заезд звучал не своим полом. Совпадение с `tv` по голосу допустимо:
+    # персона активна ровно одна, а темп у них разный (0.95 против 1.05).
+    # Освободившаяся `marina` уходит инженеру Соколовой, которой она и нужна.
+    "calm":  {"voice": "alexander", "emotion": "neutral", "speed": 0.95},
     "toxic": {"voice": "kirill",    "emotion": "neutral", "speed": 1.05},
     # Слоты РОЛЕЙ, а не персоны комментатора. Живут в одном словаре, потому что
     # вся цепочка синтеза (resolve -> _voice_key -> кэш -> speech.py) уже
@@ -61,6 +66,31 @@ DEFAULT_PERSONA_VOICE: dict[str, dict] = {
     "engineer": {"voice": "alexander", "emotion": "neutral", "speed": 1.0},
     "spotter":  {"voice": "kirill",    "emotion": "neutral", "speed": 1.1},
 }
+
+#: Пол голоса: "m" | "f". Нужен кастингу ролей (core/radio/voice_cast.py).
+#:
+#: Зачем отдельная таблица. Подпись в кадре и тембр обязаны совпадать, а
+#: связаны они не были ничем: персона `calm` подписана «ЛЕВ ТИХОНОВ», а голос ей
+#: достался `marina` — женский. Ловилось только ухом на живой гонке, потому что
+#: обе константы по отдельности выглядят правильными и лежат в разных файлах.
+#: Вывести пол из id нельзя — список закрытый и имена ничего не гарантируют,
+#: поэтому он записан явно и проверяется тестом.
+VOICE_GENDER: dict[str, str] = {
+    "filipp": "m", "ermil": "m", "zahar": "m", "madirus": "m",
+    "alexander": "m", "kirill": "m", "anton": "m",
+    "alena": "f", "jane": "f", "omazh": "f", "dasha": "f",
+    "julia": "f", "lera": "f", "marina": "f",
+}
+
+
+def gender_of(voice_id: str) -> str | None:
+    """Пол голоса, либо None для незнакомого id.
+
+    None, а не дефолт: «пол неизвестен» и «мужской» — разные вещи, и молча
+    выдать незнакомый голос за мужской значит вернуть ровно тот баг, ради
+    которого таблица заведена."""
+    return VOICE_GENDER.get(voice_id)
+
 
 # voice id -> человекочитаемое имя для плашки спикера в UI («Яндекс: Филипп»).
 DISPLAY_NAMES: dict[str, str] = {

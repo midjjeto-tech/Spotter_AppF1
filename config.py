@@ -64,6 +64,15 @@ MIN_COMMENT_GAP = 9.0
 # (тот же сосед в той же полосе дистанции). Смена дистанции/цели — озвучиваем сразу.
 SITUATION_DEDUP_COOLDOWN = 20.0
 
+# То же для споттера, но ключ другой: «та же машина с той же стороны»
+# (core/radio/situations.py -> spotter:{side}:vehicle_{idx}). Сосед, который
+# висит рядом и колеблется на границе порога, не переобъявляется столько
+# секунд; ДРУГОЙ сосед объявляется сразу, без ожидания. Разбор живого заезда
+# 2026-08-11 дал 32 боковых предупреждения за 5 минут квалификации.
+# Снятие предупреждения (SPOTTER_CLEAR) под этот кулдаун НЕ попадает:
+# промолчать про то, что рядом снова чисто, хуже, чем повториться.
+SPOTTER_SITUATION_COOLDOWN = 8.0
+
 # Флэшбек (перемотка игрока): после отката сливаем очередь до-флэшбековых событий,
 # сбрасываем транзитное состояние и молчим столько секунд (не комментируем переигровку).
 FLASHBACK_SILENCE = 4.0
@@ -166,12 +175,28 @@ YANDEX_TTS_SAMPLE_RATE = 48000               # LPCM 48 kHz mono
 YANDEX_GPT_CONNECT_TIMEOUT = 2.0
 YANDEX_GPT_TOTAL_TIMEOUT = 6.0
 YANDEX_TTS_CONNECT_TIMEOUT = 2.0
-YANDEX_TTS_TOTAL_TIMEOUT = 5.0
+# 4.0, а не 5.0: это ВТОРАЯ попытка озвучить ту же реплику, и она складывается с
+# уже потраченным таймаутом v3. Реплика, доехавшая через 20 секунд, описывает
+# другую гонку — молчание дешевле.
+YANDEX_TTS_TOTAL_TIMEOUT = 4.0
 YANDEX_CREDS_FILE = os.path.join(DATA_DIR, "yandex_creds.json")
 YANDEX_PREWARM = False                        # прогрев кэша Yandex на старте (платно, опц.)
 YANDEX_TTS_V3_URL = "https://tts.api.cloud.yandex.net/tts/v3/utteranceSynthesis"
 YANDEX_TTS_V3_CONNECT_TIMEOUT = 4.0   # v3 streams; needs more connect headroom than v1
-YANDEX_TTS_V3_TOTAL_TIMEOUT = 14.0   # v3 NDJSON stream can take 10+ s for long phrases
+# 9.0, а не 14.0. Прежнее значение подбиралось под САМУЮ длинную реплику
+# комментатора, но платит его каждая: на живой гонке 13 фраз подряд ушли в
+# `future timeout (15s)`, и к моменту звука ситуация уже менялась. Длинную фразу
+# при неудаче подхватывает откат на v1 — цена ошибки здесь заметно ниже цены
+# ожидания.
+YANDEX_TTS_V3_TOTAL_TIMEOUT = 9.0
+# Предохранитель на v3. Даже укороченный таймаут остаётся дорогим, а платить его
+# КАЖДОЙ фразой, когда v3 уже явно лежит, бессмысленно: после трёх подряд
+# неудач сессия переходит на v1 целиком и не трогает v3 до конца остывания.
+# Побочный и не менее важный эффект — стабильность тембра: пофразный откат
+# заставлял одного и того же персонажа звучать то премиальным голосом, то
+# легаси-подменой (см. _V1_VOICE_FALLBACK).
+YANDEX_TTS_V3_FAILURE_THRESHOLD = 3
+YANDEX_TTS_V3_BREAKER_COOLDOWN = 120.0   # секунд
 YANDEX_TTS_GRPC_ENDPOINT = "tts.api.cloud.yandex.net:443"
 YANDEX_TTS_GRPC_TIMEOUT = 10.0   # секунд, тот же порядок что YANDEX_TTS_V3_TOTAL_TIMEOUT
 YANDEX_TTS_STREAMING_PLAYBACK = True   # kill-switch: Этап B (потоковое воспроизведение v3-grpc)
