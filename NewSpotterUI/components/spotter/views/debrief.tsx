@@ -101,12 +101,18 @@ function lapTime(ms: number | null | undefined): string {
     : `${seconds},${pad(hundredths)}`
 }
 
-/** 420 → «0,42 с». Без хвостового нуля: «0,40 с» читается как точность, которой
- *  у замера нет. */
+/** 420 → «0,42 с», 1000 → «1 с». Без хвостовых нулей: «0,40 с» читается как
+ *  точность, которой у замера нет.
+ *
+ *  Нули снимаются ОДНИМ выражением, вместе с осиротевшей запятой. Прежняя пара
+ *  `.replace(/0$/,"").replace(/\.$/,"")` убирала ровно один символ, поэтому
+ *  целые секунды давали «1,0 с» — при том что тот же вердикт, отформатированный
+ *  на бэкенде (`core/coach_ai/lesson.py::_sec`, там `.rstrip("0").rstrip(".")`),
+ *  печатает «1 с». Два разных вида одного числа стояли на экране рядом. */
 function seconds(ms: number | null | undefined): string {
   if (ms == null) return "—"
-  const text = (Math.abs(ms) / 1000).toFixed(2).replace(/0$/, "").replace(/\.$/, "")
-  return `${text.replace(".", ",")} с`
+  const text = (Math.abs(ms) / 1000).toFixed(2).replace(/\.?0+$/, "")
+  return `${(text || "0").replace(".", ",")} с`
 }
 
 export function DebriefView({ state }: { state: SpotterState | null }) {

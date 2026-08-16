@@ -91,6 +91,39 @@ def _isolate_overlay_layout(tmp_path_factory, monkeypatch):
         tmp_path_factory.mktemp("overlay_layout"), raising=False)
 
 
+@pytest.fixture(autouse=True)
+def _isolate_game_archive(tmp_path_factory, monkeypatch):
+    """Не давать тестам писать в КАРЬЕРНЫЙ архив пользователя.
+
+    Тот же класс, что `_isolate_overlay_layout`, и та же причина, о которой
+    предупреждает `_isolate_data_dir` выше: пути в `analytics/archive.py`
+    считаются НА ИМПОРТЕ модуля (`_DATA`, `_GAME_SESSIONS`, ...), поэтому подмена
+    `config.DATA_DIR` до них не достаёт. Изолировать их надо явно — и до
+    2026-08-15 этого не делали.
+
+    Найдено 2026-08-15 при разборе, почему коуч молчит: в живом архиве оказалось
+    **61 заезд «Test / race» по одному кругу** за 08-10…08-15, то есть от
+    прогонов тестов, а не от езды. Источник — `test_coach_focus_wiring.py`,
+    зовущий настоящий `recorder.finalize()`.
+
+    Вред тут не только в мусоре. Архив — карьерная память: по нему коуч ищет
+    эталон трассы и прошлый разбор, а `prune_game_sessions` считает по нему
+    окно свежих заездов. То есть фальшивые сессии вытесняли бы НАСТОЯЩИЕ гонки
+    из защищённого окна. И они же сломали первую попытку оценить пороги
+    детектора по фактическим данным: 61 пустой заезд превращал реальную выборку
+    в шум.
+    """
+    import analytics.archive as archive_mod
+
+    root = tmp_path_factory.mktemp("game_archive")
+    monkeypatch.setattr(archive_mod, "_DATA", root, raising=False)
+    monkeypatch.setattr(archive_mod, "_GAME_SESSIONS", root / "game_sessions",
+                        raising=False)
+    monkeypatch.setattr(archive_mod, "_RACE_ARCHIVE", root / "race_archive",
+                        raising=False)
+    monkeypatch.setattr(archive_mod, "_SEASON", root / "season", raising=False)
+
+
 @pytest.fixture
 def tmp_creds(tmp_path, monkeypatch):
     """Перенаправляет файл креденшелов в tmp и возвращает путь."""

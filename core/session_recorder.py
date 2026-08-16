@@ -11,6 +11,7 @@ class SessionRecorder:
         self._reference_lap: dict | None = None
         self._garage: dict | None = None
         self._lesson: dict | None = None
+        self._lap_metrics: list[dict] = []
         self._race_map: dict | None = None
         self._done = False
 
@@ -21,6 +22,7 @@ class SessionRecorder:
         self._reference_lap = None
         self._garage = None
         self._lesson = None
+        self._lap_metrics = []
         self._race_map = None
         self._done = False
 
@@ -46,6 +48,16 @@ class SessionRecorder:
             "lap_time_ms": lap_time_ms,
             "corners": {str(cid): body for cid, body in corners.items()},
         }
+
+    def set_coach_lap_metrics(self, rows: list[dict] | None) -> None:
+        """Замеры поворотов ПО КРУГАМ — вход, из которого посчитан урок.
+
+        Урок и карта ошибок рядом — это выводы; здесь лежат числа, на которых
+        они стоят. Без них «битый замер» после заезда не диагностируется: разбор
+        08-11 упёрся ровно в это — потенциал круга обещал 11,4 с при 0,93 с
+        найденных потерь, а проверить, какой поворот и на каком круге дал
+        выброс, было нечем."""
+        self._lap_metrics = list(rows or [])
 
     def set_coach_lesson(self, lesson: dict | None) -> None:
         """Разбор сессии: потенциал круга, куда ушло время, что дальше.
@@ -94,6 +106,7 @@ class SessionRecorder:
                 "reference_lap": self._reference_lap,
                 "garage": self._garage,
                 "coach_lesson": self._lesson,
+                "coach_lap_metrics": list(self._lap_metrics),
                 "race_map": self._race_map}
         try:
             return archive.save_game_session(data)

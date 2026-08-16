@@ -205,14 +205,27 @@ class SessionFocus:
         """Похвала ровно один раз на фокус.
 
         Второй раз о том же прогрессе — это уже не подтверждение, а болтовня;
-        следующий повод сказать про этот поворот только один — что он закрыт."""
-        if focus.progress_reported:
-            return None
+        следующий повод сказать про этот поворот только один — что он закрыт.
+
+        **`status` пересчитывается КАЖДЫЙ круг, до проверки `progress_reported`,
+        и это не порядок ради порядка.** Статус читает `_maybe_switch`, который
+        не отнимает работу у наметившегося прогресса. Пока выход стоял первым,
+        флаг `improving` защёлкивался навсегда: похвала выдана — и дальше сюда
+        уже не заходили, даже когда прогресс исчезал. Фокус, откатившийся к
+        своей же базовой линии, держал сессию до финиша, а поворот в шесть раз
+        дороже не брался вовсе; коуч при этом молчал, потому что все три события
+        своей жизни уже потратил. Похвала по-прежнему ровно одна — её сторожит
+        `progress_reported`, а не статус."""
         if focus.gain_ms < PROGRESS_MIN_MS:
             self._progress_streak = 0
+            # Прогресс исчез — работа снова просто работа, и её снова можно
+            # уступить чему-то более дорогому.
+            focus.status = "working"
+            return None
+        focus.status = "improving"
+        if focus.progress_reported:
             return None
         self._progress_streak += 1
-        focus.status = "improving"
         if self._progress_streak < CONFIRM_LAPS or not self._cooldown_passed(lap):
             return None
         focus.progress_reported = True

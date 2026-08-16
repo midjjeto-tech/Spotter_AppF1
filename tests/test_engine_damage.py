@@ -308,3 +308,37 @@ def test_other_cars_crashes_are_still_covered(engine):
         {"event_code": "COLL", "vehicle1_idx": 11, "vehicle2_idx": 7})
 
     assert "COLL" in _codes(engine)
+
+
+def test_a_flashback_throws_away_a_contact_that_never_happened(engine):
+    """Отложенный контакт — событие из ОТМЕНЁННОГО будущего.
+
+    `_handle_flashback` сливает очередь комментариев именно для того, чтобы
+    до-флэшбековые события не доехали до пилота, но `_pending_contact` ещё не
+    опубликован и сливом не достаётся. Без явной чистки `_grade_contact`
+    дозревал уже после перемотки, оценивал удар по пост-откатным повреждениям и
+    позиции и выкладывал в ленту контакт, которого в игре больше нет.
+    """
+    _fresh(engine)
+    _contact(engine)
+    assert engine._pending_contact is not None
+
+    engine._handle_flashback()
+
+    assert engine._pending_contact is None
+    # И следующий тик телеметрии его уже не дозреет: слот пуст, публиковать
+    # нечего. Через `_grade` смотреть нельзя — тот сам читает `deadline`.
+    engine._grade_contact(1e9)
+    assert _codes(engine) == []
+
+
+def test_a_heavy_crash_is_a_hero_shot_like_the_ungraded_collision_was(engine):
+    """Скриншот привязан к КОДУ, а контакт игрока приезжает уже оценённым.
+
+    Пока в наборе был только `COLL`, снимок получала притирка, прошедшая как
+    средний контакт, а настоящая авария — нет.
+    """
+    assert "COLL_HEAVY" in eng_mod._HERO_SCREENSHOT_CODES
+    assert "COLL" in eng_mod._HERO_SCREENSHOT_CODES
+    # Притирка без последствий — снимать нечего.
+    assert "COLL_LIGHT" not in eng_mod._HERO_SCREENSHOT_CODES

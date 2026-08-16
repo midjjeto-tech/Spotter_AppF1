@@ -223,8 +223,12 @@ def _check_packets(by_kind) -> Check:
     missing_essential = [p for p in ESSENTIAL_PACKETS if p not in present]
     missing_feature = [p for p in FEATURE_PACKETS if p not in present]
 
-    lines = ["приходят: " + ", ".join(
-        f"{p} {F1_PACKETS.get(p, ('?', ''))[0]}" for p in sorted(present)) or "ничего"]
+    # Скобки обязательны: `+` связывает раньше `or`, и без них фолбэк относился
+    # к уже склеенной строке — то есть был мёртв (префикс всегда непустой), а
+    # отчёт при нераспознанных пакетах обрывался на «приходят: ».
+    arriving = ", ".join(
+        f"{p} {F1_PACKETS.get(p, ('?', ''))[0]}" for p in sorted(present))
+    lines = ["приходят: " + (arriving or "ничего")]
     for packet in missing_essential + missing_feature:
         name, breaks = F1_PACKETS.get(packet, ("?", "?"))
         lines.append(f"НЕТ {packet} {name} -> не работает: {breaks}")

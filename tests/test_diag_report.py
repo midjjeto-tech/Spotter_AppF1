@@ -97,6 +97,18 @@ def test_iracing_is_reported_as_its_own_case_not_as_broken_udp():
     assert "UDP" not in (check.action or "")
 
 
+def test_nothing_recognisable_says_nothing_arrives_not_a_bare_prefix():
+    """`+` связывает раньше `or`, поэтому фолбэк «ничего» относился к уже
+    склеенной строке — то есть был мёртв, и отчёт обрывался на «приходят: ».
+    Журнал с нераспознаваемыми ключами переписи — не выдумка: строку могло
+    порвать на середине при убитом приложении."""
+    report = build_report([_start(), {"kind": "packets", "lap": 1,
+                                     "counts": {"мусор": 5}}])
+
+    check = _check(report, 2)
+    assert check.lines[0] == "приходят: ничего"
+
+
 def test_no_completed_lap_means_no_packet_census():
     report = build_report([_start()])
 

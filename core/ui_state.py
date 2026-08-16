@@ -369,6 +369,14 @@ class UIStateProjection:
             self._state["career_memory"] = None
             self._state["final_classification"] = None
             self._state["strategy_ai"] = _strategy_default()
+            # Раскладка по полю СЕССИОННАЯ, и обнулять её надо именно здесь.
+            # `update_analysis` намеренно не затирает её значением None (секция
+            # считается раз в круг, а проекция пересобирается на каждом снимке
+            # телеметрии), поэтому движок, обнуливший свою `_field_pace` на
+            # старте сессии, до экрана этим ничего не доносил: гонка показывала
+            # квалификационные позиции по секторам как свои собственные, пока не
+            # закроется первый круг.
+            self._state["field_pace"] = None
 
     def set_strategy(self, state: dict) -> None:
         with self.lock:

@@ -287,3 +287,50 @@ def test_no_focus_leaves_an_unknown_cause_unknown():
     lesson = build_lesson([_d(3, 366.0, 1.0, cause=None)], None, focus=None)
 
     assert lesson["losses"][0]["cause"] is None
+
+
+def test_unpriced_session_does_not_invent_a_fixed_corner():
+    """Цену не считали — про поворот прошлого визита молчим.
+
+    `CornerHistory.costs()` выходит ни с чем, когда эталон покрывает меньше
+    `MIN_COMPARABLE_CORNERS` поворотов, а `potential()` при этом работает (он
+    эталон не использует вовсе). Урок в этом случае собирается с пустыми
+    `losses`, и раньше прогресс читал отсутствие поворота в них как ноль:
+    «было 0,4 с, стало 0 с» — поздравление с исправлением того, что сегодня ни
+    разу не измерили.
+    """
+    previous = {"best_lap_ms": 92_000, "focus": {"corner_id": 7, "current_ms": 400}}
+
+    lesson = build_lesson([], _potential(92_400, 800), previous=previous)
+
+    assert lesson is not None
+    assert lesson["losses"] == []
+    # Сравнение лучших кругов от цены поворотов не зависит и остаётся.
+    assert lesson["progress"]["best_delta_ms"] == 400
+    assert "Медленнее прошлого визита" in lesson["progress"]["text"]
+    # А вот про поворот 7 сказать нечего.
+    assert lesson["progress"]["focus_now_ms"] is None
+    assert "поворот" not in lesson["progress"]["text"].lower()
+
+
+def test_priced_session_still_calls_a_vanished_corner_fixed():
+    """Контроль: расчёт состоялся и потери в повороте не нашёл — это ноль.
+
+    Обратная сторона предыдущего теста; та же пара, что различает «нет данных» и
+    «данные есть, значение нулевое».
+    """
+    previous = {"focus": {"corner_id": 7, "current_ms": 400}}
+
+    lesson = build_lesson([_d(3, 120.0, 1.0)], None, previous=previous)
+
+    assert lesson["progress"]["focus_now_ms"] == 0
+    assert "стало 0 с" in lesson["progress"]["text"]
+
+
+def test_unpriced_session_without_a_best_lap_has_no_progress_block_at_all():
+    """Ни цены, ни лучшего круга — блока прогресса быть не должно."""
+    previous = {"focus": {"corner_id": 7, "current_ms": 400}}
+
+    lesson = build_lesson([], _potential(92_400, 800), previous=previous)
+
+    assert lesson.get("progress") is None

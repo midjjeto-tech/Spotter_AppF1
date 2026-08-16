@@ -128,6 +128,37 @@ class CornerHistory:
     def lap_count(self) -> int:
         return len(self._laps)
 
+    def to_rows(self) -> list[dict]:
+        """Замеры по кругам в виде, пригодном для файла заезда.
+
+        Зачем это в архиве, когда там уже лежит готовый урок. Урок — это ВЫВОД,
+        а разбирать после заезда приходится ВХОД. Когда потенциал круга обещал
+        11,4 с при 0,93 с фактически найденных потерь (заезд 2026-08-11),
+        восстановить, на каком повороте и на каком круге сломался замер, было
+        нечем: в записи лежал только результат. Теперь лежат и числа, из которых
+        он посчитан.
+
+        Формат плоский и самодостаточный: `corner_id` строками, потому что JSON
+        всё равно сделает их строками, и читателю архива не придётся гадать,
+        какой тип ключа он получит.
+        """
+        return [
+            {
+                "lap": lap,
+                "lap_time_ms": lap_time_ms,
+                "corners": {
+                    str(corner_id): {
+                        "duration_ms": m.duration_ms,
+                        "brake_point_m": m.brake_point_m,
+                        "min_speed_kmh": m.min_speed_kmh,
+                        "throttle_point_m": m.throttle_point_m,
+                    }
+                    for corner_id, m in sorted(metrics.items())
+                },
+            }
+            for lap, lap_time_ms, metrics in self._laps
+        ]
+
     def costs(self, reference: dict[int, CornerMetrics],
               corner_names: dict[int, str] | None = None,
               window: int | None = None) -> list[CornerCost]:

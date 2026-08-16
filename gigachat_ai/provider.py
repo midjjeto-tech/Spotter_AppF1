@@ -16,6 +16,8 @@
 from __future__ import annotations
 
 import logging
+import threading
+import time
 
 import config
 from commentator.personas import system_prompt
@@ -24,11 +26,31 @@ from yandex_ai.gpt import _sanitize   # единый санитайзер отв
 _log = logging.getLogger(__name__)
 
 
+def _is_rate_limited(exc: Exception) -> bool:
+    """429 и словесные его формы. Единственная ошибка, которую имеет смысл
+    повторить: сервер прямо сообщил «слишком часто», и короткая пауза её чинит.
+
+    Таймаут сюда НЕ входит намеренно — повторять его значит платить ещё один
+    полный `GIGACHAT_TIMEOUT` ради реплики, которая к моменту ответа будет уже
+    про другой момент гонки."""
+    status = (getattr(exc, "status_code", None) or getattr(exc, "status", None)
+              or getattr(exc, "code", None))
+    if status == 429:
+        return True
+    low = str(exc).lower()
+    return "429" in low or "too many requests" in low or "rate limit" in low
+
+
 class GigaChatProvider:
     def __init__(self, credentials=None, model: str | None = None):
         self._client = None
         self._sdk_missing = False   # True, если пакет gigachat не установлен
         self._model = model or config.GIGACHAT_MODEL
+        # Предохранитель. Лок нужен: провайдера дёргают и поток комментатора, и
+        # воркер RaceFeed — это два независимых источника запросов.
+        self._breaker_lock = threading.Lock()
+        self._failures = 0
+        self._blocked_until = 0.0
         key = getattr(credentials, "authorization_key", "") if credentials else ""
         if key:
             try:
@@ -122,27 +144,93 @@ class GigaChatProvider:
         репортёры — не одна из четырёх голосовых персон)."""
         return self._complete(system, user, max_tokens=200, temperature=0.7)
 
+    # ── Предохранитель ───────────────────────────────────────────────────────
+
+    def _breaker_open(self) -> bool:
+        """Стоит ли вообще звонить. Монотонные часы, а не wall clock: перевод
+        системного времени не должен ни продлевать остывание, ни обнулять его."""
+        with self._breaker_lock:
+            return time.monotonic() < self._blocked_until
+
+    def _note_result(self, ok: bool) -> None:
+        with self._breaker_lock:
+            if ok:
+                if self._blocked_until or self._failures:
+                    _log.info("GigaChat снова отвечает — предохранитель сброшен")
+                self._failures = 0
+                self._blocked_until = 0.0
+                return
+            self._failures += 1
+            if self._failures < config.GIGACHAT_FAILURE_THRESHOLD:
+                return
+            self._blocked_until = time.monotonic() + config.GIGACHAT_BREAKER_COOLDOWN
+            self._failures = 0
+            _log.warning(
+                "GigaChat: %d неудачи подряд — уходим на шаблоны на %.0f с "
+                "(перестаём платить таймаут каждой фразой)",
+                config.GIGACHAT_FAILURE_THRESHOLD, config.GIGACHAT_BREAKER_COOLDOWN)
+
+    def reset_breaker(self) -> None:
+        """Снять блокировку принудительно — смена ключа или новая сессия не
+        должны наследовать остывание прошлой."""
+        with self._breaker_lock:
+            self._failures = 0
+            self._blocked_until = 0.0
+
     def _complete(self, system: str, user: str, *, max_tokens: int,
                   temperature: float) -> str | None:
         if self._client is None:
             return None
-        try:
-            from gigachat.models import Chat, Messages, MessagesRole
-            payload = Chat(
-                messages=[
-                    Messages(role=MessagesRole.SYSTEM, content=system),
-                    Messages(role=MessagesRole.USER, content=user),
-                ],
-                temperature=temperature,
-                max_tokens=max_tokens,
-            )
-            resp = self._client.chat(payload)
-        except Exception as exc:  # noqa: BLE001 — сеть/HTTP/OAuth -> шаблоны
-            _log.warning("GigaChat generate failed: %s", exc)
+        if self._breaker_open():
+            # Молча и мгновенно: вызывающий уйдёт в шаблоны, как и при отказе,
+            # но без шестисекундного ожидания на каждой фразе.
+            _log.debug("GigaChat на остывании — сразу шаблоны")
+            return None
+        resp = self._call_with_retry(system, user, max_tokens=max_tokens,
+                                     temperature=temperature)
+        if resp is None:
             return None
         try:
             text = (resp.choices[0].message.content or "").strip()
         except Exception:  # noqa: BLE001 — неожиданная форма ответа
             _log.warning("GigaChat: unexpected response shape")
+            # Форма ответа сломана — это тоже неудача провайдера, и считать её
+            # успехом значит держать предохранитель разомкнутым на потоке
+            # мусора.
+            self._note_result(False)
             return None
+        self._note_result(True)
         return _sanitize(text) if text else ""
+
+    def _call_with_retry(self, system: str, user: str, *, max_tokens: int,
+                         temperature: float):
+        """Один запрос, плюс ОДИН повтор только на 429.
+
+        Возвращает ответ SDK либо None. Счётчик предохранителя ведётся здесь:
+        серия 429 подряд — такой же повод перестать звонить, как и серия
+        таймаутов, просто чинится она паузой, а не сменой ключа."""
+        from gigachat.models import Chat, Messages, MessagesRole
+
+        payload = Chat(
+            messages=[
+                Messages(role=MessagesRole.SYSTEM, content=system),
+                Messages(role=MessagesRole.USER, content=user),
+            ],
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+        attempts = 1 + max(0, int(config.GIGACHAT_RETRY_ON_RATE_LIMIT))
+        for attempt in range(attempts):
+            try:
+                return self._client.chat(payload)
+            except Exception as exc:  # noqa: BLE001 — сеть/HTTP/OAuth -> шаблоны
+                last = attempt == attempts - 1
+                if not last and _is_rate_limited(exc):
+                    _log.info("GigaChat 429 — повтор через %.1f с",
+                              config.GIGACHAT_RETRY_BACKOFF)
+                    time.sleep(config.GIGACHAT_RETRY_BACKOFF)
+                    continue
+                _log.warning("GigaChat generate failed: %s", exc)
+                self._note_result(False)
+                return None
+        return None

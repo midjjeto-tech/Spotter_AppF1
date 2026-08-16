@@ -137,3 +137,32 @@ def test_radio_message_present_from_the_start():
     """Фронт читает поле без опциональных проверок на первом кадре."""
     assert _projection().snapshot()["radio_message"] == {
         "text": "", "voiced": False, "ts": 0.0}
+
+
+def test_field_pace_survives_a_telemetry_tick_but_not_a_new_session():
+    """Две половины одного правила, и обе обязательны.
+
+    `update_analysis` не затирает раскладку значением None: секция считается раз
+    в круг, а проекция пересобирается на каждом снимке телеметрии. Из-за этого
+    обнуления, которое движок делает на старте сессии, до экрана не доходило
+    ничем — гонка показывала квалификационные позиции по секторам как свои,
+    пока не закроется первый круг. Сбрасывать раскладку обязан
+    `reset_session_view`.
+    """
+    projection = _projection()
+    qualifying = {"sectors": [{"sector": 2, "rank": 18, "field_size": 20}],
+                  "weakest": {"sector": 2}, "strongest": None,
+                  "lap_rank": 18, "lap_field_size": 20, "lap_gap_ms": 1200}
+    projection.set_analysis(
+        race_ai={}, strategy_ai={}, coach_ai={}, rivals={},
+        track_ai=None, track_name=None, field_pace=qualifying)
+
+    # Обычный тик телеметрии раскладку не трогает.
+    projection.set_analysis(
+        race_ai={}, strategy_ai={}, coach_ai={}, rivals={},
+        track_ai=None, track_name=None, field_pace=None)
+    assert projection.snapshot()["field_pace"]["lap_rank"] == 18
+
+    # Новая сессия — раскладка чужая.
+    projection.reset_session_view()
+    assert projection.snapshot()["field_pace"] is None

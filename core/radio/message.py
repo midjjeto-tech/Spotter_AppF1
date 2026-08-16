@@ -128,7 +128,6 @@ class RadioMessage:
     created_at: float
     created_mono: float
     expires_mono: float | None
-    interrupt_policy: str
     dedupe_key: str | None
     situation_id: str | None
     # MappingProxyType, а не dict: `frozen=True` защищает только сами поля, а
@@ -342,7 +341,6 @@ def build_message(
         created_at=created_at,
         created_mono=created_mono,
         expires_mono=None if ttl is None else created_mono + ttl,
-        interrupt_policy=policy.interrupt_policy_for(urgency, category),
         dedupe_key=situations.dedupe_key(
             event, lap=lap, session_id=session_id,
             timeline_revision=timeline_revision),

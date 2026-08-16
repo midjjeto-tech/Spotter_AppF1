@@ -230,31 +230,44 @@ def test_expires_at_is_measured_from_the_event_not_from_tts():
     assert policy.expires_at_for("PENA", created) is None
 
 
-# ── Политика прерывания ──────────────────────────────────────────────────────
+# ── Прерывание: чем оно решается НА САМОМ ДЕЛЕ ───────────────────────────────
+#
+# Раньше здесь лежали пять тестов на `interrupt_policy_for()`. Они были зелёными
+# и при этом описывали продукт неверно: `test_low_is_dropped_when_radio_is_busy`
+# и `test_periodic_digest_replaces_its_stale_predecessor` утверждали поведение,
+# которого в очереди НЕ БЫЛО НИКОГДА — ни `drop_if_busy`, ни `replace` она не
+# реализует. Тест, проверяющий согласованность выдумки с самой собой, зелёный
+# ровно до тех пор, пока никто не сверит его с продуктом.
+#
+# Механизм и его расчёт удалены 2026-08-14 (см. шапку core/radio/policy.py).
+# Ниже — то, что решает прерывание в действительности: срочность, из которой
+# очередь берёт ранг, и категория, по которой она щадит своего же.
 
-def test_critical_interrupts():
-    assert policy.interrupt_policy_for(
-        policy.URGENCY_CRITICAL, "box_call") == policy.POLICY_INTERRUPT
+def test_urgency_is_the_only_thing_that_grants_the_right_to_interrupt():
+    """`critical` не выдаётся по importance — только явно (правило 2 в шапке
+    модуля). Иначе право рвать звучащую фразу получила бы половина гонки."""
+    assert policy.urgency_for(
+        {"event_code": "SPOTTER_CAR_LEFT", "importance": 10}
+    ) == policy.URGENCY_CRITICAL
+    # Сводка приходит с высокой важностью и всё равно не получает права рвать.
+    assert policy.urgency_for(
+        {"event_code": "ENGINEER_GAP_DIGEST", "importance": 99}
+    ) != policy.URGENCY_CRITICAL
 
 
-def test_high_queues_next_and_does_not_interrupt():
-    assert policy.interrupt_policy_for(
-        policy.URGENCY_HIGH, "safety_car") == policy.POLICY_NEXT
+def test_the_categories_that_logically_supersede_are_still_documented():
+    """Список пережил удаление политики намеренно: это знание о предмете (две
+    сводки о гэпе — не диалог, а версии одного факта), и с него начинать, если
+    очередь однажды научится вытеснению."""
+    assert "gap_digest" in policy.REPLACEABLE_CATEGORIES
+    assert "spotter_side" not in policy.REPLACEABLE_CATEGORIES
 
 
-def test_periodic_digest_replaces_its_stale_predecessor():
-    assert policy.interrupt_policy_for(
-        policy.URGENCY_NORMAL, "gap_digest") == policy.POLICY_REPLACE
-
-
-def test_ordinary_normal_message_just_queues():
-    assert policy.interrupt_policy_for(
-        policy.URGENCY_NORMAL, "commentary") == policy.POLICY_NEXT
-
-
-def test_low_is_dropped_when_radio_is_busy():
-    assert policy.interrupt_policy_for(
-        policy.URGENCY_LOW, "ambient") == policy.POLICY_DROP_IF_BUSY
+def test_the_dead_policy_is_gone_for_good():
+    """Регрессия на саму уборку: поле без потребителя — ровно то, что здесь и
+    лежало, и вернуться оно должно только вместе с реализацией в очереди."""
+    assert not hasattr(policy, "interrupt_policy_for")
+    assert not hasattr(policy, "POLICY_DROP_IF_BUSY")
 
 
 # ── Категории ────────────────────────────────────────────────────────────────

@@ -95,6 +95,7 @@ class StrategyModule:
         now: float,
         *,
         engineer_chatter_enabled: bool,
+        ers_hints_enabled: bool = True,
     ) -> StrategyResult:
         strategy_event = self.analyzer.update(snapshot.analyzer_input())
         events: list[dict] = []
@@ -184,9 +185,13 @@ class StrategyModule:
                 # Preserve historical semantics: a gated ERS advisory still
                 # consumes this strategy cooldown window.
                 self.last_advisory_at = now
+                # Два тумблера, и оба гасят ERS: общий (инженер молчит целиком)
+                # и частный (батарея не нужна, остальное нужно). Частный
+                # добавлен потому, что пороги ERS живой калибровки не проходили,
+                # и снимать их отдельно — осмысленная потребность.
                 chatter_gated = (
                     strategy_event.type in _CHATTER_GATED_TYPES
-                    and not engineer_chatter_enabled
+                    and not (engineer_chatter_enabled and ers_hints_enabled)
                 )
                 if not chatter_gated:
                     events.append({

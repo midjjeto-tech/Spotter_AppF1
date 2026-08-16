@@ -45,7 +45,10 @@ def test_build_fills_channel_urgency_ttl_and_policy_from_the_event():
     assert message.created_mono == 50.0
     assert message.ttl == policy.ttl_for("ENGINEER_GAP_DIGEST")
     assert message.expires_mono == 50.0 + policy.ttl_for("ENGINEER_GAP_DIGEST")
-    assert message.interrupt_policy == policy.POLICY_REPLACE
+    # `interrupt_policy` удалена 2026-08-14: очередь её не читала, а два из
+    # четырёх её значений не были реализованы вовсе. Прерывание определяют
+    # `urgency` и `category` — их и проверяем.
+    assert message.category == "gap_digest"
     assert message.state == STATE_QUEUED
 
 
@@ -113,7 +116,7 @@ def test_spotter_message_is_critical_and_interrupts():
 
     assert message.channel == policy.CHANNEL_SPOTTER
     assert message.urgency == policy.URGENCY_CRITICAL
-    assert message.interrupt_policy == policy.POLICY_INTERRUPT
+    assert message.urgency == policy.URGENCY_CRITICAL
 
 
 def test_ids_are_unique_and_stable_within_an_instance():

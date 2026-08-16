@@ -36,6 +36,8 @@ export function SettingsView({
     critical: false,
     ambient: false,
     engineer: false,
+    digest: true,
+    ers: true,
     broadcast: false,
     racefeed: false,
     position: "auto",
@@ -66,6 +68,8 @@ export function SettingsView({
       critical: settings.critical_events_enabled,
       ambient: settings.ambient_enabled,
       engineer: settings.engineer_chatter_enabled,
+      digest: settings.engineer_digest_enabled ?? true,
+      ers: settings.ers_hints_enabled ?? true,
       broadcast: settings.broadcast_mode_enabled,
       racefeed: settings.racefeed_enabled,
       position: settings.commentator_position,
@@ -243,6 +247,28 @@ export function SettingsView({
               disabled={!settings}
               onChange={saveControl("engineer", "engineer_chatter_enabled")}
             />
+            {/* Две ветки инженера, которые чаще всего просят приглушить
+                ОТДЕЛЬНО. Обе вложены под «Тактику инженера» и гаснут вместе с
+                ней: общий тумблер главнее частного, и `disabled` показывает это
+                раньше, чем пользователь нажмёт и не услышит разницы. */}
+            <div className="ml-6 flex flex-col gap-2 border-l border-border pl-4">
+              <SettingToggle
+                icon={Waves}
+                title="Сводка по разрывам"
+                description="Периодический доклад про отрывы — самая частая реплика в гонке"
+                checked={controls.digest}
+                disabled={!settings || !controls.engineer}
+                onChange={saveControl("digest", "engineer_digest_enabled")}
+              />
+              <SettingToggle
+                icon={Waves}
+                title="Подсказки по батарее"
+                description="Когда беречь ERS и когда разряжать на обгон"
+                checked={controls.ers}
+                disabled={!settings || !controls.engineer}
+                onChange={saveControl("ers", "ers_hints_enabled")}
+              />
+            </div>
             {/* Тумблер влияет ровно на 4 типа событий Race AI
                 (core/engine.py::_code_map: ATTACK/BATTLE/TYRE_WARN/FINAL_LAP),
                 а не на весь комментарий; при недоступном текстовом AI

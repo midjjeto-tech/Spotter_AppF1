@@ -227,4 +227,10 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    # Тот же знак, что у веб-интерфейса (NewSpotterUI/public/apple-icon.png):
+    # без него EXE носил дефолтную иконку PyInstaller, и в панели задач
+    # приложение было неотличимо от любого другого собранного питона.
+    # Генерируется из того же PNG: `python scripts/make_icon.py` — так связь
+    # воспроизводима и не разъезжается при смене логотипа.
+    icon='assets/spotter.ico',
 )

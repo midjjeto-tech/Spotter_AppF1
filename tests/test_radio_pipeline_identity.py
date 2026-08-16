@@ -242,7 +242,8 @@ def test_safety_car_is_no_longer_urgent_enough_to_interrupt(engine):
     assert event["priority"] == "critical"      # legacy-поле не тронуто
     message = build_message(event, phrase="Safety Car на трассе.", now=0.0)
     assert message.urgency == policy.URGENCY_HIGH
-    assert message.interrupt_policy == policy.POLICY_NEXT
+    # Право прерывать даёт только `critical`; safety_car его не получает.
+    assert message.urgency != policy.URGENCY_CRITICAL
 
 
 # ── Погодный фронт ───────────────────────────────────────────────────────────
@@ -369,7 +370,7 @@ def test_box_call_escalation_is_one_situation_three_statements():
     assert len({m.situation_id for m in messages}) == 1
     assert len({m.dedupe_key for m in messages}) == 3
     assert all(m.urgency == policy.URGENCY_CRITICAL for m in messages)
-    assert all(m.interrupt_policy == policy.POLICY_INTERRUPT for m in messages)
+    assert all(m.urgency == policy.URGENCY_CRITICAL for m in messages)
 
 
 # ── Снимок телеметрии ────────────────────────────────────────────────────────

@@ -282,6 +282,13 @@ export type SettingsState = {
   critical_events_enabled: boolean
   ambient_enabled: boolean
   engineer_chatter_enabled: boolean
+  /** Две ветки инженера, которые чаще всего просят приглушить ОТДЕЛЬНО от
+   *  остального: периодическая сводка по разрывам (самая частая некритичная
+   *  реплика в гонке) и советы по батарее (их пороги живой калибровки не
+   *  проходили). Обе ПОДЧИНЕНЫ `engineer_chatter_enabled` — общий тумблер
+   *  главнее частного, — и по умолчанию включены. */
+  engineer_digest_enabled: boolean
+  ers_hints_enabled: boolean
   /** Подсказки по ПИЛОТАЖУ (блокировка, пробуксовка, снос, занос, выезд).
    *  Независимая ось от engineer_chatter_enabled: инженера можно держать
    *  тихим, а подсказки по вождению включёнными. Звучат только на
@@ -610,7 +617,11 @@ export type CoachGarageReport = {
  *  означает «объяснять нечего», а не «неизвестно».
  *  Строится core/coach_ai/health.py. */
 export type CoachHealth = {
-  signal: "ok" | "no_frames" | "flat" | "implausible" | "warming_up"
+  // `swapped` — порядок колёс в телеметрии не сходится (под газом буксуют
+  // передние). Бэкенд его отдаёт с самого начала (core/coach_ai/health.py::
+  // SIGNAL_SWAPPED), а в этом union его не было: тип врал про диапазон значений,
+  // и сужение по нему пропустило бы ветку, которая на экране как раз есть.
+  signal: "ok" | "no_frames" | "flat" | "implausible" | "swapped" | "warming_up"
   frames: number
   moving_frames: number
   mistakes: number

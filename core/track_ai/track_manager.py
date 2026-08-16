@@ -18,6 +18,12 @@ class TrackManager:
     def track_name(self) -> str:
         return self._track.name
 
+    @property
+    def length_m(self) -> float:
+        """Длина круга активной трассы. Нужна промеру (core/track_ai/survey.py),
+        чтобы переводить дистанцию в долю круга той же формулой, что `resolve`."""
+        return self._track.length_m
+
     def corners(self) -> list[Corner]:
         """Разметка активной трассы. Нужна коучу, чтобы называть повороты по
         имени, не таща к себе загрузчик треков."""

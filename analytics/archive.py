@@ -77,7 +77,11 @@ def iter_game_sessions():
     гонкой.
 
     Битый файл пропускается с предупреждением, а не роняет перебор: один
-    испорченный заезд не должен лишать пилота всей истории."""
+    испорченный заезд не должен лишать пилота всей истории.
+
+    С 2026-08-14 архив ЧИСТИТСЯ — см. `prune_game_sessions` ниже. Прежняя фраза
+    здесь («ничем не чистится и растёт с каждой гонкой») была верной и осталась
+    незамеченной ровно потому, что жила в докстринге, а не в списке задач."""
     if not _GAME_SESSIONS.exists():
         return
     for f in sorted(_GAME_SESSIONS.glob("*.json"), reverse=True):
@@ -89,6 +93,83 @@ def iter_game_sessions():
         if d is None:
             continue
         yield f, d
+
+
+#: Сколько последних заездов держим в любом случае.
+#:
+#: Число намеренно щедрое. Задача этой чистки — ОГРАНИЧИТЬ безграничный рост, а
+#: не подстричь архив: на 2026-08-14 в нём 86 заездов общим весом 394 КБ, и
+#: удалять из них четверть ради сотни килобайт — плохой размен, история заездов
+#: пилоту дороже. Порог начинает работать там, где появляется реальная цена:
+#: `coach_lap_metrics` (добавлено тогда же) увеличило файл заезда примерно на
+#: порядок, а `load_track_history` разбирает архив ЦЕЛИКОМ на каждой смене
+#: трассы. Двести заездов по ~40 КБ — это около восьми мегабайт разбора в
+#: фоновом потоке, что ещё нормально; тысяча — уже нет.
+KEEP_RECENT_SESSIONS = 200
+
+
+def prune_game_sessions(keep_recent: int = KEEP_RECENT_SESSIONS) -> int:
+    """Удалить старые заезды, СОХРАНИВ карьерную память. Возвращает число удалённых.
+
+    **Наивное «оставить N свежих» здесь ломает продукт, и это главное в функции.**
+    Архив — не лента, а карьерная память: `core/coach_ai/reference_store.py`
+    ищет по нему эталон трассы (самый быстрый круг среди ВСЕХ заездов) и
+    прошлый разбор для сравнения прогресса. Рекорд Монцы может лежать в заезде
+    полугодовой давности, и удалить его значит молча откатить цель коуча к
+    более медленному кругу — ровно та ошибка, от которой фоновая загрузка
+    эталона отдельно защищается в `_start_coach_reference_load`.
+
+    Поэтому защищаются три множества:
+      1. последние `keep_recent` заездов — история для экрана;
+      2. по каждой трассе — заезд с ЛУЧШИМ записанным эталоном (карьерный
+         рекорд);
+      3. по каждой трассе — самый свежий заезд с разбором (`coach_lesson`),
+         точка отсчёта прогресса на следующем визите.
+
+    Всё остальное — это заезды, которые не держит ни лента, ни коуч.
+    """
+    if not _GAME_SESSIONS.exists():
+        return 0
+    entries = list(iter_game_sessions())          # новые первыми
+    if len(entries) <= keep_recent:
+        return 0
+
+    protected: set[Path] = {path for path, _ in entries[:keep_recent]}
+
+    best_reference: dict[object, tuple[int, Path]] = {}
+    newest_lesson: dict[object, Path] = {}
+    for path, data in entries:                    # порядок: новые первыми
+        track_id = data.get("track_id")
+        if track_id is None:
+            continue
+        raw = data.get("reference_lap") or {}
+        lap_ms = raw.get("lap_time_ms") or 0
+        if isinstance(lap_ms, (int, float)) and lap_ms > 0:
+            current = best_reference.get(track_id)
+            if current is None or lap_ms < current[0]:
+                best_reference[track_id] = (int(lap_ms), path)
+        lesson = data.get("coach_lesson")
+        if isinstance(lesson, dict) and lesson and track_id not in newest_lesson:
+            newest_lesson[track_id] = path
+
+    protected.update(path for _ms, path in best_reference.values())
+    protected.update(newest_lesson.values())
+
+    removed = 0
+    for path, _data in entries:
+        if path in protected:
+            continue
+        try:
+            path.unlink()
+        except OSError:
+            continue
+        removed += 1
+    if removed:
+        _log.info("Archive pruned %d old game session(s); kept %d recent, "
+                  "%d track record(s), %d progress baseline(s)",
+                  removed, min(keep_recent, len(entries)),
+                  len(best_reference), len(newest_lesson))
+    return removed
 
 
 def list_game_sessions() -> list[dict]:

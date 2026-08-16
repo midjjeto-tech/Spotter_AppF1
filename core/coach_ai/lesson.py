@@ -84,7 +84,13 @@ def build_lesson(diagnoses: list[CornerDiagnosis],
         "next_step": _next_step(losses),
         "focus": focus.to_dict() if focus is not None else None,
     }
-    progress = _progress(previous, losses, potential)
+    # `priced` отвечает на вопрос, СЧИТАЛАСЬ ли вообще цена поворотов в этой
+    # сессии. Пустой `diagnoses` — это «расчёт не состоялся» (эталон покрывает
+    # меньше `MIN_COMPARABLE_CORNERS` поворотов, и `CornerHistory.costs()`
+    # выходит ни с чем), а не «все повороты чистые». Различать обязательно: без
+    # этого прогресс объявлял закрытым поворот, который сегодня ни разу не
+    # измерили. См. `_progress`.
+    progress = _progress(previous, losses, potential, priced=bool(diagnoses))
     if progress is not None:
         lesson["progress"] = progress
     return lesson
@@ -198,12 +204,21 @@ def _next_step(losses: list[CornerDiagnosis]) -> str | None:
 
 
 def _progress(previous: dict | None, losses: list[CornerDiagnosis],
-              potential: LapPotential | None) -> dict | None:
+              potential: LapPotential | None,
+              priced: bool = True) -> dict | None:
     """Сравнение с прошлым визитом на эту трассу.
 
     Прошлый урок приходит из архива как обычный JSON: любое поле может
     отсутствовать или оказаться не того типа, и ни одно из этого не повод
-    потерять весь разбор."""
+    потерять весь разбор.
+
+    `priced=False` означает, что цена поворотов в этой сессии не считалась
+    вовсе. Тогда про поворот прошлого визита не говорится НИЧЕГО: отсутствие
+    поворота в `losses` читается как «он закрыт» только когда расчёт реально
+    состоялся и просто не нашёл там потери. Без этой развилки разбор поздравлял
+    пилота с исправлением поворота, который сегодня ни разу не измерили —
+    «было 0,4 с, стало 0 с» на пустом расчёте. Сравнение лучших кругов при этом
+    остаётся: оно от цены поворотов не зависит."""
     if not isinstance(previous, dict):
         return None
 
@@ -224,7 +239,7 @@ def _progress(previous: dict | None, losses: list[CornerDiagnosis],
 
     now_by_corner = {d.corner_id: d.cost_ms for d in losses}
     now_cost = (round(now_by_corner.get(prev_corner, 0.0))
-                if prev_corner is not None else None)
+                if prev_corner is not None and priced else None)
 
     best_delta = None
     if prev_best is not None and potential is not None:

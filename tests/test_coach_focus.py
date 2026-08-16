@@ -307,3 +307,70 @@ def test_every_spoken_threshold_is_above_the_pronounceable_floor():
 
     assert PROGRESS_MIN_MS >= MIN_SPOKEN_MS
     assert MIN_FOCUS_COST_MS >= MIN_SPOKEN_MS
+
+
+def test_progress_that_evaporates_releases_the_work_again():
+    """Похвала выдана, потом прогресс исчез — работу снова можно уступить.
+
+    `status` читает `_maybe_switch`, который не отнимает работу у наметившегося
+    прогресса. Пока выход по `progress_reported` стоял ПЕРЕД пересчётом статуса,
+    флаг `improving` защёлкивался навсегда: похвалили один раз — и фокус держал
+    сессию до финиша, даже откатившись к своей же базовой линии, а поворот в шесть
+    раз дороже не брался вовсе. Коуч при этом молчал: все три события своей жизни
+    он уже потратил.
+    """
+    focus = SessionFocus()
+    focus.update([_d(7, 400.0)], lap=1)
+
+    # Два круга улучшения — похвала.
+    rows = {lap: [_d(7, 150.0), _d(3, 900.0)] for lap in range(2, 6)}
+    praise = _run(focus, rows, range(2, 6))
+    assert [e.kind for e in praise] == ["progress"]
+    assert focus.state.status == "improving"
+
+    # Прогресс исчез: поворот 7 хуже своей базовой линии, рядом лежит 900 мс.
+    regressed = {lap: [_d(7, 500.0), _d(3, 900.0)] for lap in range(6, 20)}
+    events = _run(focus, regressed, range(6, 20))
+
+    assert [e.kind for e in events] == ["set"]
+    assert focus.state.corner_id == 3
+    assert focus.state.status == "working"
+
+
+def test_praise_is_still_given_only_once_after_the_status_recovers():
+    """Статус ходит туда-сюда, похвала — нет.
+
+    Снятие защёлки не должно превратиться во вторую похвалу за тот же поворот:
+    сторожем остаётся `progress_reported`, а не статус.
+    """
+    focus = SessionFocus()
+    focus.update([_d(7, 400.0)], lap=1)
+
+    rows: dict[int, list[CornerDiagnosis]] = {}
+    for lap in range(2, 30):
+        # Улучшение → откат → снова улучшение, и всё это по ОДНОМУ повороту,
+        # чтобы `_maybe_switch` не мог вмешаться (соперника в списке нет).
+        cost = 150.0 if (lap // 4) % 2 == 0 else 400.0
+        rows[lap] = [_d(7, cost)]
+
+    events = _run(focus, rows, range(2, 30))
+
+    assert [e.kind for e in events] == ["progress"]
+    assert focus.state.corner_id == 7
+
+
+def test_sustained_progress_still_holds_the_work():
+    """Контроль: пока прогресс ДЕРЖИТСЯ, работу по-прежнему не отнимают.
+
+    Дубль по смыслу с test_improving_work_is_never_abandoned_for_a_bigger_problem,
+    но здесь он рядом с тестами на снятие защёлки — чтобы правка, «чинящая»
+    защёлку слишком широко, падала здесь же.
+    """
+    focus = SessionFocus()
+    focus.update([_d(7, 400.0)], lap=1)
+    rows = {lap: [_d(7, 150.0), _d(3, 900.0)] for lap in range(2, 30)}
+
+    _run(focus, rows, range(2, 30))
+
+    assert focus.state.corner_id == 7
+    assert focus.state.status == "improving"

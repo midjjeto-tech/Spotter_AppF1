@@ -74,3 +74,103 @@ def test_get_last_race_allows_missing_final_position(tmp_path, monkeypatch):
                           {"track_name": "Monza", "session_type": "race", "final_position": None})
     last = archive.get_last_race()
     assert last is not None and last["final_position"] is None
+
+
+# ── Чистка архива ────────────────────────────────────────────────────────────
+#
+# Архив — не лента, а КАРЬЕРНАЯ ПАМЯТЬ: по нему коуч ищет эталон трассы (самый
+# быстрый круг среди всех заездов) и прошлый разбор для сравнения прогресса.
+# Поэтому главное здесь — не «удаляет старое», а «не удаляет то, что держит
+# коуч». Наивное «оставить N свежих» молча откатило бы цель к более медленному
+# кругу.
+
+def _write(directory, name: str, *, track_id=None, ref_ms=None, lesson=None):
+    doc: dict = {"track_name": f"T{track_id}", "session_type": "race"}
+    if track_id is not None:
+        doc["track_id"] = track_id
+    if ref_ms is not None:
+        doc["reference_lap"] = {"lap_time_ms": ref_ms, "corners": {}}
+    if lesson is not None:
+        doc["coach_lesson"] = lesson
+    archive._atomic_write(directory / f"{name}.json", doc)
+    return directory / f"{name}.json"
+
+
+def test_nothing_is_removed_while_the_archive_is_small(tmp_path, monkeypatch):
+    monkeypatch.setattr(archive, "_GAME_SESSIONS", tmp_path)
+    for i in range(5):
+        _write(tmp_path, f"2026-01-0{i}")
+
+    assert archive.prune_game_sessions(keep_recent=10) == 0
+    assert len(list(tmp_path.glob("*.json"))) == 5
+
+
+def test_the_recent_window_is_always_kept(tmp_path, monkeypatch):
+    monkeypatch.setattr(archive, "_GAME_SESSIONS", tmp_path)
+    for i in range(10):
+        _write(tmp_path, f"2026-01-{i:02d}")
+
+    removed = archive.prune_game_sessions(keep_recent=3)
+
+    assert removed == 7
+    kept = sorted(p.stem for p in tmp_path.glob("*.json"))
+    assert kept == ["2026-01-07", "2026-01-08", "2026-01-09"]
+
+
+def test_a_track_record_survives_however_old_it_is(tmp_path, monkeypatch):
+    """Рекорд Монцы может лежать в заезде полугодовой давности. Удалить его —
+    значит молча откатить цель коуча к более медленному кругу."""
+    monkeypatch.setattr(archive, "_GAME_SESSIONS", tmp_path)
+    record = _write(tmp_path, "2026-01-01", track_id=11, ref_ms=80_000)
+    for i in range(2, 12):                     # десять свежих и МЕДЛЕННЕЕ
+        _write(tmp_path, f"2026-01-{i:02d}", track_id=11, ref_ms=90_000)
+
+    archive.prune_game_sessions(keep_recent=3)
+
+    assert record.exists(), "удалён карьерный рекорд трассы"
+
+
+def test_the_progress_baseline_survives(tmp_path, monkeypatch):
+    """Свежайший разбор по трассе — точка отсчёта прогресса на следующем
+    визите (`lesson.progress`). Без него сравнивать будет не с чем."""
+    monkeypatch.setattr(archive, "_GAME_SESSIONS", tmp_path)
+    baseline = _write(tmp_path, "2026-01-02", track_id=7,
+                      lesson={"best_lap_ms": 92_000})
+    _write(tmp_path, "2026-01-01", track_id=7, lesson={"best_lap_ms": 93_000})
+    for i in range(3, 13):
+        _write(tmp_path, f"2026-01-{i:02d}", track_id=99)
+
+    archive.prune_game_sessions(keep_recent=3)
+
+    assert baseline.exists(), "удалена точка отсчёта прогресса"
+    assert not (tmp_path / "2026-01-01.json").exists(), "прошлый разбор не нужен"
+
+
+def test_records_of_different_tracks_are_kept_independently(tmp_path, monkeypatch):
+    monkeypatch.setattr(archive, "_GAME_SESSIONS", tmp_path)
+    monza = _write(tmp_path, "2026-01-01", track_id=11, ref_ms=80_000)
+    spa = _write(tmp_path, "2026-01-02", track_id=13, ref_ms=105_000)
+    for i in range(3, 13):
+        _write(tmp_path, f"2026-01-{i:02d}", track_id=99)
+
+    archive.prune_game_sessions(keep_recent=2)
+
+    assert monza.exists() and spa.exists()
+
+
+def test_a_session_without_a_track_id_is_ordinary(tmp_path, monkeypatch):
+    """Легаси-запись без track_id ничего не держит и чистится как обычная."""
+    monkeypatch.setattr(archive, "_GAME_SESSIONS", tmp_path)
+    old = _write(tmp_path, "2026-01-01", ref_ms=80_000)   # track_id отсутствует
+    for i in range(2, 12):
+        _write(tmp_path, f"2026-01-{i:02d}", track_id=99)
+
+    archive.prune_game_sessions(keep_recent=2)
+
+    assert not old.exists()
+
+
+def test_pruning_an_absent_directory_is_not_an_error(tmp_path, monkeypatch):
+    monkeypatch.setattr(archive, "_GAME_SESSIONS", tmp_path / "нет")
+
+    assert archive.prune_game_sessions() == 0

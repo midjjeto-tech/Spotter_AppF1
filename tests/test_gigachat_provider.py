@@ -166,3 +166,121 @@ def test_init_passes_key_scope_model(monkeypatch):
     assert capture.get("credentials") == "mykey"
     assert capture.get("scope") == "GIGACHAT_API_PERS"
     assert capture.get("model") == "GigaChat"
+
+
+# ── Устойчивость: предохранитель и ретрай на 429 ─────────────────────────────
+#
+# Разбор живого заезда 2026-08-11: за гонку 31 отвал по таймауту, 6 ответов 429 и
+# 3 rate-limit, и КАЖДЫЙ стоил полного GIGACHAT_TIMEOUT — комментатор молчал по
+# шесть секунд подряд, снова и снова, потому что ни ретрая, ни предохранителя не
+# было вовсе.
+
+def _counting_giga(exc=None, reply="ok", fail_times=None, calls=None):
+    """Клиент, считающий вызовы; `fail_times` — сколько первых поднять `exc`."""
+    class _FakeGiga:
+        def __init__(self, **kwargs):
+            pass
+
+        def chat(self, payload):
+            calls.append(1)
+            if exc is not None and (fail_times is None or len(calls) <= fail_times):
+                raise exc
+            return _Resp(reply)
+
+    return _FakeGiga
+
+
+def test_a_rate_limited_call_is_retried_once(monkeypatch):
+    """429 — единственная ошибка, которую сервер просит повторить."""
+    calls: list = []
+    monkeypatch.setattr(gigachat, "GigaChat",
+                        _counting_giga(exc=RuntimeError("429 Too Many Requests"),
+                                       fail_times=1, calls=calls))
+    monkeypatch.setattr(config, "GIGACHAT_RETRY_BACKOFF", 0.0)
+    p = GigaChatProvider(GigaChatCredentials("key"))
+
+    assert p.generate("ctx", "tv") == "ok"
+    assert len(calls) == 2
+
+
+def test_a_timeout_is_never_retried(monkeypatch):
+    """Повтор таймаута — это ещё один полный GIGACHAT_TIMEOUT ради реплики,
+    которая к моменту ответа будет уже про другой момент гонки. Тот же размен,
+    что для голоса: молчание дешевле."""
+    calls: list = []
+    monkeypatch.setattr(gigachat, "GigaChat",
+                        _counting_giga(exc=RuntimeError("read timeout"),
+                                       calls=calls))
+    p = GigaChatProvider(GigaChatCredentials("key"))
+
+    assert p.generate("ctx", "tv") is None
+    assert len(calls) == 1
+
+
+def test_the_breaker_stops_paying_the_timeout_on_every_phrase(monkeypatch):
+    """Главная экономия: после серии неудач не звоним вовсе."""
+    calls: list = []
+    monkeypatch.setattr(gigachat, "GigaChat",
+                        _counting_giga(exc=RuntimeError("read timeout"),
+                                       calls=calls))
+    monkeypatch.setattr(config, "GIGACHAT_FAILURE_THRESHOLD", 3)
+    monkeypatch.setattr(config, "GIGACHAT_BREAKER_COOLDOWN", 90.0)
+    p = GigaChatProvider(GigaChatCredentials("key"))
+
+    for _ in range(10):
+        assert p.generate("ctx", "tv") is None
+
+    # Три реальные попытки, дальше — мгновенный отказ без сети.
+    assert len(calls) == 3
+
+
+def test_the_breaker_reopens_after_the_cooldown(monkeypatch):
+    calls: list = []
+    monkeypatch.setattr(gigachat, "GigaChat",
+                        _counting_giga(exc=RuntimeError("read timeout"),
+                                       fail_times=3, calls=calls))
+    monkeypatch.setattr(config, "GIGACHAT_FAILURE_THRESHOLD", 3)
+    monkeypatch.setattr(config, "GIGACHAT_BREAKER_COOLDOWN", 0.0)
+    p = GigaChatProvider(GigaChatCredentials("key"))
+
+    for _ in range(3):
+        p.generate("ctx", "tv")
+    assert len(calls) == 3
+
+    # Остывание нулевое — следующая фраза снова пробует и получает ответ.
+    assert p.generate("ctx", "tv") == "ok"
+
+
+def test_a_success_clears_the_failure_streak(monkeypatch):
+    """Две неудачи и успех не должны копиться в третью и размыкать цепь."""
+    calls: list = []
+    monkeypatch.setattr(gigachat, "GigaChat",
+                        _counting_giga(exc=RuntimeError("read timeout"),
+                                       fail_times=2, calls=calls))
+    monkeypatch.setattr(config, "GIGACHAT_FAILURE_THRESHOLD", 3)
+    p = GigaChatProvider(GigaChatCredentials("key"))
+
+    assert p.generate("ctx", "tv") is None
+    assert p.generate("ctx", "tv") is None
+    assert p.generate("ctx", "tv") == "ok"
+    # Серия сброшена: следующие вызовы снова доходят до сети.
+    assert p.generate("ctx", "tv") == "ok"
+    assert len(calls) == 4
+
+
+def test_a_broken_response_shape_counts_as_a_failure(monkeypatch):
+    """Иначе поток мусора держал бы предохранитель разомкнутым вечно."""
+    class _Broken:
+        def __init__(self, **kwargs):
+            pass
+
+        def chat(self, payload):
+            return object()          # нет .choices
+
+    monkeypatch.setattr(gigachat, "GigaChat", _Broken)
+    monkeypatch.setattr(config, "GIGACHAT_FAILURE_THRESHOLD", 2)
+    p = GigaChatProvider(GigaChatCredentials("key"))
+
+    assert p.generate("ctx", "tv") is None
+    assert p.generate("ctx", "tv") is None
+    assert p._breaker_open() is True

@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import os
 import queue
+import re
 import sys
 import threading
 import time
@@ -181,6 +182,7 @@ from core.coach_ai.focus import SessionFocus
 from core.coach_ai.health import CoachHealth
 from core.coach_ai.lesson import build_lesson
 from core.coach_ai.reference import LapTracer
+from core.track_ai.survey import TrackSurvey, coverage as survey_coverage
 from core import sector_standing
 from core.coach_ai.reference_store import ReferenceLap, load_track_history
 from core.coach_ai.repeat import RepeatGate
@@ -281,8 +283,13 @@ _CONTACT_WINDOW_S = 2.5
 _CONTACT_LIGHT_DAMAGE = 5     # ниже — притёрлись, говорить не о чем
 _CONTACT_HEAVY_DAMAGE = 25    # выше — это уже настоящая авария
 # Hero events that get an in-game screenshot attached to their RaceFeed post.
+#
+# `COLL_HEAVY` рядом с `COLL`: контакт игрока публикуется уже оценённым
+# (_grade_contact), и без этой строки скриншот получала притирка, прошедшая как
+# средний `COLL`, а настоящая авария — нет. `COLL_LIGHT` не включён намеренно:
+# у него нет последствия, снимать нечего.
 _HERO_SCREENSHOT_CODES = frozenset({
-    "OVTK", "COLL", "PENA", "RTMT", "FTLP", "CHAMPIONSHIP",
+    "OVTK", "COLL", "COLL_HEAVY", "PENA", "RTMT", "FTLP", "CHAMPIONSHIP",
     "POST_RACE_INTERVIEW",
 })
 # 5 вариантов на категорию (было по одной фиксированной фразе — item 6
@@ -445,6 +452,11 @@ class F1Engine:
         # медианы по всей сессии нельзя.
         self.coach_history = CornerHistory()
         self.coach_focus = SessionFocus()
+        # Промер трассы: где на круге повороты НА САМОМ ДЕЛЕ. Живёт рядом с
+        # коучем, потому что кормится тем же кадром и нужен ровно ему — карты
+        # неполные, а выдумывать доли по этой карте нельзя.
+        self.track_survey = TrackSurvey()
+        self._survey_best_coverage: float = 0.0
         self._coach_lesson: dict | None = None
         self._coach_previous_lesson: dict | None = None
         # Положение в поле по секторам. Гейт повтора тот же, что у коуча
@@ -1954,6 +1966,18 @@ class F1Engine:
         # «данные вообще приходят?» имеет смысл только про те данные, по которым
         # работает детектор.
         self.coach_health.observe_frame(frame)
+        # Промер трассы идёт с того же кадра и всегда: карты неполные (в среднем
+        # 66% круга, `scripts/audit_tracks.py`), а дописать их можно ТОЛЬКО
+        # измерением — выдуманная доля означает уверенно неверный совет коуча.
+        # Стоит это четырёх чисел на кадр и ничего не меняет само: результат
+        # уезжает отдельным файлом, решение принимает человек.
+        if self._track_manager is not None:
+            self.track_survey.observe(
+                lap_distance_m=self._lap_distance_m,
+                length_m=self._track_manager.length_m,
+                speed_kmh=self._player_speed_kmh,
+                yaw_rate=motion_ex.get("yaw_rate"),
+            )
 
         now = time.time()
         for mistake in self.coach_slip.tick(
@@ -2170,6 +2194,56 @@ class F1Engine:
 
         if event is not None:
             self._publish_focus_event(event)
+
+    def _prune_game_archive(self) -> None:
+        """Чистка карьерного архива. Ошибка здесь не имеет права ничего ронять:
+        не удалили сегодня — удалим после следующего заезда."""
+        try:
+            _archive.prune_game_sessions()
+        except Exception:  # noqa: BLE001
+            _log.warning("Не удалось почистить архив заездов", exc_info=True)
+
+    def _save_track_survey(self, lap: int, lap_was_pit: bool) -> None:
+        """Круг завершён — разобрать промер и сохранить, если он лучше прежнего.
+
+        Пишется ЛУЧШИЙ круг сессии по покрытию, а не последний: промер тем
+        полнее, чем чище проехали, и один смазанный круг не должен затирать
+        удачный. Пит-круг не участвует вовсе — на пит-лейне своя траектория.
+
+        Файл НЕ является картой и никуда не подставляется: активную разметку
+        меняет человек через `scripts/survey_track.py`, глядя на дифф. Карта, по
+        которой коуч судит о пилотаже, не должна меняться сама по себе — по той
+        же причине, по которой её нельзя выдумывать.
+        """
+        try:
+            corners = None if lap_was_pit else self.track_survey.finish_lap()
+            self.track_survey.reset()
+            if not corners or self._track_manager is None:
+                return
+            measured = survey_coverage(corners)
+            if measured <= self._survey_best_coverage:
+                return
+            self._survey_best_coverage = measured
+            directory = os.path.join(config.DATA_DIR, "track_survey")
+            os.makedirs(directory, exist_ok=True)
+            track_name = self._track_manager.track_name or f"track_{self._track_id}"
+            slug = re.sub(r"[^a-z0-9]+", "_", track_name.lower()).strip("_")
+            payload = {
+                "track_name": track_name,
+                "track_id": self._track_id,
+                "length_m": self._track_manager.length_m,
+                "lap": lap,
+                "measured_at": datetime.now().isoformat(timespec="seconds"),
+                "coverage": round(measured, 4),
+                "corners": [c.to_dict() for c in corners],
+            }
+            path = os.path.join(directory, f"{slug or 'track'}.json")
+            with open(path, "w", encoding="utf-8") as handle:
+                json.dump(payload, handle, ensure_ascii=False, indent=2)
+            _log.info("Промер трассы %s: %d поворотов, покрытие %.0f%% -> %s",
+                      track_name, len(corners), measured * 100, path)
+        except Exception:  # noqa: BLE001 — промер не имеет права ронять круг
+            _log.warning("Не удалось сохранить промер трассы", exc_info=True)
 
     def _flush_packet_census(self, lap: int) -> None:
         """Сколько каких пакетов пришло ОТ ИГРЫ за круг — в полевой журнал.
@@ -2390,6 +2464,22 @@ class F1Engine:
             return
         if not self._get_setting("driving_coach_enabled", False):
             self._coach_silent("coach_disabled_in_settings", mistake_kind=mistake.kind, lap=mistake.lap)
+            return
+        # Вердикт о сигнале ОБЯЗЫВАЕТ, а не украшает экран. До 2026-08-15
+        # `CoachHealth` считал `signal` и показывал его пилоту, но детектор
+        # публиковал подсказки независимо от этого: модуль, заведённый ответить
+        # «почему коуч молчит», не умел заставить его замолчать.
+        #
+        # Разбор архива показал цену: в реальных заездах Майами пики `wheelspin`
+        # доходили до 5.4 при `SANE_MAX_SLIP_RATIO = 3.0`, то есть приложение
+        # своими же порогами объявляло данные невозможными — и всё равно по ним
+        # советовало. Это ровно то, ради чего коуча держат выключенным: назвать
+        # не то колесо хуже, чем промолчать. Фаза 1 (срывы) единственная, кто
+        # называет КОЛЕСО, поэтому гейт стоит именно здесь.
+        if not self.coach_health.trusted:
+            self._coach_silent(self.coach_health.silence_reason_for_signal,
+                               mistake_kind=mistake.kind, lap=mistake.lap,
+                               signal=self.coach_health.signal)
             return
         if (
             repeat.kind == "offtrack"
@@ -2844,6 +2934,12 @@ class F1Engine:
                     # седьмым поворотом на новой трассе означали бы другое место.
                     self.coach_history.reset()
                     self.coach_focus.reset()
+                    # Промер привязан к КОНКРЕТНОЙ трассе: и накопленные кадры,
+                    # и планка «лучшего покрытия» относятся к прошлой геометрии.
+                    # Без сброса планки первый круг на новой трассе не сохранился
+                    # бы вовсе, если на прошлой покрытие было выше.
+                    self.track_survey.reset()
+                    self._survey_best_coverage = 0.0
                     self._coach_lesson = None
                     self._coach_previous_lesson = None
                     self._field_pace = None
@@ -3066,6 +3162,9 @@ class F1Engine:
                         if not lap_was_pit:
                             self._coach_observe_lap(self._prev_lap, lms,
                                                     lap_metrics)
+                        # Промер разбирается на том же завершении круга: он про
+                        # ту же геометрию, что и метрики поворотов выше.
+                        self._save_track_survey(self._prev_lap, lap_was_pit)
                         # Положение в поле считается и на пит-круге: лучшие
                         # секторы сессии заезд в боксы не портит — они уже
                         # установлены, а Session History их только хранит.
@@ -3378,6 +3477,7 @@ class F1Engine:
             now,
             engineer_chatter_enabled=self._get_setting(
                 "engineer_chatter_enabled", True),
+            ers_hints_enabled=self._get_setting("ers_hints_enabled", True),
         )
 
         self._ui_state.set_analysis(
@@ -3517,6 +3617,13 @@ class F1Engine:
         # он другой и подавление не переносится — чистим ради того, чтобы
         # словарь не копил ключи отменённых веток.
         self._spotter_situation_seen.clear()
+        # Отложенный контакт — событие ИЗ ОТМЕНЁННОГО БУДУЩЕГО, и слив очереди
+        # выше его не достаёт: он ещё не опубликован. Без этой строки
+        # `_grade_contact` дозревал уже после перемотки, оценивал удар по
+        # пост-откатным повреждениям и позиции и выкладывал в ленту контакт,
+        # которого в игре больше нет. На `session_started` слот чистится с
+        # самого начала — здесь его пропустили.
+        self._pending_contact = None
         self._strategy_module.reset("flashback")
         self._race_engineer.reset("flashback")
         self._session_history.clear()
@@ -4354,6 +4461,8 @@ class F1Engine:
             # топливо и разная задача.
             self.coach_history.reset()
             self.coach_focus.reset()
+            self.track_survey.reset()
+            self._survey_best_coverage = 0.0
             self._coach_lesson = None
             # Лучшие секторы поля принадлежат КОНКРЕТНОЙ сессии: секторы
             # практики в квалификации означали бы не тот темп. Сам
@@ -4453,6 +4562,10 @@ class F1Engine:
             # следующий визит на эту трассу, чтобы показать, сдвинулось ли то,
             # над чем работали в прошлый раз.
             self.recorder.set_coach_lesson(self._coach_lesson)
+            # Рядом с уроком — ВХОД, из которого он посчитан. Без него «битый
+            # замер» после заезда не диагностируется: разбор 08-11 упёрся ровно
+            # в это.
+            self.recorder.set_coach_lap_metrics(self.coach_history.to_rows())
             # Карта гонки — в тот же файл: архив должен показывать её и через
             # месяц, когда живого состояния давно нет.
             self.recorder.set_race_map(self.get_race_map())
@@ -4470,6 +4583,12 @@ class F1Engine:
                 events=list(self._session_events),
                 game_year=self._game_year,
             )
+            # Чистка архива — сразу после записи и в фоне: заезд только что
+            # добавился, и это единственный момент, когда набор точно вырос.
+            # В фоне, потому что перебор архива читает каждый файл, а мы стоим
+            # на горячем пути обработки CHQF.
+            if saved_path is not None:
+                self._spawn_thread(self._prune_game_archive, name="archive-prune")
             # Итог заезда голосом инженера. Едж-триггер по _session_result_fired:
             # CHQF — событие СЕССИИ без vehicle_idx, но повтор пакета (или
             # перезаезд) не должен давать второй итог. Позиция берётся из
@@ -4706,11 +4825,16 @@ class F1Engine:
                 # Регистрируем ДО паузы: если за эти 9 секунд придёт tier 2 того
                 # же box-call, он станет новейшим и вытеснит это сообщение.
                 self._note_radio_newest(message)
+                # `category`, а не выдуманная `policy`: прерывание решают ранг
+                # (из urgency) и категория в `new_tts/queue_handler.py`, и в лог
+                # обязано попадать то же самое. Прежнее поле `interrupt_policy`
+                # показывало политику, которой очередь не знала, — удалено
+                # 2026-08-14 вместе с расчётом (см. core/radio/policy.py).
                 _log.debug(
-                    "radio message %s: channel=%s urgency=%s policy=%s ttl=%s "
+                    "radio message %s: channel=%s urgency=%s category=%s ttl=%s "
                     "situation=%s dedupe=%s",
                     message.id, message.channel, message.urgency,
-                    message.interrupt_policy, message.ttl,
+                    message.category, message.ttl,
                     message.situation_id, message.dedupe_key)
 
             # ── Стиль радио: сколько говорит инженер (ТЗ §17) ────────────────
@@ -5168,19 +5292,28 @@ class F1Engine:
         по гэпам, если есть что сказать. Возвращает True, если поставил
         событие (для тестов — сам бесконечный цикл не тестируется напрямую,
         как _ambient_loop)."""
-        # ВРЕМЕННАЯ диагностика (см. чат): какой из гейтов реально блокирует
-        # (или нет) на каждом тике цикла (раз в ENGINEER_DIGEST_INTERVAL_S).
-        _log.info(
-            "DIAG gap_digest gate: paused=%s session_type=%s session_active=%s "
-            "in_cooldown=%s chatter_enabled=%s gap_front=%s gap_behind=%s",
-            self._is_paused(), self._session_type, self._session_active,
-            self._commentary_runtime.in_event_cooldown(now),
-            self._get_setting("engineer_chatter_enabled", True),
-            self._player_gap_front, self._player_gap_behind)
+        # Разбор гейтов — в полевой журнал, а не в общий лог. Раньше здесь стоял
+        # `_log.info` с пометкой «ВРЕМЕННАЯ диагностика (см. чат)»: он писал
+        # строку на КАЖДОМ тике цикла всю гонку, ссылался на недоступный контекст
+        # и жил в проде. Журнал включается флагом и для того и заведён.
+        if self._field.enabled:
+            self._field.record(
+                "gap_digest_gate", paused=self._is_paused(),
+                session_type=self._session_type,
+                session_active=self._session_active,
+                in_cooldown=self._commentary_runtime.in_event_cooldown(now),
+                chatter=self._get_setting("engineer_chatter_enabled", True),
+                digest=self._get_setting("engineer_digest_enabled", True),
+                gap_front=self._player_gap_front,
+                gap_behind=self._player_gap_behind)
         if (self._is_paused() or self._session_type != "race"
                 or not self._session_active
                 or self._commentary_runtime.in_event_cooldown(now)
-                or not self._get_setting("engineer_chatter_enabled", True)):
+                or not self._get_setting("engineer_chatter_enabled", True)
+                # Частный тумблер: сводка по разрывам — самая частая некритичная
+                # реплика в гонке, и глушить её отдельно от боксов, обороны и
+                # штрафов пилот должен уметь.
+                or not self._get_setting("engineer_digest_enabled", True)):
             return False
         if not self._telemetry_connected:
             return False

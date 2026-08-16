@@ -54,6 +54,23 @@ DEFAULTS: dict = {
     # См. docs/superpowers/specs/2026-07-07-commentary-mode-design.md.
     "commentary_mode":         "live",
     "engineer_chatter_enabled": True,
+    # Две ветки инженера, которые чаще всего просят приглушить ОТДЕЛЬНО от
+    # остального. До них выбор был грубым: либо `engineer_chatter_enabled` целиком
+    # (вместе с боксами, обороной, штрафами и погодой), либо громкость персоны.
+    #
+    # `engineer_digest_enabled` — периодическая сводка по разрывам
+    # (`ENGINEER_GAP_DIGEST`, раз в `ENGINEER_DIGEST_INTERVAL_S`). Это самая
+    # частая некритичная реплика в гонке и первый кандидат на «помолчи».
+    # `ers_hints_enabled` — советы по батарее (`STRAT_ERS_SAVE`/`STRAT_ERS_OVERTAKE`,
+    # `core/strategy_ai/module.py::_CHATTER_GATED_TYPES`). Пороги ERS в
+    # `strategy_ai/analysis.py` живой калибровки не проходили, и пилот, которому
+    # они не подходят, должен уметь снять именно их.
+    #
+    # Оба ВКЛЮЧЕНЫ по умолчанию: это давно работающее поведение, и обновление не
+    # должно молча отнимать реплики. Оба уважают `engineer_chatter_enabled` —
+    # общий тумблер остаётся главнее частного.
+    "engineer_digest_enabled":  True,
+    "ers_hints_enabled":        True,
     # Подсказки по ПИЛОТАЖУ (блокировка, пробуксовка, снос, занос, выезд).
     # Отдельный тумблер, а не часть engineer_chatter_enabled: держать инженера
     # тихим, а подсказки по вождению включёнными — осмысленное сочетание, это

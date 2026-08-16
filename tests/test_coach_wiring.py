@@ -16,13 +16,37 @@ from core.telemetry_adapters import TelemetryDelta
 def engine():
     """Тот же приём, что в tests/test_engine_damage.py: подменяем загрузку
     креденшелов, чтобы конструктор не лез в сеть. Фикстура функциональная, а не
-    модульная — тесты ниже мутируют settings и буфер коуча."""
+    модульная — тесты ниже мутируют settings и буфер коуча.
+
+    Сигнал сразу помечается ЗДОРОВЫМ: с 2026-08-15 коуч не открывает рот, пока
+    `CoachHealth` не подтвердит, что данные о проскальзывании похожи на правду
+    (см. tests/test_coach_signal_gate.py — там проверяется сам гейт). В проде
+    это выполняется само собой: срывы приходят из тех же кадров MotionEx,
+    которые кормят здоровье, и к третьему кругу их набираются тысячи. Здесь же
+    `_emit_coach_advice` зовут напрямую, без кадров, поэтому здоровье надо
+    подать явно — иначе эти тесты проверяли бы гейт, а не то, ради чего
+    написаны."""
     orig = eng_mod.yc.load
     eng_mod.yc.load = lambda: None
     try:
-        yield F1Engine({})
+        engine = F1Engine({})
+        _warm_up_signal(engine)
+        yield engine
     finally:
         eng_mod.yc.load = orig
+
+
+def _warm_up_signal(engine):
+    """Довести `CoachHealth` до вердикта «сигнал в порядке»."""
+    from core.coach_ai.health import MIN_FRAMES_FOR_VERDICT
+
+    for _ in range(MIN_FRAMES_FOR_VERDICT + 10):
+        engine.coach_health.observe_frame({
+            "speed_kmh": 200.0,
+            "slip_ratio": {"rl": 0.05, "rr": 0.05, "fl": 0.0, "fr": 0.0},
+            "slip_angle": {"rl": 0.02, "rr": 0.02, "fl": 0.01, "fr": 0.01},
+            "throttle_pct": 50.0, "brake_pct": 0.0,
+        })
 
 
 def _mistake(lap, kind="lockup", wheel="fl", corner_id=3, phase="braking"):
