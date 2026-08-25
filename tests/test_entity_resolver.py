@@ -130,3 +130,34 @@ def test_resolver_failure_word_is_recognised_by_the_same_helper():
     unresolved = resolve_driver_name({"driver": "#99"}, game_year=0)
 
     assert is_unresolved_name(unresolved) is True
+
+
+def test_engine_records_what_made_the_name_unresolvable(caplog):
+    """Диагностика обязана РАЗЛИЧАТЬ две версии, а не просто сообщать о беде.
+
+    После заезда 08-19 («Победа! гонщик...») разобрать причину было нечем: в
+    логе не было ни индекса, ни состава словаря. Обе оставшиеся версии —
+    индекс вне диапазона и известный индекс без имени — выглядели одинаково."""
+    import logging
+
+    import core.engine as eng_mod
+    from core.engine import F1Engine
+
+    orig = eng_mod.yc.load
+    eng_mod.yc.load = lambda: None
+    try:
+        engine = F1Engine({})
+    finally:
+        eng_mod.yc.load = orig
+
+    engine.race_state.update_drivers(
+        {i: {"name": f"Пилот{i}", "team": "T", "color": "#fff"} for i in range(22)})
+
+    with caplog.at_level(logging.WARNING, logger="core.engine"):
+        engine._log_unresolved_driver({"event_code": "RCWN", "vehicle_idx": 77})
+
+    text = caplog.text
+    assert "RCWN" in text
+    assert "vehicle_idx=77" in text, "нет индекса — версии не различить"
+    assert "известен=False" in text, "не сказано, знаком ли индекс словарю"
+    assert "0..21" in text, "нет диапазона известных индексов"

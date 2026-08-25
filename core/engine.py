@@ -262,7 +262,9 @@ import core.weekend_duel as weekend_duel_mod
 import core.screenshot as screenshot_mod
 import core.overlay_window as overlay_window
 import core.pre_race_pep_talk as _pep_talk_facts
-from core.entity_resolver import resolve_driver_name, resolve_opponent_name
+from core.entity_resolver import (
+    is_unresolved_name, resolve_driver_name, resolve_opponent_name,
+)
 from core.ru_names import first_name_of
 from commentator.channel_router import route_event, CHANNEL_RADIO, CHANNEL_OVERLAY
 from commentator.radio import get_radio_line
@@ -4079,6 +4081,28 @@ class F1Engine:
             return {"ok": False, "error": "Не удалось воспроизвести"}
         return {"ok": True}
 
+    def _log_unresolved_driver(self, event: dict) -> None:
+        """Имя не разрешилось — записать ЧЕМ именно, а не только что не вышло.
+
+        Заезд 08-19 закончился фразой «Победа! гонщик первым пересекает
+        финишную черту!», и разобрать её постфактум было нечем: в логе не было
+        ни `vehicle_idx`, ни состава словаря пилотов. При этом `PENA` в том же
+        заезде имена резолвил, а `race_state.drivers` не сбрасывается вовсе —
+        то есть словарь был полон, и подозрение падает на индекс из пакета.
+
+        Здесь печатается ровно то, что различает две оставшиеся версии: индекс
+        вне диапазона (разбор пакета) против известного индекса без имени
+        (участник не сопоставлен)."""
+        known = sorted(self.race_state.drivers)
+        idx = next((event[field] for field in ("vehicle_idx", "overtaking_idx",
+                                               "vehicle1_idx")
+                    if event.get(field) is not None), None)
+        _log.warning(
+            "имя не разрешилось: code=%s vehicle_idx=%r известен=%s "
+            "пилотов в словаре=%d диапазон=%s",
+            event.get("event_code"), idx, idx in self.race_state.drivers,
+            len(known), f"{known[0]}..{known[-1]}" if known else "пусто")
+
     def _driver_name_at(self, car_idx: int) -> str:
         """Отображаемое имя пилота по индексу машины — уже обогащённое и в
         кириллице (см. core/f1_metadata.py). Пустая строка вместо исключения:
@@ -4906,6 +4930,8 @@ class F1Engine:
             _drv = str(event.get("driver") or "")
             if not _drv or _drv.startswith("#") or _drv in ("гонщик", "пилот"):
                 event["driver"] = resolve_driver_name(event, self._game_year)
+                if is_unresolved_name(event["driver"]):
+                    self._log_unresolved_driver(event)
             _tgt = str(event.get("target") or "")
             if "target" in event and (not _tgt or _tgt.startswith("#") or _tgt in ("соперник", "пилот")):
                 event["target"] = resolve_opponent_name(event)
