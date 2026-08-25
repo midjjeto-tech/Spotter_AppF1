@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 from pathlib import Path
 
 
@@ -125,3 +126,37 @@ def test_published_exes_embed_windows_version_resources():
     build = (ROOT / "build.ps1").read_text(encoding="utf-8")
     assert "$expectedWindowsVersion = \"$versionCore.0\"" in build
     assert "$windowsVersion -ne $expectedWindowsVersion" in build
+
+
+def test_gigachat_ca_bundle_ships_and_is_versioned():
+    """Бандл Минцифры обязан быть В ИСТОРИИ, а не только на машине сборщика.
+
+    До 2026-08-25 `certs/` был закрыт `.gitignore` целиком, и бандл жил лишь в
+    рабочем дереве. `release.ps1` собирает релиз с ЧИСТОГО коммита — то есть на
+    любой другой машине сборка прошла бы успешно и выпустила EXE, в котором
+    GigaChat не подключается вовсе: системное хранилище Windows цепочку НУЦ
+    Минцифры не содержит. Отказ безопасный, но полный и незаметный —
+    приложение уходит на шаблоны и снаружи выглядит просто скучнее."""
+    bundle = ROOT / "certs" / "gigachat_ca_bundle.pem"
+    assert bundle.is_file(), "нет certs/gigachat_ca_bundle.pem"
+
+    tracked = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", "certs/gigachat_ca_bundle.pem"],
+        cwd=ROOT, capture_output=True, text=True, shell=True)
+    assert tracked.returncode == 0, "бандл не под git — сборка с коммита его не увидит"
+
+    text = bundle.read_text(encoding="utf-8", errors="replace")
+    assert "BEGIN CERTIFICATE" in text
+    # Только сертификаты: приватный ключ в репозитории — совсем другая история.
+    assert "PRIVATE KEY" not in text
+
+
+def test_signed_build_refuses_to_ship_without_the_ca_bundle():
+    """Гейт, а не предупреждение. Жёлтая строка в логе сборки не мешает выпуску,
+    и прежняя формулировка («используется проверенное системное хранилище»)
+    вдобавок утверждала неверное."""
+    build = (ROOT / "build.ps1").read_text(encoding="utf-8")
+
+    assert "} elseif ($RequireSigning) {" in build
+    assert "gigachat_ca_bundle.pem" in build
+    assert "setup_gigachat_certs.py" in build

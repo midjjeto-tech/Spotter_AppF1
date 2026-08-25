@@ -18,6 +18,24 @@ _GENERIC_OPPONENT = "соперник"
 _UNRESOLVED_DRIVER = {"гонщик", "пилот", ""}
 
 
+#: Обобщённые метки соперника: для банка фраз «соперник» — такой же
+#: неразрешённый плейсхолдер, как «гонщик».
+_UNRESOLVED_ANY = _UNRESOLVED_DRIVER | {_GENERIC_OPPONENT}
+
+
+def is_unresolved_name(name: object) -> bool:
+    """Является ли имя служебной заглушкой, а не именем пилота.
+
+    Один источник правды на два слоя: резолвер этими словами СООБЩАЕТ о
+    неудаче, а банк фраз по ним решает, что имя произносить нельзя. Держать
+    список в двух местах значит однажды разойтись и снова выпустить «гонщик»
+    в эфир."""
+    if not isinstance(name, str):
+        return True
+    stripped = name.strip()
+    return not stripped or stripped.startswith("#") or stripped in _UNRESOLVED_ANY
+
+
 def resolve_driver_name(event: dict, game_year: int = 0) -> str:
     """Return human-readable driver name from event dict.
 

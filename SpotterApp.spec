@@ -79,9 +79,11 @@ datas = [
     ('web_server.py', '.'),
 ]
 
-# Необязательный CA-бандл корневых сертификатов НУЦ Минцифры. Без него GigaChat
-# остаётся на строгой проверке через системное хранилище Windows; custom bundle
-# нужен только когда эта цепочка отсутствует в локальном trust store.
+# CA-бандл корневых сертификатов НУЦ Минцифры. Формально необязателен, на деле
+# необходим: системное хранилище Windows цепочку Минцифры не содержит, и без
+# бандла GigaChat не подключается вовсе (проверено рукопожатием 2026-08-25 —
+# `self-signed certificate in certificate chain` на обоих хостах SDK).
+# Релизная сборка без него запрещена гейтом в build.ps1.
 _CA_BUNDLE = os.path.join('certs', 'gigachat_ca_bundle.pem')
 if os.path.exists(_CA_BUNDLE):
     datas.append((_CA_BUNDLE, 'certs'))

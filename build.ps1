@@ -184,15 +184,28 @@ if ($unexpectedVoices -or $missingVoices -or $missingVoiceMetadata -or $orphanVo
 }
 
 # --- CA-бандл Минцифры для строгой TLS-проверки GigaChat ---
-# Свой бандл необязателен: без него SDK использует системное хранилище доверия.
-# verify_ssl_certs=False в приложении запрещён, поэтому отсутствие файла больше
-# не превращает предупреждение сборки в реальную уязвимость транспорта.
+# Бандл НЕ опциональный, вопреки прежней записи здесь. Проверено рукопожатием
+# 2026-08-25: системное хранилище Windows на чистой машине отвечает
+# `self-signed certificate in certificate chain` для ngw.devices.sberbank.ru и
+# gigachat.devices.sberbank.ru — то есть ровно той ошибкой, которая убила
+# GigaChat на весь заезд 08-19. С бандлом обе цепочки проверяются (эмитент
+# Russian Trusted Sub CA).
+#
+# Отказ при этом БЕЗОПАСНЫЙ, но полный и молчаливый: приложение уходит на
+# шаблоны и снаружи выглядит просто скучнее. Поэтому релизная сборка без
+# бандла запрещена — иначе EXE уедет пользователю с заведомо мёртвым «мозгом».
 $caBundle = Join-Path $PSScriptRoot "certs\gigachat_ca_bundle.pem"
 if (Test-Path $caBundle) {
     Write-Host "GigaChat CA bundle: найден, TLS будет проверяться." -ForegroundColor Green
+} elseif ($RequireSigning) {
+    Write-Host "ERROR: certs\gigachat_ca_bundle.pem отсутствует." -ForegroundColor Red
+    Write-Host "  Без него GigaChat в собранном приложении не подключится вовсе:" -ForegroundColor Red
+    Write-Host "  цепочка НУЦ Минцифры не входит в системное хранилище Windows." -ForegroundColor Red
+    Write-Host "  Собрать: python scripts/setup_gigachat_certs.py" -ForegroundColor Red
+    exit 1
 } else {
-    Write-Host "GigaChat CA bundle: свой файл не найден; используется проверенное системное хранилище." -ForegroundColor Yellow
-    Write-Host "  Если цепочка Минцифры не доверена Windows, GigaChat откажет безопасно." -ForegroundColor Yellow
+    Write-Host "GigaChat CA bundle: НЕ НАЙДЕН — в этой сборке GigaChat работать не будет." -ForegroundColor Yellow
+    Write-Host "  Приложение молча уйдёт на шаблоны. Собрать: python scripts/setup_gigachat_certs.py" -ForegroundColor Yellow
 }
 
 # --- Track Intelligence JSON database must be present ---

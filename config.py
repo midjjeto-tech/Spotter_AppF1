@@ -255,11 +255,17 @@ GIGACHAT_RETRY_BACKOFF = 1.5                  # секунд перед един
 # бессмысленно — шаблоны отвечают мгновенно.
 GIGACHAT_FAILURE_THRESHOLD = 3
 GIGACHAT_BREAKER_COOLDOWN = 90.0              # секунд
-# Необязательный PEM-бандл корневых сертификатов НУЦ Минцифры (Russian Trusted
-# Root CA + Sub CA). Если файл есть, provider передаёт его SDK явно. Если нет,
-# остаётся СТРОГАЯ проверка через системное хранилище доверия; небезопасного
-# verify=False в приложении больше нет. Собрать свой бандл можно через
-# `python scripts/setup_gigachat_certs.py` после ручной сверки источника.
+# PEM-бандл корневых сертификатов НУЦ Минцифры (Russian Trusted Root CA + Sub
+# CA) плюс публичные корни certifi. Если файл есть, provider передаёт его SDK
+# явно; если нет — остаётся строгая проверка через системное хранилище, и
+# небезопасного verify=False в приложении по-прежнему нет.
+#
+# «Необязательный» здесь означает только «код не падает без него». Работать без
+# него GigaChat НЕ БУДЕТ: 2026-08-25 рукопожатие с ngw.devices.sberbank.ru и
+# gigachat.devices.sberbank.ru через `ssl.create_default_context()` вернуло
+# `self-signed certificate in certificate chain`, а с бандлом — Russian Trusted
+# Sub CA. Та же ошибка держала провайдера мёртвым весь заезд 08-19.
+# Собрать: `python scripts/setup_gigachat_certs.py`.
 #
 # Ищем в ДВУХ местах, и порядок важен:
 #   1. DATA_DIR — бандл, собранный скриптом рядом с приложением. Идёт первым,

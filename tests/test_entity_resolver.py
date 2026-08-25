@@ -1,6 +1,9 @@
 """Tests for entity resolution helpers."""
 import pytest
-from core.entity_resolver import resolve_driver_name, resolve_team_name, resolve_opponent_name
+from core.entity_resolver import (
+    is_unresolved_name, resolve_driver_name, resolve_opponent_name,
+    resolve_team_name,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -95,3 +98,35 @@ def test_resolve_opponent_name_generic_when_absent():
 def test_resolve_opponent_name_hash_placeholder_returns_generic():
     event = {"target": "#1"}
     assert resolve_opponent_name(event) == "соперник"
+
+
+# --------------------------------------------------------------------------- #
+# is_unresolved_name — один источник правды на два слоя (2026-08-25).
+# --------------------------------------------------------------------------- #
+
+@pytest.mark.parametrize("name", [
+    "гонщик", "пилот", "соперник",      # чем резолвер СООБЩАЕТ о неудаче
+    "  гонщик  ",                        # пробелы не делают заглушку именем
+    "", "   ", None, 7,                  # пусто и не-строка
+    "#44",                               # сырой номер машины — тоже не имя
+])
+def test_placeholder_is_recognised(name):
+    assert is_unresolved_name(name) is True
+
+
+@pytest.mark.parametrize("name", [
+    "Норрис", "Леклер", "Ферстаппен", "Пиастри",
+    "Андреа Кими Антонелли",
+    "Гонщиков",                          # фамилия, а не заглушка
+])
+def test_real_name_is_not_a_placeholder(name):
+    assert is_unresolved_name(name) is False
+
+
+def test_resolver_failure_word_is_recognised_by_the_same_helper():
+    """Связь между слоями проверяется, а не подразумевается: банк фраз решает
+    по этому хелперу, а резолвер отвечает своим `_GENERIC_DRIVER`. Разойдись
+    эти два слова — «гонщик» снова уедет в эфир, и оба модуля будут правы."""
+    unresolved = resolve_driver_name({"driver": "#99"}, game_year=0)
+
+    assert is_unresolved_name(unresolved) is True
