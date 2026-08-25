@@ -302,13 +302,13 @@ def test_log_errors_are_deduplicated_and_surfaced():
     errors = ["ERROR failed to speak", "ERROR failed to speak",
               "Traceback (most recent call last)"]
 
-    check = _check(build_report([_start()], errors), 10)
+    check = _check(build_report([_start()], errors), 12)
     assert check.verdict == PROBLEM
     assert "различных: 2" in check.lines[0]
 
 
 def test_a_clean_log_is_ok():
-    assert _check(build_report([_start()], []), 10).verdict == OK
+    assert _check(build_report([_start()], []), 12).verdict == OK
 
 
 # ── Форма отчёта ─────────────────────────────────────────────────────────────
@@ -365,11 +365,110 @@ def test_an_empty_journal_does_not_crash():
     report = build_report([], [])
 
     assert report.to_text()
+    # 11 (имена) и 12 (ошибки) читают лог, а не журнал: пустой лог для них —
+    # честное «ничего не случилось», а не отсутствие данных. 10 (мозг) —
+    # наоборот НЕТ ДАННЫХ, потому что успех провайдера тоже молчалив.
     assert all(c.verdict == NODATA for c in report.checks
-               if c.number not in (10,))
+               if c.number not in (11, 12))
 
 
 def test_garbage_records_do_not_crash_the_report():
     report = build_report([None, "мусор", 42, {"kind": None}, _start()], [])
 
     assert report.to_text()
+
+
+# ── 10-11. Мозг и имена ──────────────────────────────────────────────────────
+#
+# Оба пункта читают не журнал, а именованные строки лога. Причина — заезд
+# 08-19: GigaChat был мёртв ОТ СТАРТА ДО ФИНИША (80 строк про провайдера,
+# 17 отказов TLS), но всё это WARNING, а `_check_errors` смотрит только на
+# ERROR/Traceback. Отчёт по такому заезду заканчивался словами «проблем не
+# найдено».
+
+_FAIL = ("2026-08-19 14:14:54 WARNING gigachat_ai.provider: GigaChat generate "
+         "failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed")
+_BREAKER = ("2026-08-19 14:15:18 WARNING gigachat_ai.provider: GigaChat: 3 "
+            "неудачи подряд — уходим на шаблоны на 90 с")
+_TIMEOUT = ("2026-08-19 14:16:54 WARNING gigachat_ai.provider: GigaChat "
+            "generate failed: timed out")
+_OK_LINE = ("2026-08-19 14:10:00 INFO gigachat_ai.provider: GigaChat ответил "
+            "впервые в этой сессии")
+
+
+def test_a_dead_llm_is_not_a_clean_race():
+    """Регрессия на сам разбор: раньше этот набор давал «проблем не найдено»."""
+    report = build_report([], [], "j", [_FAIL, _FAIL, _BREAKER])
+    check = _check(report, 10)
+
+    assert check.verdict == PROBLEM
+    assert "НИ РАЗУ" in (check.action or "")
+    assert any("TLS" in line for line in check.lines)
+    assert report.problems, "заезд без мозга обязан попасть в итог"
+
+
+def test_a_tls_failure_names_the_fix_not_just_the_symptom():
+    check = _check(build_report([], [], "j", [_FAIL]), 10)
+
+    assert "setup_gigachat_certs.py" in (check.action or "")
+
+
+def test_a_timeout_without_tls_does_not_advise_certificates():
+    """Совет обязан следовать из улики: таймаут сертификатами не лечится."""
+    check = _check(build_report([], [], "j", [_TIMEOUT]), 10)
+
+    assert "setup_gigachat_certs.py" not in (check.action or "")
+
+
+def test_intermittent_llm_is_a_warning_not_a_failure():
+    check = _check(build_report([], [], "j", [_OK_LINE, _TIMEOUT]), 10)
+
+    assert check.verdict == WARN
+    assert "перебоями" in (check.action or "")
+
+
+def test_a_healthy_llm_is_ok():
+    assert _check(build_report([], [], "j", [_OK_LINE]), 10).verdict == OK
+
+
+def test_silence_from_the_provider_is_no_data_not_success():
+    """Успех логируется один раз, отказ — всегда. Пустота значит «не знаем»:
+    «мозг работал» и «мозг не вызывался» выглядят одинаково."""
+    assert _check(build_report([], [], "j", []), 10).verdict == NODATA
+
+
+_NAME_UNKNOWN = ("2026-08-19 14:20:52 WARNING core.engine: имя не разрешилось: "
+                 "code=RCWN vehicle_idx=77 известен=False пилотов в словаре=22 "
+                 "диапазон=0..21")
+_NAME_KNOWN = ("2026-08-19 14:20:52 WARNING core.engine: имя не разрешилось: "
+               "code=RCWN vehicle_idx=5 известен=True пилотов в словаре=22 "
+               "диапазон=0..21")
+
+
+def test_no_unresolved_names_is_ok():
+    assert _check(build_report([], [], "j", []), 11).verdict == OK
+
+
+def test_an_index_outside_the_roster_points_at_the_packet():
+    check = _check(build_report([], [], "j", [_NAME_UNKNOWN]), 11)
+
+    assert check.verdict == PROBLEM
+    assert any("ВНЕ словаря" in line for line in check.lines)
+    assert not any("не сопоставлен" in line for line in check.lines)
+
+
+def test_a_known_index_without_a_name_points_at_the_participant():
+    """Две причины требуют разных действий — пункт обязан их различать."""
+    check = _check(build_report([], [], "j", [_NAME_KNOWN]), 11)
+
+    assert check.verdict == PROBLEM
+    assert any("не сопоставлен" in line for line in check.lines)
+    assert not any("ВНЕ словаря" in line for line in check.lines)
+
+
+def test_the_name_check_is_needed_because_the_leak_became_inaudible():
+    """Подмена на фразу без имени убрала «гонщик» из эфира — и вместе с ним
+    единственный внешний признак сбоя. Пункт обязан быть громким."""
+    report = build_report([], [], "j", [_NAME_UNKNOWN])
+
+    assert _check(report, 11) in report.problems

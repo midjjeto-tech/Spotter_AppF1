@@ -64,6 +64,9 @@ class GigaChatProvider:
         self._breaker_lock = threading.Lock()
         self._failures = 0
         self._blocked_until = 0.0
+        #: Печатать «ответил впервые» ровно один раз за жизнь провайдера —
+        #: строка на каждую реплику утопила бы лог, а нужен факт, не счёт.
+        self._answered_once = False
         key = getattr(credentials, "authorization_key", "") if credentials else ""
         if key:
             try:
@@ -162,6 +165,14 @@ class GigaChatProvider:
     def _note_result(self, ok: bool) -> None:
         with self._breaker_lock:
             if ok:
+                if not self._answered_once:
+                    # Единственный положительный сигнал провайдера за сессию.
+                    # Без него разбор заезда не отличает «мозг работал» от
+                    # «мозг не использовался»: успех не логируется нигде, а
+                    # отказ логируется всегда. Заезд 08-19, где GigaChat был
+                    # мёртв целиком, разбор объявил бы чистым.
+                    self._answered_once = True
+                    _log.info("GigaChat ответил впервые в этой сессии")
                 if self._blocked_until or self._failures:
                     _log.info("GigaChat снова отвечает — предохранитель сброшен")
                 self._failures = 0
@@ -183,6 +194,9 @@ class GigaChatProvider:
         with self._breaker_lock:
             self._failures = 0
             self._blocked_until = 0.0
+            # И факт «отвечал» тоже сессионный: иначе разбор второго заезда
+            # унаследовал бы подтверждение от первого.
+            self._answered_once = False
 
     def _complete(self, system: str, user: str, *, max_tokens: int,
                   temperature: float) -> str | None:

@@ -20,6 +20,7 @@ I/O — файлы читает `tools/diagnose.py`, и поэтому кажд�
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 
 OK = "ОК"
@@ -69,6 +70,31 @@ try:  # pragma: no cover — модуль коуча всегда на мест�
 except Exception:  # noqa: BLE001
     SILENCE_RU = {}
 
+
+
+# ── Сигналы лога ─────────────────────────────────────────────────────────────
+#
+# `_check_errors` смотрит только на ERROR/Traceback, и этого оказалось мало.
+# Провайдер LLM логирует отказы на WARNING — и правильно, он их обработал, — а
+# значит заезд 08-19, где GigaChat был мёртв ОТ СТАРТА ДО ФИНИША (80 строк, 17
+# отказов TLS), разбор объявлял чистым: «ошибок не найдено». Отчёт, зелёный на
+# сломанном заезде, хуже отсутствующего — ровно то, о чём шапка этого модуля.
+#
+# Ловятся ИМЕНОВАННЫЕ сигналы, а не все предупреждения подряд: у каждого есть
+# проверка, которая умеет его истолковать. Общее ведро из WARNING утопило бы
+# отчёт в шуме и повторило бы судьбу журнала, который он сжимает.
+LLM_OK_RE = re.compile(r"(GigaChat|YandexGPT) ответил впервые")
+LLM_FAIL_RE = re.compile(
+    r"(GigaChat|YandexGPT) generate failed"
+    r"|уходим на шаблоны"
+    r"|CERTIFICATE_VERIFY_FAILED"
+    r"|(GigaChat|YandexGPT) init failed"
+    r"|SDK not installed")
+NAME_FAIL_RE = re.compile(r"имя не разрешилось|нет варианта без имени")
+
+#: Что `tools/diagnose.py` обязан вытащить из лога сверх ошибок.
+LOG_SIGNAL_RE = re.compile(
+    "|".join(r.pattern for r in (LLM_OK_RE, LLM_FAIL_RE, NAME_FAIL_RE)))
 
 @dataclass
 class Check:
@@ -120,7 +146,8 @@ class Report:
 # ── Сборка ───────────────────────────────────────────────────────────────────
 
 def build_report(records: list[dict], log_errors: list[str] | None = None,
-                 source_name: str | None = None) -> Report:
+                 source_name: str | None = None,
+                 log_signals: list[str] | None = None) -> Report:
     """Отчёт по разобранным записям журнала."""
     by_kind: dict[str, list[dict]] = {}
     for record in records:
@@ -139,6 +166,8 @@ def build_report(records: list[dict], log_errors: list[str] | None = None,
             _check_lesson(by_kind),
             _check_field_pace(by_kind),
             _check_silence(by_kind),
+            _check_llm(log_signals or []),
+            _check_names(log_signals or []),
             _check_errors(log_errors or []),
         ],
     )
@@ -448,9 +477,70 @@ def _check_silence(by_kind) -> Check:
     return Check(9, "ПОЧЕМУ КОУЧ МОЛЧАЛ", OK, lines)
 
 
+
+def _check_llm(log_signals: list[str]) -> Check:
+    """Жив ли «мозг». Отдельно от ошибок: отказ LLM штатно обработан и в
+    ERROR не попадает, но заезд без него — совсем другой продукт."""
+    ok = [ln for ln in log_signals if LLM_OK_RE.search(ln)]
+    fails = [ln for ln in log_signals if LLM_FAIL_RE.search(ln)]
+
+    if not ok and not fails:
+        # Успех молчит, отказ молчит — различить нечем. Это НЕ «всё хорошо».
+        return Check(10, "МОЗГ (LLM)", NODATA,
+                     ["ни одного сигнала провайдера в логе",
+                      "успех логируется один раз за сессию; если строки нет —"
+                      " провайдер либо не настроен, либо не вызывался"])
+
+    tls = [ln for ln in fails if "CERTIFICATE_VERIFY_FAILED" in ln]
+    breaker = [ln for ln in fails if "уходим на шаблоны" in ln]
+    lines = [f"отказов: {len(fails)}, подтверждённых ответов: {len(ok)}"]
+    if tls:
+        lines.append(f"из них TLS-отказов: {len(tls)} — цепочка Минцифры не "
+                     f"проверяется, нужен certs/gigachat_ca_bundle.pem")
+    if breaker:
+        lines.append(f"предохранитель срабатывал: {len(breaker)} раз "
+                     f"(каждый раз ~90 с на шаблонах)")
+
+    if fails and not ok:
+        return Check(10, "МОЗГ (LLM)", PROBLEM, lines,
+                     "провайдер не ответил НИ РАЗУ — весь заезд прошёл на "
+                     "шаблонах" + (
+                         "; собрать бандл: python scripts/setup_gigachat_certs.py"
+                         if tls else ""))
+    if fails:
+        return Check(10, "МОЗГ (LLM)", WARN, lines,
+                     "провайдер отвечал, но с перебоями — часть реплик пришла "
+                     "из шаблонов")
+    return Check(10, "МОЗГ (LLM)", OK, lines)
+
+
+def _check_names(log_signals: list[str]) -> Check:
+    """Разрешались ли имена пилотов.
+
+    Утечка плейсхолдера в эфир («Победа! гонщик...») закрыта подменой на фразу
+    без имени, и теперь она НЕ СЛЫШНА. Значит единственный способ узнать о ней —
+    этот пункт: иначе правка меняет заметный баг на невидимый."""
+    signals = [ln for ln in log_signals if NAME_FAIL_RE.search(ln)]
+    if not signals:
+        return Check(11, "ИМЕНА ПИЛОТОВ", OK, ["неразрешённых имён не было"])
+
+    unknown = [ln for ln in signals if "известен=False" in ln]
+    known = [ln for ln in signals if "известен=True" in ln]
+    lines = [f"случаев: {len(signals)}"]
+    if unknown:
+        lines.append(f"индекс ВНЕ словаря: {len(unknown)} — вопрос к разбору "
+                     f"пакета, не к резолверу")
+    if known:
+        lines.append(f"индекс известен, имени нет: {len(known)} — участник не "
+                     f"сопоставлен")
+    lines.extend(ln.strip()[-110:] for ln in signals[:3])
+    return Check(11, "ИМЕНА ПИЛОТОВ", PROBLEM, lines,
+                 "прислать эти строки: они различают две разные причины")
+
+
 def _check_errors(log_errors: list[str]) -> Check:
     if not log_errors:
-        return Check(10, "ОШИБКИ И ИСКЛЮЧЕНИЯ", OK,
+        return Check(12, "ОШИБКИ И ИСКЛЮЧЕНИЯ", OK,
                      ["в spotter.log ошибок не найдено"])
     unique: list[str] = []
     for line in log_errors:
@@ -459,5 +549,5 @@ def _check_errors(log_errors: list[str]) -> Check:
             unique.append(text)
     lines = [f"строк с ошибкой: {len(log_errors)}, различных: {len(unique)}"]
     lines.extend(unique[:4])
-    return Check(10, "ОШИБКИ И ИСКЛЮЧЕНИЯ", PROBLEM, lines,
+    return Check(12, "ОШИБКИ И ИСКЛЮЧЕНИЯ", PROBLEM, lines,
                  "прислать эти строки вместе с отчётом")

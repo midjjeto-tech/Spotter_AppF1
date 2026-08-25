@@ -30,7 +30,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from core.diag_report import build_report  # noqa: E402
+from core.diag_report import LOG_SIGNAL_RE, build_report  # noqa: E402
 
 #: Сколько последних строк spotter.log просматривать на ошибки. Лог растёт
 #: неограниченно, а интересен хвост — тот заезд, про который спрашивают.
@@ -83,18 +83,32 @@ def read_journal(path: Path) -> list[dict]:
     return records
 
 
-def read_log_errors() -> list[str]:
+def _log_tail() -> list[str]:
     for candidate in (_data_dir() / "spotter.log",
                       Path(__file__).resolve().parents[1] / "spotter.log"):
         if not candidate.exists():
             continue
         try:
-            tail = candidate.read_text(encoding="utf-8",
-                                       errors="replace").splitlines()[-LOG_TAIL_LINES:]
+            return candidate.read_text(
+                encoding="utf-8", errors="replace").splitlines()[-LOG_TAIL_LINES:]
         except OSError:
             continue
-        return [line for line in tail if _ERROR_RE.search(line)]
     return []
+
+
+def read_log_errors() -> list[str]:
+    return [line for line in _log_tail() if _ERROR_RE.search(line)]
+
+
+def read_log_signals() -> list[str]:
+    """Именованные строки, которые несут вердикт, но НЕ являются ошибками.
+
+    Отказ LLM логируется на WARNING — провайдер его обработал, — и в
+    `_ERROR_RE` не попадает. Поэтому заезд 08-19, где GigaChat молчал весь
+    заезд, разбор объявлял чистым: «ошибок не найдено» при 80 строках про
+    провайдера и 17 отказах TLS. Словарь сигналов держит `core/diag_report.py`:
+    там же живут проверки, которые умеют их истолковать."""
+    return [line for line in _log_tail() if LOG_SIGNAL_RE.search(line)]
 
 
 def _force_utf8_console() -> None:
@@ -131,7 +145,8 @@ def main() -> int:
               "затем проедьте хотя бы несколько кругов и запустите снова.")
         return 1
 
-    report = build_report(read_journal(path), read_log_errors(), path.name)
+    report = build_report(read_journal(path), read_log_errors(), path.name,
+                          read_log_signals())
     text = report.to_text()
     print(text)
 
