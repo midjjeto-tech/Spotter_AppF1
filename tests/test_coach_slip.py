@@ -256,3 +256,95 @@ def test_a_stuck_signal_produces_one_discard_not_a_stream():
     after = _feed(d, _frame(), seconds=0.1, clock=c)
     assert len(after) == 1
     assert after[0].kind == "lockup"
+
+
+# ── Стоящая машина не ошибается (2026-08-25) ─────────────────────────────────
+#
+# Свод ВСЕХ срывов архива: пять wheelspin, из них три с пиком 5.386–5.417 при
+# собственном потолке достоверности SANE_MAX_SLIP_RATIO = 3.0. Все три — при
+# `speed_kmh = 0`, круг 1, поворот 1, то есть старт с решётки трёх разных
+# гонок. Оставшиеся два — 0.27 и 0.42 при 49 и 56 км/ч, нормальные значения.
+#
+# Проскальзывание считается как (скорость колеса − скорость земли) / скорость
+# земли. На старте знаменатель около нуля, и величина взлетает: это арифметика,
+# а не сбитая раскладка пакета. Запись в CONTEXT.md от 08-15 («сигнал под
+# вопросом, проверять пакет 13 живым заездом») читала эти пики как поломку
+# телеметрии — и отправляла за ответом в гонку, которого в гонке нет.
+#
+# Гейт по скорости в `health.py` был с самого начала (MIN_MOVING_KMH) и прямо
+# объяснён: нули стоящей машины — правда, а не поломка. До детектора это
+# решение не довели.
+
+def test_a_standing_start_is_not_a_driving_mistake():
+    """Пик 5.4 при нулевой скорости — это старт, а не ошибка пилотажа."""
+    clock = _Clock()
+    detector = SlipDetector()
+    launch = _frame(speed_kmh=0, throttle_pct=100,
+                    slip_ratio={"rl": 5.4, "rr": 5.4, "fl": 0.0, "fr": 0.0})
+
+    events = _feed(detector, launch, 1.0, clock, corner=(1, "Turn 1"))
+    events += _feed(detector, _frame(speed_kmh=0), 0.5, clock, corner=(1, "Turn 1"))
+
+    assert events == [], f"старт засчитан как срыв: {events}"
+
+
+def test_a_mistake_that_began_at_speed_survives_the_car_slowing_down():
+    """Обратная сторона: разворот ГАСИТ скорость, и гейт не должен съедать
+    срыв, который начался на гоночной скорости. Иначе правка меняла бы один
+    ложный вывод на потерю настоящих ошибок."""
+    clock = _Clock()
+    detector = SlipDetector()
+    # Контр-руление обязательно: без него это поворот на пределе, а не занос
+    # (см. `counter_steering` в slip.py) — руль в одну сторону, кузов в другую.
+    spin = _frame(speed_kmh=180, steer=0.4, yaw_rate=-0.5,
+                  slip_angle={"rl": 0.5, "rr": 0.5, "fl": 0.0, "fr": 0.0})
+
+    _feed(detector, spin, 0.6, clock)
+    # Машину развернуло и почти остановило.
+    events = _feed(detector, _frame(speed_kmh=10), 0.3, clock)
+
+    kinds = [e.kind for e in events]
+    assert "oversteer" in kinds, f"настоящий занос потерян: {events}"
+
+
+def test_slow_corners_are_still_watched():
+    """Порог обязан лежать НИЖЕ гоночных скоростей: самый медленный поворот в
+    календаре проходится примерно на 45–50 км/ч, и найденные в архиве
+    wheelspin при 49 и 56 км/ч — настоящие."""
+    clock = _Clock()
+    detector = SlipDetector()
+    hairpin = _frame(speed_kmh=49, throttle_pct=80,
+                     slip_ratio={"rl": 0.4, "rr": 0.4, "fl": 0.0, "fr": 0.0})
+
+    _feed(detector, hairpin, 0.6, clock, corner=(10, "Turn 10"))
+    events = _feed(detector, _frame(speed_kmh=49), 0.3, clock, corner=(10, "Turn 10"))
+
+    assert [e.kind for e in events] == ["wheelspin"]
+
+
+def test_unknown_speed_does_not_silence_the_coach():
+    """Источник без скорости в кадре не должен молча выключать детектор.
+
+    Отсутствие данных — не то же самое, что «машина стоит». Гейт закрывается
+    только на ИЗМЕРЕННОЙ низкой скорости; иначе адаптер без этого поля
+    (iRacing, фазы 2/3) отключил бы коуча целиком и без единого сообщения."""
+    clock = _Clock()
+    detector = SlipDetector()
+    frame = _frame(throttle_pct=80,
+                   slip_ratio={"rl": 0.4, "rr": 0.4, "fl": 0.0, "fr": 0.0})
+    frame.pop("speed_kmh")
+
+    _feed(detector, frame, 0.6, clock)
+    tail = dict(_frame())
+    tail.pop("speed_kmh")
+    events = _feed(detector, tail, 0.3, clock)
+
+    assert [e.kind for e in events] == ["wheelspin"]
+
+
+def test_the_moving_threshold_has_one_owner():
+    """Здоровье сигнала и детектор обязаны понимать «машина едет» одинаково.
+    Два числа в двух модулях однажды разойдутся, и разойдутся молча."""
+    from core.coach_ai import health, slip
+
+    assert health.MIN_MOVING_KMH == slip.MIN_MOVING_KMH
