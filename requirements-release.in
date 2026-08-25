@@ -1,0 +1,7 @@
+# -*- coding: utf-8 -*-
+-r requirements.txt
+
+# Release/test toolchain. Runtime dependencies come from requirements.txt.
+pip==26.2.1
+pytest==9.1.1
+pyinstaller==6.21.0

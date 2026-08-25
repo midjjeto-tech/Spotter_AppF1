@@ -15,7 +15,40 @@
 #
 # Сборка: pyinstaller --clean --noconfirm PiperCLI.spec
 #
+from config import APP_VERSION
 from PyInstaller.utils.hooks import collect_all
+from PyInstaller.utils.win32.versioninfo import (
+    FixedFileInfo,
+    StringFileInfo,
+    StringStruct,
+    StringTable,
+    VarFileInfo,
+    VarStruct,
+    VSVersionInfo,
+)
+
+
+_version_parts = tuple(int(part) for part in APP_VERSION.split('-', 1)[0].split('.'))
+if len(_version_parts) != 3:
+    raise ValueError(f"APP_VERSION must have three numeric parts: {APP_VERSION}")
+_windows_version = (*_version_parts, 0)
+version_info = VSVersionInfo(
+    ffi=FixedFileInfo(filevers=_windows_version, prodvers=_windows_version),
+    kids=[
+        StringFileInfo([
+            StringTable('040904B0', [
+                StringStruct('CompanyName', 'Spotter App'),
+                StringStruct('FileDescription', 'Piper TTS GPL component packaged for Spotter App'),
+                StringStruct('FileVersion', APP_VERSION),
+                StringStruct('InternalName', 'piper'),
+                StringStruct('OriginalFilename', 'piper.exe'),
+                StringStruct('ProductName', 'Spotter App Piper component'),
+                StringStruct('ProductVersion', APP_VERSION),
+            ]),
+        ]),
+        VarFileInfo([VarStruct('Translation', [1033, 1200])]),
+    ],
+)
 
 datas = []
 binaries = []
@@ -69,6 +102,7 @@ exe = EXE(
     upx=False,
     upx_exclude=[],
     runtime_tmpdir=None,
+    version=version_info,
     # Консольная программа: она читает stdin и пишет файлы. Окно консоли гасится
     # на стороне вызывающего (CREATE_NO_WINDOW в new_tts/piper_tts.py).
     console=True,

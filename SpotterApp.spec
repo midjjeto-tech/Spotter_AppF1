@@ -14,12 +14,45 @@
 #
 # NOTE: build must run under an interpreter that has the FULL runtime stack
 # installed (bottle, pywebview, pywin32, sounddevice, soundfile, piper-tts,
-# onnxruntime, numpy, psutil, aiohttp, pandas/fastf1) + pyinstaller.
+# onnxruntime, numpy, psutil, aiohttp) + pyinstaller.
 # See build.ps1 for the dependency gate.
 #
 import os
 
+from config import APP_VERSION
 from PyInstaller.utils.hooks import collect_all
+from PyInstaller.utils.win32.versioninfo import (
+    FixedFileInfo,
+    StringFileInfo,
+    StringStruct,
+    StringTable,
+    VarFileInfo,
+    VarStruct,
+    VSVersionInfo,
+)
+
+
+_version_parts = tuple(int(part) for part in APP_VERSION.split('-', 1)[0].split('.'))
+if len(_version_parts) != 3:
+    raise ValueError(f"APP_VERSION must have three numeric parts: {APP_VERSION}")
+_windows_version = (*_version_parts, 0)
+version_info = VSVersionInfo(
+    ffi=FixedFileInfo(filevers=_windows_version, prodvers=_windows_version),
+    kids=[
+        StringFileInfo([
+            StringTable('040904B0', [
+                StringStruct('CompanyName', 'Spotter App'),
+                StringStruct('FileDescription', 'Spotter App — F1 engineer and spotter'),
+                StringStruct('FileVersion', APP_VERSION),
+                StringStruct('InternalName', 'SpotterApp'),
+                StringStruct('OriginalFilename', 'SpotterApp.exe'),
+                StringStruct('ProductName', 'Spotter App'),
+                StringStruct('ProductVersion', APP_VERSION),
+            ]),
+        ]),
+        VarFileInfo([VarStruct('Translation', [1033, 1200])]),
+    ],
+)
 
 
 datas = [
@@ -31,7 +64,7 @@ datas = [
     ('new_tts',      'new_tts'),
     ('analytics',    'analytics'),
     ('yandex_ai',    'yandex_ai'),
-    # Голосов Piper здесь нет намеренно: их (242 МБ) кладёт компонент
+    # Голосов Piper здесь нет намеренно: две CC0-модели кладёт компонент
     # установщика в PIPER_VOICES_DIR рядом с приложением.
     # Static UI — статический экспорт Next.js (NewSpotterUI -> webui/, см. build.ps1)
     ('webui',        'webui'),
@@ -46,12 +79,9 @@ datas = [
     ('web_server.py', '.'),
 ]
 
-# CA-бандл корневых сертификатов НУЦ Минцифры. Без него GigaChat (провайдер по
-# умолчанию) ходит с verify_ssl_certs=False — а по этому соединению уходит
-# Authorization key пользователя. Условно, потому что бандл собирается скриптом
-# (scripts/setup_gigachat_certs.py) и в дереве разработки его может не быть:
-# безусловная строка роняла бы сборку у всех, кто его не собирал. Отсутствие
-# при этом НЕ молчаливое — build.ps1 предупреждает отдельно.
+# Необязательный CA-бандл корневых сертификатов НУЦ Минцифры. Без него GigaChat
+# остаётся на строгой проверке через системное хранилище Windows; custom bundle
+# нужен только когда эта цепочка отсутствует в локальном trust store.
 _CA_BUNDLE = os.path.join('certs', 'gigachat_ca_bundle.pem')
 if os.path.exists(_CA_BUNDLE):
     datas.append((_CA_BUNDLE, 'certs'))
@@ -221,6 +251,7 @@ exe = EXE(
     upx=False,
     upx_exclude=[],
     runtime_tmpdir=None,
+    version=version_info,
     console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,

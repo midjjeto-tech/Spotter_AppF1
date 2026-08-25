@@ -4,14 +4,68 @@
 #
 # IMPORTANT: the build interpreter must have the FULL runtime stack installed
 # (bottle, pywebview, pywin32, sounddevice, soundfile, piper-tts, onnxruntime,
-# numpy, psutil, aiohttp, pandas) PLUS pyinstaller. PyInstaller bundles packages
+# numpy, psutil, aiohttp) PLUS pyinstaller. PyInstaller bundles packages
 # from whatever interpreter runs it, so all deps must live in ONE environment.
+
+[CmdletBinding()]
+param(
+    [switch]$RequireInstaller,
+    [switch]$RequireSigning
+)
+
+$signTool = $null
+if ($RequireSigning) {
+    if (-not $env:SPOTTER_SIGN_CERT_THUMBPRINT) {
+        Write-Host "ERROR: SPOTTER_SIGN_CERT_THUMBPRINT is required for a signed build." -ForegroundColor Red
+        exit 1
+    }
+    if (-not $env:SPOTTER_SIGN_TIMESTAMP_URL) {
+        Write-Host "ERROR: SPOTTER_SIGN_TIMESTAMP_URL is required for a signed build." -ForegroundColor Red
+        exit 1
+    }
+    if ($env:SPOTTER_SIGNTOOL) {
+        $signTool = $env:SPOTTER_SIGNTOOL
+    } else {
+        $signCommand = Get-Command signtool.exe -ErrorAction SilentlyContinue
+        if ($signCommand) { $signTool = $signCommand.Source }
+    }
+    if (-not $signTool -or -not (Test-Path -LiteralPath $signTool -PathType Leaf)) {
+        Write-Host "ERROR: signtool.exe not found. Set SPOTTER_SIGNTOOL explicitly." -ForegroundColor Red
+        exit 1
+    }
+}
+
+function Invoke-SpotterCodeSign {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    if (-not $RequireSigning) { return }
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+        Write-Host "ERROR: signing target not found: $Path" -ForegroundColor Red
+        exit 1
+    }
+
+    & $signTool sign /sha1 $env:SPOTTER_SIGN_CERT_THUMBPRINT /fd SHA256 `
+        /tr $env:SPOTTER_SIGN_TIMESTAMP_URL /td SHA256 $Path
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "ERROR: code signing failed: $Path" -ForegroundColor Red
+        exit $LASTEXITCODE
+    }
+
+    $signature = Get-AuthenticodeSignature -LiteralPath $Path
+    if ($signature.Status -ne "Valid") {
+        Write-Host "ERROR: invalid Authenticode signature on $Path ($($signature.Status))." -ForegroundColor Red
+        exit 1
+    }
+    Write-Host "Signed: $Path" -ForegroundColor Green
+}
 
 # --- Pick the build interpreter ---
 $pyExe = $null
 $pyArgs = @()
 if ($env:SPOTTER_PYTHON) {
     $pyExe = $env:SPOTTER_PYTHON
+} elseif (Test-Path (Join-Path $PSScriptRoot ".venv\Scripts\python.exe")) {
+    $pyExe = Join-Path $PSScriptRoot ".venv\Scripts\python.exe"
 } elseif (Get-Command py -ErrorAction SilentlyContinue) {
     $pyExe = "py"; $pyArgs = @("-3.12")
 } elseif (Get-Command python -ErrorAction SilentlyContinue) {
@@ -63,19 +117,36 @@ if ($LASTEXITCODE -ne 0) {
 }
 $verPy = "$verPy".Trim()
 $issPath = Join-Path $PSScriptRoot "installer\SpotterApp.iss"
+$packagePath = Join-Path $PSScriptRoot "NewSpotterUI\package.json"
 $issHit = Select-String -Path $issPath -Pattern '^#define\s+AppVersion\s+"([^"]+)"'
 if (-not $issHit) {
     Write-Host "ERROR: в $issPath не найден #define AppVersion." -ForegroundColor Red
     exit 1
 }
 $verIss = $issHit.Matches[0].Groups[1].Value
-if ($verPy -ne $verIss) {
+$windowsVersionHit = Select-String -Path $issPath -Pattern '^#define\s+WindowsVersion\s+"([^"]+)"'
+if (-not $windowsVersionHit) {
+    Write-Host "ERROR: в $issPath не найден #define WindowsVersion." -ForegroundColor Red
+    exit 1
+}
+$windowsVersion = $windowsVersionHit.Matches[0].Groups[1].Value
+$versionCore = ($verPy -split '-', 2)[0]
+if ($versionCore -notmatch '^\d+\.\d+\.\d+$') {
+    Write-Host "ERROR: APP_VERSION должен начинаться с major.minor.patch: $verPy" -ForegroundColor Red
+    exit 1
+}
+$expectedWindowsVersion = "$versionCore.0"
+$packageJson = Get-Content $packagePath -Raw | ConvertFrom-Json
+$verUi = [string]$packageJson.version
+if ($verPy -ne $verIss -or $verPy -ne $verUi -or $windowsVersion -ne $expectedWindowsVersion) {
     Write-Host "ERROR: версия разошлась." -ForegroundColor Red
     Write-Host ("  config.py:       " + $verPy) -ForegroundColor Yellow
     Write-Host ("  SpotterApp.iss:  " + $verIss) -ForegroundColor Yellow
+    Write-Host ("  WindowsVersion:  " + $windowsVersion + " (expected " + $expectedWindowsVersion + ")") -ForegroundColor Yellow
+    Write-Host ("  package.json:    " + $verUi) -ForegroundColor Yellow
     exit 1
 }
-Write-Host ("Версия " + $verPy + ": config.py и установщик совпадают.") -ForegroundColor Green
+Write-Host ("Версия " + $verPy + ": config.py, установщик, Windows metadata и UI совпадают.") -ForegroundColor Green
 
 # --- Piper voices (offline fallback) must be present ---
 $piperDir = Join-Path $PSScriptRoot "models\piper"
@@ -84,38 +155,44 @@ if (-not (Test-Path $piperDir)) {
     Write-Host "  Place ru_RU-*-medium.onnx (+ .json) voices into models\piper\" -ForegroundColor Yellow
     exit 1
 }
-$onnx = Get-ChildItem -Path $piperDir -Filter *.onnx -ErrorAction SilentlyContinue
+$onnx = @(Get-ChildItem -Path $piperDir -Filter *.onnx -File -ErrorAction SilentlyContinue)
 if (-not $onnx) {
     Write-Host "ERROR: no .onnx voices found in models\piper" -ForegroundColor Red
     exit 1
 }
 
-# --- Лицензионный гейт по голосам (тот же приём, что проверка GPL ниже) ---
-# ru_RU-ruslan-medium — CC BY-NC-SA 4.0 (корпус RUSLAN), ru_RU-irina-medium — с
-# неустановленными условиями. Оба непригодны для коммерческого распространения
-# и удалены 2026-08-08 (см. NOTICE). Файл модели легко вернуть в models\piper
-# по невнимательности — а установщик забирает голоса маской ru_RU-*.onnx, и
-# заметить возврат на глаз невозможно. Поэтому гейт, а не договорённость.
-$banned = $onnx | Where-Object { $_.Name -match '^ru_RU-(ruslan|irina)-' }
-if ($banned) {
-    Write-Host "ERROR: в models\piper найдены голоса, запрещённые к распространению:" -ForegroundColor Red
-    $banned | ForEach-Object { Write-Host "  $($_.Name)" -ForegroundColor Red }
-    Write-Host "  Удалите их (вместе с .onnx.json). Подробности — NOTICE." -ForegroundColor Yellow
+# --- Лицензионный гейт по голосам: строгий allowlist, не banlist ---
+# В коммерческий дистрибутив разрешены только две проверенные CC0-модели.
+# Любое новое имя обязано сначала получить отдельную лицензионную проверку.
+$allowedVoiceNames = @("ru_RU-denis-medium", "ru_RU-dmitri-medium")
+$actualVoiceNames = @($onnx | ForEach-Object { $_.BaseName })
+$unexpectedVoices = @($actualVoiceNames | Where-Object { $_ -notin $allowedVoiceNames })
+$missingVoices = @($allowedVoiceNames | Where-Object { $_ -notin $actualVoiceNames })
+$missingVoiceMetadata = @($allowedVoiceNames | Where-Object {
+    -not (Test-Path -LiteralPath (Join-Path $piperDir ("$_.onnx.json")) -PathType Leaf)
+})
+$orphanVoiceMetadata = @(Get-ChildItem -Path $piperDir -Filter *.onnx.json -File -ErrorAction SilentlyContinue |
+    Where-Object { $_.Name.Substring(0, $_.Name.Length - ".onnx.json".Length) -notin $allowedVoiceNames })
+if ($unexpectedVoices -or $missingVoices -or $missingVoiceMetadata -or $orphanVoiceMetadata) {
+    Write-Host "ERROR: набор Piper-голосов не совпадает с release allowlist." -ForegroundColor Red
+    if ($unexpectedVoices) { Write-Host ("  unexpected: " + ($unexpectedVoices -join ", ")) -ForegroundColor Red }
+    if ($missingVoices) { Write-Host ("  missing: " + ($missingVoices -join ", ")) -ForegroundColor Red }
+    if ($missingVoiceMetadata) { Write-Host ("  missing metadata: " + ($missingVoiceMetadata -join ", ")) -ForegroundColor Red }
+    if ($orphanVoiceMetadata) { Write-Host ("  orphan metadata: " + (($orphanVoiceMetadata.Name) -join ", ")) -ForegroundColor Red }
+    Write-Host "  Разрешены только ru_RU-denis-medium и ru_RU-dmitri-medium (см. NOTICE)." -ForegroundColor Yellow
     exit 1
 }
 
 # --- CA-бандл Минцифры для строгой TLS-проверки GigaChat ---
-# Не гейт, а предупреждение: без бандла приложение соберётся и будет работать,
-# но GigaChat (провайдер по умолчанию) пойдёт с verify_ssl_certs=False, а по
-# этому соединению уходит Authorization key пользователя. Молча выпускать такую
-# сборку нельзя — поэтому строка тут, рядом с остальными гейтами.
+# Свой бандл необязателен: без него SDK использует системное хранилище доверия.
+# verify_ssl_certs=False в приложении запрещён, поэтому отсутствие файла больше
+# не превращает предупреждение сборки в реальную уязвимость транспорта.
 $caBundle = Join-Path $PSScriptRoot "certs\gigachat_ca_bundle.pem"
 if (Test-Path $caBundle) {
     Write-Host "GigaChat CA bundle: найден, TLS будет проверяться." -ForegroundColor Green
 } else {
-    Write-Host "WARNING: certs\gigachat_ca_bundle.pem не найден." -ForegroundColor Yellow
-    Write-Host "  GigaChat в этой сборке пойдёт БЕЗ проверки TLS-сертификата." -ForegroundColor Yellow
-    Write-Host "  Собрать: python scripts\setup_gigachat_certs.py (и сверить отпечатки)" -ForegroundColor Yellow
+    Write-Host "GigaChat CA bundle: свой файл не найден; используется проверенное системное хранилище." -ForegroundColor Yellow
+    Write-Host "  Если цепочка Минцифры не доверена Windows, GigaChat откажет безопасно." -ForegroundColor Yellow
 }
 
 # --- Track Intelligence JSON database must be present ---
@@ -141,18 +218,51 @@ if (-not (Test-Path $uiDir)) {
     exit 1
 }
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
-    Write-Host "ERROR: Node.js not found. Install Node 18+ to build the UI." -ForegroundColor Red
+    Write-Host "ERROR: Node.js not found. Install Node 20.9+ to build the UI." -ForegroundColor Red
+    exit 1
+}
+$minimumNodeVersion = [version]"20.9.0"
+try {
+    $actualNodeVersion = [version]("$(node -p "process.versions.node")".Trim())
+} catch {
+    Write-Host "ERROR: unable to determine Node.js version." -ForegroundColor Red
+    exit 1
+}
+if ($actualNodeVersion -lt $minimumNodeVersion) {
+    Write-Host "ERROR: Node.js 20.9+ is required; found $actualNodeVersion." -ForegroundColor Red
     exit 1
 }
 if (-not (Get-Command pnpm -ErrorAction SilentlyContinue)) {
-    Write-Host "pnpm not found - installing globally via npm..." -ForegroundColor Yellow
-    npm install -g pnpm@9 | Out-Null
+    Write-Host "ERROR: pnpm not found. Enable the packageManager version from NewSpotterUI/package.json." -ForegroundColor Red
+    exit 1
 }
-Write-Host "Installing UI dependencies (pnpm install)..." -ForegroundColor Cyan
-pnpm -C $uiDir install
+$expectedPnpm = [string]$packageJson.packageManager
+if ($expectedPnpm -notmatch '^pnpm@(.+)$') {
+    Write-Host "ERROR: package.json must pin packageManager as pnpm@<version>." -ForegroundColor Red
+    exit 1
+}
+$expectedPnpmVersion = $Matches[1]
+$actualPnpmVersion = "$(pnpm --version)".Trim()
+if ($LASTEXITCODE -ne 0 -or $actualPnpmVersion -ne $expectedPnpmVersion) {
+    Write-Host "ERROR: pnpm version mismatch." -ForegroundColor Red
+    Write-Host ("  expected: " + $expectedPnpmVersion) -ForegroundColor Yellow
+    Write-Host ("  actual:   " + $actualPnpmVersion) -ForegroundColor Yellow
+    exit 1
+}
+Write-Host "Installing locked UI dependencies (pnpm install --frozen-lockfile)..." -ForegroundColor Cyan
+pnpm -C $uiDir install --frozen-lockfile
 if ($LASTEXITCODE -ne 0) { Write-Host "ERROR: pnpm install failed." -ForegroundColor Red; exit 1 }
+Write-Host "Auditing production UI dependencies..." -ForegroundColor Cyan
+pnpm -C $uiDir audit --prod --audit-level=high
+if ($LASTEXITCODE -ne 0) { Write-Host "ERROR: production dependency audit failed." -ForegroundColor Red; exit 1 }
+Write-Host "Linting UI..." -ForegroundColor Cyan
+pnpm -C $uiDir run lint
+if ($LASTEXITCODE -ne 0) { Write-Host "ERROR: UI lint failed." -ForegroundColor Red; exit 1 }
+Write-Host "Type-checking UI..." -ForegroundColor Cyan
+pnpm -C $uiDir exec tsc --noEmit
+if ($LASTEXITCODE -ne 0) { Write-Host "ERROR: UI type-check failed." -ForegroundColor Red; exit 1 }
 Write-Host "Building UI (pnpm build -> static export)..." -ForegroundColor Cyan
-pnpm -C $uiDir build
+pnpm -C $uiDir run build
 if ($LASTEXITCODE -ne 0) { Write-Host "ERROR: UI build failed." -ForegroundColor Red; exit 1 }
 $uiOut = Join-Path $uiDir "out"
 if (-not (Test-Path $uiOut)) { Write-Host "ERROR: UI export not found: $uiOut" -ForegroundColor Red; exit 1 }
@@ -179,6 +289,7 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "piper.exe build failed! Exit code: $LASTEXITCODE" -ForegroundColor Red
     exit $LASTEXITCODE
 }
+Invoke-SpotterCodeSign -Path (Join-Path $PSScriptRoot "dist\piper.exe")
 
 # --- 2/3: SpotterApp.exe ---
 Write-Host "Running PyInstaller (SpotterApp)..." -ForegroundColor Cyan
@@ -187,6 +298,7 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "Build failed! Exit code: $LASTEXITCODE" -ForegroundColor Red
     exit $LASTEXITCODE
 }
+Invoke-SpotterCodeSign -Path (Join-Path $PSScriptRoot "dist\SpotterApp.exe")
 
 # Проверка лицензионной границы. Если GPL-код просочился в закрытый EXE
 # транзитивным импортом, заметить это на глаз невозможно — поэтому гейт.
@@ -229,19 +341,33 @@ foreach ($candidate in @("${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
 if (-not $iscc) { $g = Get-Command ISCC -ErrorAction SilentlyContinue; if ($g) { $iscc = $g.Source } }
 
 if (-not $iscc) {
-    Write-Host "WARNING: Inno Setup не найден — установщик не собран." -ForegroundColor Yellow
-    Write-Host "  winget install --id JRSoftware.InnoSetup" -ForegroundColor Yellow
+    if ($RequireInstaller) {
+        Write-Host "ERROR: Inno Setup не найден, а release-сборка требует установщик." -ForegroundColor Red
+        exit 1
+    } else {
+        Write-Host "WARNING: Inno Setup не найден — установщик не собран." -ForegroundColor Yellow
+        Write-Host "  winget install --id JRSoftware.InnoSetup" -ForegroundColor Yellow
+    }
 } else {
+    $setupPath = Join-Path $PSScriptRoot ("dist\installer\SpotterApp-Setup-{0}.exe" -f $verPy)
+    Remove-Item -LiteralPath $setupPath -Force -ErrorAction SilentlyContinue
     Write-Host "Building installer..." -ForegroundColor Cyan
     & $iscc "installer\SpotterApp.iss"
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Installer build failed! Exit code: $LASTEXITCODE" -ForegroundColor Red
         exit $LASTEXITCODE
     }
-    $setup = Get-ChildItem "dist\installer\SpotterApp-Setup-*.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
-    if ($setup) {
-        Write-Host ("Done! " + $setup.FullName + " (" + [math]::Round($setup.Length / 1MB) + " MB)") -ForegroundColor Green
+    if (-not (Test-Path -LiteralPath $setupPath -PathType Leaf)) {
+        Write-Host "ERROR: expected installer was not produced: $setupPath" -ForegroundColor Red
+        exit 1
     }
+    Invoke-SpotterCodeSign -Path $setupPath
+    $setup = Get-Item -LiteralPath $setupPath
+    Write-Host ("Done! " + $setup.FullName + " (" + [math]::Round($setup.Length / 1MB) + " MB)") -ForegroundColor Green
+}
+
+if (-not $RequireSigning) {
+    Write-Host "DEV BUILD: Authenticode signing was not required. Do not publish these artifacts." -ForegroundColor Yellow
 }
 
 Write-Host "Yandex GPT/SpeechKit = primary (API key entered at runtime in Settings)." -ForegroundColor Cyan

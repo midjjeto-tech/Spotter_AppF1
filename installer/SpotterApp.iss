@@ -16,7 +16,8 @@
 ; Сборка: ISCC.exe installer\SpotterApp.iss (вызывается из build.ps1)
 
 #define AppName "Spotter App"
-#define AppVersion "0.1.0"
+#define AppVersion "0.2.0-rc.1"
+#define WindowsVersion "0.2.0.0"
 #define AppExe "SpotterApp.exe"
 
 [Setup]
@@ -24,6 +25,7 @@ AppId={{8F3C1A24-7B5E-4D18-9C6A-2E0B7D4F1A93}
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppPublisher=Spotter App
+VersionInfoVersion={#WindowsVersion}
 DefaultDirName={localappdata}\Programs\Spotter App
 DefaultGroupName={#AppName}
 DisableProgramGroupPage=yes
@@ -61,9 +63,11 @@ Source: "..\NOTICE";         DestDir: "{app}"; Components: main; Flags: ignoreve
 ; Пути обязаны совпадать с config.py: PIPER_EXE = {app}\piper\piper.exe,
 ; PIPER_VOICES_DIR = {app}\piper\voices. Рассинхрон здесь означает молчаливую
 ; потерю офлайн-голоса — приложение просто скажет «Piper не установлен».
-Source: "..\dist\piper.exe";          DestDir: "{app}\piper";        Components: piper; Flags: ignoreversion
-Source: "..\models\piper\ru_RU-*.onnx";      DestDir: "{app}\piper\voices"; Components: piper; Flags: ignoreversion
-Source: "..\models\piper\ru_RU-*.onnx.json"; DestDir: "{app}\piper\voices"; Components: piper; Flags: ignoreversion
+Source: "..\dist\piper.exe";                               DestDir: "{app}\piper";        Components: piper; Flags: ignoreversion
+Source: "..\models\piper\ru_RU-denis-medium.onnx";        DestDir: "{app}\piper\voices"; Components: piper; Flags: ignoreversion
+Source: "..\models\piper\ru_RU-denis-medium.onnx.json";   DestDir: "{app}\piper\voices"; Components: piper; Flags: ignoreversion
+Source: "..\models\piper\ru_RU-dmitri-medium.onnx";       DestDir: "{app}\piper\voices"; Components: piper; Flags: ignoreversion
+Source: "..\models\piper\ru_RU-dmitri-medium.onnx.json";  DestDir: "{app}\piper\voices"; Components: piper; Flags: ignoreversion
 Source: "piper-COPYING.txt";          DestDir: "{app}\piper";        Components: piper; Flags: ignoreversion
 Source: "piper-README.txt";           DestDir: "{app}\piper";        Components: piper; Flags: ignoreversion
 
