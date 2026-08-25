@@ -146,14 +146,14 @@ def test_ca_bundle_enables_strict_tls(monkeypatch):
     assert cap.get("ca_bundle_file") == "/path/to/bundle.pem"
 
 
-def test_no_ca_bundle_uses_dev_verify_flag(monkeypatch):
-    # Нет бандла -> dev-режим по GIGACHAT_VERIFY_SSL, ca_bundle_file не передаётся.
+def test_no_ca_bundle_still_verifies_tls(monkeypatch):
+    # Нет своего бандла -> системное хранилище доверия, но НИКОГДА verify=False.
     cap = {}
     monkeypatch.setattr(gigachat, "GigaChat", _fake_giga(reply="ok", capture=cap))
     monkeypatch.setattr(config, "GIGACHAT_CA_BUNDLE", "")
-    monkeypatch.setattr(config, "GIGACHAT_VERIFY_SSL", False)
     GigaChatProvider(GigaChatCredentials("key"))
-    assert cap.get("verify_ssl_certs") is False
+    assert cap.get("verify_ssl_certs") is True
+    assert isinstance(cap.get("ssl_context"), __import__("ssl").SSLContext)
     assert "ca_bundle_file" not in cap
 
 

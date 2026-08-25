@@ -29,7 +29,7 @@ PIPER_VOICES_DEV_DIR = os.path.join(BASE_DIR, "models", "piper")
 # сверяется с AppVersion в installer/SpotterApp.iss гейтом build.ps1: Inno Setup
 # питоновский модуль прочитать не может, а разошедшиеся версии — это когда
 # пользователь называет одну, а в логе стоит другая.
-APP_VERSION = "0.1.0"
+APP_VERSION = "0.2.0-rc.1"
 
 # --- Телеметрия ---
 UDP_IP = "127.0.0.1"
@@ -255,15 +255,11 @@ GIGACHAT_RETRY_BACKOFF = 1.5                  # секунд перед един
 # бессмысленно — шаблоны отвечают мгновенно.
 GIGACHAT_FAILURE_THRESHOLD = 3
 GIGACHAT_BREAKER_COOLDOWN = 90.0              # секунд
-# verify_ssl_certs: False — SDK не проверяет цепочку Минцифры (работает везде, но
-# менее строго). Для продакшена — поставить True и подложить корневые сертификаты
-# Минцифры (см. developers.sber.ru, "Сертификаты НУЦ Минцифры").
-GIGACHAT_VERIFY_SSL = False
-# Продакшен: путь к PEM-бандлу корневых сертификатов НУЦ Минцифры (Russian Trusted
-# Root CA + Sub CA). Если файл есть — provider включает строгую проверку TLS
-# (verify_ssl_certs=True + ca_bundle_file), игнорируя GIGACHAT_VERIFY_SSL. Нет —
-# dev-режим. Собрать бандл: `python scripts/setup_gigachat_certs.py` (кладёт его
-# в DATA_DIR). Подхват автоматический по факту существования файла.
+# Необязательный PEM-бандл корневых сертификатов НУЦ Минцифры (Russian Trusted
+# Root CA + Sub CA). Если файл есть, provider передаёт его SDK явно. Если нет,
+# остаётся СТРОГАЯ проверка через системное хранилище доверия; небезопасного
+# verify=False в приложении больше нет. Собрать свой бандл можно через
+# `python scripts/setup_gigachat_certs.py` после ручной сверки источника.
 #
 # Ищем в ДВУХ местах, и порядок важен:
 #   1. DATA_DIR — бандл, собранный скриптом рядом с приложением. Идёт первым,

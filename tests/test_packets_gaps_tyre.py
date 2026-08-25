@@ -576,8 +576,20 @@ def test_parse_event_pena_includes_infringement_type():
     struct.pack_into("<BBBBBBB", buf, HEADER_SIZE + 4, 1, 25, 4, 0, 5, 12, 0)
     out = packets.parse_event(bytes(buf))
     assert out["event_code"] == "PENA"
+    assert out["penalty_type"] == 1
     assert out["vehicle_idx"] == 4
     assert out["infringement_type"] == 25
+
+
+def test_parse_event_rcwn_includes_winner_vehicle_idx():
+    buf = _buf(HEADER_SIZE + 4 + 1)
+    buf[HEADER_SIZE:HEADER_SIZE + 4] = b"RCWN"
+    buf[HEADER_SIZE + 4] = 7
+
+    out = packets.parse_event(bytes(buf))
+
+    assert out["event_code"] == "RCWN"
+    assert out["vehicle_idx"] == 7
 
 
 def test_track_limits_infringement_types_confirmed_set():

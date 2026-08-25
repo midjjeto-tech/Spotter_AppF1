@@ -1,7 +1,30 @@
 from __future__ import annotations
 from datetime import datetime
+import math
 from pathlib import Path
+import time
 from analytics import archive
+
+
+_EVENT_TRACE_LIMIT = 4096
+_EVENT_PRESENTATION_FIELDS = {
+    "event_code", "phrase", "priority", "color", "speaker", "channel",
+    "description", "driver", "muted", "bypass_speak_threshold", "radio",
+}
+
+
+def _json_safe(value):
+    if value is None or isinstance(value, (bool, int, str)):
+        return value
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    if isinstance(value, bytes):
+        return value.hex()
+    if isinstance(value, dict):
+        return {str(key): _json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(item) for item in value]
+    return str(value)
 
 class SessionRecorder:
     def __init__(self):
@@ -13,9 +36,12 @@ class SessionRecorder:
         self._lesson: dict | None = None
         self._lap_metrics: list[dict] = []
         self._race_map: dict | None = None
+        self._event_trace: list[dict] = []
+        self._event_trace_dropped = 0
+        self._trace_started_at = time.monotonic()
         self._done = False
 
-    def reset(self) -> None:
+    def reset(self, *, trace_started_at: float | None = None) -> None:
         self._laps = []
         self._coach_map = []
         self._coach_top = []
@@ -24,7 +50,41 @@ class SessionRecorder:
         self._lesson = None
         self._lap_metrics = []
         self._race_map = None
+        self._event_trace = []
+        self._event_trace_dropped = 0
+        self._trace_started_at = (
+            time.monotonic() if trace_started_at is None else trace_started_at)
         self._done = False
+
+    def record_event(
+        self,
+        event: dict,
+        *,
+        observed_at_s: float | None = None,
+        source_session_id: int | str | None = None,
+        source_event_id: int | str | None = None,
+        source_frame_id: int | None = None,
+        source_time_s: float | None = None,
+    ) -> None:
+        """Keep a compact, source-aware event timeline for post-race diagnosis."""
+        if len(self._event_trace) >= _EVENT_TRACE_LIMIT:
+            self._event_trace_dropped += 1
+            return
+        observed_at = time.monotonic() if observed_at_s is None else observed_at_s
+        details = {
+            str(key): _json_safe(value)
+            for key, value in event.items()
+            if key not in _EVENT_PRESENTATION_FIELDS
+        }
+        self._event_trace.append({
+            "event_code": str(event.get("event_code") or ""),
+            "offset_s": round(max(0.0, observed_at - self._trace_started_at), 3),
+            "source_time_s": source_time_s,
+            "source_session_id": source_session_id,
+            "source_event_id": source_event_id,
+            "source_frame_id": source_frame_id,
+            "details": details,
+        })
 
     def set_race_map(self, race_map: dict | None) -> None:
         """Карта гонки: позиции всех машин по кругам. Архив должен показывать
@@ -93,7 +153,8 @@ class SessionRecorder:
         if self._done or not self._laps:
             return None
         self._done = True
-        data = {"timestamp": datetime.now().isoformat(timespec="seconds"),
+        data = {"schema_version": 2,
+                "timestamp": datetime.now().isoformat(timespec="seconds"),
                 "track_id": track_id, "track_name": track_name,
                 "session_type": session_type,
                 "game_year": game_year or None,
@@ -101,6 +162,8 @@ class SessionRecorder:
                 "final_position": final_position,
                 "player_laps": list(self._laps),
                 "events": list(events),
+                "event_trace": list(self._event_trace),
+                "event_trace_dropped": self._event_trace_dropped,
                 "coach_map": list(self._coach_map),
                 "coach_top_corners": list(self._coach_top),
                 "reference_lap": self._reference_lap,

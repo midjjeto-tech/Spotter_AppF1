@@ -325,25 +325,25 @@ export function SettingsView({
           )}
         </Panel>
 
-        {/* Второй экран. Живёт в «Настройках», а не в «Голосе»: это про
-            доступ к приложению по сети, а не про звук. */}
-        <Panel label="Второй экран (телефон)">
+        {/* Радиопульт. Живёт в «Настройках», а не в «Голосе»: здесь включается
+            сетевой доступ к отдельному экрану, а не сам микрофон/распознавание. */}
+        <Panel label="Радиопульт (телефон)">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/15 text-primary">
                 <Smartphone className="h-4.5 w-4.5" />
               </span>
               <div>
-                <p className="text-sm font-medium text-foreground">Открыть по локальной сети</p>
+                <p className="text-sm font-medium text-foreground">Телефон у руля</p>
                 <p className="text-xs text-muted-foreground">
-                  Таймингборд и лента на телефоне рядом с рулём
+                  Вызов инженера, команда на круг и ключевые гоночные данные
                 </p>
               </div>
             </div>
             <Toggle
               checked={Boolean(state?.settings?.remote_access_enabled)}
               onChange={toggleRemoteAccess}
-              label="Второй экран"
+              label="Радиопульт"
             />
           </div>
 

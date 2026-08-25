@@ -1,5 +1,6 @@
 # --- Окружения и зависимости (2.7 ГБ, восстанавливается установкой) ---
 .venv/
+.release-venv/
 NewSpotterUI/node_modules/
 __pycache__/
 *.py[cod]

@@ -85,6 +85,28 @@ _RADIO_SITUATION_LIMIT = 256
 _TALK_MORE_GAP_STEP = 3.0
 _TALK_MORE_GAP_FLOOR = 4.0
 
+# F1 repeats Event packets for reliability. These TTLs provide a semantic
+# fallback when a retransmit arrives under a different frame id, before it can
+# inflate counters/archive facts or enter the critical radio lane. They are
+# deliberately short for events that may legitimately recur between the same
+# drivers.
+_RAW_EVENT_DEDUP_TTL: dict[str, float] = {
+    "DRSE": 1.0, "DRSD": 1.0, "TMPT": 2.0, "SPTP": 1.0,
+    "STLG": 5.0, "FTLP": 3.0, "RTMT": 10.0, "OVTK": 2.0,
+    "RDFL": 30.0, "PENA": 10.0,
+    "RCWN": 30.0, "CHQF": 30.0, "SEND": 30.0,
+}
+
+_RAW_EVENT_ID_FIELDS: dict[str, tuple[str, ...]] = {
+    "FTLP": ("vehicle_idx", "lap_time"),
+    "RTMT": ("vehicle_idx",),
+    "OVTK": ("overtaking_idx", "being_overtaken_idx"),
+    "SCAR": ("safety_car_type", "event_reason"),
+    "PENA": ("penalty_type", "infringement_type", "vehicle_idx",
+             "other_vehicle_idx", "time_seconds", "lap_num", "places_gained"),
+    "RCWN": ("vehicle_idx",),
+}
+
 # Тема вопроса пилота -> код события ответа. Отсутствие темы в этой карте
 # означает «справочный ответ»: он уходит под USER_Q и живёт без TTL. Перечислены
 # только ДЕЙСТВЕННЫЕ темы — те, где устаревший ответ вреден, а не просто
@@ -200,7 +222,8 @@ from core.situation_dedup import (
 from core.commentary_events import CommentaryEvents
 from core.commentary_runtime import CommentaryRuntime
 from core.radio.message import (
-    STATE_COMPLETED, STATE_PLAYING, STATE_SYNTHESIZING, RadioCancelReason,
+    STATE_COMPLETED, STATE_INTERRUPTED, STATE_PLAYING, STATE_SYNTHESIZING,
+    RadioCancelReason,
     RadioMessage, build_message as build_radio_message,
 )
 from core.radio.corner_words import ordinal_prepositional
@@ -561,6 +584,9 @@ class F1Engine:
         # одной не должно глушить другую. См. _spotter_situation_allows.
         self._spotter_situation_seen: dict[str, float] = {}
         self._flashback_until: float = 0.0
+        self._raw_event_seen: dict[tuple, float] = {}
+        self._raw_event_source_seen: set[tuple] = set()
+        self._raw_event_source_session_id: int | str | None = None
 
         # Post-Race Story Mode
         self.story_collector = RaceStoryCollector()
@@ -1482,7 +1508,7 @@ class F1Engine:
             "priority": priority,
             "damage_delta": delta,
             **radio_plumbing(contact_graded=True),
-        })
+        }, _record_source_event=False)
 
     def _update_tyre_sets(self, parsed: dict) -> None:
         """Tyre Sets (packet 12) — ПОЦИКЛОВОЙ пакет, одна машина за раз
@@ -3298,7 +3324,8 @@ class F1Engine:
         `DRIVER_REPLY_WINDOW_S` будет понята как ответ, а не как новый вопрос
         (см. `_ptt_reply_expected`). Без этого окна инженер отповедил бы на
         собственный вопрос — `radio_answer.OFF_TOPIC_ANSWER`."""
-        if (self._session_type != "race"
+        if (not self._session_active
+                or self._session_type != "race"
                 or not self._get_setting("engineer_chatter_enabled", True)):
             return
         phrase_code = self._race_engineer.driver_query(
@@ -4266,7 +4293,13 @@ class F1Engine:
         elif isinstance(message, TelemetryDelta):
             self._consume_telemetry_delta(message)
         elif isinstance(message, TelemetryRaceEvent):
-            self._handle_race_event(message.event)
+            self._handle_race_event(
+                message.event,
+                source_session_id=message.source_session_id,
+                source_event_id=message.source_event_id,
+                source_frame_id=message.source_frame_id,
+                source_time_s=message.source_time_s,
+            )
 
     def _consume_telemetry_delta(self, delta: TelemetryDelta) -> None:
         # Отложенный контакт дозревает здесь: окно закрывается по приходу
@@ -4315,15 +4348,134 @@ class F1Engine:
             self._ui_state.set_metadata_loaded(
                 self.metadata.loaded if self._telemetry_source == "f1" else False)
 
-    def _handle_race_event(self, event: dict) -> None:
+    @staticmethod
+    def _freeze_raw_event(value):
+        if isinstance(value, dict):
+            return tuple(sorted(
+                (str(key), F1Engine._freeze_raw_event(item))
+                for key, item in value.items()
+            ))
+        if isinstance(value, (list, tuple)):
+            return tuple(F1Engine._freeze_raw_event(item) for item in value)
+        try:
+            hash(value)
+        except TypeError:
+            return repr(value)
+        return value
+
+    def _is_replayed_raw_event(
+        self,
+        event: dict,
+        now: float,
+        *,
+        source_session_id: int | str | None = None,
+        source_event_id: int | str | None = None,
+    ) -> bool:
+        code = str(event.get("event_code") or "")
+
+        has_source_session = source_session_id not in (None, 0, "")
+        if (has_source_session
+                and source_session_id != self._raw_event_source_session_id):
+            self._raw_event_source_session_id = source_session_id
+            self._raw_event_source_seen.clear()
+            self._raw_event_seen.clear()
+
+        # A frame is not globally unique by itself: two different event
+        # packets can belong to the same simulation frame.  Pair it with the
+        # decoded payload so exact retransmits collapse without dropping a
+        # distinct event observed in that frame.
+        if has_source_session and source_event_id is not None:
+            source_key = (
+                source_event_id,
+                self._freeze_raw_event(event),
+            )
+            if source_key in self._raw_event_source_seen:
+                return True
+            self._raw_event_source_seen.add(source_key)
+
+        if code in {"SSTA", "FLBK"}:
+            # A new/replayed timeline gives subsequent packets a new identity.
+            self._raw_event_seen.clear()
+            return False
+        ttl = _RAW_EVENT_DEDUP_TTL.get(code)
+        if ttl is None:
+            return False
+        identity_fields = _RAW_EVENT_ID_FIELDS.get(code, ())
+        identity = tuple(event.get(field) for field in identity_fields)
+        # Synthetic/internal events sometimes omit the packet identity.  More
+        # importantly, deduping such an event by code alone would collapse a
+        # legitimate later fastest lap or result into the first occurrence.
+        if identity_fields and any(value is None for value in identity):
+            return False
+        signature = (self._session_type, code, *identity)
+        last = self._raw_event_seen.get(signature)
+        if last is not None and now - last < ttl:
+            # Sliding debounce: a continuous retransmit stream must never
+            # become "new" merely because the first accepted packet aged out.
+            self._raw_event_seen[signature] = now
+            return True
+        self._raw_event_seen[signature] = now
+        if len(self._raw_event_seen) > 256:
+            cutoff = now - max(_RAW_EVENT_DEDUP_TTL.values())
+            self._raw_event_seen = {
+                key: seen for key, seen in self._raw_event_seen.items()
+                if seen >= cutoff
+            }
+        return False
+
+    def _handle_race_event(
+        self,
+        event: dict,
+        *,
+        source_session_id: int | str | None = None,
+        source_event_id: int | str | None = None,
+        source_frame_id: int | None = None,
+        source_time_s: float | None = None,
+        _record_source_event: bool = True,
+    ) -> None:
         """Apply an event already decoded by a telemetry adapter."""
+
+        pending_session_result: dict | None = None
+        pending_story = False
+        pending_story_path = None
 
         # Track DRS state for race_ai threat detection
         _ec = event.get("event_code")
+        observed_at = time.monotonic()
+        if self._is_replayed_raw_event(
+            event,
+            observed_at,
+            source_session_id=source_session_id,
+            source_event_id=source_event_id,
+        ):
+            _log.debug("Repeated raw event suppressed: %s", _ec)
+            return
+        if _record_source_event and _ec != "SSTA":
+            self.recorder.record_event(
+                event,
+                observed_at_s=observed_at,
+                source_session_id=source_session_id,
+                source_event_id=source_event_id,
+                source_frame_id=source_frame_id,
+                source_time_s=source_time_s,
+            )
         if _ec == "DRSE":
             self._player_drs_active = True
         elif _ec == "DRSD":
             self._player_drs_active = False
+
+        # F1 sends warnings through the same PENA event union as sanctions.
+        # PenaltyType=5 is explicitly "Warning": the LapData warning counter
+        # owns its cockpit message, while this packet must not enter penalty
+        # totals, story facts or the critical commentary lane.
+        if _ec == "PENA" and event.get("penalty_type") == 5:
+            _log.info(
+                "PENA warning ignored as sanction: vehicle_idx=%s "
+                "infringement_type=%s lap=%s",
+                event.get("vehicle_idx"), event.get("infringement_type"),
+                event.get("lap_num"),
+            )
+            return
 
         # Контакт с участием игрока не публикуется сразу: тяжести в пакете нет,
         # и раньше ЛЮБОЕ касание уходило к LLM как «авария» с важностью 90.
@@ -4443,7 +4595,16 @@ class F1Engine:
             # Договорённости прошлого заезда к новому отношения не имеют.
             self._strategy_agreement.reset()
             self.commentator.reset_session()
-            self.recorder.reset()
+            self.recorder.reset(trace_started_at=observed_at)
+            if _record_source_event:
+                self.recorder.record_event(
+                    event,
+                    observed_at_s=observed_at,
+                    source_session_id=source_session_id,
+                    source_event_id=source_event_id,
+                    source_frame_id=source_frame_id,
+                    source_time_s=source_time_s,
+                )
             # Ошибки пилотажа принадлежат конкретной сессии: незакрытый срыв и
             # карта поворотов прошлой сессии в новой означали бы не то место.
             self.coach_slip.reset()
@@ -4598,16 +4759,15 @@ class F1Engine:
             if code == "CHQF" and not self._session_result_fired:
                 self._session_result_fired = True
                 if pos is not None:
-                    self._publish_engineer_line(
-                        "SESSION_RESULT", "session.result",
-                        {"position": radio_resolver.position_word(pos)})
+                    pending_session_result = {
+                        "position": radio_resolver.position_word(pos),
+                    }
             if (code == "CHQF"
                     and self._session_type in ("race", "qualifying", "practice")
                     and not self._story_fired):
                 self._story_fired = True
-                self._spawn_thread(
-                    self._generate_story, args=(saved_path,),
-                    name="race-story", task=True)
+                pending_story = True
+                pending_story_path = saved_path
         else:
             self._session_events.append(code)
 
@@ -4668,12 +4828,30 @@ class F1Engine:
                 "muted": True,
                 "channel": "commentary",
             })
+            if pending_session_result is not None:
+                self._publish_engineer_line(
+                    "SESSION_RESULT", "session.result", pending_session_result)
+            if pending_story:
+                self._spawn_thread(
+                    self._generate_story, args=(pending_story_path,),
+                    name="race-story", task=True)
             return
 
         # Адаптивность/cooldown ambient: значимое событие двигает оба механизма.
         if self._commentary_runtime.is_significant_event(enriched):
             self._commentary_runtime.note_event_activity(time.time())
         self._commentary_events.publish(enriched)
+        # Finish choreography is intentional: first close the broadcast event,
+        # then queue the player's engineer result, then let the longer story
+        # start generating. The old order let critical CHQF interrupt the
+        # engineer mid-sentence and the story race both of them.
+        if pending_session_result is not None:
+            self._publish_engineer_line(
+                "SESSION_RESULT", "session.result", pending_session_result)
+        if pending_story:
+            self._spawn_thread(
+                self._generate_story, args=(pending_story_path,),
+                name="race-story", task=True)
 
     # ------------------------------------------------------------
     # Поток генерации и озвучки комментариев
@@ -5077,12 +5255,14 @@ class F1Engine:
             self._ui_state.set_speaking(text, True)
             if message is not None:
                 self._note_radio_state(message, STATE_PLAYING)
-        elif event == "completed":
+        elif event in {"completed", "interrupted"}:
             self._ui_state.set_speaking("", False)
             with self._radio_lifecycle_lock:
                 message = self._radio_lifecycle.get(message_id or "")
             if message is not None:
-                self._note_radio_state(message, STATE_COMPLETED)
+                target = (STATE_COMPLETED if event == "completed"
+                          else STATE_INTERRUPTED)
+                self._note_radio_state(message, target)
 
     def _render_engineer_phrase(self, draft: dict, phrase_code: str,
                                 fields: dict | None = None) -> str:

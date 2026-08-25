@@ -14,8 +14,8 @@ import core.engine as eng_mod
 from core.engine import F1Engine
 from core.radio import plumbing
 from core.radio.message import (
-    STATE_CANCELLED, STATE_COMPLETED, STATE_PLAYING, RadioCancelReason,
-    build_message,
+    STATE_CANCELLED, STATE_COMPLETED, STATE_INTERRUPTED, STATE_PLAYING,
+    RadioCancelReason, build_message,
 )
 from new_tts.queue_handler import TTSQueue
 
@@ -381,6 +381,17 @@ def test_playback_events_drive_the_message_state(engine):
 
     engine._on_playback_event("completed", message.id)
     assert _state(engine, message) == STATE_COMPLETED
+
+
+def test_interrupted_playback_clears_speaking_and_records_terminal_state(engine):
+    message = _msg(engine, "Текст")
+    engine._radio_lifecycle[message.id] = message
+
+    engine._on_playback_event("playing", message.id)
+    engine._on_playback_event("interrupted", message.id)
+
+    assert engine._ui_state.snapshot()["speaking"] is False
+    assert _state(engine, message) == STATE_INTERRUPTED
 
 
 def test_playback_event_for_an_unknown_message_is_harmless(engine):

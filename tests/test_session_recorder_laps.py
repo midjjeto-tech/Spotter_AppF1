@@ -115,6 +115,41 @@ def test_reset_clears_reference_lap(monkeypatch):
     assert _finalize_captured(rec, monkeypatch)["reference_lap"] is None
 
 
+def test_finalize_stores_versioned_event_trace_with_source_identity(monkeypatch):
+    rec = SessionRecorder()
+    rec.reset(trace_started_at=100.0)
+    rec.record_event(
+        {
+            "event_code": "PENA",
+            "penalty_type": 5,
+            "vehicle_idx": 0,
+            "phrase": "presentation-only",
+            "priority": "critical",
+        },
+        observed_at_s=100.25,
+        source_session_id=42,
+        source_event_id=88,
+        source_frame_id=77,
+        source_time_s=12.5,
+    )
+    rec.on_lap_complete(lap_num=1, last_lap_ms=91000,
+                        s1_ms=30000, s2_ms=31000, s3_ms=30000)
+
+    saved = _finalize_captured(rec, monkeypatch)
+
+    assert saved["schema_version"] == 2
+    assert saved["event_trace_dropped"] == 0
+    assert saved["event_trace"] == [{
+        "event_code": "PENA",
+        "offset_s": 0.25,
+        "source_time_s": 12.5,
+        "source_session_id": 42,
+        "source_event_id": 88,
+        "source_frame_id": 77,
+        "details": {"penalty_type": 5, "vehicle_idx": 0},
+    }]
+
+
 def test_finalize_stores_the_garage_report(monkeypatch):
     rec = SessionRecorder()
     rec.on_lap_complete(lap_num=1, last_lap_ms=91000,

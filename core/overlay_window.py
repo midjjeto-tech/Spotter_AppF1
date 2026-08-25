@@ -125,7 +125,9 @@ HUD_WIDGETS: dict[str, HudWidgetSpec] = {
     "radar": HudWidgetSpec("radar", 300, 300),
     "pu": HudWidgetSpec("pu", 220, 106),
     "engineer": HudWidgetSpec("engineer", 304, 154),
-    "radio": HudWidgetSpec("radio", 430, 178),
+    # BroadcastRadioCard has a 108 px base height. Matching it here keeps the
+    # native HWND from exposing an opaque 70 px tail if SetWindowRgn is late.
+    "radio": HudWidgetSpec("radio", 430, 108),
 }
 
 
@@ -406,6 +408,10 @@ class OverlayWindowController:
         # поэтому ничего и не теряет.
         self._page_shape: object = None
         self._page_visible = True
+        # Radio is content-sized: its card can be 80–140% and compact/full.
+        # The page is the only reliable owner of those dimensions, so the HWND
+        # follows the measured primitive instead of keeping an opaque reserve.
+        self._page_content_size: tuple[int, int] | None = None
         self._applied_shape: tuple[overlay_shape.Primitive, ...] = ()
         # Будит поток монитора, когда страница что-то сообщила: ждать до 250 мс,
         # чтобы показать карточку рации, значит опоздать к началу реплики.
@@ -513,11 +519,45 @@ class OverlayWindowController:
             shapes = payload.get("shapes")
             if "visible" in payload:
                 visible = bool(payload.get("visible"))
+        content_size = self._content_size_from_shapes(shapes)
         with self._lock:
             self._page_shape = shapes
             self._page_visible = visible
+            if content_size is not None:
+                self._page_content_size = content_size
         self._wake.set()
         return True
+
+    def _content_size_from_shapes(self, shapes: object) -> tuple[int, int] | None:
+        """Measured base size for the content-sized radio window."""
+        if self.spec.widget_id != "radio" or not isinstance(shapes, list):
+            return None
+        widths: list[float] = []
+        heights: list[float] = []
+        for shape in shapes:
+            if not isinstance(shape, dict):
+                continue
+            if shape.get("kind") == "polygon":
+                points = shape.get("points")
+                if isinstance(points, list) and points:
+                    xs = [float(p[0]) for p in points
+                          if isinstance(p, (list, tuple)) and len(p) >= 2]
+                    ys = [float(p[1]) for p in points
+                          if isinstance(p, (list, tuple)) and len(p) >= 2]
+                    if xs and ys:
+                        widths.append(max(xs) - min(xs))
+                        heights.append(max(ys) - min(ys))
+                continue
+            try:
+                widths.append(float(shape.get("w", 0)))
+                heights.append(float(shape.get("h", 0)))
+            except (TypeError, ValueError):
+                continue
+        if not widths or not heights:
+            return None
+        width = max(1, min(round(max(widths)), self.spec.width * 2))
+        height = max(1, min(round(max(heights)), self.spec.height * 2))
+        return width, height
 
     def stop(self, timeout: float = 1.0) -> None:
         self._stop_event.set()
@@ -573,7 +613,13 @@ class OverlayWindowController:
         to the edge of a 2560-wide window does not end up off-screen when the
         game later runs windowed at 1280.
         """
-        base = self.spec.place_over(game, self._scale)
+        with self._lock:
+            content_size = self._page_content_size
+        effective = self.spec
+        if content_size is not None:
+            effective = HudWidgetSpec(
+                self.spec.widget_id, content_size[0], content_size[1])
+        base = effective.place_over(game, self._scale)
         if self._offset is None:
             return base
         offset_x, offset_y = self._offset
@@ -687,9 +733,8 @@ class OverlayWindowController:
                 # `else` ниже — там этот же обход уже учтён для видимости).
                 # Без сброса `_refresh_shape` сравнивал бы новую форму со
                 # СТАРОЙ записью «уже применено» и молча выходил, оставив окно
-                # прямоугольным: под карточкой рации светили бы 60 пикселей
-                # чёрного фона поверх трассы, и починиться это могло только
-                # случайной сменой размера карточки.
+                # прямоугольным. Размер рации теперь совпадает с карточкой, но
+                # без региона её скруглённые углы всё равно стали бы тёмными.
                 self._applied_shape = ()
             # После размещения, а не до: регион задан в пикселях окна, и на
             # старых габаритах он обрезал бы уже не то.
@@ -715,12 +760,17 @@ class OverlayWindowController:
         """
         with self._lock:
             raw = self._page_shape
+            content_size = self._page_content_size
+        base_width, base_height = (
+            content_size if content_size is not None
+            else (self.spec.width, self.spec.height)
+        )
         primitives = overlay_shape.scale_primitives(
             raw,
             width=target.width,
             height=target.height,
-            base_width=self.spec.width,
-            base_height=self.spec.height,
+            base_width=base_width,
+            base_height=base_height,
         )
         if not primitives:
             # «Фигур нет» — это отсутствие сведений, а не форма «окно целиком».

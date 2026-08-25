@@ -41,7 +41,7 @@ def voice_status(yandex_attached: bool = False, yandex_healthy: bool = False,
     """
     from yandex_ai import voices as yv
 
-    # Piper fallback voices — always computed (always bundled in the EXE)
+    # Piper fallback voices — always computed (installed as a separate component)
     piper: dict[str, dict] = {}
     for persona, (name, length_scale) in PERSONA_VOICE.items():
         path = _model_path(name)

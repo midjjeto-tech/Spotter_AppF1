@@ -208,7 +208,17 @@ def test_build_situation_mode():
     assert sit["mode"] == "BATTLE"
     assert sit["mode_label"] == "Борьба"
     assert sit["threat"] == "Хэмилтон атакует (0.7с)"
-    assert sit["advice"] == "cover_inside"
+    assert sit["advice"] == "Закрой внутреннюю траекторию"
+
+
+def test_overlay_translates_internal_advice_codes_for_the_driver():
+    result = build_overlay_state({
+        "race_advice": "hold_line",
+        "strategy_advice": None,
+    })
+
+    assert result["situation"]["advice"] == "Держи выбранную траекторию"
+    assert "_" not in result["situation"]["advice"]
 
 
 def test_build_grid_top5():

@@ -25,6 +25,17 @@ import pytest
 import soundfile as sf
 
 
+def _wait_for(predicate, timeout=2.0):
+    import time
+
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        if predicate():
+            return True
+        time.sleep(0.01)
+    return bool(predicate())
+
+
 class FakeOutputStream:
     """Records calls; write() can block until released, to simulate real
     blocking playback and let a test interrupt it from another thread."""
@@ -39,24 +50,33 @@ class FakeOutputStream:
         self.entered_write = threading.Event()
         self._release = threading.Event()
         self.block_on_write = False
+        self.native_call_threads = []
+
+    def _record_native_call(self, name):
+        self.native_call_threads.append((name, threading.get_ident()))
 
     def start(self):
+        self._record_native_call("start")
         self.started = True
 
     def write(self, data):
+        self._record_native_call("write")
         self.written.append(data)
         self.entered_write.set()
         if self.block_on_write:
             self._release.wait(timeout=2.0)
 
     def stop(self):
+        self._record_native_call("stop")
         self.stopped = True
 
     def abort(self):
+        self._record_native_call("abort")
         self.aborted = True
         self._release.set()   # unblock any pending write()
 
     def close(self):
+        self._record_native_call("close")
         self.closed = True
 
 
@@ -74,6 +94,9 @@ def _make_voice(cache_dir=None):
         v = Voice.__new__(Voice)
         v._stream_lock = threading.Lock()
         v._current_stream = None
+        v._playback_interrupt = threading.Event()
+        v._portaudio_lock = threading.Lock()
+        v._stop_event = threading.Event()
         v._radio_enabled = False
         v._global_vol = 100
         v._persona_vol = {}
@@ -171,11 +194,64 @@ def test_interrupt_playback_aborts_the_currently_active_stream(fake_sd, wav_path
         assert active_stream.entered_write.is_set()
 
         v._interrupt_playback()
+        assert active_stream.aborted is False
+        active_stream._release.set()
 
         t.join(timeout=2.0)
         assert result.get("done") is True
         assert active_stream.aborted is True
         assert v._current_stream is None
+    finally:
+        FakeOutputStream.__init__ = orig_init
+
+
+def test_interrupt_never_calls_portaudio_from_the_requesting_thread(fake_sd, wav_path):
+    """A critical event may arrive on the engine thread while PortAudio is
+    blocked in ``write()`` on the TTS worker.  The 2026-07-21 dump proves that
+    serialising only ``abort()``/``close()`` was insufficient: PortAudio was
+    still entered concurrently by two threads.  The requester may publish a
+    cancellation flag only; every native stream method must remain owned by
+    the playback thread."""
+    v = _make_voice()
+    created = []
+    orig_init = FakeOutputStream.__init__
+
+    def blocking_init(self, *args, **kwargs):
+        orig_init(self, *args, **kwargs)
+        self.block_on_write = True
+        created.append(self)
+
+    FakeOutputStream.__init__ = blocking_init
+    try:
+        player_thread_id = []
+
+        def player():
+            player_thread_id.append(threading.get_ident())
+            v._play_wav(wav_path)
+
+        player_thread = threading.Thread(target=player, daemon=True)
+        player_thread.start()
+
+        assert created or _wait_for(lambda: bool(created))
+        stream = created[0]
+        assert stream.entered_write.wait(timeout=2.0)
+
+        requesting_thread_id = threading.get_ident()
+        v._interrupt_playback()
+
+        # Releasing the fake write models PortAudio returning from its current
+        # small block.  The playback owner must then observe cancellation and
+        # perform abort itself.
+        assert stream.aborted is False
+        stream._release.set()
+        player_thread.join(timeout=2.0)
+
+        assert not player_thread.is_alive()
+        assert stream.aborted is True
+        assert requesting_thread_id != player_thread_id[0]
+        assert {thread_id for _, thread_id in stream.native_call_threads} == {
+            player_thread_id[0]
+        }
     finally:
         FakeOutputStream.__init__ = orig_init
 
@@ -186,19 +262,9 @@ def test_interrupt_playback_without_active_stream_is_noop(fake_sd):
     assert v._current_stream is None
 
 
-def test_play_wav_close_and_interrupt_playback_are_mutually_exclusive(fake_sd, wav_path):
-    """Regression test for the ucrtbase.dll access violation (Windows Event
-    Log Id 1000: same faulting module/version/offset 0x00000000000ee44d on
-    both 2026-07-09 and 2026-07-13). Root cause: _play_wav's finally called
-    stream.close() OUTSIDE self._stream_lock, and _interrupt_playback called
-    stream.abort() OUTSIDE the lock too — the natural end-of-playback thread
-    (TTSQueue._worker) and a concurrent critical-priority interrupt (called
-    synchronously from whatever thread calls voice.say(priority="critical"),
-    e.g. core.engine._commentary_loop) could both call native methods on the
-    SAME sd.OutputStream with no mutual exclusion. Fix: both calls now happen
-    while holding self._stream_lock — this test proves they can never overlap,
-    and that a late interrupt (arriving after close() already ran) safely
-    no-ops instead of touching the now-closed stream."""
+def test_play_wav_close_remains_owned_by_the_playback_thread(fake_sd, wav_path):
+    """A late interrupt publishes a flag and returns; it never enters the
+    native stream while the playback owner is inside close()."""
     v = _make_voice()
     created: list[FakeOutputStream] = []
     orig_init = FakeOutputStream.__init__
@@ -223,9 +289,6 @@ def test_play_wav_close_and_interrupt_playback_are_mutually_exclusive(fake_sd, w
         player.start()
         assert entered_close.wait(timeout=2.0)   # now blocked inside close(), lock held
 
-        # While close() holds self._stream_lock, _interrupt_playback() must be
-        # BLOCKED acquiring the same lock — not free to call .abort() on the
-        # same stream concurrently.
         interrupt_done = threading.Event()
 
         def do_interrupt():
@@ -234,20 +297,18 @@ def test_play_wav_close_and_interrupt_playback_are_mutually_exclusive(fake_sd, w
 
         interrupter = threading.Thread(target=do_interrupt, daemon=True)
         interrupter.start()
-        assert not interrupt_done.wait(timeout=0.2)   # still blocked on the lock
+        assert interrupt_done.wait(timeout=0.2)
+        assert created[0].aborted is False
 
         release_close.set()
         player.join(timeout=2.0)
-        assert interrupt_done.wait(timeout=2.0)
-
-        # By the time _interrupt_playback acquired the lock, _current_stream
-        # was already cleared (set to None before close() runs, same critical
-        # section) — it must see "nothing to abort", not call .abort() on the
-        # already-closed instance.
+        interrupter.join(timeout=2.0)
         assert v._current_stream is None
         assert len(created) == 1
         assert created[0].closed is True
         assert created[0].aborted is False
+        owner_threads = {thread_id for _, thread_id in created[0].native_call_threads}
+        assert owner_threads == {player.ident}
     finally:
         FakeOutputStream.__init__ = orig_init
         FakeOutputStream.close = orig_close
@@ -292,15 +353,49 @@ def test_play_beep_creates_single_stream_and_cleans_up(fake_sd):
     assert created[0].stopped is True
     assert created[0].closed is True
     assert created[0].aborted is False
-    assert len(created[0].written) == 1
+    assert len(created[0].written) >= 1
     assert v._current_stream is None
 
 
-def test_play_beep_close_and_interrupt_playback_are_mutually_exclusive(fake_sd):
-    """Same regression proof as test_play_wav_close_and_interrupt_playback_are_mutually_exclusive
-    (see its docstring for the ucrtbase.dll access violation history), but for play_beep()'s own
-    stream teardown — play_beep() publishes and closes a SEPARATE sd.OutputStream from _play_wav's,
-    so its close()/abort() mutual exclusion needs its own proof, not just _play_wav's."""
+def test_play_beep_waits_until_speech_owner_has_closed_portaudio(fake_sd, wav_path):
+    v = _make_voice()
+    created = []
+    orig_init = FakeOutputStream.__init__
+
+    def first_stream_blocks(self, *args, **kwargs):
+        orig_init(self, *args, **kwargs)
+        if not created:
+            self.block_on_write = True
+        created.append(self)
+
+    FakeOutputStream.__init__ = first_stream_blocks
+    try:
+        speech = threading.Thread(target=lambda: v._play_wav(wav_path), daemon=True)
+        speech.start()
+        assert _wait_for(lambda: len(created) == 1)
+        assert created[0].entered_write.wait(timeout=2.0)
+
+        beep = threading.Thread(target=v.play_beep, daemon=True)
+        beep.start()
+        assert _wait_for(v._playback_interrupt.is_set)
+        assert len(created) == 1  # second OutputStream is blocked by _portaudio_lock
+
+        created[0]._release.set()
+        speech.join(timeout=2.0)
+        beep.join(timeout=2.0)
+
+        assert not speech.is_alive()
+        assert not beep.is_alive()
+        assert len(created) == 2
+        assert created[0].aborted is True
+        assert created[0].closed is True
+        assert created[1].closed is True
+    finally:
+        FakeOutputStream.__init__ = orig_init
+
+
+def test_play_beep_close_remains_owned_by_the_beep_thread(fake_sd):
+    """PTT beep uses the same owner-only PortAudio contract as speech."""
     v = _make_voice()
     created: list[FakeOutputStream] = []
     orig_init = FakeOutputStream.__init__
@@ -333,16 +428,19 @@ def test_play_beep_close_and_interrupt_playback_are_mutually_exclusive(fake_sd):
 
         interrupter = threading.Thread(target=do_interrupt, daemon=True)
         interrupter.start()
-        assert not interrupt_done.wait(timeout=0.2)   # still blocked on the lock
+        assert interrupt_done.wait(timeout=0.2)
+        assert created[0].aborted is False
 
         release_close.set()
         beeper.join(timeout=2.0)
-        assert interrupt_done.wait(timeout=2.0)
+        interrupter.join(timeout=2.0)
 
         assert v._current_stream is None
         assert len(created) == 1
         assert created[0].closed is True
         assert created[0].aborted is False
+        owner_threads = {thread_id for _, thread_id in created[0].native_call_threads}
+        assert owner_threads == {beeper.ident}
     finally:
         FakeOutputStream.__init__ = orig_init
         FakeOutputStream.close = orig_close
@@ -425,6 +523,51 @@ def test_play_streaming_yandex_registers_current_stream_during_playback(fake_sd,
         FakeOutputStream.write = orig_write
 
     assert captured and all(captured)
+
+
+def test_streaming_interrupt_keeps_all_portaudio_calls_on_playback_owner(
+        fake_sd, tmp_path):
+    v = _make_voice(cache_dir=tmp_path)
+    v._yandex = _FakeYandexStreamOK()
+    health = []
+    v._health_reporter = health.append
+    created = []
+    orig_init = FakeOutputStream.__init__
+
+    def blocking_init(self, *args, **kwargs):
+        orig_init(self, *args, **kwargs)
+        self.block_on_write = True
+        created.append(self)
+
+    FakeOutputStream.__init__ = blocking_init
+    try:
+        result = {}
+
+        def player():
+            result["thread_id"] = threading.get_ident()
+            result["ok"] = v._play_streaming("привет", "tv")
+
+        player_thread = threading.Thread(target=player, daemon=True)
+        player_thread.start()
+        assert _wait_for(lambda: bool(created))
+        stream = created[0]
+        assert stream.entered_write.wait(timeout=2.0)
+
+        v._interrupt_playback()
+        assert stream.aborted is False
+        stream._release.set()
+        player_thread.join(timeout=2.0)
+
+        assert result["ok"] is True
+        assert stream.aborted is True
+        assert {thread_id for _, thread_id in stream.native_call_threads} == {
+            result["thread_id"]
+        }
+        assert health == []
+        assert not os.path.exists(
+            v._cache.path_for("привет", v._voice_key("tv")))
+    finally:
+        FakeOutputStream.__init__ = orig_init
 
 
 def test_play_streaming_falls_back_when_stream_fails_before_any_chunk(fake_sd, tmp_path):

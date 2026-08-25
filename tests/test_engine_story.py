@@ -86,6 +86,11 @@ def test_chqf_auto_trigger_gated_by_session_type(engine, monkeypatch, session_ty
     engine.settings["autovoice_enabled"] = False
     engine._session_type = session_type
     engine._story_fired = False
+    # Each parametrized case models a separate source session even though the
+    # compact fixture reuses the same synthetic UDP session UID and frame.
+    engine._raw_event_seen.clear()
+    engine._raw_event_source_seen.clear()
+    engine._raw_event_source_session_id = None
     # Empty laps -> recorder.finalize() no-ops (no disk I/O), isolating this
     # test to the auto-trigger gate condition itself.
     engine.recorder.reset()

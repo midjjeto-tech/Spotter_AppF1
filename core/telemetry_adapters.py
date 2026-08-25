@@ -49,6 +49,12 @@ class TelemetryDelta:
 @dataclass(frozen=True, slots=True)
 class TelemetryRaceEvent:
     event: dict
+    # Source-neutral transport identity.  F1 fills these from its UDP header;
+    # sources without a stable packet identity leave them empty.
+    source_session_id: int | str | None = None
+    source_event_id: int | str | None = None
+    source_frame_id: int | None = None
+    source_time_s: float | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -238,7 +244,17 @@ class F1TelemetryAdapter:
         elif packet_id == self._decoder.PACKET_EVENT:
             event = self._decoder.parse_event(data)
             if event is not None:
-                yield TelemetryRaceEvent(event)
+                source_session_id = header.get("session_uid") or None
+                yield TelemetryRaceEvent(
+                    event,
+                    source_session_id=source_session_id,
+                    source_event_id=(
+                        header.get("overall_frame_identifier")
+                        if source_session_id is not None else None
+                    ),
+                    source_frame_id=header.get("frame_identifier"),
+                    source_time_s=header.get("session_time"),
+                )
 
     def close(self) -> None:
         if self._closed.is_set():

@@ -457,11 +457,16 @@ def parse_event(data: bytes) -> dict | None:
     elif code == "RTMT" and len(payload) >= 1:
         details = {"vehicle_idx": struct.unpack_from("<B", payload, 0)[0]}
 
+    elif code == "RCWN" and len(payload) >= 1:
+        details = {"vehicle_idx": struct.unpack_from("<B", payload, 0)[0]}
+
     elif code == "PENA" and len(payload) >= 7:
-        _ptype, infr, vehicle_idx, _other, time_s, lap_num, places = \
+        penalty_type, infr, vehicle_idx, other_vehicle_idx, time_s, lap_num, places = \
             struct.unpack_from("<BBBBBBB", payload, 0)
         details = {
             "vehicle_idx": vehicle_idx,
+            "other_vehicle_idx": other_vehicle_idx,
+            "penalty_type": penalty_type,
             "infringement_type": infr,
             "time_seconds": time_s,
             "lap_num": lap_num,

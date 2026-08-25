@@ -106,7 +106,7 @@ const WIDGET_SIZE: Record<WidgetId, { width: number; height: number }> = {
   radar: { width: 300, height: 300 },
   pu: { width: 220, height: 106 },
   engineer: { width: 304, height: 154 },
-  radio: { width: 430, height: 178 },
+  radio: { width: 430, height: 108 },
 }
 
 const DEFAULT_LAYOUT: Layout = {
@@ -1623,6 +1623,7 @@ export function InGameOverlay() {
   const [scales, setScales] = useState<Partial<Record<WidgetId, number>>>({})
   const [disabled, setDisabled] = useState<Set<WidgetId>>(() => new Set())
   const [radioUntil, setRadioUntil] = useState(0)
+  const [clockMs, setClockMs] = useState(0)
   const previousQuery = useRef<string | null>(null)
   // ts последней показанной текстовой реплики — чтобы не продлевать показ
   // бесконечно на каждом опросе (250 мс) для одного и того же сообщения.
@@ -1729,7 +1730,10 @@ export function InGameOverlay() {
       } catch {
         if (mounted) setOnline(false)
       } finally {
-        if (mounted) timer = setTimeout(poll, 250)
+        if (mounted) {
+          setClockMs(Date.now())
+          timer = setTimeout(poll, 250)
+        }
       }
     }
     void poll()
@@ -1817,7 +1821,7 @@ export function InGameOverlay() {
   const showRadio =
     editMode || radioBusy ||
     radioActive === "playing" || radioActive === "synthesizing" ||
-    Date.now() < radioUntil
+    clockMs < radioUntil
   const towerRows = useMemo(() => overlay?.relative ?? [], [overlay?.relative])
   const radarBusy = Boolean(overlay?.radar.length)
 

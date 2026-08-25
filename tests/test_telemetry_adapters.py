@@ -4,6 +4,7 @@ from core.telemetry_adapters import (
     IRacingTelemetryAdapter,
     SourceStatus,
     TelemetryDelta,
+    TelemetryRaceEvent,
 )
 
 
@@ -33,7 +34,15 @@ class _Decoder:
 
     @staticmethod
     def parse_header(data):
-        return {"packet_id": data[0], "player_car_index": 3, "game_year": 25}
+        return {
+            "packet_id": data[0],
+            "player_car_index": 3,
+            "game_year": 25,
+            "session_uid": 42,
+            "session_time": 12.5,
+            "frame_identifier": 77,
+            "overall_frame_identifier": 88,
+        }
 
     @staticmethod
     def parse_lap_data(_data):
@@ -42,6 +51,14 @@ class _Decoder:
     @staticmethod
     def parse_player_lap(_data, player):
         return {"position": player + 1}
+
+    @staticmethod
+    def parse_event(_data):
+        return {
+            "event_code": "OVTK",
+            "overtaking_idx": 3,
+            "being_overtaken_idx": 7,
+        }
 
 
 class _Transport:
@@ -88,6 +105,25 @@ def test_motion_ex_packet_yields_motion_ex_delta():
         {"slip_ratio": {"rl": 0.0, "rr": 0.0, "fl": -0.4, "fr": 0.0}},
         player_car_index=3,
         game_year=25,
+    )]
+
+
+def test_f1_event_keeps_source_session_and_frame_identity():
+    adapter = F1TelemetryAdapter(
+        "127.0.0.1", 20777, transport_factory=_Transport, decoder=_Decoder)
+
+    messages = list(adapter._decode(bytes([_Decoder.PACKET_EVENT])))
+
+    assert messages == [TelemetryRaceEvent(
+        {
+            "event_code": "OVTK",
+            "overtaking_idx": 3,
+            "being_overtaken_idx": 7,
+        },
+        source_session_id=42,
+        source_event_id=88,
+        source_frame_id=77,
+        source_time_s=12.5,
     )]
 
 

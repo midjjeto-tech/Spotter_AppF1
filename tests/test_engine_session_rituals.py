@@ -195,3 +195,33 @@ def test_ritual_codes_are_routed_to_the_engineer_channel():
         assert policy.category_for(code) == "session"
         assert policy.ttl_for(code) == 30.0
     assert "session" not in policy.never_expiring_categories()
+
+
+def test_driver_query_does_not_fire_after_the_chequered_flag(engine, monkeypatch):
+    engine._session_active = True
+    engine._positions = {PLAYER: 6}
+    engine._handle_race_event({"event_code": "CHQF"})
+    _drain(engine)
+    monkeypatch.setattr(engine._race_engineer, "driver_query",
+                        lambda **_kwargs: "ask.balance")
+
+    engine._driver_query_tick()
+
+    assert "ENGINEER_ASKS_DRIVER" not in _codes(engine)
+
+
+def test_finish_result_is_queued_after_generic_chequered_commentary(engine, monkeypatch):
+    engine._session_active = True
+    engine._telemetry_connected = True
+    engine._positions = {PLAYER: 6}
+    order: list[str] = []
+    original = engine._commentary_events.publish
+
+    def _spy(draft):
+        order.append(str(draft.get("event_code")))
+        return original(draft)
+
+    monkeypatch.setattr(engine._commentary_events, "publish", _spy)
+    engine._handle_race_event({"event_code": "CHQF", "priority": "critical"})
+
+    assert order.index("CHQF") < order.index("SESSION_RESULT")

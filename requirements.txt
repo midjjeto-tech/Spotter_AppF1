@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 bottle>=0.13
 # Пин на ==, а не >=: core/overlay_window.py::sync_once() зависит от точного
 # поведения pywebview.platforms.edgechromium.EdgeChrome.on_navigation_start
@@ -50,15 +51,12 @@ yandexcloud>=0.398.0       # gRPC client for SpeechKit v3 (Synthesizer.Utterance
 gigachat>=0.2.0
 
 # --- iRacing telemetry source (core/iracing_telemetry.py) ---
-# Опционально: нужен только если settings.telemetry_source="iracing".
-# Windows-only (доступ к shared memory самого iRacing); core/iracing_telemetry.py
-# деградирует до connected=False, если пакет не установлен.
-# Пин на ==, а не >=: pyirsdk (kutu/pyirsdk) не обновлялся больше года
-# (см. github.com/kutu/pyirsdk) — это последняя фактически существующая
-# версия на PyPI, а не консервативный нижний порог. Если когда-нибудь выйдет
-# новая версия, поднимать пин осознанно, сверив API startup/shutdown/
-# is_initialized/is_connected/freeze_var_buffer_latest с core/iracing_telemetry.py.
-pyirsdk==1.1.7
+# В F1-релиз 0.2 НЕ входит: README честно фиксирует незавершённые фазы адаптера,
+# а единственный pyirsdk 1.1.7 на PyPI не собирается в изолированном Python 3.12
+# окружении (setup.py импортирует yaml до объявления build-зависимостей).
+# core/iracing_telemetry.py штатно деградирует до iracing_no_lib. Возвращать
+# пакет в release lock только вместе с завершением адаптера и воспроизводимым
+# wheel/исправленным upstream-пакетом, а не через небезопасный --no-build-isolation.
 
 # --- Только для разработки/тестов (не нужны в рантайме) ---
 # pytest>=8.0

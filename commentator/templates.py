@@ -11,12 +11,10 @@ from commentator import radio as _radio
 from commentator.phrase_pool import pick_phrase
 from core.ru_names import decline
 
-# Race-AI event codes → engineer.py template key
+# Only telemetry that is actually routed to cockpit radio may use its terse
+# phrase bank. ATTACK/BATTLE/FINAL_LAP are broadcast commentary events.
 _RACE_AI_CODES = {
-    "ATTACK":    "attack",
-    "BATTLE":    "battle",
     "TYRE_WARN": "tyre_warning",
-    "FINAL_LAP": "final_lap",
 }
 
 # Strategy-AI event codes → strategist.py template key
@@ -35,6 +33,30 @@ _STRATEGY_AI_CODES = {
 }
 
 SIMPLE = {
+    "ATTACK": [
+        "{driver} сокращает отрыв и готовит атаку на {target_acc}.",
+        "{driver} уже в зоне атаки — {target} под давлением.",
+        "Темп {driver_gen} растёт: впереди борьба за позицию.",
+        "{driver} подбирается к {target_dat}; атака назревает.",
+        "Разрыв тает — {driver} готовит следующий манёвр.",
+        "{driver} вынуждает {target_acc} защищаться на каждом торможении.",
+    ],
+    "BATTLE": [
+        "{driver} и {target} ведут плотную борьбу за позицию.",
+        "Между {driver_gen} и {target_gen} почти не осталось пространства.",
+        "{driver} атакует, {target} отвечает защитой — дуэль продолжается.",
+        "Колесо в колесо: {driver} не отпускает {target_acc}.",
+        "Борьба обостряется — {driver} ищет путь мимо {target_gen}.",
+        "{target} держит позицию, но {driver} остаётся совсем рядом.",
+    ],
+    "FINAL_LAP": [
+        "Последний круг — развязка этого заезда уже близко.",
+        "Белый флаг: впереди финальный круг борьбы.",
+        "Ещё один круг до финиша — позиции пока не закреплены.",
+        "Финальный круг начался. Сейчас решается итог заезда.",
+        "До клетчатого флага один круг — напряжение на максимуме.",
+        "Последний круг: лидеры входят в решающую часть гонки.",
+    ],
     "SSTA": [
         "И гонка начинается!",
         "Погнали! Гран-при стартовал!",

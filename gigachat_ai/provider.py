@@ -16,6 +16,7 @@
 from __future__ import annotations
 
 import logging
+import ssl
 import threading
 import time
 
@@ -24,6 +25,18 @@ from commentator.personas import system_prompt
 from yandex_ai.gpt import _sanitize   # единый санитайзер ответа LLM под TTS
 
 _log = logging.getLogger(__name__)
+
+
+def _system_ssl_context() -> ssl.SSLContext:
+    """Verified context that includes the Windows trusted-root stores.
+
+    Passing only ``verify_ssl_certs=True`` makes httpx use certifi. On Windows
+    that omits locally trusted corporate/interception roots and produced the
+    live ``self-signed certificate in certificate chain`` failure. Python's
+    default context loads the OS CA stores while keeping hostname and chain
+    verification enabled.
+    """
+    return ssl.create_default_context()
 
 
 def _is_rate_limited(exc: Exception) -> bool:
@@ -67,26 +80,20 @@ class GigaChatProvider:
                     model=self._model,
                     timeout=config.GIGACHAT_TIMEOUT,
                 )
-                # Продакшен-путь: если задан корневой CA-бандл Минцифры — включаем
-                # строгую проверку TLS с ним. Иначе — dev-режим (verify off).
+                # TLS всегда fail-closed. Свой бандл Минцифры имеет приоритет;
+                # без него SDK использует системное хранилище доверия. Никогда
+                # не отправляем Authorization key с verify_ssl_certs=False.
                 ca = getattr(config, "GIGACHAT_CA_BUNDLE", "")
+                kwargs["verify_ssl_certs"] = True
                 if ca:
-                    kwargs["verify_ssl_certs"] = True
                     kwargs["ca_bundle_file"] = ca
                 else:
-                    kwargs["verify_ssl_certs"] = config.GIGACHAT_VERIFY_SSL
-                    if not config.GIGACHAT_VERIFY_SSL:
-                        # Кричим в лог, а не деградируем молча: по этому же
-                        # соединению SDK гоняет Authorization key при OAuth, и
-                        # «работает, но без проверки сертификата» снаружи
-                        # выглядит ровно как «работает».
-                        _log.warning(
-                            "GigaChat: TLS-сертификат НЕ проверяется "
-                            "(CA-бандл Минцифры не найден: %s). "
-                            "Ключ уходит по непроверенному соединению — "
-                            "собрать бандл: python scripts/setup_gigachat_certs.py",
-                            " / ".join(getattr(config, "_GIGACHAT_CA_CANDIDATES", ())),
-                        )
+                    kwargs["ssl_context"] = _system_ssl_context()
+                    _log.info(
+                        "GigaChat: custom CA bundle absent; using verified "
+                        "Windows trust store (%s)",
+                        " / ".join(getattr(config, "_GIGACHAT_CA_CANDIDATES", ())),
+                    )
                 self._client = GigaChat(**kwargs)
             except Exception as exc:  # noqa: BLE001 — нет пакета/битый ключ -> провайдер недоступен
                 _log.warning("GigaChat init failed: %s", exc)

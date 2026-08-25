@@ -27,7 +27,14 @@ def _make_speech(iam_refresh_active: bool):
     client.folder_id = "folder"
     client.iam_refresh_active = iam_refresh_active
     fut = _FakeFuture(np.zeros(4, dtype=np.float32))
-    client.submit.return_value = fut
+
+    def submit(coro):
+        # This unit test owns no event loop. A real YandexClient schedules the
+        # coroutine; the fake must explicitly release the object it accepts.
+        coro.close()
+        return fut
+
+    client.submit.side_effect = submit
     return YandexSpeech(client), fut
 
 

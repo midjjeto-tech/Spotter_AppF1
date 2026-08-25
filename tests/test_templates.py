@@ -44,6 +44,24 @@ def test_commentator_pools_have_race_length_variety():
         assert all(len(events[code]) >= 5 for code in recurring), persona
 
 
+@pytest.mark.parametrize("code", ["ATTACK", "BATTLE", "FINAL_LAP"])
+def test_commentary_events_do_not_use_engineer_radio_phrases(code, monkeypatch):
+    monkeypatch.setattr(
+        templates._radio, "race_ai_phrase",
+        lambda *_args, **_kwargs: pytest.fail("engineer phrase bank was used"),
+    )
+    event = {
+        "event_code": code,
+        "driver": "Леклер",
+        "target": "Норрис",
+        "race_ai_data": {"advice": "hold_line"},
+    }
+
+    out = templates.render(event, "toxic")
+
+    assert out
+
+
 # --------------------------------------------------------------------------- #
 # Phase B (Safety Car/VSC/красный флаг) — SIMPLE + все 3 персоны, {sc_type}
 # подставляется render()'ом. См. docs/superpowers/plans/

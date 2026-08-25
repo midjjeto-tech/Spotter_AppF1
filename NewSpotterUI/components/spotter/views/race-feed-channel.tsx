@@ -1,6 +1,6 @@
 "use client"
 
-import { memo, useCallback, useEffect, useRef, useState } from "react"
+import { memo, useCallback, useEffect, useMemo, useState } from "react"
 import {
   ArrowRight, BarChart3, Bell, Bookmark, CheckCheck, ChevronDown, ChevronUp,
   BrainCircuit, Flag, Gauge, History, LockKeyhole, MessageCircle,
@@ -1229,14 +1229,13 @@ export function RaceFeedChannel({ posts, archive = [], prediction = null, status
 
   // Хендлеры должны быть стабильными (архивные группы мемоизированы), поэтому
   // ищут пост через ref, а не через замыкание по пропсам.
-  const lookup = useRef<RaceFeedPost[]>([])
-  lookup.current = [...posts, ...archive.flatMap((group) => group.posts)]
-
-  const sessionOf = (postId: string) =>
-    lookup.current.find((post) => post.id === postId)?.sessionId ?? ""
+  const sessionByPost = useMemo(() => new Map(
+    [...posts, ...archive.flatMap((group) => group.posts)]
+      .map((post) => [post.id, post.sessionId] as const),
+  ), [posts, archive])
 
   const handleReact = useCallback(async (postId: string, emoji: string) => {
-    const session_id = sessionOf(postId)
+    const session_id = sessionByPost.get(postId) ?? ""
     if (!session_id) return
     try {
       const result = await sendRaceFeedReaction({ session_id, post_id: postId, emoji })
@@ -1248,10 +1247,10 @@ export function RaceFeedChannel({ posts, archive = [], prediction = null, status
     } catch {
       /* сеть/бэкенд недоступны — молча оставляем как было */
     }
-  }, [])
+  }, [sessionByPost])
 
   const handleVote = useCallback(async (postId: string, driver: string) => {
-    const session_id = sessionOf(postId)
+    const session_id = sessionByPost.get(postId) ?? ""
     if (!session_id) return
     try {
       const result = await sendRaceFeedVote({ session_id, post_id: postId, driver })
@@ -1263,10 +1262,10 @@ export function RaceFeedChannel({ posts, archive = [], prediction = null, status
     } catch {
       /* см. handleReact */
     }
-  }, [])
+  }, [sessionByPost])
 
   const handleSend = useCallback(async (postId: string, text: string) => {
-    const session_id = sessionOf(postId)
+    const session_id = sessionByPost.get(postId) ?? ""
     if (!session_id) return false
     try {
       const result = await sendRaceFeedComment({ session_id, post_id: postId, text })
@@ -1281,7 +1280,7 @@ export function RaceFeedChannel({ posts, archive = [], prediction = null, status
     } catch {
       return false
     }
-  }, [])
+  }, [sessionByPost])
 
   /** Пост с наложенными подтверждёнными действиями читателя. */
   const withMyActions = useCallback((post: RaceFeedPost): RaceFeedPost => {

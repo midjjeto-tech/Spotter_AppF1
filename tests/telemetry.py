@@ -75,4 +75,15 @@ def consume_f1_packet(engine, header: dict, packet_id: int, data: bytes) -> None
 def consume_f1_event_packet(engine, data: bytes) -> None:
     event = packets.parse_event(data)
     if event is not None:
-        engine._consume_telemetry_message(TelemetryRaceEvent(event))
+        header = packets.parse_header(data)
+        source_session_id = header.get("session_uid") or None
+        engine._consume_telemetry_message(TelemetryRaceEvent(
+            event,
+            source_session_id=source_session_id,
+            source_event_id=(
+                header.get("overall_frame_identifier")
+                if source_session_id is not None else None
+            ),
+            source_frame_id=header.get("frame_identifier"),
+            source_time_s=header.get("session_time"),
+        ))

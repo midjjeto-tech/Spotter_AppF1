@@ -24,6 +24,21 @@ _MODE_LABELS: dict[str, str] = {
     "CLIMAX": "Кульминация",
 }
 
+_ADVICE_LABELS: dict[str, str | None] = {
+    "cover_inside": "Закрой внутреннюю траекторию",
+    "hold_line": "Держи выбранную траекторию",
+    "late_brake": "Тормози позже",
+    "focus": "Сохраняй концентрацию",
+    "none": None,
+}
+
+
+def _fmt_advice(value: str | None) -> str | None:
+    """Keep internal snake_case decision codes out of the driver-facing HUD."""
+    if value is None:
+        return None
+    return _ADVICE_LABELS.get(value, value.replace("_", " "))
+
 
 def _fmt_gap_ms(ms: int | None) -> str:
     """Format gap in milliseconds to '+1.234' string or '—' if unknown."""
@@ -137,13 +152,13 @@ def build_overlay_state(snapshot: dict) -> dict:
         "mode":      snapshot.get("race_mode", "CALM"),
         "mode_label": _MODE_LABELS.get(snapshot.get("race_mode", "CALM"), ""),
         "threat":    snapshot.get("race_threat"),
-        "advice":    snapshot.get("race_advice"),
+        "advice":    _fmt_advice(snapshot.get("race_advice")),
     }
 
     strategy: dict = {
         "action":      snapshot.get("strategy_action", "hold"),
         "confidence":  float(snapshot.get("strategy_confidence") or 0.0),
-        "advice":      snapshot.get("strategy_advice"),
+        "advice":      _fmt_advice(snapshot.get("strategy_advice")),
         "tyre_status": snapshot.get("tyre_status", "unknown"),
     }
 

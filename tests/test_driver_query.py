@@ -138,6 +138,7 @@ def engine(monkeypatch):
     e = eng_mod.F1Engine({"engineer_chatter_enabled": True})
     e._player_car_index = PLAYER
     e._session_type = "race"
+    e._session_active = True
     e._player_tyre_age = 20
     e._player_gap_front = None
     e._player_gap_behind = None

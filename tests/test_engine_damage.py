@@ -176,9 +176,13 @@ def _grade(engine):
     seen = []
     original = engine._handle_race_event
 
-    def spy(event):
+    # Пробрасывать kwargs ОБЯЗАТЕЛЬНО, а не глотать: `_grade_contact` зовёт
+    # `_handle_race_event(..., _record_source_event=False)`, и спай, который
+    # принимает только позиционный event, ловит TypeError на своём же движке.
+    # Ровно это и случилось, когда у метода появился новый keyword-параметр.
+    def spy(event, **kwargs):
         seen.append(event.get("event_code"))
-        return original(event)
+        return original(event, **kwargs)
 
     engine._handle_race_event = spy
     try:
@@ -284,6 +288,25 @@ def test_a_graded_contact_does_not_loop_back_into_deferral(engine):
 
     assert _grade(engine) == ["COLL_LIGHT"]
     assert engine._pending_contact is None, "оценка ушла на второй круг"
+
+
+def test_a_graded_contact_is_not_recorded_as_a_second_source_event(engine):
+    """Один удар — одна запись в трассе сессии, а не две.
+
+    `_grade_contact` ПЕРЕпубликует уже записанный контакт под уточнённым кодом,
+    поэтому зовёт `_handle_race_event(..., _record_source_event=False)`. Флаг не
+    был покрыт ничем: единственный тест, проходивший через этот вызов, подменял
+    `_handle_race_event` спаем без **kwargs — то есть падал на самой сигнатуре,
+    а не на смысле. Потерять флаг можно было молча: разбор заезда показал бы
+    удвоенные столкновения, и объяснить их было бы нечем."""
+    _fresh(engine)
+    engine.recorder.reset()
+    _contact(engine)
+
+    assert [e["event_code"] for e in engine.recorder._event_trace] == ["COLL"]
+
+    assert _grade(engine) == ["COLL_LIGHT"]
+    assert [e["event_code"] for e in engine.recorder._event_trace] == ["COLL"],         "оценённый контакт записан в трассу сессии второй раз"
 
 
 def test_contact_not_involving_the_player_is_not_deferred(engine):

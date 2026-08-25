@@ -444,6 +444,27 @@ def test_window_is_clipped_to_the_shape_the_page_reports(monkeypatch):
     assert shape[2][0].box == (24, 24, 276, 276)
 
 
+def test_radio_native_window_matches_the_card_height():
+    """No opaque tail remains even if Win32 shaping is applied late."""
+    assert HUD_WIDGETS["radio"].width == 430
+    assert HUD_WIDGETS["radio"].height == 108
+
+
+def test_radio_native_window_follows_the_measured_scaled_card(monkeypatch):
+    controller, backend, _ = _showing_controller(monkeypatch, widget="radio")
+    controller.apply_page_shape({
+        "visible": True,
+        "shapes": [{"kind": "round-rect", "x": 0, "y": 0,
+                    "w": 430, "h": 134, "r": 8}],
+    })
+
+    controller.sync_once()
+
+    target = next(call[2] for call in backend.calls if call[0] == "prepare")
+    assert target.width == 430
+    assert target.height == 134
+
+
 def test_shape_follows_the_window_when_the_scale_changes(monkeypatch):
     """Регион задан в пикселях окна: на новых габаритах он обрезал бы не то."""
     controller, backend, (_store, sizes, stamps) = _showing_controller(monkeypatch)
@@ -495,8 +516,8 @@ def test_shape_is_re_applied_after_the_window_is_shown_again(monkeypatch):
     напрямую при каждой навигации WebView2 и при восстановлении после сбоя.
     Кэш «эта форма уже применена» после такого показа описывает окно, которого
     больше нет, и `_refresh_shape` молча выходил по совпадению — окно навсегда
-    оставалось прямоугольным. Для рации это 60 пикселей чёрного фона под
-    карточкой поверх трассы, которые сами уже не чинились.
+    оставалось прямоугольным. Для рации это теперь тёмные углы вокруг
+    скруглённой карточки; раньше добавлялся ещё и чёрный хвост под ней.
     """
     controller, backend, _ = _showing_controller(monkeypatch, widget="radio")
     controller.apply_page_shape(

@@ -41,6 +41,11 @@ _COMMENTATOR_PERSONAS: frozenset[str] = frozenset({"tv", "hype", "calm", "toxic"
 #: core.radio (иначе тесты озвучки тянут радио-конвейер).
 _RADIO_SLOTS: frozenset[str] = frozenset({"engineer", "spotter"})
 
+#: Максимум времени, на которое playback-поток может не заметить запрос
+#: прерывания. Нативные методы PortAudio принадлежат ТОЛЬКО playback-потоку:
+#: engine/PTT публикуют Event, владелец замечает его между короткими write().
+_PORTAUDIO_WRITE_SLICE_MS = 50
+
 
 class Voice:
     def __init__(self, *_args, **_kwargs):
@@ -94,6 +99,10 @@ class Voice:
         self._health_reporter = None        # callback(ok: bool) — кормит health-monitor
         self._stream_lock = threading.Lock()
         self._current_stream = None         # активный sd.OutputStream (_play_wav), если есть
+        self._playback_interrupt = threading.Event()
+        # PortAudio не получает параллельных вызовов даже от play_beep(): новый
+        # stream ждёт, пока прежний владелец увидит interrupt Event и закроется.
+        self._portaudio_lock = threading.Lock()
         # Наблюдатель реальных событий воспроизведения (см. set_playback_observer).
         self._playback_observer: Callable[[str, str | None], None] | None = None
         self._stop_event = threading.Event()
@@ -400,39 +409,49 @@ class Voice:
         # притворяться, будто он звучит так же, нельзя — поэтому оговорено тут.
         return f"piper:{persona}"
 
-    def _interrupt_playback(self) -> None:
-        """Прервать текущее воспроизведение (для critical-приоритета).
-
-        Бьёт в self._current_stream (конкретный объект _play_wav), а не в
-        модульный sd.stop() — тот делил глобальный указатель стрима между
-        потоками и гонял с sd.play() из TTSQueue-воркера (access violation,
-        ntdll.dll — закрыто 07-04). .abort() держим ПОД ЛОКОМ (не отпускаем
-        до вызова) — иначе владеющий поток (_play_wav/_synthesize_streaming)
-        может успеть между чтением указателя и .abort() дойти до своего
-        .close() того же sd.OutputStream: два потока зовут нативные методы
-        одного объекта без взаимного исключения — подозреваемый источник
-        ДРУГОГО access violation, в ucrtbase.dll (см. открытая находка
-        2026-07-09/07-13 в CONTEXT.md, тот же офсет дважды).
-
-        Диагностическое логирование (2026-07-20): .abort() — жёсткая,
-        немедленная остановка PortAudio-стрима без дренирования буфера, что
-        стандартно даёт слышимый щелчок/хрип в точке обрыва. Раньше этим
-        прерыванием пользовались только редкие critical-события (PENA/
-        box-call), после появления споттера (SPOTTER_CAR_LEFT/RIGHT/BOTH,
-        priority=critical) оно может срабатывать в разы чаще за гонку.
-        Логируем факт и исход КАЖДОГО вызова — это единственная точка кода,
-        где реально происходит abort, и раньше она была полностью немой
-        (жалоба пользователя «звук иногда лагал или хрипел» после гонки со
-        споттером не могла быть подтверждена по логу задним числом именно
-        из-за этого молчания — см. CONTEXT.md)."""
+    def _register_stream(self, stream) -> None:
+        """Опубликовать stream без передачи владения нативным объектом."""
         with self._stream_lock:
-            stream = self._current_stream
-            if stream is not None:
-                _log.info("Voice._interrupt_playback: aborting active stream")
-                try:
-                    stream.abort()   # немедленно, без ожидания буфера — то, что нужно critical
-                except Exception as exc:  # noqa: BLE001
-                    _log.info("Voice._interrupt_playback: abort raised %r", exc)
+            if self._stop_event.is_set():
+                self._playback_interrupt.set()
+            else:
+                self._playback_interrupt.clear()
+            self._current_stream = stream
+
+    def _release_stream(self, stream) -> None:
+        with self._stream_lock:
+            if self._current_stream is stream:
+                self._current_stream = None
+            self._playback_interrupt.clear()
+
+    def _write_interruptibly(self, stream, audio, sample_rate: int) -> bool:
+        """Писать короткими блоками; False означает owner-side abort.
+
+        Это единственное место, где playback прерывает PortAudio. Запрашивающий
+        поток никогда не касается native stream: после post-fix дампа 07-21
+        лок только вокруг abort/close недостаточен, потому что write/stop всё
+        ещё выполнялись конкурентно с abort.
+        """
+        import numpy as np
+
+        frames = np.ascontiguousarray(audio, dtype="float32").reshape(-1, 1)
+        block_frames = max(1, int(sample_rate * _PORTAUDIO_WRITE_SLICE_MS / 1000))
+        for offset in range(0, len(frames), block_frames):
+            if self._playback_interrupt.is_set():
+                stream.abort()
+                return False
+            stream.write(frames[offset:offset + block_frames])
+        if self._playback_interrupt.is_set():
+            stream.abort()
+            return False
+        return True
+
+    def _interrupt_playback(self) -> None:
+        """Запросить critical-прерывание без native-вызова из чужого потока."""
+        with self._stream_lock:
+            if self._current_stream is not None:
+                self._playback_interrupt.set()
+                _log.info("Voice._interrupt_playback: interruption requested")
             else:
                 _log.info("Voice._interrupt_playback: no active stream to interrupt")
 
@@ -441,17 +460,15 @@ class Voice:
         core/engine.py::_run_voice_question). Сначала глушит текущую фразу
         (_interrupt_playback — как реальная рация: входящая передача обрывает
         прежнюю), затем играет squelch через ОТДЕЛЬНЫЙ sd.OutputStream.
-        close() — под тем же self._stream_lock, что и в _play_wav/
-        _interrupt_playback (см. их докстринги про access violation в
-        ucrtbase.dll, найдено 07-09/07-13, фикс 07-14) — не открывать эту
-        гонку заново. radio_fx.squelch() — тот же синтез, что уже обрамляет
+        Все нативные вызовы выполняет поток-владелец под _portaudio_lock;
+        _interrupt_playback только публикует Event. radio_fx.squelch() — тот
+        же синтез, что уже обрамляет
         фразы при включённом radio-эффекте (voice/radio_fx.py), играется
         ВСЕГДА (не зависит от self._radio_enabled — это отдельный,
         осознанный UX-сигнал, не часть тумблера «радио-эффект»)."""
         self._interrupt_playback()
         try:
             import sounddevice as sd
-            import numpy as np
         except ImportError:
             return
         sr = 22050
@@ -464,25 +481,24 @@ class Voice:
         mul = self._effective_volume()
         if mul != 1.0:
             audio = audio * mul
-        stream = None
-        try:
-            stream = sd.OutputStream(samplerate=sr, channels=1, dtype="float32", latency="low")
-            with self._stream_lock:
-                self._current_stream = stream
-            stream.start()
-            stream.write(np.ascontiguousarray(audio.reshape(-1, 1), dtype="float32"))
-            stream.stop()
-        except Exception:  # noqa: BLE001
-            pass
-        finally:
-            with self._stream_lock:
-                if self._current_stream is stream:
-                    self._current_stream = None
+        with self._portaudio_lock:
+            stream = None
+            try:
+                stream = sd.OutputStream(
+                    samplerate=sr, channels=1, dtype="float32", latency="low")
+                self._register_stream(stream)
+                stream.start()
+                if self._write_interruptibly(stream, audio, sr):
+                    stream.stop()
+            except Exception:  # noqa: BLE001
+                pass
+            finally:
                 if stream is not None:
                     try:
                         stream.close()
                     except Exception:  # noqa: BLE001
                         pass
+                self._release_stream(stream)
 
     def say(self, text: str, priority: str = "normal",
             persona: str | None = None, *,
@@ -728,56 +744,56 @@ class Voice:
         mul = self._effective_volume(persona)
         stream = None
         mid_stream_error = False
-        try:
-            # Constructor lives INSIDE the try — a removed/busy output device
-            # (headphones unplugged, exclusive-mode app) raises PortAudioError
-            # here; if it were outside, the exception would escape this method
-            # entirely (past _play_blocking, which does not wrap this call)
-            # straight into TTSQueue._worker's blanket except-pass, silently
-            # dropping the phrase with no buffered fallback and no status.
-            stream = sd.OutputStream(samplerate=sr, channels=1, dtype="float32", latency="low")
-            with self._stream_lock:
-                self._current_stream = stream
-            stream.start()
-            for seg, seg_sr in chunk_source:
-                if radio and not dry_parts:
-                    stream.write((radio_fx.start_beep(sr) * mul).reshape(-1, 1))
-                    stream.write((radio_fx.squelch(sr) * mul).reshape(-1, 1))
-                dry_parts.append(seg)
-                out = radio_fx.bandpass(seg, seg_sr) if radio else seg
-                if mul != 1.0:
-                    out = out * mul
-                stream.write(np.ascontiguousarray(out.reshape(-1, 1), dtype="float32"))
-            if radio and dry_parts:
-                stream.write((radio_fx.squelch(sr) * mul).reshape(-1, 1))
-        except Exception as exc:
-            mid_stream_error = True
-            if dry_parts:
-                self.status_message = f"Стриминг прерван: {exc}"
-        finally:
-            if stream is not None:
-                try:
+        playback_interrupted = False
+        with self._portaudio_lock:
+            try:
+                # Constructor lives INSIDE the try — a removed/busy output
+                # device raises here and must fall through to buffered audio.
+                stream = sd.OutputStream(
+                    samplerate=sr, channels=1, dtype="float32", latency="low")
+                self._register_stream(stream)
+                stream.start()
+                for seg, seg_sr in chunk_source:
+                    if radio and not dry_parts:
+                        if not self._write_interruptibly(
+                                stream, radio_fx.start_beep(sr) * mul, sr):
+                            playback_interrupted = True
+                            break
+                        if not self._write_interruptibly(
+                                stream, radio_fx.squelch(sr) * mul, sr):
+                            playback_interrupted = True
+                            break
+                    dry_parts.append(seg)
+                    out = radio_fx.bandpass(seg, seg_sr) if radio else seg
+                    if mul != 1.0:
+                        out = out * mul
+                    if not self._write_interruptibly(stream, out, sr):
+                        playback_interrupted = True
+                        break
+                if radio and dry_parts and not playback_interrupted:
+                    playback_interrupted = not self._write_interruptibly(
+                        stream, radio_fx.squelch(sr) * mul, sr)
+                if not playback_interrupted:
                     stream.stop()
-                except Exception:  # noqa: BLE001
-                    pass
-            # .close() держим под тем же локом, что и _interrupt_playback()'s
-            # .abort() — иначе гонка close()/abort() на одном sd.OutputStream
-            # из двух потоков (см. _interrupt_playback docstring).
-            with self._stream_lock:
-                if self._current_stream is stream:
-                    self._current_stream = None
+            except Exception as exc:
+                mid_stream_error = True
+                if dry_parts:
+                    self.status_message = f"Стриминг прерван: {exc}"
+            finally:
                 if stream is not None:
                     try:
                         stream.close()
                     except Exception:  # noqa: BLE001
                         pass
+                self._release_stream(stream)
 
         # Успех для health-monitor'а — только ПОЛНЫЙ, чистый стрим (ни исключения,
         # ни нуля чанков). Частичный сбой посреди стрима — тоже признак нездоровья
         # Yandex, даже если первый чанк успел прийти; иначе деградировавшая сеть
         # (обрыв после 1-го чанка на каждой фразе) никогда не переключит на Piper.
         ok_for_health = bool(dry_parts) and not mid_stream_error
-        if use_yandex and self._health_reporter is not None:
+        if (use_yandex and not playback_interrupted
+                and self._health_reporter is not None):
             try:
                 self._health_reporter(ok_for_health)
             except Exception:  # noqa: BLE001
@@ -786,6 +802,8 @@ class Voice:
         # Пустой поток чанков (0 штук) БЕЗ исключения — тоже провал, не успех:
         # без этого фраза тихо пропадала бы (return True, ничего не сыграно,
         # буферный фолбэк в _play_blocking не запускается).
+        if playback_interrupted:
+            return True
         if not dry_parts:
             return False
 
@@ -794,9 +812,8 @@ class Voice:
 
         if mid_stream_error:
             # Уже что-то сыграно — не повторяем (задвоение речи), считаем
-            # обработанным. НО обрезанную запись в кэш не пишем: иначе критическое
-            # прерывание (_interrupt_playback -> stream.abort() -> write бросает
-            # исключение) или обрыв сети навсегда закэшируют огрызок фразы под
+            # обработанным. НО обрезанную запись в кэш не пишем: иначе обрыв
+            # сети навсегда закэширует огрызок фразы под
             # рабочим ключом (файл кэша не имеет TTL и не самоисцеляется).
             return True
 
@@ -861,29 +878,27 @@ class Voice:
             mul = self._effective_volume(persona)
             if mul != 1.0:
                 data = data * mul
-            stream = sd.OutputStream(samplerate=sr, channels=1, dtype="float32", latency="low")
-            with self._stream_lock:
-                self._current_stream = stream
-            try:
-                stream.start()
-                # Реальный старт звука — единственный честный источник состояния
-                # «инженер говорит». Момент постановки в очередь им быть не может:
-                # say() возвращается мгновенно.
-                self._notify_playback("playing")
-                stream.write(np.ascontiguousarray(data.reshape(-1, 1), dtype="float32"))
-                stream.stop()   # blocks until the buffered audio drains — replaces sd.wait()
-                self._notify_playback("completed")
-            finally:
-                # .close() держим под тем же локом, что и _interrupt_playback()'s
-                # .abort() — иначе гонка close()/abort() на одном sd.OutputStream
-                # из двух потоков (см. _interrupt_playback docstring).
-                with self._stream_lock:
-                    if self._current_stream is stream:
-                        self._current_stream = None
+            with self._portaudio_lock:
+                stream = sd.OutputStream(
+                    samplerate=sr, channels=1, dtype="float32", latency="low")
+                self._register_stream(stream)
+                try:
+                    stream.start()
+                    # Реальный старт звука — единственный честный источник состояния
+                    # «инженер говорит». Момент постановки в очередь им быть не может:
+                    # say() возвращается мгновенно.
+                    self._notify_playback("playing")
+                    if self._write_interruptibly(stream, data, sr):
+                        stream.stop()
+                        self._notify_playback("completed")
+                    else:
+                        self._notify_playback("interrupted")
+                finally:
                     try:
                         stream.close()
                     except Exception:  # noqa: BLE001
                         pass
+                    self._release_stream(stream)
         except ImportError:
             if sys.platform == "win32":
                 import winsound

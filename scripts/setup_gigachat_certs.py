@@ -3,14 +3,12 @@ GigaChat (endpoints Sber цепочкой уходят в Russian Trusted Root C
 в стандартном certifi).
 
 Что делает:
-  1. Скачивает официальные сертификаты с gu.gov.ru:
+  1. Скачивает официальные архивы по ссылкам со страницы Госуслуг:
        - Russian Trusted Root CA (RSA 2022)
-       - Russian Trusted Sub CA  (RSA 2022)
-     Первичная загрузка идёт БЕЗ проверки TLS (bootstrap: сам корень мы ещё не
-     доверяем — классическая проблема установки нового корневого CA).
-  2. Конвертирует DER(.cer) -> PEM (stdlib ssl, без openssl).
-  3. Печатает SHA-256 отпечатки — СВЕРЬ их с опубликованными на
-     https://www.gosuslugi.ru/crt перед использованием в релизе.
+       - Russian Trusted Sub CA (актуальные RSA-варианты)
+     Загрузка проверяется обычной публичной TLS-цепочкой.
+  2. Проверяет закреплённые SHA-256 отпечатки.
+  3. Конвертирует DER/PEM(.cer) -> PEM (stdlib ssl, без openssl).
   4. Пишет бандл: <DATA_DIR>/certs/gigachat_ca_bundle.pem
      (Russian root+sub + стандартный certifi, если установлен — чтобы бандл
      годился и для любых других HTTPS-хостов SDK).
@@ -23,43 +21,46 @@ GigaChat (endpoints Sber цепочкой уходят в Russian Trusted Root C
 from __future__ import annotations
 
 import hashlib
+import io
 import os
 import ssl
 import sys
 import urllib.request
+import zipfile
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config  # noqa: E402
 
-# Официальные RSA-сертификаты НУЦ Минцифры (страница: https://www.gosuslugi.ru/crt).
-#
-# ВНИМАНИЕ (проверено 2026-08-08): хост gu.gov.ru БОЛЬШЕ НЕ РЕЗОЛВИТСЯ — ни
-# системным резолвером, ни 1.1.1.1, при полностью живой сети (gosuslugi.ru и
-# посторонние хосты резолвятся нормально). То есть автоматическая ветка ниже
-# сейчас не работает и на релизной машине тоже не сработает.
-#
-# Ссылки НЕ заменены наугад: корневой сертификат — это якорь доверия, и тянуть
-# его с адреса, который кто-то (в том числе ИИ-агент) «вспомнил», нельзя. Точный
-# текущий адрес надо взять со страницы https://www.gosuslugi.ru/crt в браузере —
-# она отдаёт ссылки скриптом, из HTML их не видно.
-#
-# Ручной путь при этом полноценный: скачать PEM/CER браузером, положить (или
-# сконвертировать) в OUT_BUNDLE — config.GIGACHAT_CA_BUNDLE подхватит файл по
-# факту существования, никакой регистрации в коде не требуется.
-CERT_URLS = {
-    "Russian Trusted Root CA (RSA 2022)": "https://gu.gov.ru/certs/rootca_ssl_rsa2022.cer",
-    "Russian Trusted Sub CA (RSA 2022)":  "https://gu.gov.ru/certs/subca_ssl_rsa2022.cer",
+# Официальные ссылки со страницы https://www.gosuslugi.ru/crt, проверены
+# 2026-08-19. Архивы отдаются по обычной публично доверенной TLS-цепочке, так
+# что bootstrap с verify=False больше не нужен.
+CERT_ARCHIVES = {
+    "root": "https://gu-st.ru/content/lending/windows_russian_trusted_root_ca.zip",
+    "sub": "https://gu-st.ru/content/lending/russian_trusted_sub_ca.zip",
+}
+
+# Пины защищают якорь доверия даже при ошибочной замене файла на сервере.
+# Обновлять их можно только после сверки с официальной страницей Госуслуг.
+CERT_FILES = {
+    "Russian Trusted Root CA (RSA 2022)": (
+        "root", "russian_trusted_root_ca.cer",
+        "d26d2d0231b7c39f92cc738512ba54103519e4405d68b5bd703e9788ca8ecf31",
+    ),
+    "Russian Trusted Sub CA (RSA)": (
+        "sub", "russian_trusted_sub_ca.cer",
+        "bbbde2103e790b999ec62bd03cf625a5a2e7c316e10afe6a490eedead8b3fd9b",
+    ),
+    "Russian Trusted Sub CA (RSA 2024)": (
+        "sub", "russian_trusted_sub_ca_2024.cer",
+        "2155785036c900dbb5f1bb2a1569c80c55595bd6bf94867a29bbddbc7d88a3f2",
+    ),
 }
 OUT_DIR = os.path.join(config.DATA_DIR, "certs")
 OUT_BUNDLE = os.path.join(OUT_DIR, "gigachat_ca_bundle.pem")
 
 
 def _download(url: str) -> bytes:
-    # Bootstrap: корень ещё не доверяем -> без проверки TLS. Это ожидаемо для
-    # первичной установки нового корневого CA; целостность подтверждается сверкой
-    # SHA-256-отпечатка (печатается ниже) с официальным значением.
-    ctx = ssl._create_unverified_context()  # noqa: S323 — намеренный bootstrap
-    with urllib.request.urlopen(url, context=ctx, timeout=30) as r:  # noqa: S310
+    with urllib.request.urlopen(url, timeout=30) as r:  # noqa: S310
         return r.read()
 
 
@@ -73,29 +74,28 @@ def _to_pem(raw: bytes) -> str:
 def main() -> int:
     os.makedirs(OUT_DIR, exist_ok=True)
     pems: list[str] = []
-    for name, url in CERT_URLS.items():
+    archives: dict[str, bytes] = {}
+    for archive, url in CERT_ARCHIVES.items():
         try:
-            raw = _download(url)
+            archives[archive] = _download(url)
         except Exception as exc:  # noqa: BLE001
-            print(f"[FAIL] {name}: не скачался ({exc})")
-            # Не пишем «проверь сеть»: на 2026-08-08 хост gu.gov.ru не резолвится
-            # в принципе, и отправлять человека чинить интернет — это отправить
-            # его чинить не то. Ручной путь ниже — рабочий, а не аварийный.
-            print()
-            print("       Автоматическая загрузка НЕ работает: адреса в CERT_URLS")
-            print("       устарели (gu.gov.ru не существует). Ручной путь:")
-            print("       1. Открыть https://www.gosuslugi.ru/crt в браузере")
-            print("       2. Скачать Russian Trusted Root CA и Sub CA (RSA)")
-            print("       3. Склеить их в один PEM (или положить .cer и")
-            print("          сконвертировать) по пути:")
-            print("         ", OUT_BUNDLE)
-            print("       4. Сверить SHA-256-отпечатки с указанными на странице")
-            print()
-            print("       config.GIGACHAT_CA_BUNDLE подхватит файл сам, а")
-            print("       build.ps1 перестанет предупреждать про TLS.")
+            print(f"[FAIL] архив {archive}: не скачался ({exc})")
+            return 1
+
+    for name, (archive, member, expected_fp) in CERT_FILES.items():
+        try:
+            with zipfile.ZipFile(io.BytesIO(archives[archive])) as bundle:
+                raw = bundle.read(member)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[FAIL] {name}: нет в архиве ({exc})")
             return 1
         pem = _to_pem(raw)
         fp = hashlib.sha256(ssl.PEM_cert_to_DER_cert(pem)).hexdigest()
+        if fp != expected_fp:
+            print(f"[FAIL] {name}: SHA-256 не совпал")
+            print(f"       ожидали {expected_fp}")
+            print(f"       получили {fp}")
+            return 1
         print(f"[OK] {name}")
         print(f"     SHA-256: {fp}")
         pems.append(pem.strip() + "\n")
@@ -113,7 +113,7 @@ def main() -> int:
     with open(OUT_BUNDLE, "w", encoding="ascii") as f:
         f.write("\n".join(pems))
     print(f"\nБандл записан: {OUT_BUNDLE}")
-    print("СВЕРЬ отпечатки выше с https://www.gosuslugi.ru/crt перед релизом.")
+    print("Отпечатки сверены с закреплёнными значениями официальных файлов.")
     print("config.GIGACHAT_CA_BUNDLE подхватит его автоматически.")
     return 0
 
