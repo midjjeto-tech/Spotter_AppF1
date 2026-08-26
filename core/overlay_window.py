@@ -529,11 +529,19 @@ class OverlayWindowController:
         return True
 
     def _content_size_from_shapes(self, shapes: object) -> tuple[int, int] | None:
-        """Measured base size for the content-sized radio window."""
+        """Measured base size for the content-sized radio window.
+
+        Считается ДАЛЬНИЙ КРАЙ фигуры (`x + w`, `y + h`), а не её габарит.
+        Разница видна ровно там, где карточка смещена: вход и выход едут на
+        `MOTION.enterShiftPx`/`exitShiftPx`, и окно, посчитанное по одной
+        высоте, оказывалось на этот сдвиг короче содержимого — низ реплики
+        уходил за край окна. Обратная ошибка так же реальна: окно шире
+        карточки светит непрозрачным `OVERLAY_BACKGROUND` под текстом.
+        """
         if self.spec.widget_id != "radio" or not isinstance(shapes, list):
             return None
-        widths: list[float] = []
-        heights: list[float] = []
+        rights: list[float] = []
+        bottoms: list[float] = []
         for shape in shapes:
             if not isinstance(shape, dict):
                 continue
@@ -545,18 +553,18 @@ class OverlayWindowController:
                     ys = [float(p[1]) for p in points
                           if isinstance(p, (list, tuple)) and len(p) >= 2]
                     if xs and ys:
-                        widths.append(max(xs) - min(xs))
-                        heights.append(max(ys) - min(ys))
+                        rights.append(max(xs))
+                        bottoms.append(max(ys))
                 continue
             try:
-                widths.append(float(shape.get("w", 0)))
-                heights.append(float(shape.get("h", 0)))
+                rights.append(float(shape.get("x", 0)) + float(shape.get("w", 0)))
+                bottoms.append(float(shape.get("y", 0)) + float(shape.get("h", 0)))
             except (TypeError, ValueError):
                 continue
-        if not widths or not heights:
+        if not rights or not bottoms:
             return None
-        width = max(1, min(round(max(widths)), self.spec.width * 2))
-        height = max(1, min(round(max(heights)), self.spec.height * 2))
+        width = max(1, min(round(max(rights)), self.spec.width * 2))
+        height = max(1, min(round(max(bottoms)), self.spec.height * 2))
         return width, height
 
     def stop(self, timeout: float = 1.0) -> None:
@@ -780,9 +788,11 @@ class OverlayWindowController:
             # (см. test_widget_with_nothing_to_show_leaves_the_screen — окно в
             # этот момент обязано вернуться). Применить пустую форму значит
             # позвать SetWindowRgn(0) и СНЯТЬ регион с окна, а окно у виджета с
-            # прозрачной оболочкой заметно больше содержимого: у рации карточка
-            # занимает 108 пикселей из 178, и снятый регион выводит поверх
-            # трассы остальные 70 чёрным прямоугольником — тот самый «обрубок».
+            # прозрачной оболочкой не обязано совпадать с содержимым: габариты
+            # рации следуют за КАРТОЧКОЙ (`_content_size_from_shapes`), а та
+            # живёт от 56 px («слушаю» на PTT) до 129 px (длинная реплика
+            # комментатора). Пока новый размер не доехал, снятый регион выводит
+            # поверх трассы разницу непрозрачным фоном — тот самый «обрубок».
             #
             # Поэтому старый регион сохраняется до прихода нового. Единственная
             # ситуация, когда региона нет вовсе, — окно, которому его ещё ни

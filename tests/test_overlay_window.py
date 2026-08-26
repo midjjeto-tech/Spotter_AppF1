@@ -465,6 +465,56 @@ def test_radio_native_window_follows_the_measured_scaled_card(monkeypatch):
     assert target.height == 134
 
 
+#: Каждое состояние карточки рации, замеренное из СОБРАННОЙ страницы
+#: (`webui/overlay.html?widget=radio&preview=...`) в окне 430x108.
+#:
+#: Карточка резиновая: от 56 px («слушаю» на PTT) до 129 px (длинная реплика
+#: комментатора — их пишет LLM, и потолка в 18 слов, как у инженерского банка,
+#: у неё нет). Смещение по вертикали — не опечатка: вход и выход карточки едут
+#: на `MOTION.enterShiftPx`/`exitShiftPx`, и в эти миллисекунды страница честно
+#: сообщает фигуру со сдвигом.
+_RADIO_CARD_STATES: tuple[tuple[str, int, int], ...] = (
+    ("ptt-listening", 10, 56),
+    ("spotter-compact", 0, 63),
+    ("critical", 0, 96),
+    ("ptt-question", 10, 96),
+    ("interrupted", 6, 96),
+    ("engineer", 10, 108),
+    ("commentator", 10, 108),
+    ("ptt-answer", 10, 127),
+    ("long-text", 10, 129),
+)
+
+
+def test_radio_window_contains_every_card_state_the_page_can_report(monkeypatch):
+    """Окно обязано вмещать карточку ЦЕЛИКОМ в каждом её состоянии.
+
+    Здесь проверяется класс, а не один замер: базовая высота из
+    `HUD_WIDGETS` описывает ровно одно состояние карточки из девяти, и
+    константа, выбранная по нему, ошибается в обе стороны сразу. Окно ниже
+    карточки режет низ реплики; окно выше — светит непрозрачным
+    `OVERLAY_BACKGROUND` под текстом, тем самым серым куском поверх трассы.
+
+    Нижняя граница карточки — это `y + h`, а не `h`: на входе и выходе
+    карточка смещена, и окно, посчитанное по одной высоте, теряет сдвиг.
+    """
+    for name, y, height in _RADIO_CARD_STATES:
+        controller, backend, _ = _showing_controller(monkeypatch, widget="radio")
+        controller.apply_page_shape({
+            "visible": True,
+            "shapes": [{"kind": "round-rect", "x": 0, "y": y,
+                        "w": 430, "h": height, "r": 8}],
+        })
+
+        controller.sync_once()
+
+        target = next(call[2] for call in backend.calls if call[0] == "prepare")
+        assert target.height == y + height, (
+            f"{name}: окно {target.height} px против карточки "
+            f"{y}+{height}={y + height} px"
+        )
+
+
 def test_shape_follows_the_window_when_the_scale_changes(monkeypatch):
     """Регион задан в пикселях окна: на новых габаритах он обрезал бы не то."""
     controller, backend, (_store, sizes, stamps) = _showing_controller(monkeypatch)
