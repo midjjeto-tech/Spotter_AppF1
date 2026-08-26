@@ -306,3 +306,44 @@ def test_known_name_does_not_trigger_the_no_name_pool(code, persona):
 
     assert out not in templates.NO_NAME.get(code, ()), (
         f"{code}/{persona}: имя известно, но сработал вариант без имени — {out!r}")
+
+
+# ── Последний резерв: код не может стать репликой ───────────────────────────
+
+def test_unknown_code_is_silence_not_the_code_itself(caplog):
+    """Код без пула и без описания обязан дать ТИШИНУ, а не сам себя.
+
+    Прежний последний резерв возвращал `event.get("description", code)`, то
+    есть на неизвестном коде в эфир уходила служебная строка: `render(
+    {'event_code': 'ZZZZ'})` отдавал `'ZZZZ'`. Проверено прямым вызовом
+    2026-08-26 сухим прогоном.
+
+    Инженерский банк в такой же ситуации отказывает и молчит («лучше
+    промолчать, чем произнести строку с фигурными скобками», см.
+    `phrases.render`). Здесь была противоположная политика на тот же отказ — а
+    новый `event_code`, забытый в одной из per-code таблиц, в этом проекте уже
+    случался не раз.
+
+    Пустая строка — не потеря: по всему пути генерации она означает «сказать
+    нечего», и вызывающий кладёт событие в ленту как `muted`.
+    """
+    with caplog.at_level("WARNING"):
+        out = templates.render({"event_code": "ZZZZ_NO_SUCH_CODE"}, "tv")
+
+    assert out == "", f"в эфир ушла служебная строка: {out!r}"
+    # Молчание обязано оставить след: беззвучная деградация — ровно тот класс,
+    # который в этом проекте ловили дороже всего.
+    assert any("ZZZZ_NO_SUCH_CODE" in record.getMessage()
+               for record in caplog.records), "отказ не попал в лог"
+
+
+def test_description_still_wins_over_silence():
+    """Человекочитаемое описание — законная реплика, его резерв не трогает.
+
+    `packets.EVENT_DESCRIPTIONS` держит русские строки («Старт сессии»), и
+    заменить их тишиной значило бы вылечить симптом ампутацией."""
+    out = templates.render(
+        {"event_code": "ZZZZ_NO_SUCH_CODE", "description": "Машина в боксах"},
+        "tv")
+
+    assert out == "Машина в боксах"
