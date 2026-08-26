@@ -209,6 +209,11 @@ def create_app(engine, settings: dict, base_dir: str) -> Bottle:
     # эту строку логично перенести туда.
     engine.radio_session.set_persona_provider(
         lambda: engine.settings.get("persona"))
+    # Персонаж инженера — вторая, независимая настройка. Её отсутствие здесь и
+    # было причиной, по которой карточка называла Волкова, пока в наушниках
+    # говорил Гром: голос и пул формулировок настройку читали, а подпись — нет.
+    engine.radio_session.set_character_provider(
+        lambda: engine.settings.get("engineer_character"))
 
     @app.route("/")
     def index():

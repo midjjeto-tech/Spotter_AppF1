@@ -54,6 +54,46 @@ def test_commentator_persona_never_replaces_the_engineer(persona):
     assert spotter is speakers.SPOTTER
 
 
+def test_engineer_card_names_the_character_the_pilot_chose():
+    """Карточка обязана назвать ТОГО, чей голос звучит.
+
+    Настройка `engineer_character` уже меняла две вещи из трёх: голос
+    (`voice_cast.resolve`) и пул формулировок (`phrases.variants_for`). Имя в
+    кадре бралось из фиксированного профиля, поэтому при выбранном Громе
+    карточка подписывала реплику Волковым — голос, слова и подпись
+    расходились втроём на одной реплике.
+
+    Роль при этом НЕ меняется: должность у инженера одна, меняется человек.
+    """
+    for character, expected in (("volkov", "ИГОРЬ ВОЛКОВ"),
+                                ("sokolova", "МАРИНА СОКОЛОВА"),
+                                ("grom", "ВИКТОР ГРОМ")):
+        profile = speakers.profile_for(
+            policy.CHANNEL_ENGINEER, character=character)
+        assert profile.display_name == expected, character
+        assert profile.role == "RACE ENGINEER"
+        assert profile.speaker_id == speakers.RACE_ENGINEER.speaker_id
+        assert profile.accent == speakers.RACE_ENGINEER.accent
+
+
+def test_unknown_engineer_character_falls_back_instead_of_blanking_the_card():
+    """Настройка приходит из файла, который правят руками.
+
+    Пустая или неизвестная строка не должна оставлять карточку без имени:
+    подпись — не то место, где отказ полезнее умолчания."""
+    for value in (None, "", "нет такого"):
+        assert speakers.profile_for(
+            policy.CHANNEL_ENGINEER, character=value) is speakers.RACE_ENGINEER
+
+
+def test_engineer_character_does_not_leak_into_other_channels():
+    """Споттер и комментатор — другие люди, их подпись персонажу не подчиняется."""
+    assert speakers.profile_for(
+        policy.CHANNEL_SPOTTER, character="grom") is speakers.SPOTTER
+    assert speakers.profile_for(
+        policy.CHANNEL_COMMENTATOR, "tv", character="grom").role == "RACE ANALYST"
+
+
 def test_persona_selects_the_commentator_profile():
     names = {persona: speakers.profile_for(policy.CHANNEL_COMMENTATOR, persona).display_name
              for persona in ("tv", "hype", "calm", "toxic")}
@@ -140,6 +180,38 @@ def test_broken_persona_provider_does_not_break_the_projection(session):
     session.note(_msg("Проверка.").with_state(STATE_PLAYING, now=1.0))
 
     assert session.to_ui_dict()["active_message"]["speaker_name"]
+
+
+def test_chosen_character_reaches_the_card_and_the_roster(session):
+    """Проводка, а не чистая функция.
+
+    `profile_for` научился персонажу отдельным тестом — этот проверяет, что
+    выбор доезжает до обоих мест, которые рисует карточка: активного
+    сообщения и справочника `speakers`, по которому UI подписывает «слушаю»
+    и «проверяю данные» ещё до появления реплики."""
+    session.set_character_provider(lambda: "grom")
+    session.note(_msg("Место взял. Теперь удержи.").with_state(
+        STATE_PLAYING, now=1.0))
+
+    projection = session.to_ui_dict()
+
+    assert projection["active_message"]["speaker_name"] == "ВИКТОР ГРОМ"
+    assert projection["active_message"]["speaker_initials"] == "ВГ"
+    assert projection["speakers"]["engineer"]["speaker_name"] == "ВИКТОР ГРОМ"
+    # Роль и канал остаются прежними: сменился человек, а не должность.
+    assert projection["speakers"]["engineer"]["speaker_role"] == "RACE ENGINEER"
+    assert projection["speakers"]["spotter"]["speaker_name"] == "СПОТТЕР"
+
+
+def test_broken_character_provider_still_signs_the_card(session):
+    """Тот же принцип, что у персоны: подпись не стоит панели радио."""
+    def explode():
+        raise RuntimeError("настройки недоступны")
+
+    session.set_character_provider(explode)
+    session.note(_msg("Проверка.").with_state(STATE_PLAYING, now=1.0))
+
+    assert session.to_ui_dict()["active_message"]["speaker_name"] == "ИГОРЬ ВОЛКОВ"
 
 
 # ── Ревизия ─────────────────────────────────────────────────────────────────

@@ -29,7 +29,10 @@ def harness(monkeypatch, tmp_path):
     monkeypatch.setattr(core_settings, "_PATH", tmp_path / "settings.json")
     applied: list[dict] = []
     engine = SimpleNamespace(
-        radio_session=SimpleNamespace(set_persona_provider=lambda _provider: None),
+        radio_session=SimpleNamespace(
+            set_persona_provider=lambda _provider: None,
+            set_character_provider=lambda _provider: None,
+        ),
         settings={},
         apply_settings=applied.append,
     )

@@ -217,7 +217,8 @@ class RadioMessage:
 
     # ── Проекция в UI ────────────────────────────────────────────────────────
 
-    def to_ui_dict(self, *, persona: str | None = None) -> dict[str, Any]:
+    def to_ui_dict(self, *, persona: str | None = None,
+                   character: str | None = None) -> dict[str, Any]:
         """JSON-safe представление для `/api/state`.
 
         `source_snapshot` не отдаём: это внутренние данные для ре-валидации, а
@@ -228,8 +229,12 @@ class RadioMessage:
         живёт снаружи, и он презентация, а не часть решения о том, что и когда
         произнести. Замораживает его вызывающий — `RadioSession` при переходе
         состояния, чтобы смена персоны задним числом не переименовала того, кто
-        уже отговорил."""
-        profile = speakers.profile_for(self.channel, persona)
+        уже отговорил.
+
+        `character` — выбранный персонаж инженера. Он влияет только на канал
+        инженера и по той же причине не хранится в сообщении: это настройка,
+        а не часть решения о том, что произнести."""
+        profile = speakers.profile_for(self.channel, persona, character=character)
         return {
             "id": self.id,
             "channel": self.channel,

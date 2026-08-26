@@ -23,6 +23,9 @@ class _Engine:
         def set_persona_provider(self, fn):
             pass
 
+        def set_character_provider(self, fn):
+            pass
+
     radio_session = _RadioSession()
 
     def get_state(self, radio_since=None):

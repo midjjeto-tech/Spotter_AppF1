@@ -374,6 +374,30 @@ def test_analyst_voice_matches_the_gender_of_the_name_in_frame(persona):
 
 @pytest.mark.parametrize("persona,character",
                          list(itertools.product(ALL_PERSONAS, voice_cast.CHARACTERS)))
+def test_engineer_card_name_matches_the_voice_that_speaks_it(persona, character):
+    """Замыкает круг, который у комментатора уже замкнут тестом выше.
+
+    У инженера имя в кадре берётся из профиля, а голос — из раздачи, и до
+    правки 2026-08-26 профиль вообще не знал про выбранного персонажа:
+    карточка подписывала Волковым любую реплику, включая те, что произносил
+    Гром. Проверяется пара «подпись ↔ голос», потому что порознь обе стороны
+    выглядят верными."""
+    from core.radio import policy, speakers
+
+    profile = speakers.profile_for(policy.CHANNEL_ENGINEER, persona,
+                                   character=character)
+    voice = voice_cast.resolve(persona, character)[voice_cast.SLOT_ENGINEER]["voice"]
+
+    assert profile.display_name == voice_cast.character(character).display_name, (
+        f"персонаж {character!r} подписан в кадре {profile.display_name!r}")
+    assert voices.gender_of(voice) == profile.gender, (
+        f"персонаж {character!r} подписан {profile.display_name!r} "
+        f"({profile.gender}), а звучит голосом {voice!r} "
+        f"({voices.gender_of(voice)})")
+
+
+@pytest.mark.parametrize("persona,character",
+                         list(itertools.product(ALL_PERSONAS, voice_cast.CHARACTERS)))
 def test_engineer_voice_matches_the_character_gender(persona, character):
     """То же для инженера, при любом сочетании с персоной комментатора: раздача
     не имеет права выдать женскому персонажу мужской голос как «запасной»."""

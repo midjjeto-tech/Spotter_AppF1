@@ -75,6 +75,7 @@ class RadioSession:
         # Инкремент «на всякий случай» обесценил бы весь механизм.
         self._revision = 0
         self._persona_provider = None
+        self._character_provider = None
 
     @staticmethod
     def _idle_ptt() -> dict[str, Any]:
@@ -104,6 +105,27 @@ class RadioSession:
         Исключение здесь не имеет права уронить проекцию: подпись комментатора
         не стоит того, чтобы вместе с ней пропала вся панель радио."""
         provider = self._persona_provider
+        if provider is None:
+            return None
+        try:
+            return provider()
+        except Exception:
+            return None
+
+    def set_character_provider(self, provider) -> None:
+        """Откуда брать выбранного персонажа инженера (`engineer_character`).
+
+        Отдельный провайдер, а не поле в персоне: это две независимые
+        настройки, и связывать их значило бы вернуть ту самую путаницу, из-за
+        которой персона комментатора однажды переименовала инженера."""
+        self._character_provider = provider
+
+    def _character(self) -> str | None:
+        """Текущий персонаж инженера, либо None при отсутствии/сбое провайдера.
+
+        Отказ читается как «персонаж по умолчанию»: карточка обязана быть
+        подписана всегда, а `profile_for` на None отдаёт базовый профиль."""
+        provider = self._character_provider
         if provider is None:
             return None
         try:
@@ -180,7 +202,8 @@ class RadioSession:
         # Профиль резолвится СЕЙЧАС и замораживается в строке. Смена персоны
         # комментатора после реплики не должна переименовать того, кто её уже
         # произнёс, — иначе лента задним числом покажет неправду.
-        profile = speakers.profile_for(message.channel, self._persona())
+        profile = speakers.profile_for(message.channel, self._persona(),
+                                       character=self._character())
         return {
             "id": message.id,
             "source": message.channel,
@@ -324,6 +347,7 @@ class RadioSession:
         Собирается под локом, но НИ ОДИН лок не удерживается вызывающим после
         возврата: наружу уходят только копии простых типов (ТЗ §18)."""
         persona = self._persona()
+        character = self._character()
         with self._lock:
             active = self._messages.get(self._active_id) if self._active_id else None
             history = [dict(entry) for entry in self._history]
@@ -350,7 +374,8 @@ class RadioSession:
                 }
                 for channel, profile in (
                     (policy.CHANNEL_ENGINEER,
-                     speakers.profile_for(policy.CHANNEL_ENGINEER)),
+                     speakers.profile_for(policy.CHANNEL_ENGINEER,
+                                          character=character)),
                     (policy.CHANNEL_SPOTTER,
                      speakers.profile_for(policy.CHANNEL_SPOTTER)),
                     (policy.CHANNEL_COMMENTATOR,
@@ -359,7 +384,8 @@ class RadioSession:
                 )
             },
             "status": self.status(),
-            "active_message": (active.to_ui_dict(persona=persona)
+            "active_message": (active.to_ui_dict(persona=persona,
+                                                 character=character)
                                if active else None),
             "history": history,
             "ptt": ptt,

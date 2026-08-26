@@ -24,9 +24,10 @@ core/radio/speakers.py
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from types import MappingProxyType
 
+from core.radio import voice_cast
 from core.radio.policy import (
     CHANNEL_COMMENTATOR,
     CHANNEL_ENGINEER,
@@ -174,12 +175,48 @@ ALL: MappingProxyType[str, SpeakerProfile] = MappingProxyType({
 })
 
 
-def profile_for(channel: str, persona: str | None = None) -> SpeakerProfile:
+def _engineer_profile(character_id: str | None) -> SpeakerProfile:
+    """Профиль инженера под выбранного персонажа.
+
+    Имя берётся из `voice_cast`, а не заводится здесь вторым списком: там же
+    лежат голос и темп того же человека, и разъехаться этим трём вещам нельзя
+    (карточка называла Волкова, пока говорил Гром — ровно потому, что списка
+    было два). Роль, акцент и `speaker_id` остаются общими: меняется человек,
+    а не должность и не канал.
+    """
+    if not character_id or character_id not in voice_cast.CHARACTERS:
+        # Настройку правят руками, и неизвестное значение не повод оставить
+        # карточку без подписи. Тот же дефолт, что берёт раздача голосов.
+        return RACE_ENGINEER
+    character = voice_cast.CHARACTERS[character_id]
+    if character.display_name == RACE_ENGINEER.display_name:
+        return RACE_ENGINEER
+    return replace(
+        RACE_ENGINEER,
+        display_name=character.display_name,
+        # Пол едет вместе с именем, а не остаётся от Волкова: на расхождение
+        # «имя одного пола, голос другого» уже наступали живой гонкой (см.
+        # комментарий у поля `gender`), и Соколова — ровно этот случай.
+        gender=character.gender,
+        # Портрет свой у каждого персонажа. Файла может не быть — фронт штатно
+        # падает на инициалы (ТЗ §5), и это дешевле, чем показывать чужое лицо.
+        portrait=f"engineer-{character_id}.webp",
+    )
+
+
+def profile_for(channel: str, persona: str | None = None, *,
+                character: str | None = None) -> SpeakerProfile:
     """Профиль говорящего по каналу.
 
     `persona` учитывается ТОЛЬКО для канала комментатора. Для инженера и
     споттера аргумент игнорируется полностью — это и есть гарантия ТЗ §15, и
-    на неё стоит отдельный тест."""
+    на неё стоит отдельный тест.
+
+    `character` — выбранный игроком персонаж инженера (`engineer_character`).
+    Он влияет ТОЛЬКО на канал инженера: споттер узнаваем одинаково у всех, а
+    комментатор задан персоной."""
+    if channel == CHANNEL_ENGINEER:
+        return _engineer_profile(character)
     fixed = _BY_CHANNEL.get(channel)
     if fixed is not None:
         return fixed

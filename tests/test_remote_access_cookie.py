@@ -35,7 +35,10 @@ def app(tmp_path):
     (asset / "app.css").write_text("body{}", encoding="utf-8")
 
     engine = SimpleNamespace(
-        radio_session=SimpleNamespace(set_persona_provider=lambda _provider: None),
+        radio_session=SimpleNamespace(
+            set_persona_provider=lambda _provider: None,
+            set_character_provider=lambda _provider: None,
+        ),
         settings={},
         # Единственная ручка движка, которую трогают эти тесты: нужна живая
         # 200-ка, чтобы проверить, что куки хватает и для fetch-ов.
@@ -184,7 +187,10 @@ def test_disabled_feature_ignores_the_cookie(tmp_path):
     """Выключенный второй экран токен не стирает — но и не пускает по нему."""
     (tmp_path / "index.html").write_text("<html>ok</html>", encoding="utf-8")
     engine = SimpleNamespace(
-        radio_session=SimpleNamespace(set_persona_provider=lambda _provider: None),
+        radio_session=SimpleNamespace(
+            set_persona_provider=lambda _provider: None,
+            set_character_provider=lambda _provider: None,
+        ),
         settings={},
     )
     built = web_server.create_app(
