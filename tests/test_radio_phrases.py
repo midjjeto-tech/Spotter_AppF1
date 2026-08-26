@@ -816,3 +816,30 @@ def test_coach_reference_spec_never_reads_out_a_magnitude(code):
     assert spec.required_fields == frozenset({"corner_no"}), (
         f"{code}: подсказка обязана называть поворот и ничего кроме")
     assert not spec.volatile_fields, f"{code}: величине здесь не место"
+
+
+def test_corner_number_always_follows_the_preposition():
+    """`{corner_no}` — предложный падеж, и это накладывает ограничение на место.
+
+    `ordinal_prepositional` отдаёт «четвёртом»: такая форма ложится только
+    после «в»/«во». Любая другая позиция даёт мусор вслух — «главная потеря
+    круга — четвёртом поворот», — и никакой из существующих инвариантов её не
+    ловит: токен на месте, поля совпадают, длина в норме, предложение с
+    заглавной. Правило было неписаным, пока новые пулы персонажей его не
+    нарушили двадцатью четырьмя фразами разом (2026-08-26).
+
+    Предлог проверяется ПЕРЕД токеном и с учётом «во»: стык чинит
+    `euphony.fix_prepositions`, но только если предлог там вообще есть.
+    """
+    offenders = []
+    for spec in ALL_SPECS:
+        pools = [spec.variants, *spec.character_variants.values()]
+        for pool in pools:
+            for variant in pool:
+                for match in re.finditer(r"\{corner_no\}", variant):
+                    before = variant[:match.start()].rstrip()
+                    if not re.search(r"(?:^|[\s(—,:])[вВ]о?$", before):
+                        offenders.append(f"{spec.code}: {variant!r}")
+    assert not offenders, (
+        "{corner_no} стоит не после «в» — вслух это будет мусор:\n  "
+        + "\n  ".join(offenders))
