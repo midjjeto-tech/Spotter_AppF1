@@ -1204,72 +1204,92 @@ function InputTraces({ inputs }: { inputs: OverlayState["inputs"] | undefined })
 
 // ─── Track radar (track_radar.qml) ─────────────────────────────────────────
 
+/** Индикатор соседства в манере ACC.
+ *
+ *  СКОСА ЗДЕСЬ НЕТ И БЫТЬ НЕ МОЖЕТ. Параллелограмм `--ov-skew` — приём для
+ *  подписей и контейнеров; всё, что кодирует ФИЗИЧЕСКОЕ положение машин рядом,
+ *  обязано остаться ортогональным. По этой картинке пилот решает, оставить
+ *  место или закрывать дверь, и наклонённая система координат тут просто врёт.
+ *
+ *  Круга, сетки и засечек больше нет. Две полосы по бокам и метка своей машины
+ *  между ними: полоса не горит — свободно, горит — рядом машина, малиновая —
+ *  борт о борт. Это ровно тот словарь, которым говорит споттер
+ *  (`SPOTTER_CAR_LEFT` / `RIGHT` / `BOTH` / `CLEAR`), и второй язык для того же
+ *  смысла заводить незачем.
+ *
+ *  Окно виджета остаётся 300×300 (`HUD_WIDGETS`), но регион обрезается по
+ *  `data-overlay-shape` — лишняя площадь вокруг индикатора становится
+ *  прозрачной, а не чёрной. Менять габарит окна ради этого не нужно: он живёт
+ *  в двух файлах сразу, и расхождение стоит дороже сэкономленных пикселей
+ *  (инвариант держит tests/test_widget_size_contract.py).
+ */
 function TrackRadar({ contacts }: { contacts: OverlayRadarContact[] }) {
-  const SIZE = 300
-  const CENTER = SIZE / 2
-  const MAX_LAT = 5
+  // Продольное окно индикатора: дальше этого соперник не показывается вовсе.
+  // Значение то же, что у прежнего радара, — менять дальность заодно с видом
+  // значило бы смешать две правки и не понять, какая изменила ощущение.
   const MAX_LONG = 18
-  const limit = CENTER - 28
-  // «Борт о борт» выводится из тех же полей, что уже рисуют метки: соперник
-  // сбоку и в пределах длины машины. Новых данных бэкенд для этого не отдаёт,
-  // и придумывать их нельзя — порог совпадает с шириной коридора на радаре.
-  const alongside = contacts.some(
-    (contact) => contact.lateral_m <= 1.6 && Math.abs(contact.longitudinal_m) <= 5,
+  // «Борт о борт» выводится из тех же полей, что и раньше: соперник сбоку и в
+  // пределах длины машины. Новых данных бэкенд не отдаёт, придумывать нельзя.
+  const nearest = (side: "left" | "right") => {
+    const own = contacts.filter((contact) => contact.side === side)
+    if (own.length === 0) return null
+    return own.reduce((best, contact) =>
+      Math.abs(contact.longitudinal_m) < Math.abs(best.longitudinal_m) ? contact : best)
+  }
+
+  const lane = (side: "left" | "right") => {
+    const contact = nearest(side)
+    if (!contact) return null
+    const alongside = contact.lateral_m <= 1.6 && Math.abs(contact.longitudinal_m) <= 5
+    // 0 — вровень, 1 — на краю окна. Полоса едет вверх, когда соперник впереди.
+    const offset = Math.max(-1, Math.min(1, contact.longitudinal_m / MAX_LONG))
+    return { alongside, offset }
+  }
+
+  const left = lane("left")
+  const right = lane("right")
+  const anyone = left !== null || right !== null
+
+  const Lane = ({ state }: { state: { alongside: boolean; offset: number } | null }) => (
+    <div className="relative h-full w-[10px]" style={{ backgroundColor: "rgba(255,255,255,.05)" }}>
+      {state && (
+        <span
+          className="absolute left-0 right-0 transition-[top,background-color] duration-150"
+          style={{
+            height: "34%",
+            // offset = 1 (соперник впереди) двигает сегмент к верху полосы.
+            top: `${(1 - state.offset) * 33}%`,
+            backgroundColor: state.alongside ? DANGER : AMBER,
+            boxShadow: `0 0 10px ${state.alongside ? DANGER : AMBER}`,
+          }}
+        />
+      )}
+    </div>
   )
+
   return (
     <div
-      className="relative h-full w-full transition-opacity duration-300"
-      style={{ opacity: contacts.length > 0 ? 1 : 0.3 }}
+      className="flex h-full w-full items-center justify-center transition-opacity duration-300"
+      style={{ opacity: anyone ? 1 : 0.35 }}
     >
       <div
-        // Окно радара обрезается ровно по этому кругу: раньше вокруг него
-        // лежал чёрный квадрат 300×300 поверх трассы.
-        data-overlay-shape="ellipse"
-        className="absolute inset-6 rounded-full border-2 transition-colors"
-        style={{
-          borderColor: alongside ? DANGER : "#343444",
-          backgroundColor: "rgba(12,12,16,.55)",
-          boxShadow: alongside ? `inset 0 0 22px rgba(225,6,0,.35)` : undefined,
-        }}
-      />
-      <div className="absolute inset-[70px] rounded-full border" style={{ borderColor: "#292938" }} />
-      <div className="absolute left-1/2 top-6 h-[calc(100%-48px)] w-px -translate-x-1/2" style={{ backgroundColor: "#343444" }} />
-      <div className="absolute left-6 top-1/2 h-px w-[calc(100%-48px)] -translate-y-1/2" style={{ backgroundColor: "#343444" }} />
-      <div
-        className="absolute left-1/2 top-1/2 h-[29px] w-[10px] -translate-x-1/2 -translate-y-1/2 rounded-[2px] border border-white"
-        style={{ backgroundColor: GREEN, boxShadow: `0 0 10px ${GREEN}88` }}
-      />
-      {contacts.map((contact) => {
-        // side is authoritative; lateral_m is an absolute distance.
-        const signedLateral = contact.side === "left" ? -contact.lateral_m : contact.lateral_m
-        const rawX = (signedLateral / MAX_LAT) * limit
-        const rawY = -(contact.longitudinal_m / MAX_LONG) * limit
-        const radius = Math.hypot(rawX, rawY)
-        const scale = radius > limit ? limit / radius : 1
-        const close = contact.lateral_m <= 1.6 && Math.abs(contact.longitudinal_m) <= 5
-        return (
-          <div
-            key={contact.vehicle_idx}
-            className="absolute h-[29px] w-[10px] -translate-x-1/2 -translate-y-1/2 rounded-[2px] border bg-white"
-            style={{
-              left: CENTER + rawX * scale,
-              top: CENTER + rawY * scale,
-              borderColor: close ? DANGER : "rgba(255,255,255,.7)",
-              boxShadow: close ? `0 0 10px ${DANGER}` : undefined,
-            }}
-          />
-        )
-      })}
-      {alongside && (
+        // Форма окна снимается отсюда: вокруг индикатора будет трасса, а не
+        // чёрный прямоугольник 300×300.
+        data-overlay-shape
+        className="flex items-center justify-center gap-3 px-3 py-2"
+        style={{ backgroundColor: PANEL, height: 210, width: 118 }}
+      >
+        <Lane state={left} />
+        {/* Своя машина — прямоугольник без обводки и свечения: это точка
+            отсчёта, а не событие. Яркой её делали, когда вокруг была сетка и
+            метку надо было найти; на пустом поле искать нечего. */}
         <span
-          // Внутри круга, а не под ним: окно обрезано по кругу, и на прежних
-          // 18 px бейдж срезало бы наполовину.
-          className="font-broadcast absolute bottom-[34px] left-1/2 -translate-x-1/2 rounded-[2px] px-2 py-[2px] text-[9px] font-black uppercase italic tracking-[.16em] text-white"
-          style={{ backgroundColor: DANGER }}
-        >
-          Alongside
-        </span>
-      )}
+          className="block h-[30px] w-[11px] shrink-0 rounded-[1px]"
+          style={{ backgroundColor: TEXT_BRIGHT, opacity: 0.85 }}
+          aria-hidden
+        />
+        <Lane state={right} />
+      </div>
     </div>
   )
 }

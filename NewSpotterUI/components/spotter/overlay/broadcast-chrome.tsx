@@ -50,9 +50,12 @@ export const PILL_MUTED = "var(--ov-pill-muted)"
 export const PILL_INNER = "var(--ov-pill-inner)"
 export const RING_BG = "var(--ov-ring-bg)"
 
-/** Красная кромка панели и заливка шапки. */
+/** Кромка панели. Заливки шапки рядом больше нет: с 2026-08-27 подпись живёт
+ *  на самой панели, а цвет ушёл в короткий флаг у ведущего края. Токен
+ *  `--ov-header-fill` в globals.css оставлен темам, но отсюда не читается —
+ *  сплошная цветная плашка на каждом из восьми виджетов и была тем, что
+ *  спорило с функциональными цветами в кадре. */
 export const HAIRLINE = "var(--ov-hairline)"
-const HEADER_FILL = "var(--ov-header-fill)"
 
 // ─── Функциональные цвета ──────────────────────────────────────────────────
 // НЕ темизируются НИКОГДА. Это не оформление, а информация: зелёный — газ,
@@ -141,7 +144,7 @@ export function PanelHeader({
         <div className="h-[2px] w-full" style={{ background: HAIRLINE }} aria-hidden />
         <div
           className="flex h-4 items-center gap-1.5 px-1.5"
-          style={{ background: HEADER_FILL, borderBottom: `1px solid ${DIVIDER}` }}
+          style={{ background: PANEL, borderBottom: `1px solid ${DIVIDER}` }}
         >
           <span
             className="block h-[5px] w-[5px] shrink-0 rounded-full"
@@ -167,7 +170,7 @@ export function PanelHeader({
     return (
       <header className="shrink-0">
         <div className="h-[2px] w-full" style={{ background: HAIRLINE }} aria-hidden />
-        <div className="flex h-4 items-center gap-1.5 px-1.5" style={{ background: HEADER_FILL }}>
+        <div className="flex h-4 items-center gap-1.5 px-1.5" style={{ background: PANEL }}>
           <span
             className="shrink-0 px-[3px] font-mono text-[8px] font-bold leading-[10px] tracking-[.1em]"
             style={{ backgroundColor: accent, color: ACCENT_INK }}
@@ -186,18 +189,28 @@ export function PanelHeader({
     )
   }
 
-  // Трансляция: плашка телеграфики. Блик по верхней кромке отделяет заголовок
-  // от данных без лишней рамки.
+  // Трансляция: подпись на самой панели, цвет — в КОРОТКОМ флаге у ведущего
+  // края, а не в сплошной плашке.
+  //
+  // Раньше здесь были две заливки во всю ширину: акцентная линейка сверху и
+  // `PANEL_RAISED`/`HEADER_FILL` под заголовком. Восемь виджетов давали восемь
+  // красных полос поверх трассы, и они спорили с функциональными цветами,
+  // которым и положено быть единственными яркими пятнами в кадре
+  // (живой заезд 2026-08-27: «выглядит как шляпа из Paint»).
+  //
+  // Флаг длиной 26 px повторяет форму блока позиции — тот же параллелограмм,
+  // только крупнее. Во всю высоту панели его ставить нельзя: `skewX(-13deg)`
+  // уводит верхний край на h·tan13°, и на трёхсотпиксельном виджете это
+  // семьдесят пикселей поперёк содержимого.
   return (
     <header className="shrink-0">
+      <div className="flex h-[2px] w-full" aria-hidden>
+        <span className="block w-[26px] shrink-0" style={{ background: accent }} />
+        <span className="block flex-1" style={{ background: DIVIDER }} />
+      </div>
       <div
-        className="h-[2px] w-full"
-        style={{ background: isHero ? HAIRLINE : accent }}
-        aria-hidden
-      />
-      <div
-        className="f1-sheen flex h-4 items-center gap-1.5 px-1.5"
-        style={{ background: isHero ? HEADER_FILL : PANEL_RAISED }}
+        className="flex h-4 items-center gap-1.5 px-1.5"
+        style={{ background: PANEL }}
       >
         <span
           className="f1-skew block h-[10px] w-[5px] shrink-0"
