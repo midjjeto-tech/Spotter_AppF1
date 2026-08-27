@@ -4987,6 +4987,12 @@ class F1Engine:
                 phrase = get_radio_line(
                     event["event_code"], self._phrase_selector(event)) or ""
 
+            # Инженерский код без своей формулировки берёт её В БАНКЕ, а не у
+            # LLM: иначе голосом инженера звучит трансляция в третьем лице
+            # (см. `_engineer_bank_phrase`).
+            if not phrase:
+                phrase = self._engineer_bank_phrase(event)
+
             if not phrase:
                 broadcast_on = self._get_setting("broadcast_mode_enabled", False)
                 if event.get("strategy_ai_type"):
@@ -5289,6 +5295,39 @@ class F1Engine:
                 target = (STATE_COMPLETED if event == "completed"
                           else STATE_INTERRUPTED)
                 self._note_radio_state(message, target)
+
+    def _engineer_bank_phrase(self, event: dict) -> str:
+        """Формулировка из банка для инженерского кода без своего рендера.
+
+        Канал решает, КТО произносит реплику; он не решает, кто пишет её текст.
+        Пока этого фолбэка не было, коды вроде PENA и SAFETY_CAR_* доходили до
+        генерации с пустой `phrase` и получали текст у LLM комментатора — а
+        произносил его инженер. В живом заезде 2026-08-27 это звучало как
+        «Леклер получил штраф — упускает шансы на прорыв!» пять раз за гонку:
+        третье лицо о пилоте, сказанное пилоту в наушники.
+
+        Ставится ПОСЛЕ готовой `phrase` и до LLM: трекер, который уже сложил
+        формулировку сам, ничего не теряет. Отказ банка (нет отображения, нет
+        обязательного поля) возвращает пустую строку, и путь к LLM остаётся
+        прежним — деградация к трансляции лучше молчания там, где событие
+        всё-таки надо озвучить.
+        """
+        code = str(event.get("event_code") or "")
+        if radio_policy.channel_for(event) != radio_policy.CHANNEL_ENGINEER:
+            return ""
+        bank_code = radio_policy.bank_code_for(code)
+        if bank_code is None:
+            return ""
+        fields: dict | None = None
+        if bank_code == "position.leader_change":
+            # Единственная спека таблицы с обязательным полем. Имени может не
+            # быть (лидер не резолвится) — тогда банк откажет, и реплику
+            # напишет LLM, как раньше.
+            rival = event.get("driver") or ""
+            if not rival:
+                return ""
+            fields = {"rival": rival}
+        return self._render_engineer_phrase(event, bank_code, fields)
 
     def _render_engineer_phrase(self, draft: dict, phrase_code: str,
                                 fields: dict | None = None) -> str:

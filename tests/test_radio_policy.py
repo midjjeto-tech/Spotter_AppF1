@@ -305,3 +305,51 @@ def test_every_ttl_category_is_reachable_from_some_code():
     reachable = {policy.category_for(code) for code in policy.known_codes()}
     orphans = set(policy.ttl_categories()) - reachable
     assert not orphans, f"TTL задан для недостижимых категорий: {sorted(orphans)}"
+
+
+# ── Кто даёт ТЕКСТ инженерской реплике ───────────────────────────────────────
+
+def test_bank_codes_exist_in_the_phrase_bank():
+    """Опечатка в таблице = молчаливый откат к LLM для этого кода."""
+    from core.radio import phrases
+
+    known = phrases.codes()
+    unknown = {event: bank for event, bank in policy.BANK_CODE_BY_EVENT.items()
+               if bank not in known}
+    assert not unknown, f"нет таких спек в банке: {unknown}"
+
+
+def test_bank_table_only_covers_the_engineer_channel():
+    """Банк принадлежит инженерскому конвейеру. Код другого канала в таблице
+    означал бы, что комментатору подсунули инженерскую формулировку."""
+    strays = {event for event in policy.BANK_CODE_BY_EVENT
+              if policy.channel_for({"event_code": event}) != policy.CHANNEL_ENGINEER}
+    assert not strays, f"не инженерские коды в таблице банка: {sorted(strays)}"
+
+
+def test_every_engineer_code_declares_where_its_text_comes_from():
+    """Главный инвариант этого блока — и ровно тот баг, что доехал до гонки.
+
+    `channel_for` решает, КТО произносит реплику, но не решает, КТО пишет её
+    ТЕКСТ. Пока PENA и SAFETY_CAR_* не были ни в одной таблице банка и не имели
+    своей точки вызова, текст им писала LLM комментатора — и голосом инженера
+    звучало «Леклер получил штраф, упускает шансы на прорыв» (живой заезд
+    2026-08-27, пять раз за гонку). Третье лицо о пилоте, произнесённое пилоту
+    в наушники.
+
+    Поэтому каждый инженерский код обязан ЯВНО объявить источник текста: либо
+    таблица `BANK_CODE_BY_EVENT`, либо список ниже — «у этого кода свой рендер
+    в движке». Новый код, забытый в обоих, падает здесь, а не уезжает в эфир
+    чужим тоном.
+    """
+    declared = set(policy.BANK_CODE_BY_EVENT) | set(policy.OWN_PHRASE_CODES)
+    undeclared = policy.engineer_codes() - declared
+    assert not undeclared, (
+        "инженерские коды без объявленного источника текста — они уйдут к LLM "
+        f"и зазвучат как трансляция: {sorted(undeclared)}")
+
+
+def test_the_two_text_sources_do_not_overlap():
+    """Код в обеих таблицах — неоднозначность: непонятно, что победит."""
+    both = set(policy.BANK_CODE_BY_EVENT) & set(policy.OWN_PHRASE_CODES)
+    assert not both, f"код объявлен дважды: {sorted(both)}"

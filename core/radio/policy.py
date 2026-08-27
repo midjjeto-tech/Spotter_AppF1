@@ -147,6 +147,82 @@ PTT_ANSWER_CODES: frozenset[str] = frozenset({
     "USER_Q", "USER_Q_PIT", "USER_Q_GAP", "USER_Q_SAFETY_CAR",
 })
 
+# ── Откуда берётся ТЕКСТ инженерской реплики ─────────────────────────────────
+#
+# Канал (`channel_for`) отвечает, КТО произносит реплику. Он не отвечает, кто
+# пишет её текст, и это разные вопросы: пока PENA и SAFETY_CAR_* не были ни в
+# одной таблице банка и не имели своей точки вызова в движке, текст им писала
+# LLM комментатора — а произносил инженер. В живом заезде 2026-08-27 это
+# звучало как «Леклер получил штраф — упускает шансы на прорыв!» пять раз за
+# гонку: третье лицо о пилоте, сказанное пилоту в наушники.
+#
+# Две таблицы ниже делают источник ЯВНЫМ для каждого инженерского кода. Тест
+# `test_every_engineer_code_declares_where_its_text_comes_from` не даёт завести
+# новый код, забыв про обе.
+
+#: Событие игры → семантический код банка (`core/radio/phrases.py`).
+#:
+#: Отображение живёт здесь, а не в банке: банк по своему контракту не знает
+#: кодов игры («semantic code — стабильный, независимый от event_code»), а
+#: движку нужна таблица, которую видно рядом с остальными решениями о канале.
+#:
+#: Это ФОЛБЭК. Если трекер уже положил готовую `phrase` в черновик события,
+#: она и побеждает — таблица работает только там, где текста нет.
+BANK_CODE_BY_EVENT: dict[str, str] = {
+    # Официальные решения дирекции.
+    "PENA": "penalty.received",
+    "ENGINEER_PENA_TRACK_LIMITS": "penalty.received",
+    "ENGINEER_TRACK_LIMITS_WARNING": "track_limits.warning",
+    "RDFL": "flag.red",
+    "SAFETY_CAR_DEPLOYED": "flag.safety_car_deployed",
+    "SAFETY_CAR_ENDING": "flag.safety_car_ending",
+    "SAFETY_CAR_CLEAR": "flag.safety_car_clear",
+    # Состояние машины.
+    "DAMAGE_WING": "damage.wing",
+    "DAMAGE_FLOOR": "damage.floor",
+    "DAMAGE_GEARBOX": "damage.gearbox",
+    "DAMAGE_ENGINE": "damage.engine",
+    "TYRE_WARN": "tyres.wear",
+    # Стратегия и энергия — то, чего пилот ждёт от инженера больше всего.
+    "STRAT_ERS_SAVE": "ers.low",
+    "STRAT_ERS_OVERTAKE": "ers.level",
+    "STRAT_FUEL": "fuel.save",
+    # Боксы.
+    "PIT_WINDOW_APPROACH": "box.window_approach",
+    "PIT_CALL_NOTICE": "box.notice",
+    "PIT_EXIT": "box.exit",
+    "PIT_EXIT_ENGINEER": "box.exit",
+    # Позиция.
+    "LEADER_CHANGE": "position.leader_change",
+}
+
+#: Инженерские коды, у которых СВОЙ рендер в движке (трекер кладёт готовую
+#: `phrase` в черновик до публикации). Список нужен не движку, а тесту: без
+#: него «объявлен источник» нельзя отличить от «про код просто забыли».
+#:
+#: Если код отсюда перестанет класть фразу, он молча уедет к LLM. Это ровно
+#: та поломка, ради которой заведён весь блок, — но поймать её может только
+#: живой прогон или сухой (`tools/rehearse.py`), не таблица.
+OWN_PHRASE_CODES: frozenset[str] = frozenset({
+    # Боевые команды в боксы — собственный рендер через strategist.
+    "STRAT_BOX_CALL_1", "STRAT_BOX_CALL_2", "STRAT_BOX_CALL_3",
+    # Стратегические предложения — strategist.get_message.
+    "STRAT_PIT", "STRAT_UNDERCUT", "STRAT_OVERCUT", "STRAT_SAVE", "STRAT_PUSH",
+    # DRS: свой трекер со своими спеками банка.
+    "DRS_PROXIMITY_ENTER", "DRS_PROXIMITY_EXIT", "DRS_ALLOWED_ON",
+    "DRS_ALLOWED_OFF", "DRS_PROXIMITY_ENTER_AND_ALLOWED", "DRSE", "DRSD",
+    # Сводки, оборона, позиция, разведка — Race Engineer.
+    "ENGINEER_GAP_DIGEST", "ENGINEER_RAIN_ADVISORY", "ENGINEER_RIVAL_INTEL",
+    "POSITION_CALL", "POSITION_CALL_OWN_PIT", "DEFENSE",
+    # Одобрение и личные рекорды.
+    "PRAISE_OVERTAKE", "PRAISE_FASTEST_LAP",
+    "CAREER_PB", "CAREER_SECTOR_PB", "F1_BENCH", "F1_SECTOR_BENCH",
+    # Ритуалы сессии и диалог с пилотом.
+    "SESSION_RADIO_CHECK", "SESSION_RESULT", "PRE_RACE_PEP_TALK",
+    "ENGINEER_ASKS_DRIVER",
+    "USER_Q", "USER_Q_PIT", "USER_Q_GAP", "USER_Q_SAFETY_CAR",
+})
+
 # ── Категории: группировка для TTL и phrase bank ─────────────────────────────
 _CATEGORY_BY_CODE: dict[str, str] = {
     "SPOTTER_CAR_LEFT": "spotter_side",
@@ -557,6 +633,20 @@ def ui_title_for(code: str) -> str:
     """Человеческое название сообщения для UI (критерий готовности №11)."""
     return _UI_TITLE_BY_CATEGORY.get(
         category_for(code), _UI_TITLE_BY_CATEGORY[DEFAULT_CATEGORY])
+
+
+def engineer_codes() -> frozenset[str]:
+    """Коды, которые произносит инженер. Публично — ради инварианта «у каждого
+    объявлен источник текста» (см. `BANK_CODE_BY_EVENT`)."""
+    return _ENGINEER_CODES
+
+
+def bank_code_for(code: str) -> str | None:
+    """Семантический код банка для события, либо None.
+
+    None значит «текста в банке для него нет» — и это НЕ ошибка: у половины
+    инженерских кодов свой рендер (`OWN_PHRASE_CODES`)."""
+    return BANK_CODE_BY_EVENT.get(code)
 
 
 def known_codes() -> frozenset[str]:
