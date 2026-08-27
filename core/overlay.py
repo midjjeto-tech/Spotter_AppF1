@@ -33,6 +33,49 @@ _ADVICE_LABELS: dict[str, str | None] = {
 }
 
 
+#: Насколько круг должен быть хуже личного лучшего, чтобы стать «красным».
+#:
+#: Ступени с этим цветом в телевизионном хронометраже нет — её попросил пилот
+#: (разбор заезда 2026-08-27): фиолетовый/зелёный/жёлтый описывают, насколько
+#: круг хорош, но не отделяют «чуть хуже» от «загубленного».
+#:
+#: Порог ОТНОСИТЕЛЬНЫЙ, а не в секундах: полторы секунды на круге Монако
+#: (1:11) и на круге Спа (1:44) — разные величины ошибки, и фиксированное
+#: число красило бы длинные трассы строже коротких.
+RED_LAP_MARGIN = 0.02
+
+
+def lap_tone(last_lap_ms: int | None, *, personal_best_ms: int | None,
+             session_best_ms: int | None) -> str | None:
+    """Цвет времени круга по конвенции хронометража F1.
+
+        purple — быстрейший круг сессии (всего поля)
+        green  — личный лучший в этой сессии
+        yellow — медленнее личного лучшего
+        red    — хуже личного лучшего больше чем на `RED_LAP_MARGIN`
+
+    None означает «красить нечем»: круга нет или сравнивать не с чем. Серое
+    время честнее выдуманного цвета — на первом круге личного лучшего ещё не
+    существует.
+
+    Эталон поля (`session_best_ms`) приходит позже личного: `f1_benchmark`
+    ждёт данных о поле. Пока его нет, шкала работает без фиолетового — это
+    лучше, чем держать время серым весь первый стинт.
+    """
+    if last_lap_ms is None or last_lap_ms <= 0:
+        return None
+    if personal_best_ms is None or personal_best_ms <= 0:
+        return None
+    if session_best_ms is not None and 0 < session_best_ms and \
+            last_lap_ms <= session_best_ms:
+        return "purple"
+    if last_lap_ms <= personal_best_ms:
+        return "green"
+    if last_lap_ms > personal_best_ms * (1.0 + RED_LAP_MARGIN):
+        return "red"
+    return "yellow"
+
+
 def _fmt_advice(value: str | None) -> str | None:
     """Keep internal snake_case decision codes out of the driver-facing HUD."""
     if value is None:
@@ -176,6 +219,16 @@ def build_overlay_state(snapshot: dict) -> dict:
         "power_mguk_kw": snapshot.get("power_mguk_kw"),
         "last_lap_ms": snapshot.get("last_lap_ms"),
         "last_lap_str": _fmt_lap_ms(snapshot.get("last_lap_ms")),
+        # Цвет решается ЗДЕСЬ, а не в вёрстке: правило хронометража — это
+        # логика с порогом и тремя эталонами, и её место там, где её можно
+        # покрыть тестами. Виджет получает готовое слово и красит.
+        "last_lap_tone": lap_tone(
+            snapshot.get("last_lap_ms"),
+            personal_best_ms=snapshot.get("personal_best_lap_ms"),
+            session_best_ms=snapshot.get("session_best_lap_ms"),
+        ),
+        "personal_best_lap_ms": snapshot.get("personal_best_lap_ms"),
+        "session_best_lap_ms": snapshot.get("session_best_lap_ms"),
     }
 
     # Live driver inputs — pedal/steering traces and the rev-light strip.

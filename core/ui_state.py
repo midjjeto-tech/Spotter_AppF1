@@ -116,6 +116,11 @@ class OverlayTelemetry:
     ers_percent: float | None = None
     ers_deploy_mode: int | None = None
     last_lap_ms: int | None = None
+    #: Эталоны для цвета времени круга (`core/overlay.py::lap_tone`).
+    #: Личный лучший — свой, круг поля — из `f1_benchmark`, и он приходит
+    #: позже: до него шкала работает без фиолетового.
+    personal_best_lap_ms: int | None = None
+    session_best_lap_ms: int | None = None
     # Driver inputs + power unit + conditions for the in-game HUD widgets.
     throttle_pct: float | None = None
     brake_pct: float | None = None

@@ -937,6 +937,13 @@ export type OverlayState = {
     power_mguk_kw: number | null
     last_lap_ms: number | null
     last_lap_str: string
+    /** Цвет времени круга по конвенции хронометража F1: фиолетовый — быстрейший
+     *  круг сессии, зелёный — личный лучший, жёлтый — медленнее личного,
+     *  красный — заметно хуже. `null` = сравнивать не с чем (первый круг).
+     *  Решает `core/overlay.py::lap_tone`; вёрстка только красит. */
+    last_lap_tone: "purple" | "green" | "yellow" | "red" | null
+    personal_best_lap_ms: number | null
+    session_best_lap_ms: number | null
   }
   inputs: {
     throttle_pct: number | null

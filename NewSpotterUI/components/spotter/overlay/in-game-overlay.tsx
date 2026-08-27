@@ -232,6 +232,11 @@ const PREVIEW_OVERLAY = {
     power_mguk_kw: 118.2,
     last_lap_ms: 83_456,
     last_lap_str: "1:23.456",
+    // Личный лучший — этот же круг, круг поля быстрее: в превью видно
+    // «зелёный», среднюю ступень шкалы, а не крайнюю.
+    last_lap_tone: "green" as const,
+    personal_best_lap_ms: 83_456,
+    session_best_lap_ms: 82_100,
   },
   inputs: {
     throttle_pct: 92,
@@ -971,10 +976,26 @@ function StatCell({
   )
 }
 
+/** Цвет времени круга по конвенции хронометража F1.
+ *
+ *  Решение принимает БЭКЕНД (`core/overlay.py::lap_tone`) — здесь только
+ *  раскраска. Правило с порогом и тремя эталонами живёт там, где его покрывают
+ *  тесты; вторая копия шкалы в вёрстке молча разошлась бы с первой.
+ *
+ *  `null` означает «сравнивать не с чем» (первый круг сессии): время остаётся
+ *  обычного цвета, а не красится наугад. */
+const LAP_TONE_COLOR: Record<string, string> = {
+  purple: PURPLE,
+  green: GREEN,
+  yellow: AMBER,
+  red: CRIMSON,
+}
+
 function LapTimer({ overlay }: { overlay: OverlayState | null }) {
   const sector = overlay?.corner.sector ?? 0
   const compound = overlay?.tyre.compound ?? "?"
   const compoundColor = tyreColor(overlay?.tyre.compound, overlay?.tyre.compound_color)
+  const lapColor = LAP_TONE_COLOR[overlay?.car.last_lap_tone ?? ""] ?? TEXT_BRIGHT
   return (
     <OverlayPanel
       title="Lap"
@@ -991,16 +1012,25 @@ function LapTimer({ overlay }: { overlay: OverlayState | null }) {
           <Label>last lap</Label>
           <div
             className="font-broadcast text-[27px] font-black italic leading-none tabular-nums"
-            style={{ color: CYAN }}
+            style={{ color: lapColor }}
           >
             {overlay?.car.last_lap_str ?? "--:--.---"}
           </div>
+          {/* Полоски — это ПРОГРЕСС по секторам, а не хронометраж: своих
+              времён по секторам в оверлей не приезжает. Раньше они красились
+              тем же зелёным, что и хорошее время круга, и читались как оценка
+              («зелёный сектор») — отсюда и жалоба «непонятно». Нейтральный
+              белый прогресса не обещает ничего лишнего. */}
           <div className="mt-1.5 grid grid-cols-3 gap-1">
             {[1, 2, 3].map((index) => (
               <span
                 key={index}
                 className="h-[3px]"
-                style={{ backgroundColor: index === sector ? CYAN : index < sector ? GREEN : "#303044" }}
+                style={{
+                  backgroundColor: index === sector
+                    ? TEXT_BRIGHT
+                    : index < sector ? "#6b7280" : "#303044",
+                }}
               />
             ))}
           </div>

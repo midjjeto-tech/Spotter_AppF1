@@ -4,7 +4,9 @@ tests/test_overlay.py
 Unit tests for core/overlay.py — pure HUD state builder.
 """
 import pytest
-from core.overlay import _fmt_gap_ms, _compound_color, build_overlay_state
+from core.overlay import (
+    _fmt_gap_ms, _compound_color, build_overlay_state, lap_tone,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -173,6 +175,11 @@ def test_build_car_status_for_compact_hud():
         "power_mguk_kw": None,
         "last_lap_ms": 83_456,
         "last_lap_str": "1:23.456",
+        # Эталонов в этом снимке нет, значит красить нечем: тон None, а не
+        # выдуманный цвет. Сама шкала проверяется отдельным блоком ниже.
+        "last_lap_tone": None,
+        "personal_best_lap_ms": None,
+        "session_best_lap_ms": None,
     }
 
 
@@ -463,3 +470,61 @@ def test_build_car_block_exposes_ers_flow_and_power_split():
     assert car["power_ice_kw"] == 560.0
     assert car["power_mguk_kw"] == 120.0
     assert car["fuel_delta_laps"] == -0.8
+
+
+# ---------------------------------------------------------------------------
+# lap_tone — цвет времени круга по конвенции хронометража F1
+# ---------------------------------------------------------------------------
+
+def test_session_best_is_purple():
+    """Быстрейший круг СЕССИИ (всего поля) — фиолетовый. Верхняя ступень."""
+    assert lap_tone(78_000, personal_best_ms=78_000,
+                    session_best_ms=78_000) == "purple"
+
+
+def test_personal_best_is_green():
+    """Свой лучший, но не быстрейший в поле — зелёный."""
+    assert lap_tone(78_000, personal_best_ms=78_000,
+                    session_best_ms=76_500) == "green"
+
+
+def test_slower_than_personal_best_is_yellow():
+    assert lap_tone(79_000, personal_best_ms=78_000,
+                    session_best_ms=76_500) == "yellow"
+
+
+def test_far_off_the_personal_best_is_red():
+    """Ступень, которой в телевизионном хронометраже нет — её попросил пилот.
+
+    Порог относительный, а не в секундах: две десятых на Монако и две десятых
+    на Спа — разные величины ошибки."""
+    assert lap_tone(80_000, personal_best_ms=78_000,
+                    session_best_ms=76_500) == "red"
+
+
+def test_the_red_threshold_is_relative_to_lap_length():
+    """Один и тот же процент на длинном круге даёт больше секунд.
+
+    Проверяется именно это свойство: круг Спа (1:44) на 2.5% хуже — красный,
+    и он же на 1.5 секунды хуже — ещё жёлтый, хотя на коротком круге полторы
+    секунды красным уже были бы."""
+    assert lap_tone(107_000, personal_best_ms=104_000,
+                    session_best_ms=104_000) == "red"
+    assert lap_tone(105_500, personal_best_ms=104_000,
+                    session_best_ms=104_000) == "yellow"
+
+
+def test_first_lap_has_no_reference_and_no_colour():
+    """Пока личного лучшего нет, красить нечем — и врать цветом нельзя."""
+    assert lap_tone(78_000, personal_best_ms=None, session_best_ms=None) is None
+
+
+def test_missing_lap_has_no_colour():
+    assert lap_tone(None, personal_best_ms=78_000, session_best_ms=76_500) is None
+
+
+def test_unknown_session_best_still_gives_the_personal_scale():
+    """Эталон поля приходит не сразу (f1_benchmark.ready). До него шкала
+    работает без фиолетового — это лучше, чем серое время весь первый стинт."""
+    assert lap_tone(78_000, personal_best_ms=78_000, session_best_ms=None) == "green"
+    assert lap_tone(79_000, personal_best_ms=78_000, session_best_ms=None) == "yellow"

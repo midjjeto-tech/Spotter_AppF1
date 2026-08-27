@@ -5662,9 +5662,36 @@ class F1Engine:
     def get_track_ai_state(self) -> dict:
         return self._ui_state.section("track_ai")
 
+    def _lap_colour_references(self) -> tuple[int | None, int | None]:
+        """Личный лучший круг сессии и быстрейший круг поля — для цвета HUD.
+
+        Личный считается по записанным кругам, а не по `f1_benchmark`: тот
+        ждёт данных о поле (`ready`), и до их прихода время круга оставалось бы
+        серым весь первый стинт. Круги пит-стопа исключены — заезд в боксы
+        лучшим кругом не бывает, а держать его в шкале значит один раз за
+        гонку сравнить пилота с его же выездом из боксов.
+
+        Список кругов короткий (≤ длины гонки), а зовётся это на опросе UI
+        4 раза в секунду — перебор дешевле отдельного поля состояния, которое
+        пришлось бы сбрасывать в двух местах (сессионном и флэшбековом).
+        """
+        personal: int | None = None
+        for lap in self.recorder.laps():
+            value = lap.get("last_lap_ms")
+            if not isinstance(value, int) or value <= 0 or lap.get("pit_lap"):
+                continue
+            if personal is None or value < personal:
+                personal = value
+        bench = self._ui_state.section("f1_benchmark") or {}
+        field_best = bench.get("f1_time_ms")
+        if not isinstance(field_best, int) or field_best <= 0:
+            field_best = None
+        return personal, field_best
+
     def get_overlay_state(self) -> dict:
         """Build consolidated Broadcast Overlay HUD dict for /api/overlay."""
         weather = self._current_weather or {}
+        personal_best, session_best = self._lap_colour_references()
         return self._ui_state.overlay(OverlayTelemetry(
             **{key: value for key, value in self._player_hud.items()
                if key != "drs_allowed"},
@@ -5687,6 +5714,8 @@ class F1Engine:
             ers_percent=self._player_ers_percent,
             ers_deploy_mode=self._player_ers_deploy_mode,
             last_lap_ms=self._player_pace_ms,
+            personal_best_lap_ms=personal_best,
+            session_best_lap_ms=session_best,
         ))
 
     def clear_feed(self):
