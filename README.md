@@ -1,4 +1,11 @@
-# Spotter App
+# Spotter App<img width="1914" height="1002" alt="image" src="https://github.com/user-attachments/assets/d2342379-714d-4343-9860-b703418e15b6" />
+<img width="1919" height="1006" alt="image" src="https://github.com/user-attachments/assets/f5f3a909-29e9-4a12-b196-246e8065c491" />
+<img width="691" height="933" alt="image" src="https://github.com/user-attachments/assets/69ef230a-3a78-4d55-89fd-c6dd09b9b507" />
+<img width="1917" height="1008" alt="image" src="https://github.com/user-attachments/assets/c835ff5f-d09a-4947-8863-b3fca3f33099" />
+
+
+
+
 
 Русскоязычный ИИ-инженер, споттер и комментатор для **F1 25**. Приложение
 слушает телеметрию игры по UDP и говорит голосом: предупреждает о машине
